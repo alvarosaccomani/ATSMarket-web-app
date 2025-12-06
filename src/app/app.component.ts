@@ -29,13 +29,13 @@ export class AppComponent {
     },
     {
       "id": 2,
-      "nombre": "Almanaque",
+      "nombre": "Almanaque grande",
       "precio": 2000
     },
     {
       "id": 3,
-      "nombre": "Almanaque Basilica de Lujan",
-      "precio": 1500
+      "nombre": "Almanaque 3d Basilica de Lujan",
+      "precio": 1200
     },
     {
       "id": 4,
@@ -79,12 +79,12 @@ export class AppComponent {
     },
     {
       "id": 12,
-      "nombre": "arcangeles 7",
+      "nombre": "Arcangeles por 7",
       "precio": 66000
     },
     {
       "id": 13,
-      "nombre": "arcangeles unidad",
+      "nombre": "Arcangeles por unidad",
       "precio": 11000
     },
     {
@@ -94,17 +94,17 @@ export class AppComponent {
     },
     {
       "id": 15,
-      "nombre": "atrapasueños 7 chakras",
+      "nombre": "Atrapasueños 7 chakras",
       "precio": 10000
     },
     {
       "id": 16,
-      "nombre": "atrapasueños chicos",
+      "nombre": "Atrapasueños aro chicos",
       "precio": 6000
     },
     {
       "id": 17,
-      "nombre": "atrapasueños grande",
+      "nombre": "Atrapasueños aro grande",
       "precio": 7000
     },
     {
@@ -114,17 +114,17 @@ export class AppComponent {
     },
     {
       "id": 19,
-      "nombre": "Bidon",
+      "nombre": "Bidon 2 litros (grande)",
       "precio": 4000
     },
     {
       "id": 20,
-      "nombre": "bidon chico",
+      "nombre": "Bidon 1 litro (chico)",
       "precio": 3500
     },
     {
       "id": 21,
-      "nombre": "billeteras",
+      "nombre": "Billeteras",
       "precio": 10000
     },
     {
@@ -134,7 +134,7 @@ export class AppComponent {
     },
     {
       "id": 23,
-      "nombre": "Bombillas alpaca (con bls)",
+      "nombre": "Bombillas alpaca (con bolsa)",
       "precio": 15000
     },
     {
@@ -234,22 +234,22 @@ export class AppComponent {
     },
     {
       "id": 43,
-      "nombre": "estampita triptica 3d",
+      "nombre": "Estampita triptica 3d",
       "precio": 1000
     },
     {
       "id": 44,
-      "nombre": "herradura caballo",
+      "nombre": "Herradura caballo",
       "precio": 15000
     },
     {
       "id": 45,
-      "nombre": "imágenes pvc varias",
+      "nombre": "Imágenes pvc varias",
       "precio": 15000
     },
     {
       "id": 46,
-      "nombre": "juguetes 3d articulados",
+      "nombre": "Juguetes 3d articulados",
       "precio": 2000
     },
     {
@@ -274,8 +274,8 @@ export class AppComponent {
     },
     {
       "id": 51,
-      "nombre": "Llamadores colibri",
-      "precio": 15000
+      "nombre": "Almanaque chico",
+      "precio": 1500
     },
     {
       "id": 52,
@@ -319,7 +319,7 @@ export class AppComponent {
     },
     {
       "id": 60,
-      "nombre": "Mates media tapa media tapa e imperial",
+      "nombre": "Mates media tapa e imperial",
       "precio": 18000
     },
     {
@@ -334,7 +334,7 @@ export class AppComponent {
     },
     {
       "id": 63,
-      "nombre": "perro mueve cabeza",
+      "nombre": "Perro mueve cabeza",
       "precio": 5000
     },
     {
@@ -369,7 +369,7 @@ export class AppComponent {
     },
     {
       "id": 70,
-      "nombre": "Pulcera acero quirurgico premium",
+      "nombre": "Pulsera acero quirurgico premium",
       "precio": 15000
     },
     {
@@ -394,17 +394,17 @@ export class AppComponent {
     },
     {
       "id": 75,
-      "nombre": "Rec de lujab capilla (todas)",
+      "nombre": "Recuerdo de lujan capilla (todas)",
       "precio": 4500
     },
     {
       "id": 76,
-      "nombre": "Rec de lujan basilica y virgen",
+      "nombre": "Recuerdo de lujan basilica y virgen",
       "precio": 4000
     },
     {
       "id": 77,
-      "nombre": "Rec de lujan vela",
+      "nombre": "Recuerdo de lujan vela",
       "precio": 5000
     },
     {
@@ -444,7 +444,7 @@ export class AppComponent {
     },
     {
       "id": 85,
-      "nombre": "Rosario todos menos perlado",
+      "nombre": "Rosarios todos (menos perlado)",
       "precio": 3500
     },
     {
@@ -459,17 +459,17 @@ export class AppComponent {
     },
     {
       "id": 88,
-      "nombre": "Sagrado corazon o virgen",
+      "nombre": "Sagrado corazon o virgenes varias pvc (menos lujan)",
       "precio": 10000
     },
     {
       "id": 89,
       "nombre": "Sales perfumadas",
-      "precio": 100000
+      "precio": 10000
     },
     {
       "id": 90,
-      "nombre": "Sticjer grande",
+      "nombre": "Sticker grande",
       "precio": 2000
     },
     {
@@ -482,15 +482,15 @@ export class AppComponent {
       "nombre": "Stickers",
       "precio": 1500
     },
-    {
+    /*{
       "id": 93,
       "nombre": "Vela corta por 2",
       "precio": 2500
-    },
+    },*/
     {
       "id": 94,
-      "nombre": "Velas Dos",
-      "precio": 2000
+      "nombre": "Velas largagas bautismo x 2",
+      "precio": 2500
     },
     {
       "id": 95,
@@ -524,7 +524,7 @@ export class AppComponent {
     },
     {
       "id": 101,
-      "nombre": "Virgen blanca o celeste 3d",
+      "nombre": "Virgen blanca o celeste grande 3d",
       "precio": 23000
     },
     {
@@ -584,7 +584,7 @@ export class AppComponent {
     },
     {
       "id": 113,
-      "nombre": "Virgrn acero mediana",
+      "nombre": "Virgen acero mediana",
       "precio": 2000
     },
     {
@@ -596,6 +596,16 @@ export class AppComponent {
       "id": 115,
       "nombre": "Yerbero y azucarero",
       "precio": 8000
+    },
+    {
+      "id": 116,
+      "nombre": "Llavero alpaca",
+      "precio": 10000
+    },
+    {
+      "id": 117,
+      "nombre": "Llamador vaca san antonio/colibri",
+      "precio": 30000
     }
   ]
 
@@ -612,22 +622,35 @@ export class AppComponent {
     this.filteredProducts = [...this.products];
   }
 
+  /**
+   * 💡 Función Auxiliar para eliminar acentos.
+   * Utiliza la normalización Unicode (NFD) para separar el carácter base del acento.
+   */
+  private removeAccents(str: string): string {
+    return str.normalize("NFD").replace(/[\u0300-\u036f]/g, "");
+  }
+
   // 5. Función de filtrado
   applyFilter(): void {
-    const filterValue = this.filterText.toLowerCase().trim();
+    const rawFilterValue = this.filterText.toLowerCase().trim();
 
-    if (!filterValue) {
-      // Si el input está vacío, muestra todos los productos
+    if (!rawFilterValue) {
       this.filteredProducts = [...this.products];
       return;
     }
 
-    // Filtra la lista original
+    // 1. Normalizar el valor de búsqueda (el input del usuario)
+    const normalizedFilterValue = this.removeAccents(rawFilterValue);
+
     this.filteredProducts = this.products.filter(product => {
-      // Busca coincidencias en Nombre, Categoría y/o ID
+      // 2. Normalizar el nombre del producto para la comparación
+      const normalizedProductName = this.removeAccents(product.nombre.toLowerCase());
+
       return (
-        product.nombre.toLowerCase().includes(filterValue) ||
-        product.id.toString().includes(filterValue)
+        // Búsqueda en Nombre (Normalizado)
+        normalizedProductName.includes(normalizedFilterValue) ||
+        // Búsqueda en ID (sin normalización, ya que es un número)
+        product.id.toString().includes(rawFilterValue)
       );
     });
   }
