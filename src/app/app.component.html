@@ -1,6 +1,17 @@
 <div class="product-list-container">
   <h2>📋 Lista de Productos</h2>
 
+  <div class="payment-controls">
+    <label>
+      <input type="radio" name="payment" value="efectivo" [(ngModel)]="paymentMethod" checked>
+      💰 **Efectivo** (Precio base)
+    </label>
+    <label>
+      <input type="radio" name="payment" value="postnet" [(ngModel)]="paymentMethod">
+      💳 **Postnet** (+10% Recargo)
+    </label>
+  </div>
+
   <div class="filter-controls">
     <input type="text" placeholder="Filtrar por nombre o ID..." [(ngModel)]="filterText" (input)="applyFilter()"
       class="filter-input">
@@ -12,14 +23,14 @@
         <tr>
           <th>ID</th>
           <th>Nombre</th>
-          <th>Precio</th>
+          <th>Precio **({{ paymentMethod === 'efectivo' ? 'Efectivo' : 'Postnet' }})**</th>
         </tr>
       </thead>
       <tbody>
         <tr *ngFor="let product of filteredProducts">
           <td>{{ product.id }}</td>
           <td>{{ product.nombre }}</td>
-          <td>{{ product.precio | currency:'USD':'symbol':'1.0-2' }}</td>
+          <td>{{ getFinalPrice(product.precio) | currency:'ARS':'symbol':'1.0-2' }}</td>
         </tr>
       </tbody>
       <tfoot *ngIf="filteredProducts.length === 0">

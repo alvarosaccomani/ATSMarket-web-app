@@ -1,4 +1,4 @@
-import { Component } from '@angular/core';
+import { Component, OnInit } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { FormsModule } from '@angular/forms';
 
@@ -6,11 +6,12 @@ import { FormsModule } from '@angular/forms';
 interface Product {
   id: number;
   nombre: string;
-  precio: number;
+  precio: number; // Precio base (Efectivo)
 }
 
 @Component({
   selector: 'app-root',
+  standalone: true, // Si usas Angular 15+, usa standalone
   imports: [
     CommonModule,
     FormsModule
@@ -18,8 +19,12 @@ interface Product {
   templateUrl: './app.component.html',
   styleUrl: './app.component.scss'
 })
-export class AppComponent {
+export class AppComponent implements OnInit {
   title = 'ATSMarket-web-app';
+
+  // 💡 NUEVOS ATRIBUTOS para el manejo de pagos
+  paymentMethod: 'efectivo' | 'postnet' = 'efectivo'; // Por defecto: Efectivo
+  private readonly RECARGO_POSTNET = 0.10; // 10%
 
   products: Product[] = [
     {
@@ -609,17 +614,23 @@ export class AppComponent {
     }
   ]
 
-  // 3. Lista que se muestra en la vista (será la lista filtrada)
   filteredProducts: Product[] = [];
-
-  // 4. Modelo para el input de filtrado
   filterText: string = '';
 
   constructor() { }
 
   ngOnInit(): void {
-    // Inicialmente, la lista filtrada es igual a la lista completa
     this.filteredProducts = [...this.products];
+  }
+
+  // 💡 NUEVO MÉTODO: Calcula el precio final basado en el método de pago seleccionado.
+  getFinalPrice(basePrice: number): number {
+    if (this.paymentMethod === 'postnet') {
+      // Precio + 10% de recargo
+      return basePrice * (1 + this.RECARGO_POSTNET);
+    }
+    // Si es 'efectivo', devuelve el precio base
+    return basePrice;
   }
 
   /**
