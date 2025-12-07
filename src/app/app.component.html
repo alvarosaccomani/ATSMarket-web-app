@@ -30,7 +30,7 @@
         <tr *ngFor="let product of filteredProducts">
           <td>{{ product.id }}</td>
           <td>{{ product.nombre }}</td>
-          <td>{{ getFinalPrice(product.precio) | currency:'ARS':'symbol':'1.0-2' }}</td>
+          <td>{{ getFinalPrice(product.precio) | currency:'USD':'symbol':'1.0-2' }}</td>
         </tr>
       </tbody>
       <tfoot *ngIf="filteredProducts.length === 0">
