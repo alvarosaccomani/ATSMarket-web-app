@@ -604,7 +604,7 @@ export class AppComponent {
     },
     {
       "id": 117,
-      "nombre": "Llamador vaca san antonio/colibri",
+      "nombre": "Llamador vaca san antonio/colibri vitraux",
       "precio": 30000
     }
   ]
