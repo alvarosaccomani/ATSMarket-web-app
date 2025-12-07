@@ -369,8 +369,8 @@ export class AppComponent {
     },
     {
       "id": 70,
-      "nombre": "Pulsera acero quirurgico premium",
-      "precio": 15000
+      "nombre": "Pulsera acero quirurgico premium stainlees steel",
+      "precio": 10000
     },
     {
       "id": 71,
