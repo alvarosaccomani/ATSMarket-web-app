@@ -611,6 +611,26 @@ export class AppComponent implements OnInit {
       "id": 117,
       "nombre": "Llamador vaca san antonio/colibri vitraux",
       "precio": 30000
+    },
+    {
+      "id": 118,
+      "nombre": "Pulsera de piedra lujan colores",
+      "precio": 4000
+    },
+    {
+      "id": 119,
+      "nombre": "Cuneros negrito manuel",
+      "precio": 5000
+    },
+    {
+      "id": 120,
+      "nombre": "Cadena gruesa con cruz de acero quirurgico",
+      "precio": 30000
+    },
+    {
+      "id": 121,
+      "nombre": "Cadena gruesa con cruz de acero quirurgico dorada y plateada con strass",
+      "precio": 30000
     }
   ]
 
