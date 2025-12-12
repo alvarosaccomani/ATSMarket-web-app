@@ -1,0 +1,11 @@
+/* Contenido Principal para evitar que el header fijo lo tape */
+.app-content {
+    padding: 64px 0 0 0;
+    /* padding superior igual a la altura del header */
+    min-height: calc(100vh - 64px);
+    /* Para que ocupe toda la altura */
+}
+
+.inner-content {
+    padding: 24px;
+}
