@@ -1,0 +1,64 @@
+.app-header {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    /* Distribuye espacio entre logo, buscador y menú */
+    padding: 0 50px;
+    height: 64px;
+    position: fixed;
+    /* Hace que el navbar se quede arriba */
+    top: 0;
+    width: 100%;
+    z-index: 1000;
+    /* Asegura que esté por encima de otros contenidos */
+    //background: #001529;
+    /* Color oscuro por defecto de NG-Zorro */
+}
+
+.logo a {
+    color: white;
+    font-size: 1.5em;
+    font-weight: bold;
+    text-decoration: none;
+    display: flex;
+    align-items: center;
+}
+
+.site-title {
+    margin-left: 8px;
+}
+
+/* Contenedor del Buscador (toma espacio central) */
+.search-container {
+    display: flex;
+    flex-direction: row;
+    align-items: center;
+    flex-grow: 1;
+    /* Permite que crezca */
+    max-width: 400px;
+    /* Limita el ancho del buscador */
+    margin: 0 30px;
+}
+
+/* Menú y Carrito */
+.header-menu {
+    display: flex;
+    flex-direction: row;
+    align-items: center;
+    color: white;
+    line-height: 64px;
+    margin: 0;
+
+    /* Asegura que los ítems estén centrados verticalmente */
+    li {
+        list-style: none;
+        margin: 0 10px 0 0;
+        font-size: 16px;
+        cursor: pointer;
+    }
+}
+
+.cart-item {
+    padding-right: 0 !important;
+    /* Ajuste para el badge */
+}

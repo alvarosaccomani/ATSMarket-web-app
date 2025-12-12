@@ -1,1 +1,30 @@
-<p>nav-bar works!</p>
+<nz-header class="app-header">
+    <div class="logo">
+        <a routerLink="/home">
+            <span nz-icon nzType="shop" nzTheme="outline"></span>
+            <span class="site-title">Santos de Luján</span>
+        </a>
+    </div>
+
+    <div class="search-container">
+        <nz-input-group [nzAddOnBefore]="searchIcon">
+            <ng-template #searchIcon><span nz-icon nzType="search"></span></ng-template>
+            <input type="text" nz-input placeholder="Buscar rosarios, medallas, santos..."
+                (ngModelChange)="onSearchInputChange($event)" />
+        </nz-input-group>
+    </div>
+
+    <ul nz-menu nzTheme="dark" nzMode="horizontal" class="header-menu">
+        <li nz-menu-item routerLink="/home" nzMatchRouter>
+            <nz-icon nzType="home"></nz-icon> Inicio
+        </li>
+        <li nz-menu-item routerLink="/catalogo" nzMatchRouter>
+            <nz-icon nzType="appstore"></nz-icon> Catálogo
+        </li>
+        <li nz-menu-item routerLink="/carrito" nzMatchRouter class="cart-item">
+            <nz-icon nzType="shopping-cart"></nz-icon>
+            Carrito
+            <nz-badge [nzCount]="cartItemCount" [nzShowZero]="false"></nz-badge>
+        </li>
+    </ul>
+</nz-header>
