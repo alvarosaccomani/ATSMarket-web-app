@@ -1,1 +1,81 @@
-<p>cart works!</p>
+<div class="cart-container">
+    <h1><span nz-icon nzType="shopping-cart"></span> Carrito de Compras</h1>
+
+    <div nz-row [nzGutter]="[24, 24]">
+
+        <div nz-col [nzXs]="24" [nzMd]="16">
+
+            <nz-card>
+                <div *ngIf="!(cartItems$ | async)?.length" class="empty-cart-message">
+                    <nz-empty nzNotFoundImage="simple" nzNotFoundContent="Tu carrito está vacío."></nz-empty>
+                    <button nz-button nzType="link" routerLink="/catalogo">Volver al Catálogo</button>
+                </div>
+
+                <nz-table #basicTable *ngIf="(cartItems$ | async)?.length" [nzData]="(cartItems$ | async)!"
+                    [nzShowPagination]="false" [nzBordered]="true">
+
+                    <thead>
+                        <tr>
+                            <th *ngFor="let col of listOfColumns">
+                                {{ col.name }}
+                            </th>
+                        </tr>
+                    </thead>
+
+                    <tbody>
+                        <tr *ngFor="let item of basicTable.data">
+
+                            <td>
+                                <div class="product-info">
+                                    <img [src]="item.imagenUrl" alt="{{ item.nombre }}" class="cart-img">
+                                    <span class="product-name">{{ item.nombre }}</span>
+                                </div>
+                            </td>
+
+                            <td>
+                                ${{ item.precio | number: '1.2-2' }}
+                            </td>
+
+                            <td>
+                                <nz-input-number [ngModel]="item.quantity" [nzMin]="1"
+                                    (ngModelChange)="updateItemQuantity(item.id, $event)">
+                                </nz-input-number>
+                            </td>
+
+                            <td>
+                                <strong>${{ item.subtotal | number: '1.2-2' }}</strong>
+                            </td>
+
+                            <td>
+                                <button nz-button nzType="text" nzDanger (click)="removeItem(item.id)">
+                                    <span nz-icon nzType="delete"></span>
+                                </button>
+                            </td>
+                        </tr>
+                    </tbody>
+                </nz-table>
+            </nz-card>
+        </div>
+
+        <div nz-col [nzXs]="24" [nzMd]="8">
+            <nz-card nzTitle="Resumen de la Compra" [nzBordered]="true">
+
+                <div class="summary-details">
+                    <nz-statistic nzTitle="Total de Artículos"
+                        [nzValue]="(cartItems$ | async)?.length || 0"></nz-statistic>
+                    <nz-divider></nz-divider>
+                    <nz-statistic nzTitle="Total a Pagar" [nzValue]="totalPrice" [nzValueStyle]="{ color: '#52c41a' }"
+                        [nzPrefix]="'ARS $'">
+                    </nz-statistic>
+                </div>
+
+                <div class="checkout-actions">
+                    <button nz-button nzType="primary" nzSize="large" [nzBlock]="true" (click)="checkout()"
+                        [disabled]="!(cartItems$ | async)?.length">
+                        Continuar Compra
+                    </button>
+                </div>
+            </nz-card>
+        </div>
+    </div>
+</div>
