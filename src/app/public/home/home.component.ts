@@ -8,24 +8,8 @@ import { NzDividerModule } from 'ng-zorro-antd/divider';
 import { NzIconModule } from 'ng-zorro-antd/icon';
 import { NzModalModule } from 'ng-zorro-antd/modal';
 import { NzGridModule } from 'ng-zorro-antd/grid';
-
-export interface IProduct {
-  id: number;
-  nombre: string;
-  referencia: string;
-  categoria: 'estatuas' | 'rosarios' | 'medallas' | 'otros';
-  material: string;
-  precio: number; // Siempre manejarlo en el backend/servicio, aunque no se muestre
-  imagenUrl: string;
-  stock: number;
-}
-
-export interface ICategory {
-  nombre: string;
-  link: string;
-  imagenUrl: string;
-  descripcion: string;
-}
+import { ProductInterface } from '@interfaces/product.interface';
+import { CategoryInterface } from '@interfaces/category.interface';
 
 @Component({
   selector: 'app-home',
@@ -46,10 +30,10 @@ export interface ICategory {
 })
 export class HomeComponent {
   // Propiedad para los productos destacados en el Home
-  public destacados: IProduct[] = [];
+  public destacados: ProductInterface[] = [];
 
   // Propiedad para las categorías que se mostrarán en la grilla del Home
-  public categorias: ICategory[] = [];
+  public categorias: CategoryInterface[] = [];
 
   constructor(
     // private productService: ProductService, // Si tuvieras un servicio
@@ -95,7 +79,7 @@ export class HomeComponent {
 
   // Método para la consulta de precio discreta
 
-  public consultarPrecio(producto: IProduct): void {
+  public consultarPrecio(producto: ProductInterface): void {
     // Aquí puedes usar nz-modal o nz-notification
     // Para el ejemplo, usaremos un simple alert:
     alert(`El precio de "${producto.nombre}" es $${producto.precio}.`);
