@@ -15,16 +15,15 @@
     </div>
 
     <ul nz-menu nzTheme="dark" nzMode="horizontal" class="header-menu">
-        <li nz-menu-item routerLink="/home" nzMatchRouter>
-            <nz-icon nzType="home"></nz-icon> Inicio
+        <li nz-menu-item routerLink="/public/home" nzMatchRouter>
+            <nz-icon nzType="home"></nz-icon>
         </li>
-        <li nz-menu-item routerLink="/catalogo" nzMatchRouter>
-            <nz-icon nzType="appstore"></nz-icon> Catálogo
+        <li nz-menu-item routerLink="/public/catalog" nzMatchRouter>
+            <nz-icon nzType="appstore"></nz-icon>
         </li>
-        <li nz-menu-item routerLink="/carrito" nzMatchRouter class="cart-item">
+        <li nz-menu-item routerLink="/user/cart" nzMatchRouter class="cart-item">
             <nz-icon nzType="shopping-cart"></nz-icon>
-            Carrito
-            <nz-badge [nzCount]="cartItemCount" [nzShowZero]="false"></nz-badge>
+            <nz-badge [nzCount]="(cartItems$ | async)?.length || 0" [nzShowZero]="false"></nz-badge>
         </li>
     </ul>
 </nz-header>
