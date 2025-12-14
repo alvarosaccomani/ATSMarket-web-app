@@ -32,6 +32,8 @@ export class NavBarComponent {
   // Esto debe ser alimentado por tu CartService real.
   public cartItemCount: number = 0;
   public cartItems$: Observable<CartItemInterface[]>;
+  // Propiedad para controlar la visibilidad del Drawer
+  public drawerVisible: boolean = false;
 
   // Si usas ngModel en el input, necesitas importar FormsModule y ReactiveFormsModule
   // en tu app.module.ts.
@@ -51,5 +53,13 @@ export class NavBarComponent {
       // **TODO:** Implementar la lógica de búsqueda,
       // ej: redirigir a '/catalogo?q=' + value
     }
+  }
+
+  public openDrawer(): void {
+    this.drawerVisible = true;
+  }
+
+  public closeDrawer(): void {
+    this.drawerVisible = false;
   }
 }

@@ -14,7 +14,7 @@
         </nz-input-group>
     </div>
 
-    <ul nz-menu nzTheme="dark" nzMode="horizontal" class="header-menu">
+    <ul nz-menu nzTheme="dark" nzMode="horizontal" class="header-menu desktop-menu">
         <li nz-menu-item routerLink="/public/home" nzMatchRouter>
             <nz-icon nzType="home"></nz-icon>
         </li>
@@ -26,4 +26,27 @@
             <nz-badge [nzCount]="(cartItems$ | async)?.length || 0" [nzShowZero]="false"></nz-badge>
         </li>
     </ul>
+
+    <button nz-button class="menu-toggle-button" nzType="default" (click)="openDrawer()">
+        <span nz-icon nzType="menu"></span>
+    </button>
 </nz-header>
+
+<nz-drawer [nzVisible]="drawerVisible" nzPlacement="right" nzTitle="Menú" (nzOnClose)="closeDrawer()">
+    <ng-container *nzDrawerContent>
+        <ul nz-menu nzMode="inline" nzTheme="dark" class="mobile-menu">
+            <li nz-menu-item routerLink="/public/home" (click)="closeDrawer()">
+                <nz-icon nzType="home"></nz-icon> Inicio
+            </li>
+            <li nz-menu-item routerLink="/public/catalog" (click)="closeDrawer()">
+                <nz-icon nzType="appstore"></nz-icon> Catálogo
+            </li>
+            <li nz-menu-item routerLink="/user/cart" (click)="closeDrawer()">
+                <nz-icon nzType="shopping-cart"></nz-icon>
+                Carrito
+                <nz-badge [nzCount]="(cartItems$ | async)?.length || 0" [nzShowZero]="false"
+                    class="mobile-badge"></nz-badge>
+            </li>
+        </ul>
+    </ng-container>
+</nz-drawer>

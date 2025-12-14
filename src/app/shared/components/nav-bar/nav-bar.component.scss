@@ -1,18 +1,15 @@
+/* --- Estilos Base para Escritorio --- */
+
 .app-header {
     display: flex;
     align-items: center;
     justify-content: space-between;
-    /* Distribuye espacio entre logo, buscador y menú */
     padding: 0 50px;
     height: 64px;
     position: fixed;
-    /* Hace que el navbar se quede arriba */
     top: 0;
     width: 100%;
     z-index: 1000;
-    /* Asegura que esté por encima de otros contenidos */
-    //background: #001529;
-    /* Color oscuro por defecto de NG-Zorro */
 }
 
 .logo a {
@@ -28,19 +25,21 @@
     margin-left: 8px;
 }
 
-/* Contenedor del Buscador (toma espacio central) */
+/* ... (Estilos de .logo, .site-title, etc. sin cambios) ... */
+
+/* Contenedor del Buscador: Ahora se expande completamente */
 .search-container {
     display: flex;
     flex-direction: row;
     align-items: center;
     flex-grow: 1;
-    /* Permite que crezca */
     max-width: 400px;
-    /* Limita el ancho del buscador */
+
+    /* ELIMINADO: Restricción de 400px para que sea lo más ancho posible */
     margin: 0 30px;
 }
 
-/* Menú y Carrito */
+/* Menú de Escritorio y Carrito */
 .header-menu {
     display: flex;
     flex-direction: row;
@@ -48,8 +47,9 @@
     color: white;
     line-height: 64px;
     margin: 0;
+    /* Aseguramos que no crezca, dejando espacio para el buscador */
+    flex-shrink: 0;
 
-    /* Asegura que los ítems estén centrados verticalmente */
     li {
         list-style: none;
         margin: 0 10px 0 0;
@@ -60,5 +60,80 @@
 
 .cart-item {
     padding-right: 0 !important;
-    /* Ajuste para el badge */
+}
+
+/* El botón para abrir el menú móvil debe estar oculto en desktop */
+.menu-toggle-button {
+    display: none;
+    /* Aseguramos que no crezca */
+    flex-shrink: 0;
+    color: white;
+    background: transparent;
+    border: none;
+}
+
+/* ---------------------------------------------------- */
+/* --- Estilos del Menú Móvil (Dentro del nz-drawer) --- */
+/* ---------------------------------------------------- */
+
+.mobile-menu {
+    width: 100%;
+    /* Asegura que el menú ocupe el ancho del drawer */
+    border-right: none;
+    padding: 0;
+
+    /* Elimina el borde derecho si lo tiene */
+    li {
+        list-style: none;
+        margin: 0 10px 0 0;
+        font-size: 16px;
+        cursor: pointer;
+    }
+}
+
+.mobile-menu li {
+    font-size: 16px;
+    padding: 12px 0;
+    /* Espaciado interno de los ítems */
+
+    /* Asegura que el icono esté espaciado del texto */
+    .anticon {
+        margin-right: 8px;
+    }
+}
+
+/* --- Media Query para Pantallas Móviles (max-width: 768px) --- */
+
+@media (max-width: 768px) {
+    .app-header {
+        /* Reducir el padding horizontal */
+        padding: 0 15px;
+    }
+
+    /* Ocultar el título en el logo si el espacio es crítico */
+    .logo a .site-title {
+        display: none;
+    }
+
+    /* El buscador ahora se MANTIENE visible y expandido */
+    .search-container {
+        display: flex;
+        /* ASEGURAMOS que esté visible en móvil */
+        margin: 0 10px;
+        /* Reducimos el margen horizontal en móvil */
+        /* Permite que crezca y tome todo el espacio */
+        max-width: none;
+    }
+
+    /* Ocultar el menú horizontal de escritorio, ya que usamos el drawer */
+    .header-menu {
+        display: none;
+    }
+
+    /* Mostrar el botón para abrir el menú móvil */
+    .menu-toggle-button {
+        display: block;
+    }
+
+    /* (Estilos del menú móvil dentro del drawer sin cambios) */
 }
