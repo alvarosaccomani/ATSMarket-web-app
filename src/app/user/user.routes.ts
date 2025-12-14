@@ -2,13 +2,15 @@ import { Routes } from '@angular/router';
 
 import { UserLayoutComponent } from './user-layout/user-layout.component';
 import { CartComponent } from './cart/cart.component';
+import { CheckoutComponent } from './checkout/checkout.component';
 
 export const USER_ROUTES: Routes = [
     {
         path: '',
         component: UserLayoutComponent,
         children: [
-            { path: 'cart', component: CartComponent }
+            { path: 'cart', component: CartComponent },
+            { path: 'checkout', component: CheckoutComponent }
         ]
     }
 ];
