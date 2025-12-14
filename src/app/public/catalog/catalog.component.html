@@ -1,11 +1,9 @@
 <nz-layout class="catalogo-layout">
 
-    <nz-sider [nzWidth]="250" nzCollapsible [nzBreakpoint]="'md'" [nzCollapsedWidth]="0" class="filters-sider">
+    <nz-sider [nzWidth]="250" class="filters-sider visible-lg">
         <div class="filters-container">
             <h3><span nz-icon nzType="filter"></span> Filtrar Catálogo</h3>
-
             <nz-divider></nz-divider>
-
             <div class="filter-group">
                 <h4>Buscar por Nombre/Ref.</h4>
                 <nz-input-group [nzPrefix]="'search'">
@@ -46,17 +44,17 @@
     </nz-sider>
 
     <nz-content class="catalogo-content">
+        <div class="visible-sm filter-button-container">
+            <button nz-button nzType="default" (click)="openDrawer()" class="full-width-button">
+                <span nz-icon nzType="filter"></span> Mostrar Filtros
+            </button>
+            <nz-divider></nz-divider>
+        </div>
+
         <h2>{{ filteredProducts.length }} Productos Encontrados</h2>
 
         <div nz-row [nzGutter]="[16, 16]">
-
-            <!-- <div *ngIf="filteredProducts.length === 0" class="no-results">
-                <nz-empty nzNotFoundImage="simple"
-                    nzNotFoundContent="No se encontraron productos con estos filtros."></nz-empty>
-            </div> -->
-
             <div nz-col [nzXs]="24" [nzSm]="12" [nzMd]="8" [nzLg]="6" *ngFor="let producto of filteredProducts">
-
                 <nz-card [nzHoverable]="true" class="product-card" [nzCover]="coverTemplate">
                     <ng-template #coverTemplate>
                         <img [alt]="producto.nombre" [src]="producto.imagenUrl" class="product-card-image" />
@@ -77,4 +75,52 @@
             </div>
         </div>
     </nz-content>
+
+    <nz-drawer [nzClosable]="false" [nzHeight]="'auto'" [nzVisible]="drawerVisible" nzPlacement="top"
+        nzTitle="Filtrar Catálogo" (nzOnClose)="closeDrawer()">
+        <ng-container *nzDrawerContent>
+            <div class="filters-container">
+                <div class="filter-group">
+                    <h4>Buscar por Nombre/Ref.</h4>
+                    <nz-input-group [nzPrefix]="'search'">
+                        <input type="text" nz-input [(ngModel)]="searchTerm" (ngModelChange)="applyFilters()"
+                            placeholder="Ej: Rosario, Luján" />
+                    </nz-input-group>
+                </div>
+
+                <div class="filter-group">
+                    <h4>Categoría</h4>
+                    <nz-select [(ngModel)]="selectedCategory" (ngModelChange)="applyFilters()"
+                        nzPlaceHolder="Selecciona una categoría">
+                        <nz-option *ngFor="let option of categoryOptions" [nzLabel]="option.label"
+                            [nzValue]="option.value"></nz-option>
+                    </nz-select>
+                </div>
+
+                <div class="filter-group">
+                    <h4>Material</h4>
+                    <nz-checkbox-group [(ngModel)]="selectedMaterials" (ngModelChange)="applyFilters()">
+                        <div *ngFor="let material of materialOptions">
+                            <label nz-checkbox [nzValue]="material">{{ material }}</label>
+                        </div>
+                    </nz-checkbox-group>
+                </div>
+
+                <div class="filter-group">
+                    <h4>Rango de Precio (ARS)</h4>
+                    <nz-slider [nzRange]="true" [nzDefaultValue]="priceRange" [nzMin]="0" [nzMax]="50000"
+                        (nzOnAfterChange)="applyFilters()" [(ngModel)]="priceRange">
+                    </nz-slider>
+                    <div class="price-labels">
+                        <span>${{ priceRange[0] }}</span>
+                        <span>${{ priceRange[1] }}</span>
+                    </div>
+                </div>
+
+                <button nz-button nzType="primary" class="full-width-button" (click)="closeDrawer()">
+                    Cerrar Filtros
+                </button>
+            </div>
+        </ng-container>
+    </nz-drawer>
 </nz-layout>

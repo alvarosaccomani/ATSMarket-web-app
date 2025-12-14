@@ -57,3 +57,46 @@
     padding: 50px 0;
     text-align: center;
 }
+
+/* Estilos de Utilidad de Responsividad (Asegúrate de que estas clases existan en tu proyecto) */
+/* Oculta en pantallas pequeñas (xs, sm) y muestra en md y superiores */
+.visible-lg {
+    display: none;
+}
+
+@media (min-width: 768px) {
+
+    /* md breakpoint de Ant Design */
+    /* Muestra el sider en pantallas grandes */
+    .filters-sider.visible-lg {
+        display: block !important;
+    }
+
+    /* Oculta el botón de filtro en pantallas grandes */
+    .visible-sm {
+        display: none !important;
+    }
+}
+
+/* Muestra el botón de filtro en pantallas pequeñas */
+.visible-sm {
+    display: block;
+}
+
+/* Estilos del Sider de filtros para pantallas grandes */
+.filters-sider {
+    background: #fff;
+    border-right: 1px solid #f0f0f0;
+    padding: 24px 16px;
+    /* Eliminar las propiedades de nz-sider aquí que se manejan en el HTML (nzCollapsible, nzBreakpoint) */
+}
+
+/* Otros estilos del botón de filtro */
+.filter-button-container {
+    padding-bottom: 8px;
+    /* Espacio para el divisor */
+}
+
+.full-width-button {
+    width: 100%;
+}

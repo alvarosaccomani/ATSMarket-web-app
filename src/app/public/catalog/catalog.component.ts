@@ -11,6 +11,7 @@ import { NzCheckboxModule } from 'ng-zorro-antd/checkbox';
 import { NzSliderModule } from 'ng-zorro-antd/slider';
 import { NzInputModule } from 'ng-zorro-antd/input';
 import { NzDividerModule } from 'ng-zorro-antd/divider';
+import { NzDrawerModule } from 'ng-zorro-antd/drawer';
 import { ProductInterface } from '@interfaces/product.interface';
 import { CartService } from '@services/cart.service';
 import { ProductsService } from '@services/products.service';
@@ -29,7 +30,8 @@ import { ProductsService } from '@services/products.service';
     NzCheckboxModule,
     NzSliderModule,
     NzInputModule,
-    NzDividerModule
+    NzDividerModule,
+    NzDrawerModule
   ],
   templateUrl: './catalog.component.html',
   styleUrl: './catalog.component.scss'
@@ -46,6 +48,7 @@ export class CatalogComponent implements OnInit {
   public materialOptions = ['Resina', 'Madera', 'Plata 925', 'Metal', 'Otro'];
   public selectedMaterials: string[] = [];
   public priceRange: [number, number] = [0, 50000]; // Rango inicial de precios
+  public drawerVisible = false;
 
   // Opciones para el select de Categorías
   public categoryOptions = [
@@ -114,5 +117,17 @@ export class CatalogComponent implements OnInit {
   public agregarAlCarrito(producto: ProductInterface): void {
     this.cartService.addToCart(producto, 1);
     // TODO: Usar NzMessage para notificar al usuario
+  }
+
+  // Método para abrir el drawer (desde el botón en móvil)
+  public openDrawer(): void {
+    this.drawerVisible = true;
+  }
+
+  // Método para cerrar el drawer
+  public closeDrawer(): void {
+    this.drawerVisible = false;
+    // Llamar a applyFilters() aquí asegura que los filtros se apliquen al cerrar
+    this.applyFilters();
   }
 }
