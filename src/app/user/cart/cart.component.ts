@@ -1,4 +1,5 @@
 import { Component, OnInit, OnDestroy } from '@angular/core';
+import { Router } from '@angular/router';
 import { CommonModule, AsyncPipe } from '@angular/common';
 import { FormsModule } from '@angular/forms';
 import { CartItemInterface } from '@interfaces/cart-item.interface';
@@ -49,7 +50,8 @@ export class CartComponent implements OnInit, OnDestroy {
   ];
 
   constructor(
-    private cartService: CartService
+    private cartService: CartService,
+    private _router: Router
   ) {
     this.cartItems$ = this.cartService.cartItems$;
   }
@@ -74,8 +76,7 @@ export class CartComponent implements OnInit, OnDestroy {
   }
 
   public checkout(): void {
-    // Implementar la lógica de navegación a la pasarela de pago
-    alert('Procediendo al Checkout. Total: $' + this.totalPrice.toFixed(2));
+    this._router.navigate(['/user/checkout']);
   }
 
 }
