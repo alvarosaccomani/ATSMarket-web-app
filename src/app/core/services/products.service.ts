@@ -623,7 +623,7 @@ export class ProductsService {
    * En una aplicación real, aquí usarías this.http.get<IProduct[]>('URL_DE_TU_API').
    * @returns Observable de un array de productos.
    */
-  public getAllProducts(): Observable<ProductInterface[]> {
+  public getAllProducts(slug: string): Observable<ProductInterface[]> {
     // Usamos of() de RxJS para envolver los datos y simular una llamada asíncrona (como si fuera HTTP)
     return of(this.productsData);
   }

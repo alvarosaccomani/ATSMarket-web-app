@@ -66,7 +66,7 @@ export class CatalogComponent implements OnInit {
 
   ngOnInit(): void {
     // Simulación de carga (reemplazar por llamada a this.productService.getAll())
-    this.productService.getAllProducts().subscribe(products => {
+    this.productService.getAllProducts('').subscribe(products => {
       this.allProducts = products;
       // Ajustar rango de precio inicial
       const precios = this.allProducts.map(p => p.precio);
