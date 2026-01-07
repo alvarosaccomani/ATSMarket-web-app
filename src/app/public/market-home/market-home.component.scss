@@ -1,0 +1,48 @@
+.market-container {
+    background: #fff;
+}
+
+.hero-section {
+    padding: 80px 20px;
+    background: linear-gradient(135deg, #f5f7fa 0%, #c3cfe2 100%);
+    text-align: center;
+}
+
+.hero-content h1 {
+    font-size: 3rem;
+    margin-bottom: 10px;
+}
+
+.global-search-bar {
+    max-width: 800px;
+    margin: 30px auto;
+}
+
+.section-padding {
+    padding: 60px 5%;
+}
+
+.bg-light {
+    background-color: #fafafa;
+}
+
+.store-card-content {
+    text-align: center;
+    padding: 20px 0;
+}
+
+.store-card-content h3 {
+    margin-top: 15px;
+    margin-bottom: 5px;
+}
+
+.prod-img {
+    height: 180px;
+    object-fit: cover;
+}
+
+.price-tag {
+    font-weight: bold;
+    color: #1890ff;
+    font-size: 1.1rem;
+}

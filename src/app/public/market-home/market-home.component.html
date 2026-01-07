@@ -1,1 +1,60 @@
-<p>market-home works!</p>
+<div class="market-container">
+
+    <section class="hero-section">
+        <div class="hero-content">
+            <h1 nz-typography>ATS Market</h1>
+            <p nz-typography nzType="secondary">Encuentra los mejores productos de santería y arte sacro en un solo
+                lugar.</p>
+
+            <div class="global-search-bar">
+                <nz-input-group nzSize="large" [nzAddOnBefore]="selectBefore" [nzSuffix]="suffixIcon">
+                    <input type="text" nz-input [(ngModel)]="searchGlobal"
+                        placeholder="Busca productos en todas las tiendas..." (keyup.enter)="onGlobalSearch()" />
+                </nz-input-group>
+                <ng-template #selectBefore>
+                    <nz-select [(ngModel)]="categoriaSistema" style="width: 180px;">
+                        <nz-option *ngFor="let cat of categoriasGlobales" [nzLabel]="cat.label"
+                            [nzValue]="cat.value"></nz-option>
+                    </nz-select>
+                </ng-template>
+                <ng-template #suffixIcon>
+                    <span nz-icon nzType="search" (click)="onGlobalSearch()"></span>
+                </ng-template>
+            </div>
+        </div>
+    </section>
+
+    <section class="section-padding">
+        <h2 nz-typography>Tiendas más visitadas</h2>
+        <div nz-row [nzGutter]="[24, 24]">
+            <div nz-col [nzXs]="24" [nzSm]="12" [nzMd]="6" *ngFor="let tienda of tiendasDestacadas">
+                <nz-card [nzHoverable]="true" class="store-card" (click)="irATienda(tienda.slug)">
+                    <div class="store-card-content">
+                        <nz-avatar [nzSize]="80" [nzSrc]="tienda.logoUrl"></nz-avatar>
+                        <h3>{{ tienda.nombre }}</h3>
+                        <p>{{ tienda.rubroPersonalizado }}</p>
+                        <button nz-button nzType="primary" nzGhost>Visitar Tienda</button>
+                    </div>
+                </nz-card>
+            </div>
+        </div>
+    </section>
+
+    <section class="section-padding bg-light">
+        <h2 nz-typography>Productos Tendencia</h2>
+        <div nz-row [nzGutter]="[16, 16]">
+            <div nz-col [nzXs]="12" [nzSm]="12" [nzMd]="6" [nzLg]="6" *ngFor="let prod of productosGlobales">
+                <nz-card [nzCover]="coverTemplate" [nzHoverable]="true" [nzActions]="[actionView]">
+                    <nz-card-meta [nzTitle]="prod.nombre"
+                        [nzDescription]="'Vendido por: Tienda ' + prod.id"></nz-card-meta>
+                    <ng-template #coverTemplate>
+                        <img class="prod-img" [alt]="prod.nombre" [src]="prod.imagenUrl" />
+                    </ng-template>
+                    <ng-template #actionView>
+                        <span class="price-tag">${{ prod.precio }}</span>
+                    </ng-template>
+                </nz-card>
+            </div>
+        </div>
+    </section>
+</div>
