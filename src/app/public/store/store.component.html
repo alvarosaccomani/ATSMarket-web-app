@@ -1,1 +1,70 @@
-<p>store works!</p>
+<div *ngIf="store; else notFound" class="store-page-wrapper">
+
+    <div class="store-header-banner">
+        <img [src]="store.logoUrl" [alt]="store.nombre" class="store-logo">
+        <h1>{{ store.nombre }}</h1>
+        <p class="store-description">{{ store.descripcion }}</p>
+        <p class="store-rubro">Rubro: {{ store.rubroPersonalizado }}</p>
+    </div>
+
+    <nz-layout class="store-catalogo-layout">
+
+        <nz-sider [nzWidth]="250" nzCollapsible [nzBreakpoint]="'md'" [nzCollapsedWidth]="0" class="filters-sider">
+            <div class="filters-container">
+                <h3><span nz-icon nzType="filter"></span> Filtrar en {{ store.nombre }}</h3>
+
+                <nz-divider></nz-divider>
+
+                <div class="filter-group">
+                    <h4>Categoría Personalizada</h4>
+                    <nz-select [(ngModel)]="selectedCategory" (ngModelChange)="applyFilters()"
+                        nzPlaceHolder="Todas las categorías">
+                        <nz-option [nzLabel]="'Todos'" [nzValue]="null"></nz-option>
+                        <nz-option *ngFor="let cat of store.categoriasPersonalizadas" [nzLabel]="cat"
+                            [nzValue]="cat"></nz-option>
+                    </nz-select>
+                </div>
+
+                <nz-divider></nz-divider>
+
+            </div>
+        </nz-sider>
+
+        <nz-content class="store-content">
+            <h2>{{ filteredProducts.length }} Artículos de {{ store.nombre }}</h2>
+
+            <div nz-row [nzGutter]="[16, 16]">
+                <div *ngIf="filteredProducts.length === 0" class="no-results">
+                </div>
+
+                <div nz-col [nzXs]="24" [nzSm]="12" [nzMd]="8" [nzLg]="6" *ngFor="let producto of filteredProducts">
+                    <nz-card [nzHoverable]="true" class="product-card" [nzCover]="coverTemplate">
+                        <ng-template #coverTemplate>
+                            <img [alt]="producto.nombre" [src]="producto.imagenUrl" class="product-card-image" />
+                        </ng-template>
+
+                        <nz-card-meta [nzTitle]="producto.nombre"
+                            [nzDescription]="'Ref: ' + producto.referencia"></nz-card-meta>
+
+                        <div class="product-actions">
+                            <button nz-button nzType="default" (click)="consultarPrecio(producto)">Consultar
+                                Precio</button>
+                            <button nz-button nzType="primary" (click)="agregarAlCarrito(producto)">
+                                <span nz-icon nzType="shopping-cart"></span> Agregar
+                            </button>
+                        </div>
+                    </nz-card>
+                </div>
+            </div>
+        </nz-content>
+    </nz-layout>
+
+</div>
+
+<ng-template #notFound>
+    <div class="not-found-container">
+        <h1>Tienda No Disponible</h1>
+        <p>Parece que la URL es incorrecta o la tienda no existe.</p>
+        <button nz-button nzType="primary" routerLink="/">Volver al Mercado Global</button>
+    </div>
+</ng-template>
