@@ -41,4 +41,9 @@ export class StoresService {
     const store = this.storesData.find(s => s.slug === slug);
     return of(store || null);
   }
+
+  public getFeaturedStores(): Observable<StoreInterface[]> {
+    // Simulación de tiendas más visitadas
+    return of(this.storesData.slice(0, 4));
+  }
 }
