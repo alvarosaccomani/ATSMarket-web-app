@@ -1,1 +1,32 @@
-<p>side-bar works!</p>
+<nz-sider nzCollapsible [(nzCollapsed)]="isCollapsed" [nzWidth]="260">
+    <div class="logo-admin">
+        @if(isCollapsed) {
+        <img src="assets/img/logo-white.png" alt="Logo">
+        } @else {
+        <span>ATS</span>
+        }
+    </div>
+    <ul nz-menu nzTheme="dark" nzMode="inline">
+        <li nz-menu-item nzSelected routerLink="dashboard">
+            <span nz-icon nzType="dashboard"></span>
+            <span>Resumen General</span>
+        </li>
+        <li nz-menu-item routerLink="mis-tiendas">
+            <span nz-icon nzType="shop"></span>
+            <span>Mis Tiendas</span>
+        </li>
+        <li nz-menu-item routerLink="mis-productos">
+            <span nz-icon nzType="barcode"></span>
+            <span>Gestión de Productos</span>
+        </li>
+        <li nz-menu-item routerLink="ventas">
+            <span nz-icon nzType="ordered-list"></span>
+            <span>Historial de Ventas</span>
+        </li>
+        <li nz-divider></li>
+        <li nz-menu-item routerLink="/">
+            <span nz-icon nzType="arrow-left"></span>
+            <span>Volver al Market</span>
+        </li>
+    </ul>
+</nz-sider>
