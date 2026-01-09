@@ -1,6 +1,6 @@
-import { ProductInterface } from './product.interface';
+import { ProductVariationInterface } from '@interfaces/product-variation';
 
-export interface CartItemInterface extends ProductInterface {
+export interface CartItemInterface extends ProductVariationInterface {
     quantity: number;
     subtotal: number;
 }
