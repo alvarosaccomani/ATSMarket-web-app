@@ -12,7 +12,7 @@ import { NzSliderModule } from 'ng-zorro-antd/slider';
 import { NzInputModule } from 'ng-zorro-antd/input';
 import { NzDividerModule } from 'ng-zorro-antd/divider';
 import { NzDrawerModule } from 'ng-zorro-antd/drawer';
-import { ProductInterface } from '@interfaces/product.interface';
+import { ProductVariationInterface } from '@interfaces/product-variation';
 import { CartService } from '@services/cart.service';
 import { ProductsService } from '@services/products.service';
 
@@ -39,8 +39,8 @@ import { ProductsService } from '@services/products.service';
 export class CatalogComponent implements OnInit {
 
   // Listas de productos
-  public allProducts: ProductInterface[] = []; // Todos los productos cargados
-  public filteredProducts: ProductInterface[] = []; // Productos que se muestran en la grilla
+  public allProducts: ProductVariationInterface[] = []; // Todos los productos cargados
+  public filteredProducts: ProductVariationInterface[] = []; // Productos que se muestran en la grilla
 
   // Modelos para los filtros
   public searchTerm: string = '';
@@ -66,10 +66,10 @@ export class CatalogComponent implements OnInit {
 
   ngOnInit(): void {
     // Simulación de carga (reemplazar por llamada a this.productService.getAll())
-    this.productService.getAllProducts('').subscribe(products => {
+    this.productService.getProducts('').subscribe((products: any) => {
       this.allProducts = products;
       // Ajustar rango de precio inicial
-      const precios = this.allProducts.map(p => p.precio);
+      const precios = this.allProducts.map(p => p.prov_suggestedminimumsellingprice);
       const min = Math.min(...precios);
       const max = Math.max(...precios);
       this.priceRange = [min, max];
@@ -86,14 +86,14 @@ export class CatalogComponent implements OnInit {
     if (this.searchTerm) {
       const term = this.searchTerm.toLowerCase();
       result = result.filter(p =>
-        p.nombre.toLowerCase().includes(term) ||
-        p?.referencia?.toLowerCase().includes(term)
+        p.prov_name.toLowerCase().includes(term) ||
+        p?.prov_sku?.toLowerCase().includes(term)
       );
     }
 
     // 2. Filtrar por categoría
     if (this.selectedCategory) {
-      result = result.filter(p => p.categoria === this.selectedCategory);
+      //result = result.filter(p => p.categoria === this.selectedCategory);
     }
 
     // 3. Filtrar por material
@@ -102,19 +102,19 @@ export class CatalogComponent implements OnInit {
     }
 
     // 4. Filtrar por rango de precio
-    result = result.filter(p => p.precio >= this.priceRange[0] && p.precio <= this.priceRange[1]);
+    result = result.filter(p => p.prov_suggestedminimumsellingprice >= this.priceRange[0] && p.prov_suggestedminimumsellingprice <= this.priceRange[1]);
 
     this.filteredProducts = result;
   }
 
   // --- MÉTODOS DE ACCIÓN ---
 
-  public consultarPrecio(producto: ProductInterface): void {
+  public consultarPrecio(producto: ProductVariationInterface): void {
     // Lógica para mostrar el precio (Modal o Notificación)
-    alert(`El precio de "${producto.nombre}" es $${producto.precio}.`);
+    alert(`El precio de "${producto.prov_name}" es $${producto.prov_suggestedminimumsellingprice}.`);
   }
 
-  public agregarAlCarrito(producto: ProductInterface): void {
+  public agregarAlCarrito(producto: ProductVariationInterface): void {
     this.cartService.addToCart(producto, 1);
     // TODO: Usar NzMessage para notificar al usuario
   }

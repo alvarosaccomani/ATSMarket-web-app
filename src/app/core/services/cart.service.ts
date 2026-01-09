@@ -1,7 +1,7 @@
 import { Injectable } from '@angular/core';
 import { BehaviorSubject, Observable } from 'rxjs';
-import { ProductInterface } from '@interfaces/product.interface';
 import { CartItemInterface } from '@interfaces/cart-item.interface';
+import { ProductVariationInterface } from '@interfaces/product-variation';
 
 @Injectable({
   providedIn: 'root'
@@ -20,7 +20,7 @@ export class CartService {
   // --- Lógica de Estado ---
 
   private calculateSubtotal(item: CartItemInterface): number {
-    return item.precio * item.quantity;
+    return item.prov_suggestedminimumsellingprice * item.quantity;
   }
 
   public getTotalPrice(): number {
@@ -29,9 +29,9 @@ export class CartService {
 
   // --- Acciones de Compra ---
 
-  public addToCart(product: ProductInterface, quantity: number = 1): void {
+  public addToCart(product: ProductVariationInterface, quantity: number = 1): void {
     const currentItems = this.cartItemsSubject.value;
-    const existingItem = currentItems.find(item => item.id === product.id);
+    const existingItem = currentItems.find(item => item.prov_uuid === product.prov_uuid);
 
     if (existingItem) {
       existingItem.quantity += quantity;
@@ -48,9 +48,9 @@ export class CartService {
     this.cartItemsSubject.next([...currentItems]); // Emite el nuevo estado
   }
 
-  public updateQuantity(productId: number, quantity: number): void {
+  public updateQuantity(productId: string, quantity: number): void {
     const currentItems = this.cartItemsSubject.value;
-    const itemToUpdate = currentItems.find(item => item.id === productId);
+    const itemToUpdate = currentItems.find(item => item.prov_uuid === productId);
 
     if (itemToUpdate) {
       itemToUpdate.quantity = quantity < 1 ? 1 : quantity;
@@ -59,8 +59,8 @@ export class CartService {
     }
   }
 
-  public removeFromCart(productId: number): void {
-    const filteredItems = this.cartItemsSubject.value.filter(item => item.id !== productId);
+  public removeFromCart(productId: string): void {
+    const filteredItems = this.cartItemsSubject.value.filter(item => item.prov_uuid !== productId);
     this.cartItemsSubject.next(filteredItems);
   }
 

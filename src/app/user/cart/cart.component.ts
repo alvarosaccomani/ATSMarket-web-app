@@ -67,11 +67,11 @@ export class CartComponent implements OnInit, OnDestroy {
     this.cartSubscription.unsubscribe();
   }
 
-  public updateItemQuantity(productId: number, quantity: number): void {
+  public updateItemQuantity(productId: string, quantity: number): void {
     this.cartService.updateQuantity(productId, quantity);
   }
 
-  public removeItem(productId: number): void {
+  public removeItem(productId: string): void {
     this.cartService.removeFromCart(productId);
   }
 

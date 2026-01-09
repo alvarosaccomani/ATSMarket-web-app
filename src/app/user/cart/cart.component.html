@@ -27,18 +27,18 @@
 
                             <td>
                                 <div class="product-info">
-                                    <img [src]="item.imagenUrl" alt="{{ item.nombre }}" class="cart-img">
-                                    <span class="product-name">{{ item.nombre }}</span>
+                                    <img [src]="item['prov_image']" alt="{{ item.prov_name }}" class="cart-img">
+                                    <span class="product-name">{{ item.prov_name }}</span>
                                 </div>
                             </td>
 
                             <td>
-                                ${{ item.precio | number: '1.2-2' }}
+                                ${{ item.prov_suggestedminimumsellingprice | number: '1.2-2' }}
                             </td>
 
                             <td>
                                 <nz-input-number [ngModel]="item.quantity" [nzMin]="1"
-                                    (ngModelChange)="updateItemQuantity(item.id, $event)">
+                                    (ngModelChange)="updateItemQuantity(item.prov_uuid, $event)">
                                 </nz-input-number>
                             </td>
 
@@ -47,7 +47,7 @@
                             </td>
 
                             <td>
-                                <button nz-button nzType="text" nzDanger (click)="removeItem(item.id)">
+                                <button nz-button nzType="text" nzDanger (click)="removeItem(item.prov_uuid)">
                                     <span nz-icon nzType="delete"></span>
                                 </button>
                             </td>

@@ -1,8 +1,8 @@
 import { Component, OnInit } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { FormsModule } from '@angular/forms';
-import { ProductInterface } from '@interfaces/product.interface';
-import { ProductsService } from '@services/products.service';
+import { ProductVariationInterface } from '@interfaces/product-variation';
+import { ProductVariationsService } from '@services/product-variations.service';
 
 @Component({
   selector: 'app-price-list',
@@ -18,19 +18,19 @@ export class PriceListComponent implements OnInit {
   paymentMethod: 'efectivo' | 'postnet' = 'efectivo'; // Por defecto: Efectivo
   private readonly RECARGO_POSTNET = 0.10; // 10%
 
-  products: ProductInterface[] = [];
+  products: ProductVariationInterface[] = [];
 
-  filteredProducts: ProductInterface[] = [];
+  filteredProducts: ProductVariationInterface[] = [];
   filterText: string = '';
 
   constructor(
-    private productService: ProductsService
+    private productService: ProductVariationsService
   ) { }
 
   ngOnInit(): void {
-    this.productService.getAllProducts('').subscribe(products => {
-      this.products = [...products];
-      this.filteredProducts = [...products];
+    this.productService.getProductsVariations('', '').subscribe((products: any) => {
+      this.products = [...products.data];
+      this.filteredProducts = [...products.data];
     });
   }
 
@@ -66,13 +66,13 @@ export class PriceListComponent implements OnInit {
 
     this.filteredProducts = this.products.filter(product => {
       // 2. Normalizar el nombre del producto para la comparación
-      const normalizedProductName = this.removeAccents(product.nombre.toLowerCase());
+      const normalizedProductName = this.removeAccents(product.prov_name.toLowerCase());
 
       return (
         // Búsqueda en Nombre (Normalizado)
         normalizedProductName.includes(normalizedFilterValue) ||
         // Búsqueda en ID (sin normalización, ya que es un número)
-        product.id.toString().includes(rawFilterValue)
+        product.pro_uuid.toString().includes(rawFilterValue)
       );
     });
   }

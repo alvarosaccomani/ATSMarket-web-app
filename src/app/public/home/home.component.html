@@ -57,10 +57,10 @@
             <div nz-col [nzXs]="24" [nzSm]="12" [nzMd]="6" *ngFor="let prod of destacados">
                 <nz-card [nzHoverable]="true" [nzCover]="coverProdTemplate">
                     <ng-template #coverProdTemplate>
-                        <img [alt]="prod.nombre" [src]="prod.imagenUrl" class="product-image" />
+                        <img [alt]="prod.prov_name" [src]="prod.prov_image" class="product-image" />
                     </ng-template>
 
-                    <nz-card-meta [nzTitle]="prod.nombre" [nzDescription]="'Ref: ' + prod.referencia"></nz-card-meta>
+                    <nz-card-meta [nzTitle]="prod.prov_name" [nzDescription]="'Ref: ' + prod.prov_sku"></nz-card-meta>
 
                     <div class="product-actions">
                         <button nz-button nzType="default" (click)="consultarPrecio(prod)">

@@ -5,6 +5,8 @@ import { NzButtonModule } from 'ng-zorro-antd/button';
 import { NzIconModule } from 'ng-zorro-antd/icon';
 import { NzTagModule } from 'ng-zorro-antd/tag';
 import { NzModalModule, NzModalService } from 'ng-zorro-antd/modal';
+import { ProductInterface } from '@interfaces/product';
+import { ProductsService } from '@services/products.service';
 
 @Component({
   selector: 'app-products',
@@ -21,6 +23,7 @@ import { NzModalModule, NzModalService } from 'ng-zorro-antd/modal';
 })
 export class ProductsComponent {
 
+  public products: ProductInterface[] = [];
   public misProductos = [
     {
       id: 1,
@@ -47,10 +50,15 @@ export class ProductsComponent {
   ];
 
   constructor(
-    private modal: NzModalService
+    private modal: NzModalService,
+    private productService: ProductsService
   ) { }
 
-  ngOnInit(): void { }
+  ngOnInit(): void {
+    this.productService.getProducts('28a0036e-2d6b-4e83-805a-1ca214a6b1e1').subscribe((products: any) => {
+      this.products = [...products.data];
+    });
+  }
 
   public abrirModalNuevo(): void {
     // Aquí abriríamos el formulario para definir Proveedor, Material, Costo, etc.

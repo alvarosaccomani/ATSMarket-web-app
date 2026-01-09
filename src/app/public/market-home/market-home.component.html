@@ -45,13 +45,13 @@
         <div nz-row [nzGutter]="[16, 16]">
             <div nz-col [nzXs]="12" [nzSm]="12" [nzMd]="6" [nzLg]="6" *ngFor="let prod of productosGlobales">
                 <nz-card [nzCover]="coverTemplate" [nzHoverable]="true" [nzActions]="[actionView]">
-                    <nz-card-meta [nzTitle]="prod.nombre"
-                        [nzDescription]="'Vendido por: Tienda ' + prod.id"></nz-card-meta>
+                    <nz-card-meta [nzTitle]="prod.prov_name"
+                        [nzDescription]="'Vendido por: Tienda ' + prod.prov_uuid"></nz-card-meta>
                     <ng-template #coverTemplate>
-                        <img class="prod-img" [alt]="prod.nombre" [src]="prod.imagenUrl" />
+                        <img class="prod-img" [alt]="prod.prov_name" [src]="prod.prov_image" />
                     </ng-template>
                     <ng-template #actionView>
-                        <span class="price-tag">${{ prod.precio }}</span>
+                        <span class="price-tag">${{ prod.prov_suggestedminimumsellingprice }}</span>
                     </ng-template>
                 </nz-card>
             </div>

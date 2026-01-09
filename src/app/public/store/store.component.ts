@@ -19,10 +19,10 @@ import { NzMessageService } from 'ng-zorro-antd/message';
 import { NzDividerModule } from 'ng-zorro-antd/divider';
 
 // SERVICIOS Y MODELOS
-import { ProductInterface } from '@interfaces/product.interface';
+import { ProductVariationInterface } from '@interfaces/product-variation';
 import { StoreInterface } from '@interfaces/store.interface';
 import { CartService } from '@services/cart.service';
-import { ProductsService } from '@services/products.service';
+import { ProductVariationsService } from '@services/product-variations.service';
 import { StoresService } from '@services/stores.service';
 
 @Component({
@@ -51,8 +51,8 @@ export class StoreComponent {
   public store: StoreInterface | null = null;
   public storeSlug: string = '';
 
-  public allStoreProducts: ProductInterface[] = [];
-  public filteredProducts: ProductInterface[] = [];
+  public allStoreProducts: ProductVariationInterface[] = [];
+  public filteredProducts: ProductVariationInterface[] = [];
 
   // Modelos de Filtro
   public searchTerm: string = '';
@@ -64,7 +64,7 @@ export class StoreComponent {
     private route: ActivatedRoute,
     private router: Router,
     private storesService: StoresService,
-    private productsService: ProductsService,
+    private productsVariationsService: ProductVariationsService,
     private cartService: CartService,
     private message: NzMessageService
   ) { }
@@ -88,19 +88,19 @@ export class StoreComponent {
           return of([]);
         }
         // Llamada al ProductService, filtrando por el slug de la tienda
-        return this.productsService.getAllProducts(this.storeSlug);
+        return this.productsVariationsService.getProductsVariations('28a0036e-2d6b-4e83-805a-1ca214a6b1e1', '', this.storeSlug);
       })
-    ).subscribe(products => {
-      this.allStoreProducts = products;
-      this.initializeFilters(products);
+    ).subscribe((products: any) => {
+      this.allStoreProducts = products.data;
+      this.initializeFilters(products.data);
       this.applyFilters();
     });
   }
 
   // Inicializa los rangos de precio y materiales disponibles
-  public initializeFilters(products: ProductInterface[]): void {
+  public initializeFilters(products: ProductVariationInterface[]): void {
     if (products.length > 0) {
-      const precios = products.map(p => p.precio);
+      const precios = products.map(p => p.prov_suggestedminimumsellingprice);
       const min = Math.min(...precios);
       const max = Math.max(...precios);
       this.priceRange = [min, max];
@@ -118,13 +118,13 @@ export class StoreComponent {
     this.filteredProducts = result;
   }
 
-  public agregarAlCarrito(producto: ProductInterface): void {
+  public agregarAlCarrito(producto: ProductVariationInterface): void {
     this.cartService.addToCart(producto, 1);
-    this.message.success(`${producto.nombre} agregado al carrito.`);
+    this.message.success(`${producto.prov_name} agregado al carrito.`);
   }
 
-  public consultarPrecio(producto: ProductInterface): void {
-    alert(`El precio de ${producto.nombre} de ${this.store?.nombre} es $${producto.precio}.`);
+  public consultarPrecio(producto: ProductVariationInterface): void {
+    alert(`El precio de ${producto.prov_name} de ${this.store?.nombre} es $${producto.prov_suggestedminimumsellingprice}.`);
   }
 
 }

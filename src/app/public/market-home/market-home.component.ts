@@ -18,7 +18,7 @@ import { NzTypographyModule } from 'ng-zorro-antd/typography';
 import { StoresService } from '@services/stores.service';
 import { ProductsService } from '@services/products.service';
 import { StoreInterface } from '@interfaces/store.interface';
-import { ProductInterface } from '@interfaces/product.interface';
+import { ProductVariationInterface } from '@interfaces/product-variation';
 
 @Component({
   selector: 'app-market-home',
@@ -42,7 +42,7 @@ import { ProductInterface } from '@interfaces/product.interface';
 export class MarketHomeComponent {
 
   public tiendasDestacadas: StoreInterface[] = [];
-  public productosGlobales: ProductInterface[] = [];
+  public productosGlobales: ProductVariationInterface[] = [];
 
   // Filtros a nivel SISTEMA
   public searchGlobal: string = '';
@@ -68,8 +68,8 @@ export class MarketHomeComponent {
     });
 
     // 2. Cargar productos más vendidos de todo el sistema
-    this.productsService.getFeaturedProducts(8).subscribe(prods => {
-      this.productosGlobales = prods;
+    this.productsService.getFeaturedProducts(8).subscribe((prods: any) => {
+      this.productosGlobales = prods.data;
     });
   }
 
