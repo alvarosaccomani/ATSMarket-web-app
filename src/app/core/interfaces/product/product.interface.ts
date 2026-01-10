@@ -1,3 +1,5 @@
+import { ProductVariationInterface } from "@interfaces/product-variation";
+
 export interface ProductInterface {
     cmp_uuid: string;
     pro_uuid: string;
@@ -9,4 +11,5 @@ export interface ProductInterface {
     cat_uuid: string;
     pro_createdat: Date;
     pro_updatedat: Date;
+    productVariations: ProductVariationInterface[]
 }
