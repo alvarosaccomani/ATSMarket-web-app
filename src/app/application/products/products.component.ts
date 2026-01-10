@@ -1,5 +1,6 @@
 import { Component } from '@angular/core';
 import { CommonModule } from '@angular/common';
+import { Router } from '@angular/router';
 import { NzTableModule } from 'ng-zorro-antd/table';
 import { NzButtonModule } from 'ng-zorro-antd/button';
 import { NzIconModule } from 'ng-zorro-antd/icon';
@@ -50,6 +51,7 @@ export class ProductsComponent {
   ];
 
   constructor(
+    private _router: Router,
     private modal: NzModalService,
     private productService: ProductsService
   ) { }
@@ -66,6 +68,14 @@ export class ProductsComponent {
       nzTitle: 'Nuevo Producto',
       nzContent: 'Aquí se abrirá el formulario con campos de Proveedor, Materiales, Rubros Personalizados y Cálculo de Margen de Ganancia.'
     });
+  }
+
+  public editProduct(product: ProductInterface): void {
+    this._router.navigate(['/application/product', product.pro_uuid]);
+  }
+
+  public deleteProduct(product: ProductInterface): void {
+
   }
 
 }
