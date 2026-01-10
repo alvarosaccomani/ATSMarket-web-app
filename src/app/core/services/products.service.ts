@@ -26,6 +26,18 @@ export class ProductsService {
     return this._http.get<ProductResults>(`${environment.apiUrl}products/${cmp_uuid}`, { headers, params });
   }
 
+  /**
+   * Obtiene un producto por id.
+   * @returns Observable de un array de productos.
+   */
+  public getProductById(cmp_uuid: string, pro_uuid?: string): Observable<ProductResults> {
+    const headers = new HttpHeaders().set('content-type', 'application/json');
+
+    let params = new HttpParams();
+
+    return this._http.get<ProductResults>(`${environment.apiUrl}product/${cmp_uuid}/${pro_uuid}`, { headers, params });
+  }
+
 
   // Datos simulados para 'productsData'
   private productsData: any[] = [
