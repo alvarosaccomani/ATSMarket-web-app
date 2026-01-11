@@ -28,7 +28,7 @@ export class PriceListComponent implements OnInit {
   ) { }
 
   ngOnInit(): void {
-    this.productService.getProductsVariations('', '').subscribe((products: any) => {
+    this.productService.getProductsVariations('28a0036e-2d6b-4e83-805a-1ca214a6b1e1', '').subscribe((products: any) => {
       this.products = [...products.data];
       this.filteredProducts = [...products.data];
     });
