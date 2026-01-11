@@ -1,4 +1,4 @@
-<nz-sider nzCollapsible [(nzCollapsed)]="isCollapsed" [nzWidth]="260">
+<nz-sider nzCollapsible [(nzCollapsed)]="isCollapsed" nzBreakpoint="lg" [nzCollapsedWidth]="80" nzTheme="dark">
     <div class="logo-admin">
         @if(isCollapsed) {
         <img src="assets/img/logo-white.png" alt="Logo">
@@ -6,7 +6,7 @@
         <span>ATS</span>
         }
     </div>
-    <ul nz-menu nzTheme="dark" nzMode="inline">
+    <ul class="menu-sidebar" nz-menu nzTheme="dark" nzMode="inline">
         <li nz-menu-item nzSelected routerLink="dashboard">
             <span nz-icon nzType="dashboard"></span>
             <span>Resumen General</span>

@@ -4,6 +4,7 @@ import { RouterLink } from '@angular/router';
 import { NzLayoutModule } from 'ng-zorro-antd/layout';
 import { NzMenuModule } from 'ng-zorro-antd/menu';
 import { NzIconModule } from 'ng-zorro-antd/icon';
+import { NzDividerModule } from 'ng-zorro-antd/divider';
 
 @Component({
   selector: 'app-side-bar',
@@ -12,6 +13,7 @@ import { NzIconModule } from 'ng-zorro-antd/icon';
     NzLayoutModule,
     NzMenuModule,
     NzIconModule,
+    NzDividerModule,
     RouterLink
   ],
   templateUrl: './side-bar.component.html',

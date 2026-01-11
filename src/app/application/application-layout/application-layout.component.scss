@@ -1,16 +1,75 @@
-.app-layout {
-    display: flex;
-    flex-direction: row;
-    min-height: 100vh;
+// .app-layout {
+//     display: flex;
+//     flex-direction: row;
+//     min-height: 100vh;
+// }
+
+// .app-content {
+//     margin: 24px;
+// }
+
+// .inner-content {
+//     background: #fff;
+//     padding: 24px;
+//     min-height: 100%;
+//     border-radius: 8px;
+// }
+
+.trigger {
+    font-size: 18px;
+    line-height: 64px;
+    padding: 0 24px;
+    cursor: pointer;
+    transition: color 0.3s;
 }
 
-.app-content {
-    margin: 24px;
+.trigger:hover {
+    color: #1890ff;
+}
+
+.logo {
+    height: 32px;
+    background: rgba(255, 255, 255, 0.2);
+    margin: 16px;
+}
+
+nz-header {
+    background: #fff;
+    padding: 0;
+}
+
+nz-content {
+    margin: 0 16px;
+}
+
+nz-breadcrumb {
+    margin: 16px 0;
 }
 
 .inner-content {
-    background: #fff;
     padding: 24px;
-    min-height: 100%;
-    border-radius: 8px;
+    background: #fff;
+    min-height: 360px;
+}
+
+nz-footer {
+    text-align: center;
+}
+
+
+
+.app-header {
+    background: #fff;
+    padding: 0 24px;
+    display: flex;
+    justify-content: flex-end;
+    align-items: center;
+    box-shadow: 0 1px 4px rgba(0, 21, 41, 0.08);
+}
+
+.header-right {
+    display: flex;
+    align-items: center;
+    gap: 12px;
+    margin: 0 12px 0 0;
 }

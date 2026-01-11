@@ -1,4 +1,4 @@
-<nz-layout class="app-layout">
+<!-- <nz-layout class="app-layout">
     <app-side-bar></app-side-bar>
     <nz-layout>
         <app-application-bar></app-application-bar>
@@ -7,5 +7,49 @@
                 <router-outlet></router-outlet>
             </div>
         </nz-content>
+    </nz-layout>
+</nz-layout> -->
+
+<nz-layout>
+    <nz-sider nzCollapsible [nzTrigger]="null" nzBreakpoint="md" [nzCollapsedWidth]="0" [(nzCollapsed)]="isCollapsed"
+        [nzTrigger]="null">
+        <div class="logo"></div>
+        <ul nz-menu nzTheme="dark" nzMode="inline">
+            <li nz-submenu nzTitle="User" nzIcon="user">
+                <ul>
+                    <li nz-menu-item>Tom</li>
+                    <li nz-menu-item>Bill</li>
+                    <li nz-menu-item>Alex</li>
+                </ul>
+            </li>
+            <li nz-submenu nzTitle="Team" nzIcon="team">
+                <ul>
+                    <li nz-menu-item>Team 1</li>
+                    <li nz-menu-item>Team 2</li>
+                </ul>
+            </li>
+            <li nz-menu-item>
+                <nz-icon nzType="file" />
+                <span>File</span>
+            </li>
+        </ul>
+    </nz-sider>
+    <nz-layout>
+        <nz-header style="display: flex; flex-direction: row; align-items: center; justify-content: space-between;">
+            <nz-icon class="trigger" [nzType]="isCollapsed ? 'menu-unfold' : 'menu-fold'"
+                (click)="isCollapsed = !isCollapsed" />
+            <div class="header-right">
+                <span class="user-name">Hola, Vendedor Juan</span>
+                <nz-avatar nzIcon="user" nzSrc="assets/img/user-avatar.png"></nz-avatar>
+            </div>
+        </nz-header>
+        <nz-content>
+            <!-- <nz-breadcrumb>
+                <nz-breadcrumb-item>User</nz-breadcrumb-item>
+                <nz-breadcrumb-item>Bill</nz-breadcrumb-item>
+            </nz-breadcrumb> -->
+            <router-outlet></router-outlet>
+        </nz-content>
+        <nz-footer>Implement By ATS</nz-footer>
     </nz-layout>
 </nz-layout>
