@@ -1,0 +1,29 @@
+.action-buttons {
+    display: flex;
+    gap: 8px;
+    align-items: center;
+}
+
+.form-footer {
+    position: sticky;
+    bottom: 0;
+    background: #fff;
+    padding: 16px 0;
+    margin-top: 24px;
+    border-top: 1px solid #f0f0f0;
+    display: flex;
+    justify-content: flex-end;
+    z-index: 10;
+}
+
+.detail-header {
+    margin-bottom: 20px;
+
+    h2 {
+        margin-top: 8px;
+    }
+}
+
+.detail-actions {
+    text-align: right;
+}
