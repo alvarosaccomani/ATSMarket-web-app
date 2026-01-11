@@ -1,5 +1,5 @@
 export const environment = {
   production: true,
-  apiUrl: 'https://api.atsmarket.com.ar/api/',
+  apiUrl: 'http://195.200.2.27:3002/api/',
   appName: 'ATS Market'
 };
