@@ -18,7 +18,8 @@
     <nz-divider nzText="Variaciones de Producto (SKUs)"></nz-divider>
 
     <div formArrayName="productVariations">
-        <nz-table #varTable [nzData]="productVariations.controls" [nzFrontPagination]="false" nzSize="small">
+        <nz-table #varTable [nzData]="productVariations.controls" [nzNoResult]="noVariations"
+            [nzFrontPagination]="false" nzSize="small">
             <thead>
                 <tr>
                     <th>Código/SKU</th>
@@ -83,3 +84,14 @@
     </div>
 
 </form>
+
+<ng-template #noVariations>
+    <div class="empty-container">
+        <span nz-icon nzType="info-circle" nzTheme="outline" class="empty-icon"></span>
+        <p>Aún no has definido variantes para este producto.</p>
+        <p><small>Las variantes permiten manejar diferentes talles, colores o materiales.</small></p>
+        <button nz-button nzType="primary" nzSize="small" (click)="addVariation()">
+            Crear la primera variante
+        </button>
+    </div>
+</ng-template>
