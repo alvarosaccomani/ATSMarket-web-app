@@ -1,5 +1,5 @@
 import { Component } from '@angular/core';
-import { RouterOutlet } from '@angular/router';
+import { RouterOutlet, RouterLink } from '@angular/router';
 import { NzLayoutModule } from 'ng-zorro-antd/layout';
 import { SideBarComponent } from '@components/side-bar/side-bar.component';
 import { NzBreadCrumbModule } from 'ng-zorro-antd/breadcrumb';
@@ -12,6 +12,7 @@ import { ApplicationBarComponent } from '@components/application-bar/application
   selector: 'app-application-layout',
   imports: [
     RouterOutlet,
+    RouterLink,
     NzLayoutModule,
     SideBarComponent,
     NzBreadCrumbModule,

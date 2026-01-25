@@ -23,8 +23,12 @@
             </li>
             <li nz-submenu nzTitle="Productos" nzIcon="appstore">
                 <ul>
-                    <li nz-menu-item>Agregar Nuevo</li>
-                    <li nz-menu-item>Listado</li>
+                    <li nz-menu-item>
+                        <a [routerLink]="'product/new'">Agregar Nuevo</a>
+                    </li>
+                    <li nz-menu-item>
+                        <a [routerLink]="'products'"></a>Listado
+                    </li>
                 </ul>
             </li>
         </ul>
