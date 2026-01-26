@@ -10,6 +10,7 @@ import { NzInputNumberModule } from 'ng-zorro-antd/input-number';
 import { NzButtonModule } from 'ng-zorro-antd/button';
 import { ProductsService } from '@services/products.service';
 import { NzSpaceModule } from 'ng-zorro-antd/space';
+import { MessageService } from '@services/message.service';
 
 @Component({
   selector: 'app-product',
@@ -35,7 +36,8 @@ export class ProductComponent {
     private fb: FormBuilder,
     private _router: Router,
     private _route: ActivatedRoute,
-    private _productsService: ProductsService
+    private _productsService: ProductsService,
+    private _messageService: MessageService
   ) { }
 
   ngOnInit(): void {
@@ -166,10 +168,65 @@ export class ProductComponent {
     this._router.navigate(['application/product-variation', variation.pro_uuid, variation.prov_uuid]);
   }
 
+  private insertProduct(product: any): void {
+    this._productsService.saveProduct(product).subscribe(
+      (response: any) => {
+        if (response.success) {
+          this._messageService.success(
+            "Informacion",
+            "El Producto fue guardado correctamente.",
+            () => {
+              this._router.navigate(['application/products']);
+            }
+          );
+        } else {
+          //this.status = 'error'
+        }
+      },
+      (error: any) => {
+        let errorMessage = <any>error;
+        console.log(errorMessage);
+
+        if (errorMessage != null) {
+          //this.status = 'error'
+        }
+      }
+    )
+  }
+
+  private updateProduct(product: any): void {
+    this._productsService.updateProduct(product).subscribe(
+      (response: any) => {
+        if (response.success) {
+          this._messageService.success(
+            "Informacion",
+            "El Producto fue actualizado correctamente.",
+            () => {
+              this._router.navigate(['application/products']);
+            }
+          );
+        } else {
+          //this.status = 'error'
+        }
+      },
+      (error: any) => {
+        let errorMessage = <any>error;
+        console.log(errorMessage);
+
+        if (errorMessage != null) {
+          //this.status = 'error'
+        }
+      }
+    )
+  }
+
   public onSave(): void {
     if (this.productForm.valid) {
-      //this.message.success('Producto maestro y variaciones básicas guardadas.');
-      // Lógica para enviar a tu API
+      if (this.productForm.value.pro_uuid && this.productForm.value.pro_uuid != 'new') {
+        this.updateProduct(this.productForm.value);
+      } else {
+        this.insertProduct(this.productForm.value);
+      }
     }
   }
 
