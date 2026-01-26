@@ -38,6 +38,27 @@ export class ProductsService {
     return this._http.get<ProductResults>(`${environment.apiUrl}product/${cmp_uuid}/${pro_uuid}`, { headers, params });
   }
 
+  /**
+   * Crear un producto.
+   * @returns Observable de un array de productos.
+   */
+  public saveProduct(product: any): Observable<any> {
+    let params = JSON.stringify(product);
+    let headers = new HttpHeaders().set('content-type', 'application/json');
+
+    return this._http.post(environment.apiUrl + 'product', params, { headers: headers });
+  }
+
+  /**
+   * Actualizar un producto.
+   * @returns Observable de un array de productos.
+   */
+  public updateProduct(product: any): Observable<any> {
+    let params = JSON.stringify(product);
+    let headers = new HttpHeaders().set('content-type', 'application/json');
+
+    return this._http.put(`${environment.apiUrl}product/${product.cmp_uuid}/${product.pro_uuid}`, params, { headers: headers });
+  }
 
   // Datos simulados para 'productsData'
   private productsData: any[] = [
