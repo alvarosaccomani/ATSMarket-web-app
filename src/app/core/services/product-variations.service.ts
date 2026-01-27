@@ -697,4 +697,17 @@ export class ProductVariationsService {
 
     return this._http.get<ProductVariationResults>(`http://195.200.2.27:3002/api/products-variations/${cmp_uuid}`, { headers, params });
   }
+
+  /**
+     * Obtiene todas las variaciones de productos.
+     * En una aplicación real, aquí usarías this.http.get<IProduct[]>('URL_DE_TU_API').
+     * @returns Observable de un array de productos.
+     */
+  public getProductVariationById(cmp_uuid: string, pro_uuid: string, prov_uuid: string): Observable<ProductVariationResults> {
+    const headers = new HttpHeaders().set('content-type', 'application/json');
+
+    let params = new HttpParams();
+
+    return this._http.get<ProductVariationResults>(`${environment.apiUrl}product-variation/${cmp_uuid}/${pro_uuid}/${prov_uuid}`, { headers, params });
+  }
 }
