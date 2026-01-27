@@ -77,8 +77,8 @@ export class ProductComponent {
     return this.productForm.get('productVariations') as FormArray;
   }
 
-  private getProductById(cmp_uuid: string, cus_uuid: string): void {
-    this._productsService.getProductById(cmp_uuid, cus_uuid).subscribe(
+  private getProductById(cmp_uuid: string, pro_uuid: string): void {
+    this._productsService.getProductById(cmp_uuid, pro_uuid).subscribe(
       (response: any) => {
         if (response.success) {
           console.info(response.data);
