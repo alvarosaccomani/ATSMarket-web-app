@@ -1,0 +1,90 @@
+.catalog-wrapper {
+  background-color: #f0f2f5;
+  min-height: 100vh;
+}
+
+.header-banner {
+  text-align: center;
+  padding: 40px 20px;
+  background: linear-gradient(135deg, #b22222 0%, #7a1616 100%);
+  color: white;
+  margin: 20px 0;
+
+  .brand-title {
+    font-family: 'Times New Roman', serif;
+    font-size: 3rem;
+    color: #fff;
+    margin: 0;
+  }
+}
+
+.product-card {
+  border-radius: 12px;
+  border: none;
+  transition: all 0.3s ease;
+
+  &:hover {
+    transform: translateY(-10px);
+  }
+
+  ::ng-deep .ant-card-cover {
+    padding: 15px;
+    background: #fff;
+  }
+}
+
+.img-container-nz {
+  height: 220px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+
+  .product-img {
+    max-height: 200px;
+    max-width: 100%;
+    object-fit: contain;
+  }
+}
+
+.sku-label {
+  font-size: 10px;
+  color: #bfbfbf;
+  letter-spacing: 1px;
+}
+
+.product-desc {
+  font-size: 14px;
+  font-weight: 600;
+  color: #262626;
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+}
+
+.card-footer-nz {
+  margin-top: 15px;
+  border-top: 1px solid #f0f0f0;
+  padding-top: 15px;
+
+  .price-box {
+    margin-bottom: 10px;
+    .price {
+      font-size: 1.4rem;
+      font-weight: 800;
+      color: #f5222d;
+    }
+    .unit {
+      font-size: 11px;
+      margin-left: 5px;
+      color: #8c8c8c;
+    }
+  }
+}
+
+// Estilos específicos para el carrusel de NG-Zorro
+[nz-carousel-content] {
+  background: #fff;
+  overflow: hidden;
+  height: 200px;
+  line-height: 200px;
+}

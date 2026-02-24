@@ -1,1 +1,54 @@
-<p>dist-price-list works!</p>
+<div class="catalog-wrapper">
+    <div class="header-banner">
+        <h1 class="brand-title">Distribuidora</h1>
+        <p class="brand-subtitle">Catálogo de Llamadores</p>
+    </div>
+
+    <div class="container-fluid p-4">
+        <div nz-row [nzGutter]="[24, 24]">
+            <div nz-col [nzXs]="24" [nzSm]="12" [nzMd]="8" [nzLg]="6" *ngFor="let item of catalogData">
+                
+                <nz-card nzHoverable [nzCover]="coverTemplate" class="product-card">
+                    <nz-card-meta
+                        [nzTitle]="titleTemplate"
+                        [nzDescription]="tagTemplate">
+                    </nz-card-meta>
+
+                    <div class="card-footer-nz">
+                        <div class="price-box">
+                            <span class="price">{{ item.precio }}</span>
+                            <span class="unit">c/u</span>
+                        </div>
+                    </div>
+                </nz-card>
+
+                <ng-template #coverTemplate>
+                    <div class="img-container-nz">
+                        <nz-carousel *ngIf="item.fotos.length > 1; else singleImg" nzAutoPlay [nzAutoPlaySpeed]="3000">
+                            <div nz-carousel-content *ngFor="let foto of item.fotos">
+                                <img [src]="foto" class="product-img" />
+                            </div>
+                        </nz-carousel>
+                        <ng-template #singleImg>
+                            <img [src]="item.fotos[0]" class="product-img" />
+                        </ng-template>
+                    </div>
+                </ng-template>
+
+                <ng-template #titleTemplate>
+                    <div class="sku-label">CÓDIGO: {{ item.codigo }}</div>
+                    <div class="product-desc" [title]="item.descripcion">{{ item.descripcion }}</div>
+                </ng-template>
+
+                <ng-template #tagTemplate>
+                    <nz-tag [nzColor]="'volcano'">{{ item.seccion }}</nz-tag>
+                </ng-template>
+
+            </div>
+        </div>
+    </div>
+
+    <div class="header-banner">
+        <p class="brand-subtitle">Los precios son de carácter informativo, no incluyen IVA y pueden cambiar sin previo aviso.</p>
+    </div>
+</div>
