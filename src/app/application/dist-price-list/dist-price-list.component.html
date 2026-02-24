@@ -4,47 +4,66 @@
         <p class="brand-subtitle">Catálogo de Llamadores</p>
     </div>
 
+    <div class="search-container p-4 bg-white sticky-top shadow-sm">
+        <nz-input-group [nzPrefix]="prefixIconSearch">
+            <input 
+            type="text" 
+            nz-input 
+            placeholder="Buscar por código o descripción..." 
+            [(ngModel)]="searchTerm" 
+            (ngModelChange)="onSearch()"
+            />
+        </nz-input-group>
+        <ng-template #prefixIconSearch>
+            <i nz-icon nzType="search"></i>
+        </ng-template>
+    </div>
+
     <div class="container-fluid p-4">
         <div nz-row [nzGutter]="[24, 24]">
-            <div nz-col [nzXs]="24" [nzSm]="12" [nzMd]="8" [nzLg]="6" *ngFor="let item of catalogData">
+            <div nz-col [nzXs]="24" [nzSm]="12" [nzMd]="8" [nzLg]="6" *ngFor="let item of filteredData">
+            <nz-card nzHoverable [nzCover]="coverTemplate" class="product-card">
+                <nz-card-meta [nzTitle]="titleTemplate" [nzDescription]="tagTemplate"></nz-card-meta>
                 
-                <nz-card nzHoverable [nzCover]="coverTemplate" class="product-card">
-                    <nz-card-meta
-                        [nzTitle]="titleTemplate"
-                        [nzDescription]="tagTemplate">
-                    </nz-card-meta>
-
-                    <div class="card-footer-nz">
-                        <div class="price-box">
-                            <span class="price">{{ item.precio }}</span>
-                            <span class="unit">c/u</span>
-                        </div>
+                <div class="card-footer-nz mt-3">
+                    <div class="price-box">
+                        <span class="price">{{ item.precio }}</span>
+                        <span class="unit">c/u</span>
                     </div>
-                </nz-card>
+                </div>
+            </nz-card>
 
-                <ng-template #coverTemplate>
-                    <div class="img-container-nz">
-                        <nz-carousel *ngIf="item.fotos.length > 1; else singleImg" nzAutoPlay [nzAutoPlaySpeed]="3000">
-                            <div nz-carousel-content *ngFor="let foto of item.fotos">
-                                <img [src]="foto" class="product-img" />
-                            </div>
-                        </nz-carousel>
-                        <ng-template #singleImg>
-                            <img [src]="item.fotos[0]" class="product-img" />
-                        </ng-template>
+            <ng-template #coverTemplate>
+                <div class="carousel-container-nz">
+                <nz-carousel *ngIf="item.fotos.length > 1; else singleImg" nzAutoPlay [nzAutoPlaySpeed]="3500">
+                    <div nz-carousel-content *ngFor="let foto of item.fotos" class="carousel-slide">
+                    <div class="image-center-helper">
+                        <img [src]="foto" class="product-img" />
+                    </div>
+                    </div>
+                </nz-carousel>
+                <ng-template #singleImg>
+                    <div class="image-center-helper">
+                    <img [src]="item.fotos[0]" class="product-img" />
                     </div>
                 </ng-template>
+                </div>
+            </ng-template>
 
-                <ng-template #titleTemplate>
-                    <div class="sku-label">CÓDIGO: {{ item.codigo }}</div>
-                    <div class="product-desc" [title]="item.descripcion">{{ item.descripcion }}</div>
-                </ng-template>
+            <ng-template #titleTemplate>
+                <div class="sku-label">CÓDIGO: {{ item.codigo }}</div>
+                <div class="product-desc" [title]="item.descripcion">{{ item.descripcion }}</div>
+            </ng-template>
 
-                <ng-template #tagTemplate>
-                    <nz-tag [nzColor]="'volcano'">{{ item.seccion }}</nz-tag>
-                </ng-template>
-
+            <ng-template #tagTemplate>
+                <nz-tag [nzColor]="'orange'">{{ item.seccion }}</nz-tag>
+            </ng-template>
             </div>
+        </div>
+
+        <div *ngIf="filteredData.length === 0" class="text-center py-5">
+            <i nz-icon nzType="frown" style="font-size: 48px; color: #ccc;"></i>
+            <p class="mt-3 text-muted">No se encontraron artículos que coincidan con "{{searchTerm}}"</p>
         </div>
     </div>
 

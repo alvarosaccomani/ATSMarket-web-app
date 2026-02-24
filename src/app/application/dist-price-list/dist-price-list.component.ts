@@ -1,10 +1,12 @@
-import { Component } from '@angular/core';
+import { Component, OnInit } from '@angular/core';
 import { CommonModule } from '@angular/common';
+import { FormsModule } from '@angular/forms';
 import { NzCardModule } from 'ng-zorro-antd/card';
 import { NzCarouselModule } from 'ng-zorro-antd/carousel';
 import { NzGridModule } from 'ng-zorro-antd/grid';
 import { NzTagModule } from 'ng-zorro-antd/tag';
 import { NzButtonModule } from 'ng-zorro-antd/button';
+import { NzInputModule } from 'ng-zorro-antd/input';
 import { NzIconModule } from 'ng-zorro-antd/icon';
 
 export interface Producto {
@@ -19,17 +21,20 @@ export interface Producto {
   selector: 'app-dist-price-list',
   imports: [
     CommonModule,
+    FormsModule,
     NzCardModule,
     NzCarouselModule,
     NzGridModule,
     NzTagModule,
     NzButtonModule,
+    NzInputModule,
     NzIconModule
   ],
   templateUrl: './dist-price-list.component.html',
   styleUrl: './dist-price-list.component.scss'
 })
-export class DistPriceListComponent {
+export class DistPriceListComponent implements OnInit {
+  public searchTerm: string = '';
   public catalogData: Producto[] = [
     {
       seccion: 'Llamadores',
@@ -536,4 +541,22 @@ export class DistPriceListComponent {
       precio: '$ 5418.-'
     }
   ];
+
+  public filteredData: Producto[] = [];
+
+  ngOnInit(): void {
+    this.filteredData = this.catalogData;
+  }
+
+  public onSearch(): void {
+    const term = this.searchTerm.toLowerCase().trim();
+    if (!term) {
+      this.filteredData = this.catalogData;
+    } else {
+      this.filteredData = this.catalogData.filter(item => 
+        item.codigo.toLowerCase().includes(term) || 
+        item.descripcion.toLowerCase().includes(term)
+      );
+    }
+  }
 }

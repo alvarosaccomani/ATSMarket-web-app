@@ -18,13 +18,25 @@
   }
 }
 
+.search-container {
+  z-index: 1000;
+  border-bottom: 2px solid #b22222;
+  margin: 0 0 10px 0;
+  
+  input {
+    border-radius: 8px;
+    height: 45px;
+  }
+}
+
 .product-card {
   border-radius: 12px;
   border: none;
-  transition: all 0.3s ease;
+  transition: all 0.3s cubic-bezier(0.165, 0.84, 0.44, 1);
 
   &:hover {
-    transform: translateY(-10px);
+    transform: translateY(-5px);
+    box-shadow: 0 10px 20px rgba(0,0,0,0.1) !important;
   }
 
   ::ng-deep .ant-card-cover {
@@ -40,10 +52,11 @@
   justify-content: center;
 
   .product-img {
-    max-height: 200px;
-    max-width: 100%;
-    object-fit: contain;
-  }
+        max-height: 230px;
+        max-width: 90%;
+        object-fit: contain;
+        margin: auto;
+    }
 }
 
 .sku-label {
@@ -58,7 +71,12 @@
   color: #262626;
   white-space: nowrap;
   overflow: hidden;
-  text-overflow: ellipsis;
+  text-overflow: ellipsis;  
+  line-height: 1.2;
+  height: 32px;
+  display: -webkit-box;
+  -webkit-line-clamp: 2;
+  -webkit-box-orient: vertical;
 }
 
 .card-footer-nz {
@@ -87,4 +105,31 @@
   overflow: hidden;
   height: 200px;
   line-height: 200px;
+}
+
+.carousel-container-nz {
+  height: 250px;
+  background: #ffffff;
+  border-radius: 8px 8px 0 0;
+  overflow: hidden;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+.image-center-helper {
+  display: flex !important;
+  align-items: center !important;
+  justify-content: center !important;
+  height: 250px;
+  width: 100%;
+}
+
+.carousel-slide {
+  background: white;
+}
+
+// Ajuste necesario para los dots del carrusel de NG-Zorro
+::ng-deep .ant-carousel .slick-dots li button {
+  background: #b22222 !important;
 }
