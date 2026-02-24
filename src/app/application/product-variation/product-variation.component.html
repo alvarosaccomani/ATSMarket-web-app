@@ -1,8 +1,8 @@
 <div class="page-header">
-    <h2>Detalle de Variación: <small>{{ detailForm.get('prov_sku')?.value }}</small></h2>
+    <h2>Detalle de Variación: <small>{{ productVariationForm.get('prov_sku')?.value }}</small></h2>
 </div>
 
-<form nz-form [formGroup]="detailForm" nzLayout="vertical">
+<form nz-form [formGroup]="productVariationForm" nzLayout="vertical">
     <nz-tabset nzType="card" [nzAnimated]="false">
 
         <nz-tab [nzTitle]="titleIdentity">
@@ -127,7 +127,7 @@
 
     <div class="form-actions">
         <button nz-button nzType="default" (click)="onCancel()">Cancelar y Volver</button>
-        <button nz-button nzType="primary" (click)="onSave()" [disabled]="detailForm.invalid">
+        <button nz-button nzType="primary" (click)="onSave()" [disabled]="productVariationForm.invalid">
             <span nz-icon nzType="save"></span> Guardar Cambios Avanzados
         </button>
     </div>

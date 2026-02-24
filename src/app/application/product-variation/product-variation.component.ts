@@ -1,4 +1,5 @@
 import { Component, OnInit } from '@angular/core';
+import { ActivatedRoute } from '@angular/router';
 import { CommonModule, Location } from '@angular/common';
 import { FormBuilder, FormGroup, Validators, ReactiveFormsModule, FormArray } from '@angular/forms';
 import { NzDividerModule } from 'ng-zorro-antd/divider';
@@ -12,6 +13,7 @@ import { NzCardModule } from 'ng-zorro-antd/card';
 import { NzSelectModule } from 'ng-zorro-antd/select';
 import { NzTableModule } from 'ng-zorro-antd/table';
 import { NzButtonModule } from 'ng-zorro-antd/button';
+import { ProductVariationsService } from '@services/product-variations.service';
 
 @Component({
   selector: 'app-product-variation',
@@ -35,7 +37,7 @@ import { NzButtonModule } from 'ng-zorro-antd/button';
 })
 export class ProductVariationComponent implements OnInit {
 
-  public detailForm!: FormGroup;
+  public productVariationForm!: FormGroup;
   public suppliersList = [{ uuid: '1', name: 'Artesanías Luján' }, { uuid: '2', name: 'Importaciones Sacra' }];
   public fileList: NzUploadFile[] = [];
 
@@ -43,10 +45,19 @@ export class ProductVariationComponent implements OnInit {
   public currentCostValue: number = 0;
   public currentCostSelected: boolean = false;
 
-  constructor(private fb: FormBuilder, private location: Location) { }
+  constructor(
+    private fb: FormBuilder,
+    private location: Location,
+    private _route: ActivatedRoute,
+    private _productVariationsService: ProductVariationsService
+  ) { }
 
   ngOnInit(): void {
-    this.detailForm = this.fb.group({
+    this.productVariationForm = this.fb.group({
+      // Datos de prov_Products
+      cmp_uuid: [''],
+      pro_uuid: [''],
+      prov_uuid: [''],
       prov_sku: [{ value: 'ROS-PL-L', disabled: true }],
       prov_name: ['', Validators.required],
       prov_description: [''],
@@ -54,15 +65,62 @@ export class ProductVariationComponent implements OnInit {
       costsPerSupplier: this.fb.array([])
     });
 
+    this.productVariationForm.patchValue({
+      cmp_uuid: '28a0036e-2d6b-4e83-805a-1ca214a6b1e1'
+    });
+
     // Escuchar cambios en todo el formulario para recalcular el precio
-    this.detailForm.valueChanges.subscribe(() => this.calculateProfitability());
+    this.productVariationForm.valueChanges.subscribe(() => this.calculateProfitability());
 
     // Simular carga de datos inicial si fuera necesario
     this.addSupplier();
+
+    this._route.params.subscribe((params) => {
+      if (params['pro_uuid'] && params['pro_uuid'] != 'new' && params['prov_uuid'] && params['prov_uuid'] != 'new') {
+        this.productVariationForm.patchValue({
+          pro_uuid: params['pro_uuid'],
+          prov_uuid: params['prov_uuid']
+        });
+        this.getProductVariationById(this.productVariationForm.value.cmp_uuid!, this.productVariationForm.value.pro_uuid!, this.productVariationForm.value.prov_uuid!);
+      } else {
+
+      }
+    });
   }
 
   get suppliersArray(): FormArray {
-    return this.detailForm.get('costsPerSupplier') as FormArray;
+    return this.productVariationForm.get('costsPerSupplier') as FormArray;
+  }
+
+  private getProductVariationById(cmp_uuid: string, pro_uuid: string, prov_uuid: string): void {
+    this._productVariationsService.getProductVariationById(cmp_uuid, pro_uuid, prov_uuid).subscribe(
+      (response: any) => {
+        if (response.success) {
+          const productVariationData = response.data;
+          this.productVariationForm.patchValue({
+            cmp_uuid: productVariationData.cmp_uuid,
+            pro_uuid: productVariationData.pro_uuid,
+            prov_uuid: productVariationData.prov_uuid,
+            prov_sku: productVariationData.prov_sku,
+            prov_name: productVariationData.prov_name,
+            prov_description: productVariationData.prov_description,
+            markup_percentage: productVariationData.markup_percentag || 50,
+            costsPerSupplier: this.fb.array([])
+          });
+
+        } else {
+          //this.status = 'error'
+        }
+      },
+      (error: any) => {
+        let errorMessage = <any>error;
+        console.log(errorMessage);
+
+        if (errorMessage != null) {
+          //this.status = 'error'
+        }
+      }
+    )
   }
 
   public addSupplier(): void {
@@ -91,7 +149,7 @@ export class ProductVariationComponent implements OnInit {
   }
 
   public calculateProfitability(): void {
-    const markup = this.detailForm.get('markup_percentage')?.value || 0;
+    const markup = this.productVariationForm.get('markup_percentage')?.value || 0;
     // Buscamos el proveedor que tenga el switch de 'isCurrentCost' en true
     const currentSupplier = this.suppliersArray.controls.find((c: any) => c.get('cpsup_IsCurrentCost')?.value === true);
 
