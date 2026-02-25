@@ -30,6 +30,9 @@
                         <span class="price">{{ item.precio }}</span>
                         <span class="unit">c/u</span>
                     </div>
+                    <button nz-button nzType="primary" nzBlock (click)="verImagen(item)">
+                        <i nz-icon nzType="fullscreen"></i> Ver Imagen
+                    </button>
                 </div>
             </nz-card>
 

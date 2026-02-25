@@ -8,6 +8,7 @@ import { NzTagModule } from 'ng-zorro-antd/tag';
 import { NzButtonModule } from 'ng-zorro-antd/button';
 import { NzInputModule } from 'ng-zorro-antd/input';
 import { NzIconModule } from 'ng-zorro-antd/icon';
+import { NzImageModule, NzImageService } from 'ng-zorro-antd/image';
 
 export interface Producto {
   seccion: string;
@@ -28,7 +29,8 @@ export interface Producto {
     NzTagModule,
     NzButtonModule,
     NzInputModule,
-    NzIconModule
+    NzIconModule,
+    NzImageModule
   ],
   templateUrl: './dist-price-list.component.html',
   styleUrl: './dist-price-list.component.scss'
@@ -544,6 +546,10 @@ export class DistPriceListComponent implements OnInit {
 
   public filteredData: Producto[] = [];
 
+  constructor(
+    private nzImageService: NzImageService
+  ) { }
+
   ngOnInit(): void {
     this.filteredData = this.catalogData;
   }
@@ -558,5 +564,14 @@ export class DistPriceListComponent implements OnInit {
         item.descripcion.toLowerCase().includes(term)
       );
     }
+  }
+
+  public verImagen(item: Producto): void {
+    const images = item.fotos.map(src => ({
+      src: src,
+      alt: item.descripcion
+    }));
+
+    this.nzImageService.preview(images, { nzZoom: 1, nzRotate: 0 });
   }
 }
