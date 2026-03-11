@@ -23,7 +23,7 @@ import { ProductVariationInterface } from '@interfaces/product-variation';
 import { StoreInterface } from '@interfaces/store.interface';
 import { CartService } from '@services/cart.service';
 import { ProductVariationsService } from '@services/product-variations.service';
-import { StoresService } from '@services/stores.service';
+import { CompaniesService } from '@services/companies.service';
 
 @Component({
   selector: 'app-store',
@@ -49,7 +49,7 @@ import { StoresService } from '@services/stores.service';
 export class StoreComponent {
 
   public store: StoreInterface | null = null;
-  public storeSlug: string = '';
+  public companieslug: string = '';
 
   public allStoreProducts: ProductVariationInterface[] = [];
   public filteredProducts: ProductVariationInterface[] = [];
@@ -63,7 +63,7 @@ export class StoreComponent {
   constructor(
     private route: ActivatedRoute,
     private router: Router,
-    private storesService: StoresService,
+    private companiesService: CompaniesService,
     private productsVariationsService: ProductVariationsService,
     private cartService: CartService,
     private message: NzMessageService
@@ -76,8 +76,8 @@ export class StoreComponent {
       switchMap((params: ParamMap) => {
         const slug = params.get('slug');
         if (!slug) return of(null);
-        this.storeSlug = slug;
-        return this.storesService.getStoreBySlug(slug); // Busca la información de la tienda
+        this.companieslug = slug;
+        return this.companiesService.getStoreBySlug(slug); // Busca la información de la tienda
       }),
       // 2. Cuando tiene la tienda, busca sus productos
       switchMap((store) => {
@@ -88,7 +88,7 @@ export class StoreComponent {
           return of([]);
         }
         // Llamada al ProductService, filtrando por el slug de la tienda
-        return this.productsVariationsService.getProductsVariations('28a0036e-2d6b-4e83-805a-1ca214a6b1e1', '', this.storeSlug);
+        return this.productsVariationsService.getProductsVariations('28a0036e-2d6b-4e83-805a-1ca214a6b1e1', '', this.companieslug);
       })
     ).subscribe((products: any) => {
       this.allStoreProducts = products.data;

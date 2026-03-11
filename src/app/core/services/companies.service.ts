@@ -6,10 +6,10 @@ import { StoreInterface } from '@interfaces/store.interface';
 @Injectable({
   providedIn: 'root'
 })
-export class StoresService {
+export class CompaniesService {
 
   // Simulación de la base de datos de tiendas
-  private storesData: StoreInterface[] = [
+  private companiesData: StoreInterface[] = [
     {
       id: 1,
       slug: 'cajasantos33',
@@ -38,12 +38,12 @@ export class StoresService {
    * @returns Observable de la tienda o null si no se encuentra.
    */
   public getStoreBySlug(slug: string): Observable<StoreInterface | null> {
-    const store = this.storesData.find(s => s.slug === slug);
+    const store = this.companiesData.find(s => s.slug === slug);
     return of(store || null);
   }
 
-  public getFeaturedStores(): Observable<StoreInterface[]> {
+  public getFeaturedCompanies(): Observable<StoreInterface[]> {
     // Simulación de tiendas más visitadas
-    return of(this.storesData.slice(0, 4));
+    return of(this.companiesData.slice(0, 4));
   }
 }

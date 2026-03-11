@@ -15,7 +15,7 @@ import { NzAvatarModule } from 'ng-zorro-antd/avatar';
 import { NzTypographyModule } from 'ng-zorro-antd/typography';
 
 // SERVICIOS Y MODELOS
-import { StoresService } from '@services/stores.service';
+import { CompaniesService } from '@services/companies.service';
 import { ProductsService } from '@services/products.service';
 import { StoreInterface } from '@interfaces/store.interface';
 import { ProductVariationInterface } from '@interfaces/product-variation';
@@ -56,14 +56,14 @@ export class MarketHomeComponent {
   ];
 
   constructor(
-    private storesService: StoresService,
+    private companiesService: CompaniesService,
     private productsService: ProductsService,
     private router: Router
   ) { }
 
   ngOnInit(): void {
     // 1. Cargar todas las tiendas para el directorio
-    this.storesService.getFeaturedStores().subscribe((stores: any) => {
+    this.companiesService.getFeaturedCompanies().subscribe((stores: any) => {
       this.tiendasDestacadas = stores;
     });
 
