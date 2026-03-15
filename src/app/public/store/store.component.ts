@@ -18,9 +18,12 @@ import { NzInputModule } from 'ng-zorro-antd/input';
 import { NzMessageService } from 'ng-zorro-antd/message';
 import { NzDividerModule } from 'ng-zorro-antd/divider';
 
+// DIRECTIVAS
+import { ImagePreloadDirective } from '@directives/image-preload.directive';
+
 // SERVICIOS Y MODELOS
 import { ProductVariationInterface } from '@interfaces/product-variation';
-import { StoreInterface } from '@interfaces/store.interface';
+import { CompanyInterface } from '@interfaces/company';
 import { CartService } from '@services/cart.service';
 import { ProductVariationsService } from '@services/product-variations.service';
 import { CompaniesService } from '@services/companies.service';
@@ -41,14 +44,15 @@ import { CompaniesService } from '@services/companies.service';
     NzCheckboxModule,
     NzSliderModule,
     NzInputModule,
-    NzDividerModule
+    NzDividerModule,
+    ImagePreloadDirective
   ],
   templateUrl: './store.component.html',
   styleUrl: './store.component.scss'
 })
 export class StoreComponent {
 
-  public store: StoreInterface | null = null;
+  public store: CompanyInterface | null = null;
   public companieslug: string = '';
 
   public allStoreProducts: ProductVariationInterface[] = [];
@@ -77,11 +81,14 @@ export class StoreComponent {
         const slug = params.get('slug');
         if (!slug) return of(null);
         this.companieslug = slug;
-        return this.companiesService.getStoreBySlug(slug); // Busca la información de la tienda
+        return this.companiesService.getCompanyBySlug(slug); // Busca la información de la tienda
       }),
       // 2. Cuando tiene la tienda, busca sus productos
-      switchMap((store) => {
-        this.store = store;
+      switchMap((store: any) => {
+        if (store && store.data) {
+          this.store = store.data;
+        }
+
         if (!store) {
           this.message.error('Tienda no encontrada o URL incorrecta.');
           this.router.navigate(['/']); // Redirige al Home Global si no existe
@@ -124,7 +131,7 @@ export class StoreComponent {
   }
 
   public consultarPrecio(producto: ProductVariationInterface): void {
-    alert(`El precio de ${producto.prov_name} de ${this.store?.nombre} es $${producto.prov_suggestedminimumsellingprice}.`);
+    alert(`El precio de ${producto.prov_name} de ${this.store?.cmp_name} es $${producto.prov_suggestedminimumsellingprice}.`);
   }
 
 }
