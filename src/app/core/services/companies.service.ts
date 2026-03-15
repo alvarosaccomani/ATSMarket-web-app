@@ -1,6 +1,8 @@
 import { Injectable } from '@angular/core';
+import { HttpClient, HttpHeaders, HttpParams } from '@angular/common/http';
 import { Observable, of } from 'rxjs';
-import { StoreInterface } from '@interfaces/store.interface';
+import { environment } from '../../../environments/environment';
+import { CompanyResults } from '@interfaces/company';
 
 
 @Injectable({
@@ -8,42 +10,40 @@ import { StoreInterface } from '@interfaces/store.interface';
 })
 export class CompaniesService {
 
-  // Simulación de la base de datos de tiendas
-  private companiesData: StoreInterface[] = [
-    {
-      id: 1,
-      slug: 'cajasantos33',
-      nombre: 'Caja Santos 33',
-      logoUrl: 'assets/logos/caja33.png',
-      descripcion: 'Artículos de fe y devoción con diseño exclusivo, desde Luján.',
-      rubroPersonalizado: 'Diseño de autor',
-      categoriasPersonalizadas: ['Rosarios de Misión', 'Estatuas Premium', 'Medallas Litúrgicas']
-    },
-    {
-      id: 2,
-      slug: 'tallerfe',
-      nombre: 'Taller de Fe',
-      logoUrl: 'assets/logos/tallerfe.png',
-      descripcion: 'Taller artesanal de imágenes religiosas en madera.',
-      rubroPersonalizado: 'Artesanía en Madera',
-      categoriasPersonalizadas: ['Cruces de Madera', 'Figuras Talladas']
-    }
-  ];
-
-  constructor() { }
+  constructor(
+    private _http: HttpClient
+  ) { }
 
   /**
-   * Obtiene la información de una tienda por su slug.
-   * @param slug El identificador de la tienda en la URL.
-   * @returns Observable de la tienda o null si no se encuentra.
+   * Obtiene todos los companies.
+   * @returns Observable de un array de companies.
    */
-  public getStoreBySlug(slug: string): Observable<StoreInterface | null> {
-    const store = this.companiesData.find(s => s.slug === slug);
-    return of(store || null);
+  public getCompanies(): Observable<CompanyResults> {
+    const headers = new HttpHeaders().set('content-type', 'application/json');
+
+    let params = new HttpParams();
+
+    return this._http.get<CompanyResults>(`${environment.apiUrl}companies`, { headers, params });
   }
 
-  public getFeaturedCompanies(): Observable<StoreInterface[]> {
-    // Simulación de tiendas más visitadas
-    return of(this.companiesData.slice(0, 4));
+  /**
+   * Obtiene la información de una company por su slug.
+   * @param cmp_slug El identificador de la company en la URL.
+   * @returns Observable de la company o null si no se encuentra.
+   */
+  public getCompanyBySlug(cmp_slug: string): Observable<CompanyResults> {
+    const headers = new HttpHeaders().set('content-type', 'application/json');
+
+    let params = new HttpParams();
+
+    return this._http.get<CompanyResults>(`${environment.apiUrl}company-by-slug/${cmp_slug}`, { headers, params });
+  }
+
+  public getFeaturedCompanies(): Observable<CompanyResults> {
+    const headers = new HttpHeaders().set('content-type', 'application/json');
+
+    let params = new HttpParams();
+
+    return this._http.get<CompanyResults>(`${environment.apiUrl}featured-companies`, { headers, params });
   }
 }
