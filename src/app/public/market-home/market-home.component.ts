@@ -17,7 +17,7 @@ import { NzTypographyModule } from 'ng-zorro-antd/typography';
 // SERVICIOS Y MODELOS
 import { CompaniesService } from '@services/companies.service';
 import { ProductsService } from '@services/products.service';
-import { StoreInterface } from '@interfaces/store.interface';
+import { CompanyInterface } from '@interfaces/company';
 import { ProductVariationInterface } from '@interfaces/product-variation';
 
 @Component({
@@ -41,7 +41,7 @@ import { ProductVariationInterface } from '@interfaces/product-variation';
 })
 export class MarketHomeComponent {
 
-  public tiendasDestacadas: StoreInterface[] = [];
+  public tiendasDestacadas: CompanyInterface[] = [];
   public productosGlobales: ProductVariationInterface[] = [];
 
   // Filtros a nivel SISTEMA
