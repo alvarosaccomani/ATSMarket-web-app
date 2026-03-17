@@ -27,17 +27,17 @@
     <section class="section-padding">
         <h2 nz-typography>Tiendas más visitadas</h2>
         <div nz-row [nzGutter]="[24, 24]">
-            <div nz-col [nzXs]="24" [nzSm]="12" [nzMd]="6" *ngFor="let tienda of tiendasDestacadas">
-                <!-- TODO: Ver como se muestra la tienda -->
+            <div nz-col [nzXs]="24" [nzSm]="12" [nzMd]="6" *ngFor="let store of featuredStores">
 
-                <!-- <nz-card [nzHoverable]="true" class="store-card" (click)="irATienda(tienda.cmp_slug)">
+                <nz-card [nzHoverable]="true" class="store-card" (click)="goToStore(store.cmp_slug)">
                     <div class="store-card-content">
-                        <nz-avatar [nzSize]="80" [nzSrc]="tienda.cmp_logo"></nz-avatar>
-                        <h3>{{ tienda.cmp_name }}</h3>
-                        <p>{{ tienda.rubroPersonalizado }}</p>
+                        <nz-avatar [nzSize]="80" [nzSrc]="store.cmp_logo"></nz-avatar>
+                        <h3>{{ store.cmp_name }}</h3>
+                        <!-- TODO: Ver rubro de tienda -->
+                        <!-- <p>{{ store.rubroPersonalizado }}</p> -->
                         <button nz-button nzType="primary" nzGhost>Visitar Tienda</button>
                     </div>
-                </nz-card> -->
+                </nz-card>
             </div>
         </div>
     </section>

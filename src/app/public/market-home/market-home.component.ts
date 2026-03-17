@@ -1,6 +1,7 @@
 import { Component, OnInit } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { FormsModule } from '@angular/forms';
+import { finalize } from 'rxjs/operators';
 import { RouterLink, Router } from '@angular/router';
 
 // NG-ZORRO
@@ -41,7 +42,8 @@ import { ProductVariationInterface } from '@interfaces/product-variation';
 })
 export class MarketHomeComponent {
 
-  public tiendasDestacadas: CompanyInterface[] = [];
+  public isLoadingFeaturedStores: boolean = true;
+  public featuredStores: CompanyInterface[] = [];
   public productosGlobales: ProductVariationInterface[] = [];
 
   // Filtros a nivel SISTEMA
@@ -62,10 +64,8 @@ export class MarketHomeComponent {
   ) { }
 
   ngOnInit(): void {
-    // 1. Cargar todas las tiendas para el directorio
-    this.companiesService.getFeaturedCompanies().subscribe((stores: any) => {
-      this.tiendasDestacadas = stores;
-    });
+    // 1. Cargar tiendas destacadas
+    this.getFeaturedCompanies();
 
     // 2. Cargar productos más vendidos de todo el sistema
     this.productsService.getFeaturedProducts(8).subscribe((prods: any) => {
@@ -78,8 +78,25 @@ export class MarketHomeComponent {
     console.log('Buscando en todo el Marketplace:', this.searchGlobal);
   }
 
-  public irATienda(slug: string): void {
-    this.router.navigate(['/', slug]);
+  private getFeaturedCompanies(): void {
+    this.companiesService.getFeaturedCompanies()
+      .pipe(
+        finalize(() => this.isLoadingFeaturedStores = false) // Se ejecuta siempre al terminar
+      )
+      .subscribe({
+        next: (response: any) => {
+          if (response.success) {
+            this.featuredStores = response.data;
+          }
+        },
+        error: (err) => {
+          console.error('Error cargando empresas:', err);
+        }
+      });
+  }
+
+  public goToStore(slug: string): void {
+    this.router.navigate(['/public/store', slug]);
   }
 
 }
