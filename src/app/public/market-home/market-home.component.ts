@@ -19,6 +19,8 @@ import { NzTypographyModule } from 'ng-zorro-antd/typography';
 import { CompaniesService } from '@services/companies.service';
 import { ProductsService } from '@services/products.service';
 import { CompanyInterface } from '@interfaces/company';
+import { GlobalItemInterface } from '@interfaces/global-item';
+import { GlobalItemsService } from '@services/global-items.service';
 import { ProductVariationInterface } from '@interfaces/product-variation';
 
 @Component({
@@ -48,22 +50,21 @@ export class MarketHomeComponent {
 
   // Filtros a nivel SISTEMA
   public searchGlobal: string = '';
-  public categoriaSistema: string | null = null;
+  public itemSelected: string | null = null;
 
-  public categoriasGlobales: any[] = [
-    { label: 'Todas las Tiendas', value: null },
-    { label: 'Santería Tradicional', value: 'santeria' },
-    { label: 'Libros y Oraciones', value: 'libros' },
-    { label: 'Arte Sacro', value: 'arte' }
-  ];
+  public isLoadingGlobalItems: boolean = true;
+  public globalItems: GlobalItemInterface[] = [];
 
   constructor(
+    private _globalItemsService: GlobalItemsService,
     private companiesService: CompaniesService,
     private productsService: ProductsService,
     private router: Router
   ) { }
 
   ngOnInit(): void {
+
+    this.getGlobalItems();
     // 1. Cargar tiendas destacadas
     this.getFeaturedCompanies();
 
@@ -76,6 +77,25 @@ export class MarketHomeComponent {
   // Al buscar globalmente, podríamos redirigir a un buscador general
   public onGlobalSearch(): void {
     console.log('Buscando en todo el Marketplace:', this.searchGlobal);
+  }
+
+  private getGlobalItems(): void {
+    this._globalItemsService.getGlobalItems()
+      .pipe(
+        finalize(() => this.isLoadingGlobalItems = false) // Se ejecuta siempre al terminar
+      )
+      .subscribe({
+        next: (response: any) => {
+          if (response.success) {
+            let globalItems = response.data;
+            globalItems.unshift({ gitm_name: 'Todas los Rubros', gitm_uuid: null });
+            this.globalItems = globalItems;
+          }
+        },
+        error: (err) => {
+          console.error('Error cargando empresas:', err);
+        }
+      });
   }
 
   private getFeaturedCompanies(): void {

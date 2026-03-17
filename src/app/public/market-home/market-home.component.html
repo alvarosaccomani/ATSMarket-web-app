@@ -12,9 +12,9 @@
                         placeholder="Busca productos en todas las tiendas..." (keyup.enter)="onGlobalSearch()" />
                 </nz-input-group>
                 <ng-template #selectBefore>
-                    <nz-select [(ngModel)]="categoriaSistema" style="width: 180px;">
-                        <nz-option *ngFor="let cat of categoriasGlobales" [nzLabel]="cat.label"
-                            [nzValue]="cat.value"></nz-option>
+                    <nz-select [(ngModel)]="itemSelected" style="width: 180px;">
+                        <nz-option *ngFor="let globalItem of globalItems" [nzLabel]="globalItem.gitm_name"
+                            [nzValue]="globalItem.gitm_uuid"></nz-option>
                     </nz-select>
                 </ng-template>
                 <ng-template #suffixIcon>
