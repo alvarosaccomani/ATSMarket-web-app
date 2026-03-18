@@ -1,6 +1,9 @@
 import { Component } from '@angular/core';
 import { CommonModule } from '@angular/common';
-import { RouterLink } from '@angular/router';
+import { ActivatedRoute, ParamMap, Router, RouterLink } from '@angular/router';
+import { switchMap } from 'rxjs/operators';
+import { of } from 'rxjs';
+
 import { NzButtonModule } from 'ng-zorro-antd/button';
 import { NzCardModule } from 'ng-zorro-antd/card';
 import { NzCarouselModule } from 'ng-zorro-antd/carousel';
@@ -8,8 +11,11 @@ import { NzDividerModule } from 'ng-zorro-antd/divider';
 import { NzIconModule } from 'ng-zorro-antd/icon';
 import { NzModalModule } from 'ng-zorro-antd/modal';
 import { NzGridModule } from 'ng-zorro-antd/grid';
+import { NzMessageService } from 'ng-zorro-antd/message';
+
 import { ProductVariationInterface } from '@interfaces/product-variation';
 import { CategoryInterface } from '@interfaces/category.interface';
+import { CompaniesService } from '@services/companies.service';
 
 @Component({
   selector: 'app-home',
@@ -36,11 +42,44 @@ export class HomeStoreComponent {
   public categorias: CategoryInterface[] = [];
 
   constructor(
+    private route: ActivatedRoute,
+    private router: Router,
+    private companiesService: CompaniesService,
     // private productService: ProductService, // Si tuvieras un servicio
-    // private cartService: CartService
+    // private cartService: CartService,
+    private message: NzMessageService
   ) { }
 
   ngOnInit(): void {
+    // Escucha los cambios en el parámetro de la URL (:slug)
+    this.route.paramMap.pipe(
+      // 1. Obtiene el slug de la URL
+      switchMap((params: ParamMap) => {
+        const slug = params.get('slug');
+        if (!slug) return of(null);
+        // this.companieslug = slug;
+        return this.companiesService.getCompanyBySlug(slug); // Busca la información de la tienda
+      }),
+      // 2. Cuando tiene la tienda, busca sus productos
+      // switchMap((store: any) => {
+      //   if (store && store.data) {
+      //     this.store = store.data;
+      //   }
+
+      //   if (!store) {
+      //     this.message.error('Tienda no encontrada o URL incorrecta.');
+      //     this.router.navigate(['/']); // Redirige al Home Global si no existe
+      //     return of([]);
+      //   }
+      //   // Llamada al ProductService, filtrando por el slug de la tienda
+      //   return this.productsVariationsService.getProductsVariations('28a0036e-2d6b-4e83-805a-1ca214a6b1e1', '', this.companieslug);
+      // })
+    ).subscribe((products: any) => {
+      // this.allStoreProducts = products.data;
+      // this.initializeFilters(products.data);
+      // this.applyFilters();
+    });
+
     // 1. Cargar productos destacados (simulación)
     this.loadProductosDestacados();
 

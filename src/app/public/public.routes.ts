@@ -12,7 +12,7 @@ export const PUBLIC_ROUTES: Routes = [
         component: PublicLayoutComponent,
         children: [
             { path: 'market-home', component: MarketHomeComponent },
-            { path: 'home-store', component: HomeStoreComponent },
+            { path: 'home-store/:slug', component: HomeStoreComponent },
             { path: 'store/:slug', component: StoreComponent },
             { path: 'catalog', component: CatalogComponent },
         ]

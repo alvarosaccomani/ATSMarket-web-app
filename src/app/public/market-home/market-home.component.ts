@@ -116,7 +116,7 @@ export class MarketHomeComponent {
   }
 
   public goToStore(slug: string): void {
-    this.router.navigate(['/public/store', slug]);
+    this.router.navigate(['/public/home-store', slug]);
   }
 
 }
