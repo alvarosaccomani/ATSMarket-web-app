@@ -35,6 +35,8 @@ import { CompaniesService } from '@services/companies.service';
   styleUrl: './home-store.component.scss'
 })
 export class HomeStoreComponent {
+
+  public companieSlug: string = '';
   // Propiedad para los productos destacados en el Home
   public destacados: ProductVariationInterface[] = [];
 
@@ -57,7 +59,7 @@ export class HomeStoreComponent {
       switchMap((params: ParamMap) => {
         const slug = params.get('slug');
         if (!slug) return of(null);
-        // this.companieslug = slug;
+        this.companieSlug = slug;
         return this.companiesService.getCompanyBySlug(slug); // Busca la información de la tienda
       }),
       // 2. Cuando tiene la tienda, busca sus productos
@@ -125,5 +127,9 @@ export class HomeStoreComponent {
 
     // **NOTA:** En producción, esto debería abrir un modal con nz-modal
     // o integrarse con la lógica de QR/referencia.
+  }
+
+  public goToStoreCatalog(): void {
+    this.router.navigate(['/public/store-catalog', this.companieSlug]);
   }
 }

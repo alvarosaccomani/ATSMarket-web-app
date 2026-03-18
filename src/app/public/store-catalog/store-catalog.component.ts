@@ -47,10 +47,10 @@ import { CompaniesService } from '@services/companies.service';
     NzDividerModule,
     ImagePreloadDirective
   ],
-  templateUrl: './store.component.html',
-  styleUrl: './store.component.scss'
+  templateUrl: './store-catalog.component.html',
+  styleUrl: './store-catalog.component.scss'
 })
-export class StoreComponent {
+export class StoreCatalogComponent {
 
   public store: CompanyInterface | null = null;
   public companieslug: string = '';
