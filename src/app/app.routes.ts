@@ -13,5 +13,5 @@ export const routes: Routes = [
         path: 'application',
         loadChildren: () => import('./application/application.routes').then(m => m.APPLICATION_ROUTES),
     },
-    { path: '**', redirectTo: 'public/home' }
+    { path: '**', redirectTo: 'public/market-home' }
 ];
