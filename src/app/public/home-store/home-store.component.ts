@@ -25,10 +25,10 @@ import { CategoryInterface } from '@interfaces/category.interface';
     NzIconModule,
     NzModalModule
   ],
-  templateUrl: './home.component.html',
-  styleUrl: './home.component.scss'
+  templateUrl: './home-store.component.html',
+  styleUrl: './home-store.component.scss'
 })
-export class HomeComponent {
+export class HomeStoreComponent {
   // Propiedad para los productos destacados en el Home
   public destacados: ProductVariationInterface[] = [];
 
