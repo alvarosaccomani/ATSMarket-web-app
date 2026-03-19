@@ -24,6 +24,24 @@
         </div>
     </section>
 
+    <section class="section-padding categories-section">
+        <div class="section-header">
+            <h2 nz-typography>Explora por Categoría</h2>
+            <a class="view-all">Ver todas <span nz-icon nzType="arrow-right"></span></a>
+        </div>
+
+        <div nz-row [nzGutter]="[16, 16]" class="category-grid">
+            <div nz-col [nzXs]="8" [nzSm]="6" [nzMd]="4" [nzLg]="3" *ngFor="let cat of globalCategories | slice:1">
+                <div class="category-card" (click)="filterByCategory(cat.gcat_uuid)">
+                    <nz-avatar [nzSize]="64" [nzSrc]="cat.gcat_image" [nzIcon]="!cat.gcat_image ? 'appstore' : ''"
+                        class="category-icon">
+                    </nz-avatar>
+                    <span class="category-name">{{ cat.gcat_name }}</span>
+                </div>
+            </div>
+        </div>
+    </section>
+
     <section class="section-padding">
         <h2 nz-typography>Tiendas más visitadas</h2>
         <div nz-row [nzGutter]="[24, 24]">

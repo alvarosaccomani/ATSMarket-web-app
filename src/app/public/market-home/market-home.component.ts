@@ -21,7 +21,9 @@ import { ProductsService } from '@services/products.service';
 import { CompanyInterface } from '@interfaces/company';
 import { GlobalItemInterface } from '@interfaces/global-item';
 import { GlobalItemsService } from '@services/global-items.service';
+import { GlobalCategoriesService } from '@services/global-categories.service';
 import { ProductVariationInterface } from '@interfaces/product-variation';
+import { GlobalCategoryInterface } from '@interfaces/global-category';
 
 @Component({
   selector: 'app-market-home',
@@ -51,12 +53,17 @@ export class MarketHomeComponent {
   // Filtros a nivel SISTEMA
   public searchGlobal: string = '';
   public itemSelected: string | null = null;
+  public categorySelected: string | null = null;
 
   public isLoadingGlobalItems: boolean = true;
   public globalItems: GlobalItemInterface[] = [];
 
+  public isLoadingGlobalCategories: boolean = true;
+  public globalCategories: GlobalCategoryInterface[] = [];
+
   constructor(
     private _globalItemsService: GlobalItemsService,
+    private _globalCategoriesService: GlobalCategoriesService,
     private companiesService: CompaniesService,
     private productsService: ProductsService,
     private router: Router
@@ -65,6 +72,8 @@ export class MarketHomeComponent {
   ngOnInit(): void {
 
     this.getGlobalItems();
+    this.getGlobalCategories();
+
     // 1. Cargar tiendas destacadas
     this.getFeaturedCompanies();
 
@@ -88,8 +97,29 @@ export class MarketHomeComponent {
         next: (response: any) => {
           if (response.success) {
             let globalItems = response.data;
-            globalItems.unshift({ gitm_name: 'Todas los Rubros', gitm_uuid: null });
+            globalItems.unshift({ gitm_name: 'Todas los Rubros', gitm_uuid: '0' });
             this.globalItems = globalItems;
+            this.itemSelected = globalItems[0].gitm_uuid;
+          }
+        },
+        error: (err) => {
+          console.error('Error cargando empresas:', err);
+        }
+      });
+  }
+
+  private getGlobalCategories(): void {
+    this._globalCategoriesService.getGlobalCategories()
+      .pipe(
+        finalize(() => this.isLoadingGlobalCategories = false) // Se ejecuta siempre al terminar
+      )
+      .subscribe({
+        next: (response: any) => {
+          if (response.success) {
+            let globalCategories = response.data;
+            globalCategories.unshift({ gcat_name: 'Todas las Categorías', gcat_uuid: '0' });
+            this.globalCategories = globalCategories;
+            this.categorySelected = globalCategories[0].gcat_uuid;
           }
         },
         error: (err) => {
@@ -113,6 +143,11 @@ export class MarketHomeComponent {
           console.error('Error cargando empresas:', err);
         }
       });
+  }
+
+  public filterByCategory(gcat_uuid: string) {
+    console.log('Filtrando por categoría:', gcat_uuid);
+    // Aquí rediriges a la búsqueda con el filtro aplicado
   }
 
   public goToStore(slug: string): void {
