@@ -1,6 +1,7 @@
 import { Routes } from '@angular/router';
 
 import { ApplicationLayoutComponent } from './application-layout/application-layout.component';
+import { MyCompaniesComponent } from './my-companies/my-companies.component';
 import { PriceListComponent } from './price-list/price-list.component';
 import { DistPriceListComponent } from './dist-price-list/dist-price-list.component';
 import { ProductsComponent } from './products/products.component';
@@ -12,6 +13,7 @@ export const APPLICATION_ROUTES: Routes = [
         path: '',
         component: ApplicationLayoutComponent,
         children: [
+            { path: 'my-companies', component: MyCompaniesComponent },
             { path: 'price-list', component: PriceListComponent },
             { path: 'dist-price-list', component: DistPriceListComponent },
             { path: 'products', component: ProductsComponent },

@@ -97,7 +97,7 @@ export class LoginComponent {
         } else {
           //persist user token
           this._sessionService.setToken(this.token);
-          this._router.navigate(['/application/products']);
+          this._router.navigate(['/application/my-companies']);
         }
       },
       error => {
