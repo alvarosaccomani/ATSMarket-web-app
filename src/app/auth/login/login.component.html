@@ -1,1 +1,52 @@
-<p>login works!</p>
+<div class="login-wrapper">
+    <!-- Eliminamos nz-row para centrado simple con CSS, es más robusto -->
+    <div class="login-content">
+
+        <nz-card class="login-card">
+            <div class="login-header">
+                <h2>Bienvenido</h2>
+                <p>Ingresa tus credenciales para continuar</p>
+            </div>
+
+            <form nz-form [formGroup]="validateForm" (ngSubmit)="submitForm()">
+
+                <!-- Email -->
+                <nz-form-item>
+                    <nz-form-control nzErrorTip="Por favor ingresa un email válido">
+                        <!-- Agregado style width 100% -->
+                        <nz-input-group nzPrefixIcon="user" style="width: 100%;">
+                            <input type="text" nz-input formControlName="usr_user" placeholder="Usuario" />
+                        </nz-input-group>
+                    </nz-form-control>
+                </nz-form-item>
+
+                <!-- Password -->
+                <nz-form-item>
+                    <nz-form-control nzErrorTip="La contraseña es requerida">
+                        <!-- Agregado style width 100% -->
+                        <nz-input-group nzPrefixIcon="lock" style="width: 100%;">
+                            <input type="password" nz-input formControlName="usr_password" placeholder="Contraseña" />
+                        </nz-input-group>
+                    </nz-form-control>
+                </nz-form-item>
+
+                <div class="forgot-password">
+                    <a href="#">¿Olvidaste tu contraseña?</a>
+                </div>
+
+                <nz-form-item>
+                    <nz-form-control>
+                        <button nz-button nzType="primary" nzBlock [nzLoading]="isSubmitting">
+                            Ingresar
+                        </button>
+                    </nz-form-control>
+                </nz-form-item>
+
+                <div class="register-link">
+                    ¿No tienes cuenta? <a href="#">Regístrate</a>
+                </div>
+            </form>
+        </nz-card>
+
+    </div>
+</div>
