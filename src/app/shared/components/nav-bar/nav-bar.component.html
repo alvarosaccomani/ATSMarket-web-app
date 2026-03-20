@@ -15,16 +15,39 @@
     </div>
 
     <ul nz-menu nzTheme="dark" nzMode="horizontal" class="header-menu desktop-menu">
-        <li nz-menu-item routerLink="/public/home" nzMatchRouter>
-            <nz-icon nzType="home"></nz-icon>
-        </li>
-        <li nz-menu-item routerLink="/public/catalog" nzMatchRouter>
-            <nz-icon nzType="appstore"></nz-icon>
-        </li>
-        <li nz-menu-item routerLink="/user/cart" nzMatchRouter class="cart-item">
-            <nz-icon nzType="shopping-cart"></nz-icon>
+        <li nz-menu-item routerLink="/user/cart" nzMatchRouter>
+            <nz-icon nzType="shopping-cart"></nz-icon> <span>Carrito</span>
             <nz-badge [nzCount]="(cartItems$ | async)?.length || 0" [nzShowZero]="false"></nz-badge>
         </li>
+
+        <!-- Separador visual estético -->
+        <li nz-menu-item style="pointer-events: none; padding: 0 8px;">|</li>
+
+        <!-- OPCIONES DE USUARIO -->
+        <li nz-menu-item *ngIf="!userIdentity" routerLink="/auth/login">
+            <span nz-icon nzType="user"></span> Ingresar
+        </li>
+
+        <li nz-submenu *ngIf="userIdentity" [nzTitle]="userTitle">
+            <ul>
+                <li nz-menu-item routerLink="/application/my-companies">
+                    <span nz-icon nzType="shop" style="margin-right: 8px;"></span> Administrar Tiendas
+                </li>
+                <!-- Espacio de perfil de cuenta reservado para compras, favoritos, etc. -->
+                <li nz-menu-divider></li>
+                <li nz-menu-item nzDanger (click)="logout()">
+                    <span nz-icon nzType="logout" style="margin-right: 8px;"></span> Cerrar sesión
+                </li>
+            </ul>
+        </li>
+
+        <!-- Template del título visual del avatar -->
+        <ng-template #userTitle>
+            <div style="display: flex; align-items: center; gap: 8px;">
+                <nz-avatar nzIcon="user" nzSize="small" nzSrc="assets/img/user-avatar.png"></nz-avatar>
+                <span>Hola, {{ userIdentity.usr_name || userIdentity.usr_user }}</span>
+            </div>
+        </ng-template>
     </ul>
 
     <button nz-button class="menu-toggle-button" nzType="default" (click)="openDrawer()">
@@ -42,10 +65,27 @@
                 <nz-icon nzType="appstore"></nz-icon> Catálogo
             </li>
             <li nz-menu-item routerLink="/user/cart" (click)="closeDrawer()">
-                <nz-icon nzType="shopping-cart"></nz-icon>
-                Carrito
+                <nz-icon nzType="shopping-cart"></nz-icon> Carrito
                 <nz-badge [nzCount]="(cartItems$ | async)?.length || 0" [nzShowZero]="false"
                     class="mobile-badge"></nz-badge>
+            </li>
+
+            <li nz-menu-divider></li>
+
+            <li nz-menu-item *ngIf="!userIdentity" routerLink="/auth/login" (click)="closeDrawer()">
+                <span nz-icon nzType="login"></span> Iniciar Sesión / Regístrate
+            </li>
+
+            <li nz-submenu *ngIf="userIdentity"
+                [nzTitle]="'Cuenta: ' + (userIdentity.usr_name || userIdentity.usr_user)">
+                <ul>
+                    <li nz-menu-item routerLink="/application/my-companies" (click)="closeDrawer()">
+                        <span nz-icon nzType="shop" style="margin-right: 8px;"></span> Mis Tiendas (Administrar)
+                    </li>
+                    <li nz-menu-item nzDanger (click)="logout(); closeDrawer()">
+                        <span nz-icon nzType="logout" style="margin-right: 8px;"></span> Cerrar sesión
+                    </li>
+                </ul>
             </li>
         </ul>
     </ng-container>
