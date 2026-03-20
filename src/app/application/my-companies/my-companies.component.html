@@ -1,1 +1,35 @@
-<p>my-companies works!</p>
+<div class="my-companies-container">
+    <h2>Tus Empresas</h2>
+    <p>Selecciona una empresa para gestionar sus productos y configuraciones.</p>
+
+    <div nz-row [nzGutter]="[16, 16]">
+        <div nz-col [nzXs]="24" [nzSm]="12" [nzMd]="8" [nzLg]="6" *ngFor="let company of userRolesCompany">
+            <nz-card nzHoverable [nzBordered]="true" class="company-card" (click)="selectCompany(company)">
+                <div class="company-logo">
+                    <!-- TODO: aquí puedes reemplazar el avatar por un img si las tiendas tienen logo -->
+                    <nz-avatar [nzSize]="64" nzIcon="shop" class="company-avatar"></nz-avatar>
+                </div>
+                <div class="company-info">
+                    <h3>{{ company.cmp_name }}</h3>
+
+                    <div class="company-roles">
+                        <span *ngFor="let role of company.roles" class="role-badge">
+                            {{ role.rol_name }}
+                        </span>
+                    </div>
+                </div>
+
+                <div class="company-action">
+                    <button nz-button nzType="primary" nzBlock
+                        (click)="selectCompany(company); $event.stopPropagation()">
+                        Gestionar <span nz-icon nzType="arrow-right"></span>
+                    </button>
+                </div>
+            </nz-card>
+        </div>
+    </div>
+
+    <div class="no-companies" *ngIf="userRolesCompany?.length === 0">
+        <nz-empty nzNotFoundContent="No tienes ninguna tienda asignada."></nz-empty>
+    </div>
+</div>
