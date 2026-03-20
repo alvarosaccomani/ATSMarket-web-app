@@ -1,6 +1,14 @@
 <div class="my-companies-container">
-    <h2>Tus Empresas</h2>
-    <p>Selecciona una empresa para gestionar sus productos y configuraciones.</p>
+    <div class="header-actions"
+        style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 24px;">
+        <div>
+            <h2>Tus Tiendas (Modo Administrador)</h2>
+            <p>Selecciona una empresa para gestionar sus productos y configuraciones.</p>
+        </div>
+        <button nz-button nzType="primary" nzSize="large" (click)="createNewCompany()">
+            <span nz-icon nzType="plus"></span> Añadir Empresa
+        </button>
+    </div>
 
     <div nz-row [nzGutter]="[16, 16]">
         <div nz-col [nzXs]="24" [nzSm]="12" [nzMd]="8" [nzLg]="6" *ngFor="let company of userRolesCompany">
@@ -19,8 +27,13 @@
                     </div>
                 </div>
 
-                <div class="company-action">
-                    <button nz-button nzType="primary" nzBlock
+                <div class="company-action" style="display: flex; gap: 8px;">
+                    <button nz-button nzType="default" nzTooltipTitle="Configurar Empresa" nz-tooltip
+                        *ngIf="isAdmin(company.roles)"
+                        (click)="editCompany(company.cmp_uuid); $event.stopPropagation()">
+                        <span nz-icon nzType="setting"></span>
+                    </button>
+                    <button nz-button nzType="primary" style="flex: 1;"
                         (click)="selectCompany(company); $event.stopPropagation()">
                         Gestionar <span nz-icon nzType="arrow-right"></span>
                     </button>

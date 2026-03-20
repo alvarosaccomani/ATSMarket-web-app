@@ -10,6 +10,7 @@ import { NzButtonModule } from 'ng-zorro-antd/button';
 import { NzIconModule } from 'ng-zorro-antd/icon';
 import { NzAvatarModule } from 'ng-zorro-antd/avatar';
 import { NzEmptyModule } from 'ng-zorro-antd/empty';
+import { NzToolTipModule } from 'ng-zorro-antd/tooltip';
 
 import { UserRolCompanyResults } from '@interfaces/user-rol-company';
 
@@ -25,7 +26,8 @@ import { UserRolesCompanyService } from '@services/user-roles-company.service';
     NzButtonModule,
     NzIconModule,
     NzAvatarModule,
-    NzEmptyModule
+    NzEmptyModule,
+    NzToolTipModule
   ],
   templateUrl: './my-companies.component.html',
   styleUrl: './my-companies.component.scss'
@@ -105,5 +107,18 @@ export class MyCompaniesComponent implements OnInit {
     this._sessionService.setCompany(JSON.stringify(company));
 
     this._router.navigate(['/application/products']);
+  }
+
+  public isAdmin(roles: any[]): boolean {
+    if (!roles) return false;
+    return roles.some((r: any) => r.rol_name === 'admin' || r.rol_name === 'administrador' || r.rol_name === 'owner');
+  }
+
+  public createNewCompany(): void {
+    this._router.navigate(['/application/company/new']);
+  }
+
+  public editCompany(cmp_uuid: string): void {
+    this._router.navigate(['/application/company', cmp_uuid]);
   }
 }
