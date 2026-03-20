@@ -1,50 +1,58 @@
-<div class="header-actions">
-    <h2>Gestión de Productos</h2>
-    <button nz-button nzType="primary" (click)="abrirModalNuevo()">
-        <span nz-icon nzType="plus"></span> Nuevo Producto
-    </button>
-</div>
+<div class="products-container">
+    <div class="header-actions">
+        <h2>Gestión de Productos</h2>
+        <button nz-button nzType="primary" nzSize="large" (click)="abrirModalNuevo()">
+            <span nz-icon nzType="plus"></span> Nuevo Producto
+        </button>
+    </div>
 
-<nz-table #basicTable [nzData]="misProductos" [nzBordered]="true">
-    <thead>
-        <tr>
-            <th>Producto / Ref</th>
-            <!-- <th>Tienda</th> -->
-            <!-- <th>Rubro / Categoría</th> -->
-            <!-- <th>Costo (ARS)</th> -->
-            <!-- <th>Precio Venta</th> -->
-            <!-- <th>Stock</th> -->
-            <th>Acciones</th>
-        </tr>
-    </thead>
-    <tbody>
-        @for(product of products; track product.pro_uuid) {
-        <tr>
-            <td>
-                <strong>{{ product.pro_name }}</strong><br>
-                <small>{{ product.pro_code }}</small>
-            </td>
-            <!-- <td>{{ data.nombreTienda }}</td> -->
-            <!-- <td>
-                <nz-tag nzColor="blue">{{ data.rubro }}</nz-tag><br>
-                <small>{{ data.categoria }}</small>
-            </td> -->
-            <!-- <td>$ {{ data.costo }}</td> -->
-            <!-- <td><strong style="color: #52c41a;">$ {{ product.prov_suggestedminimumsellingprice }}</strong></td> -->
-            <!-- <td>
-                <nz-tag [nzColor]="data.stock < 5 ? 'red' : 'green'">
-                    {{ data.stock }} unidades
-                </nz-tag>
-            </td> -->
-            <td>
-                <button nz-button nzType="text" nzShape="circle" (click)="editProduct(product)">
-                    <span nz-icon nzType="edit"></span>
-                </button>
-                <button nz-button nzType="text" nzDanger nzShape="circle" (click)="deleteProduct(product)">
-                    <span nz-icon nzType="delete"></span>
-                </button>
-            </td>
-        </tr>
-        }
-    </tbody>
-</nz-table>
+    <!-- Contenedor principal estilo tarjeta que ocupa altura completa -->
+    <div class="table-card-container">
+        <!-- ESTADO VACÍO (solo se muestra si terminó de buscar y no hay nada) -->
+        <div class="empty-state" *ngIf="products.length === 0 && !isFetching">
+            <nz-empty nzNotFoundImage="https://gw.alipayobjects.com/zos/antfincdn/ZHrcdLPrvN/empty.svg"
+                nzNotFoundContent="No tienes productos en esta tienda.">
+                <div nz-empty-footer>
+                    <button nz-button nzType="primary" nzSize="large" (click)="abrirModalNuevo()">
+                        ¡Crea tu primer producto!
+                    </button>
+                </div>
+            </nz-empty>
+        </div>
+
+        <!-- TABLA CON DATOS -->
+        <nz-table *ngIf="products.length > 0 || isFetching" #basicTable [nzData]="products" [nzBordered]="false"
+            [nzShowSizeChanger]="true" [nzPageSizeOptions]="[10, 20, 50, 100]" [nzPageSize]="10"
+            [nzFrontPagination]="true" [nzLoading]="isFetching" nzSize="middle" class="full-height-table">
+            <thead>
+                <tr>
+                    <th nzWidth="60%">Producto / Ref</th>
+                    <th nzWidth="40%" nzAlign="right">Acciones</th>
+                </tr>
+            </thead>
+            <tbody>
+                <!-- Importante: Iterar sobre basicTable.data maneja la paginación internamente -->
+                @for(product of basicTable.data; track product.pro_uuid) {
+                <tr>
+                    <td>
+                        <div class="product-info-cell">
+                            <span class="product-name">{{ product.pro_name }}</span>
+                            <span class="product-code">{{ product.pro_code }}</span>
+                        </div>
+                    </td>
+                    <td nzAlign="right">
+                        <button nz-button nzType="text" nzShape="circle" nzTooltipTitle="Editar Producto" nz-tooltip
+                            (click)="editProduct(product)">
+                            <span nz-icon nzType="edit" style="color: #1890ff; font-size: 16px;"></span>
+                        </button>
+                        <button nz-button nzType="text" nzDanger nzShape="circle" nzTooltipTitle="Eliminar Producto"
+                            nz-tooltip (click)="deleteProduct(product)">
+                            <span nz-icon nzType="delete" style="font-size: 16px;"></span>
+                        </button>
+                    </td>
+                </tr>
+                }
+            </tbody>
+        </nz-table>
+    </div>
+</div>

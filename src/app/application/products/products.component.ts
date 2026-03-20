@@ -6,7 +6,10 @@ import { NzButtonModule } from 'ng-zorro-antd/button';
 import { NzIconModule } from 'ng-zorro-antd/icon';
 import { NzTagModule } from 'ng-zorro-antd/tag';
 import { NzModalModule, NzModalService } from 'ng-zorro-antd/modal';
+import { NzEmptyModule } from 'ng-zorro-antd/empty';
+import { NzToolTipModule } from 'ng-zorro-antd/tooltip';
 import { ProductInterface } from '@interfaces/product';
+import { SessionService } from '@services/session.service';
 import { ProductsService } from '@services/products.service';
 
 @Component({
@@ -17,7 +20,9 @@ import { ProductsService } from '@services/products.service';
     NzButtonModule,
     NzIconModule,
     NzTagModule,
-    NzModalModule
+    NzModalModule,
+    NzEmptyModule,
+    NzToolTipModule
   ],
   templateUrl: './products.component.html',
   styleUrl: './products.component.scss'
@@ -25,41 +30,32 @@ import { ProductsService } from '@services/products.service';
 export class ProductsComponent {
 
   public products: ProductInterface[] = [];
-  public misProductos = [
-    {
-      id: 1,
-      nombre: 'Virgen de Luján 30cm',
-      referencia: 'VL-30',
-      nombreTienda: 'Caja Santos 33',
-      rubro: 'Estatuas',
-      categoria: 'Resina Premium',
-      costo: 4500,
-      precio: 8500,
-      stock: 5
-    },
-    {
-      id: 2,
-      nombre: 'Rosario Madera Olivo',
-      referencia: 'RO-OLV',
-      nombreTienda: 'Taller de Fe',
-      rubro: 'Rosarios',
-      categoria: 'Madera Natural',
-      costo: 1200,
-      precio: 3200,
-      stock: 12
-    }
-  ];
+  public isFetching: boolean = true;
 
   constructor(
     private _router: Router,
     private modal: NzModalService,
+    private _sessionService: SessionService,
     private productService: ProductsService
   ) { }
 
   ngOnInit(): void {
-    this.productService.getProducts('28a0036e-2d6b-4e83-805a-1ca214a6b1e1').subscribe((products: any) => {
-      this.products = [...products.data];
-    });
+    const company = this._sessionService.getCompany();
+    this.getProducts(company.cmp_uuid);
+  }
+
+  public getProducts(cmp_uuid: string): void {
+    this.isFetching = true;
+    this.productService.getProducts(cmp_uuid).subscribe(
+      (products: any) => {
+        this.products = [...products.data];
+        this.isFetching = false;
+      },
+      (error) => {
+        console.error('Error fetching products', error);
+        this.isFetching = false;
+      }
+    );
   }
 
   public abrirModalNuevo(): void {
