@@ -3,6 +3,7 @@ import { BehaviorSubject } from 'rxjs';
 
 export interface SessionData {
   identity?: any;
+  company?: any;
   token?: string;
 }
 
@@ -45,6 +46,10 @@ export class SessionService {
   // GETTERS tipados
   public getIdentity(): any | null {
     return this.getCurrentSession()?.identity || null;
+  }
+
+  public getCompany(): any | null {
+    return this.getCurrentSession()?.company || null;
   }
 
   public getCurrentSession(): SessionData | null {
