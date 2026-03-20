@@ -1,102 +1,201 @@
 .catalogo-layout {
-    min-height: 80vh;
-    /* Asegura que la altura sea suficiente */
+    min-height: calc(100vh - 64px);
+    background-color: #f0f2f5;
+    padding-top: 64px;
+    /* Desplaza el contenido para no quedar bajo el Nav-Bar fijo */
 }
 
-/* Estilos del Sider de filtros */
+/* Sider premium */
 .filters-sider {
-    background: #fff;
-    border-right: 1px solid #f0f0f0;
-    padding: 24px 16px;
+    background: #ffffff !important;
+    border-right: 1px solid #e8e8e8;
+
+    .filters-container {
+        padding: 24px;
+        height: 100%;
+        overflow-y: auto;
+    }
 }
 
-.filters-container {
-    padding-top: 10px;
+.filter-title {
+    margin-top: 0;
+    margin-bottom: 24px;
+    font-size: 18px;
+    font-weight: 600;
+    color: #262626;
+    display: flex;
+    align-items: center;
+    gap: 8px;
+}
+
+.filter-subtitle {
+    margin: 0 0 12px 0;
+    font-weight: 500;
+    font-size: 14px;
+    color: #595959;
 }
 
 .filter-group {
-    margin-bottom: 20px;
+    margin-bottom: 24px;
 }
 
-.filter-group h4 {
-    margin-bottom: 8px;
-    font-weight: 500;
+.custom-checkbox-group {
+    display: flex;
+    flex-direction: column;
+    gap: 12px;
+
+    .checkbox-wrapper {
+        margin: 0;
+    }
 }
 
 .price-labels {
     display: flex;
     justify-content: space-between;
-    font-size: 0.9em;
-    color: #8c8c8c;
+    margin-top: 8px;
+
+    .price-bound {
+        font-weight: 500;
+        color: #1890ff;
+        background: #e6f7ff;
+        padding: 4px 8px;
+        border-radius: 4px;
+        font-size: 13px;
+    }
 }
 
-/* Estilos del Contenido y Grilla */
+/* Area principal */
 .catalogo-content {
-    padding: 24px;
-}
-
-.product-card {
-    width: 100%;
-    margin-bottom: 16px;
-}
-
-.product-card-image {
-    width: 100%;
-    height: 200px;
-    object-fit: cover;
-}
-
-.product-actions {
-    margin-top: 10px;
+    padding: 32px 40px;
     display: flex;
-    justify-content: space-between;
+    flex-direction: column;
 }
 
-.no-results {
-    width: 100%;
-    padding: 50px 0;
-    text-align: center;
-}
+.list-header {
+    margin-bottom: 24px;
 
-/* Estilos de Utilidad de Responsividad (Asegúrate de que estas clases existan en tu proyecto) */
-/* Oculta en pantallas pequeñas (xs, sm) y muestra en md y superiores */
-.visible-lg {
-    display: none;
-}
-
-@media (min-width: 768px) {
-
-    /* md breakpoint de Ant Design */
-    /* Muestra el sider en pantallas grandes */
-    .filters-sider.visible-lg {
-        display: block !important;
-    }
-
-    /* Oculta el botón de filtro en pantallas grandes */
-    .visible-sm {
-        display: none !important;
+    .result-count {
+        font-size: 20px;
+        font-weight: 600;
+        color: #1f1f1f;
+        margin: 0;
     }
 }
 
-/* Muestra el botón de filtro en pantallas pequeñas */
-.visible-sm {
-    display: block;
+/* Cards Premium */
+.premium-product-card {
+    border-radius: 12px;
+    overflow: hidden;
+    border: none;
+    box-shadow: 0 4px 16px rgba(0, 0, 0, 0.04);
+    transition: all 0.3s cubic-bezier(0.25, 0.8, 0.25, 1);
+    display: flex;
+    flex-direction: column;
+    height: 100%;
+
+    &:hover {
+        transform: translateY(-4px);
+        box-shadow: 0 12px 24px rgba(0, 0, 0, 0.08);
+
+        .card-image-wrapper img {
+            transform: scale(1.05);
+        }
+    }
+
+    ::ng-deep .ant-card-cover {
+        margin: 0 !important;
+    }
+
+    .card-image-wrapper {
+        width: 100%;
+        padding-top: 100%;
+        /* Mantener aspecto cuadrado 1:1 responsive */
+        position: relative;
+        overflow: hidden;
+        background-color: #fafafa;
+
+        img {
+            position: absolute;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            object-fit: cover;
+            transition: transform 0.4s ease;
+        }
+    }
+
+    ::ng-deep .ant-card-body {
+        flex: 1;
+        display: flex;
+        flex-direction: column;
+    }
+
+    ::ng-deep .ant-card-meta-title {
+        font-size: 16px;
+        font-weight: 600;
+        color: #262626;
+        white-space: normal;
+        display: -webkit-box;
+        -webkit-line-clamp: 2;
+        line-clamp: 2;
+        -webkit-box-orient: vertical;
+        line-height: 1.4;
+        height: 44px;
+        /* Siempre 2 líneas */
+        margin-bottom: 4px;
+    }
+
+    ::ng-deep .ant-card-meta-description {
+        font-size: 13px;
+        color: #8c8c8c;
+    }
+
+    .product-pricing {
+        margin-top: 16px;
+        flex: 1;
+
+        /* Empuja el botón al fondo si la tarjeta crece */
+        .price-tag {
+            font-size: 22px;
+            font-weight: 700;
+            color: #1890ff;
+        }
+    }
+
+    .product-actions {
+        margin-top: 16px;
+    }
 }
 
-/* Estilos del Sider de filtros para pantallas grandes */
-.filters-sider {
+.empty-state {
+    margin-top: 60px;
     background: #fff;
-    border-right: 1px solid #f0f0f0;
-    padding: 24px 16px;
-    /* Eliminar las propiedades de nz-sider aquí que se manejan en el HTML (nzCollapsible, nzBreakpoint) */
+    border-radius: 12px;
+    padding: 60px;
+    box-shadow: 0 4px 16px rgba(0, 0, 0, 0.02);
 }
 
-/* Otros estilos del botón de filtro */
-.filter-button-container {
-    padding-bottom: 8px;
-    /* Espacio para el divisor */
+/* Responsive nativo para móvil */
+.mobile-filter-trigger {
+    display: none;
+    margin-bottom: 24px;
+
+    .full-width-button {
+        width: 100%;
+    }
 }
 
-.full-width-button {
-    width: 100%;
+.filters-container-mobile {
+    padding-bottom: 24px;
+}
+
+@media (max-width: 768px) {
+    .catalogo-content {
+        padding: 16px;
+    }
+
+    .mobile-filter-trigger {
+        display: block;
+    }
 }
