@@ -15,7 +15,7 @@ export const APPLICATION_ROUTES: Routes = [
         component: ApplicationLayoutComponent,
         children: [
             { path: 'my-companies', component: MyCompaniesComponent },
-            { path: 'company', component: CompanyComponent },
+            { path: 'company/:cmp_uuid', component: CompanyComponent },
             { path: 'price-list', component: PriceListComponent },
             { path: 'dist-price-list', component: DistPriceListComponent },
             { path: 'products', component: ProductsComponent },
