@@ -15,6 +15,7 @@ export class SessionService {
 
   constructor() { }
 
+  // SETTERS individuales
   public setIdentity(identity: any | string): void {
     const identityObj = typeof identity === 'string'
       ? JSON.parse(identity)
@@ -25,10 +26,25 @@ export class SessionService {
     this.updateSession(updated);
   }
 
+  public setCompany(company: any | string): void {
+    const companyObj = typeof company === 'string'
+      ? JSON.parse(company)
+      : company;
+
+    const current = this.getCurrentSession();
+    const updated = { ...current, company: companyObj };
+    this.updateSession(updated);
+  }
+
   public setToken(token: string): void {
     const current = this.getCurrentSession();
     const updated = { ...current, token };
     this.updateSession(updated);
+  }
+
+  // GETTERS tipados
+  public getIdentity(): any | null {
+    return this.getCurrentSession()?.identity || null;
   }
 
   public getCurrentSession(): SessionData | null {
