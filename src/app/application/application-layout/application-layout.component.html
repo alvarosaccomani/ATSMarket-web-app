@@ -59,8 +59,25 @@
                 </nz-dropdown-menu>
 
                 <div class="user-profile" style="display: flex; align-items: center; gap: 8px;">
-                    <span class="user-name" style="color: black;">Hola, Vendedor Santiago</span>
-                    <nz-avatar nzIcon="user" nzSrc="assets/img/user-avatar.png"></nz-avatar>
+                    <a nz-dropdown [nzDropdownMenu]="userMenu"
+                        style="color: black; display: flex; align-items: center; gap: 8px; cursor: pointer;">
+                        <span class="user-name">Hola, {{ userIdentity?.usr_name || 'Usuario' }}</span>
+                        <nz-avatar nzIcon="user" nzSrc="assets/img/user-avatar.png"></nz-avatar>
+                    </a>
+                    <nz-dropdown-menu #userMenu="nzDropdownMenu">
+                        <ul nz-menu>
+                            <!-- <li nz-menu-item>
+                                <span nz-icon nzType="user" style="margin-right: 8px;"></span> Mi Perfil
+                            </li> -->
+                            <!-- <li nz-menu-item>
+                                <span nz-icon nzType="setting" style="margin-right: 8px;"></span> Configuración
+                            </li> 
+                            <li nz-menu-divider></li> -->
+                            <li nz-menu-item nzDanger (click)="logout()">
+                                <span nz-icon nzType="logout" style="margin-right: 8px;"></span> Cerrar sesión
+                            </li>
+                        </ul>
+                    </nz-dropdown-menu>
                 </div>
             </div>
         </nz-header>

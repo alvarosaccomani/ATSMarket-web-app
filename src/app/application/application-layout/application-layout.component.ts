@@ -37,6 +37,7 @@ export class ApplicationLayoutComponent implements OnInit {
   public isCollapsed = false;
   public userRolesCompany: any[] = [];
   public activeCompany: any = null;
+  public userIdentity: any = null;
 
   constructor(
     private _sessionService: SessionService,
@@ -46,6 +47,7 @@ export class ApplicationLayoutComponent implements OnInit {
 
   ngOnInit(): void {
     const identity = this._sessionService.getIdentity();
+    this.userIdentity = identity;
     const currentSession = this._sessionService.getCurrentSession() as any;
     this.activeCompany = currentSession?.company || null;
 
@@ -90,5 +92,10 @@ export class ApplicationLayoutComponent implements OnInit {
     this._router.navigateByUrl('/', { skipLocationChange: true }).then(() => {
       this._router.navigate(['/application/products']);
     });
+  }
+
+  public logout(): void {
+    this._sessionService.logout();
+    this._router.navigate(['/auth/login']);
   }
 }
