@@ -1,34 +1,211 @@
-.empty-container {
-    padding: 40px;
-    text-align: center;
-    color: #8c8c8c;
-
-    .empty-icon {
-        font-size: 32px;
-        margin-bottom: 10px;
-        color: #d9d9d9;
-    }
-}
-
-.pricing-card {
-    background-color: #f6ffed; // Un verde muy suave que denota "dinero/ganancia"
-    border: 1px solid #b7eb8f;
-}
-
-.final-price-box {
-    text-align: center;
-    padding: 10px;
-
-    h3 {
-        font-size: 2rem;
-        color: #52c41a;
-        margin: 0;
-    }
-}
-
-.form-actions {
-    margin-top: 30px;
+.product-form-container {
     display: flex;
-    justify-content: flex-end;
-    gap: 12px;
+    flex-direction: column;
+    /* Ajustar restando el padding propio de router layout y Navbar */
+    height: calc(100vh - 133px);
+    background-color: #f0f2f5;
+
+    .form-scrollable-content {
+        flex: 1;
+        overflow-y: auto;
+        padding: 24px;
+
+        /* Ocultar barra de scroll para limpieza, mantiene funcion de scroll */
+        &::-webkit-scrollbar {
+            width: 8px;
+        }
+
+        &::-webkit-scrollbar-thumb {
+            background-color: rgba(0, 0, 0, 0.15);
+            border-radius: 4px;
+
+            &:hover {
+                background-color: rgba(0, 0, 0, 0.25);
+            }
+        }
+    }
+
+    .header-actions {
+        margin-bottom: 24px;
+
+        h2 {
+            margin: 0;
+            font-size: 26px;
+            font-weight: 500;
+            color: #1f1f1f;
+        }
+
+        p {
+            margin: 4px 0 0;
+            color: #8c8c8c;
+            font-size: 14px;
+        }
+    }
+
+    /* TABS PREMIUM */
+    ::ng-deep .premium-tabs {
+        .ant-tabs-card {
+            .ant-tabs-nav {
+                margin-bottom: 0;
+
+                &::before {
+                    border-bottom: 0px !important;
+                }
+            }
+
+            .ant-tabs-tab {
+                border-radius: 8px 8px 0 0;
+                background: #fafafa;
+                border: 1px solid #f0f0f0;
+                border-bottom: 0;
+                padding: 14px 28px;
+                font-weight: 500;
+                color: #595959;
+                font-size: 15px;
+
+                &-active {
+                    background: #fff;
+                    color: #1890ff;
+                    border-bottom-color: #fff !important;
+                }
+            }
+        }
+
+        .ant-tabs-content-holder {
+            background: #fff;
+            padding: 32px 24px;
+            border: 1px solid #f0f0f0;
+            border-top: 0;
+            border-radius: 0 8px 8px 8px;
+            box-shadow: 0 4px 12px rgba(0, 0, 0, 0.02);
+            min-height: 400px;
+        }
+    }
+
+    /* CARD COMPONENTS */
+    .pricing-card {
+        background: #fafafa;
+        border-radius: 8px;
+        border: 1px solid #e8e8e8;
+
+        ::ng-deep .ant-card-head {
+            border-bottom: 1px solid #e8e8e8;
+            font-size: 16px;
+            font-weight: 600;
+            padding: 0 20px;
+        }
+
+        ::ng-deep .ant-card-body {
+            padding: 24px 20px;
+        }
+    }
+
+    .info-card {
+        border-radius: 8px;
+        box-shadow: 0 2px 8px rgba(0, 0, 0, 0.03);
+        margin-bottom: 24px;
+
+        ::ng-deep .ant-card-head {
+            font-weight: 600;
+            font-size: 16px;
+        }
+    }
+
+    /* UPLOAD COMPONENT */
+    .upload-container {
+        display: flex;
+        flex-direction: column;
+        align-items: center;
+        justify-content: center;
+        padding: 40px 24px;
+        border: 1px dashed #d9d9d9;
+        border-radius: 8px;
+        background-color: #fafafa;
+        transition: border-color 0.3s;
+        height: 100%;
+
+        &:hover {
+            border-color: #1890ff;
+        }
+
+        .upload-hint {
+            color: #8c8c8c;
+            font-size: 13px;
+            text-align: center;
+            margin-top: 24px;
+        }
+    }
+
+    /* PRICING BOX */
+    .final-price-box {
+        background-color: #e6f7ff;
+        border: 1px solid #91d5ff;
+        border-radius: 6px;
+        padding: 24px 16px;
+        text-align: center;
+        margin-top: 24px;
+
+        .price-label {
+            margin: 0 0 8px;
+            color: #1890ff;
+            font-weight: 500;
+            font-size: 13px;
+            text-transform: uppercase;
+            letter-spacing: 0.5px;
+        }
+
+        .price-value {
+            margin: 0;
+            font-size: 36px;
+            font-weight: 600;
+            color: #1f1f1f;
+
+            &.no-current-cost {
+                font-size: 16px;
+                color: #ff4d4f;
+                padding: 12px 0;
+                font-weight: 500;
+            }
+        }
+
+        .cost-reference {
+            margin: 12px 0 0;
+            font-size: 13px;
+            color: #595959;
+
+            strong {
+                color: #262626;
+            }
+        }
+    }
+
+    /* TABLE */
+    .suppliers-table {
+        ::ng-deep .ant-table-thead>tr>th {
+            background-color: #fafafa;
+            color: #595959;
+            font-weight: 500;
+        }
+
+        ::ng-deep .ant-table-tbody>tr:hover>td {
+            background-color: #fafafa;
+        }
+
+        ::ng-deep .ant-table-tbody>tr>td {
+            padding: 12px;
+            vertical-align: middle;
+        }
+    }
+
+    /* STICKY FOOTER */
+    .sticky-footer {
+        padding: 16px 24px;
+        background: #fff;
+        border-top: 1px solid #e8e8e8;
+        display: flex;
+        justify-content: flex-end;
+        box-shadow: 0 -4px 12px rgba(0, 0, 0, 0.05);
+        z-index: 10;
+        margin-top: auto;
+    }
 }

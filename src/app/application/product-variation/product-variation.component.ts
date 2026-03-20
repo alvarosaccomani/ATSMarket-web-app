@@ -13,6 +13,8 @@ import { NzCardModule } from 'ng-zorro-antd/card';
 import { NzSelectModule } from 'ng-zorro-antd/select';
 import { NzTableModule } from 'ng-zorro-antd/table';
 import { NzButtonModule } from 'ng-zorro-antd/button';
+import { NzToolTipModule } from 'ng-zorro-antd/tooltip';
+import { NzSpaceModule } from 'ng-zorro-antd/space';
 import { ProductVariationsService } from '@services/product-variations.service';
 
 @Component({
@@ -30,7 +32,9 @@ import { ProductVariationsService } from '@services/product-variations.service';
     NzCardModule,
     NzSelectModule,
     NzTableModule,
-    NzButtonModule
+    NzButtonModule,
+    NzSpaceModule,
+    NzToolTipModule
   ],
   templateUrl: './product-variation.component.html',
   styleUrl: './product-variation.component.scss'

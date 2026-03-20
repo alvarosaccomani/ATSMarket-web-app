@@ -1,134 +1,167 @@
-<div class="page-header">
-    <h2>Detalle de Variación: <small>{{ productVariationForm.get('prov_sku')?.value }}</small></h2>
-</div>
+<form nz-form [formGroup]="productVariationForm" nzLayout="vertical" class="product-form-container">
 
-<form nz-form [formGroup]="productVariationForm" nzLayout="vertical">
-    <nz-tabset nzType="card" [nzAnimated]="false">
+    <div class="form-scrollable-content">
+        <div class="header-actions">
+            <h2>Detalle de Variante</h2>
+            <p *ngIf="productVariationForm.get('prov_sku')?.value">SKU: <strong>{{
+                    productVariationForm.get('prov_sku')?.value }}</strong></p>
+        </div>
 
-        <nz-tab [nzTitle]="titleIdentity">
-            <ng-template #titleIdentity><span nz-icon nzType="idcard"></span> Identidad</ng-template>
+        <nz-tabset nzType="card" [nzAnimated]="false" class="premium-tabs">
 
-            <div nz-row [nzGutter]="24" style="margin-top: 20px;">
-                <div nz-col [nzMd]="14" [nzXs]="24">
-                    <nz-card nzTitle="Información de la Variante">
-                        <nz-form-item>
-                            <nz-form-label>Nombre de la Variante</nz-form-label>
-                            <nz-form-control>
-                                <input nz-input formControlName="prov_name" placeholder="Ej: Rosario Plata - Talle L" />
-                            </nz-form-control>
-                        </nz-form-item>
+            <nz-tab [nzTitle]="titleIdentity">
+                <ng-template #titleIdentity><span nz-icon nzType="idcard"></span> Identidad Principal</ng-template>
 
-                        <nz-form-item>
-                            <nz-form-label>Descripción Específica</nz-form-label>
-                            <nz-form-control>
-                                <textarea nz-input formControlName="prov_description"
-                                    [nzAutosize]="{ minRows: 3 }"></textarea>
-                            </nz-form-control>
-                        </nz-form-item>
-                    </nz-card>
-                </div>
+                <div nz-row [nzGutter]="24">
+                    <div nz-col [nzMd]="14" [nzXs]="24">
+                        <nz-card nzTitle="Información de la Variante" class="info-card" [nzBordered]="false">
+                            <nz-form-item>
+                                <nz-form-label nzRequired>Nombre de la Variante</nz-form-label>
+                                <nz-form-control nzErrorTip="Requerido">
+                                    <input nz-input formControlName="prov_name"
+                                        placeholder="Ej: Rosario Plata - Talle L" nzSize="large" />
+                                </nz-form-control>
+                            </nz-form-item>
 
-                <div nz-col [nzMd]="10" [nzXs]="24">
-                    <nz-card nzTitle="Imagen de la Variante">
-                        <div class="upload-container">
-                            <nz-upload nzListType="picture-card" [(nzFileList)]="fileList"
-                                [nzBeforeUpload]="beforeUpload" [nzLimit]="1">
-                                <div>
-                                    <span nz-icon nzType="plus"></span>
-                                    <div style="margin-top: 8px">Subir Foto</div>
-                                </div>
-                            </nz-upload>
-                            <p class="upload-hint">Esta imagen es específica para este SKU (Color/Talla).</p>
-                        </div>
-                    </nz-card>
-                </div>
-            </div>
-        </nz-tab>
-
-        <nz-tab [nzTitle]="titleSuppliers">
-            <ng-template #titleSuppliers><span nz-icon nzType="shop"></span> Proveedores y Costos</ng-template>
-
-            <div nz-row [nzGutter]="24" style="margin-top: 20px;">
-                <div nz-col [nzLg]="15" [nzXs]="24">
-                    <div class="table-toolbar">
-                        <h3>Proveedores Vinculados</h3>
-                        <button nz-button nzType="dashed" (click)="addSupplier()">
-                            <span nz-icon nzType="plus"></span> Agregar Proveedor
-                        </button>
+                            <nz-form-item style="margin-bottom: 0;">
+                                <nz-form-label>Descripción Específica</nz-form-label>
+                                <nz-form-control>
+                                    <textarea nz-input formControlName="prov_description" [nzAutosize]="{ minRows: 4 }"
+                                        placeholder="Escriba aquí los detalles característicos de esta variedad..."></textarea>
+                                </nz-form-control>
+                            </nz-form-item>
+                        </nz-card>
                     </div>
 
-                    <nz-table #supplierTable [nzData]="suppliersArray.controls" nzSize="small"
-                        [nzShowPagination]="false">
-                        <thead>
-                            <tr>
-                                <th>Proveedor</th>
-                                <th nzWidth="120px">Costo</th>
-                                <th nzWidth="100px">Stock</th>
-                                <th nzWidth="100px">Actual</th>
-                                <th nzWidth="60px"></th>
-                            </tr>
-                        </thead>
-                        <tbody formArrayName="costsPerSupplier">
-                            <tr *ngFor="let control of suppliersArray.controls; let i = index" [formGroupName]="i">
-                                <td>
-                                    <nz-select formControlName="sup_Uuid" style="width: 100%"
-                                        nzPlaceHolder="Seleccionar">
-                                        <nz-option *ngFor="let s of suppliersList" [nzLabel]="s.name"
-                                            [nzValue]="s.uuid"></nz-option>
-                                    </nz-select>
-                                </td>
-                                <td>
-                                    <nz-input-number formControlName="cpsup_PriceCost" [nzMin]="0"
-                                        style="width: 100%"></nz-input-number>
-                                </td>
-                                <td>
-                                    <nz-input-number formControlName="cpsup_Stock" [nzMin]="0"
-                                        style="width: 100%"></nz-input-number>
-                                </td>
-                                <td style="text-align: center;">
-                                    <nz-switch formControlName="cpsup_IsCurrentCost"
-                                        (ngModelChange)="onCurrentCostChange(i)"></nz-switch>
-                                </td>
-                                <td>
-                                    <button nz-button nzType="text" nzDanger (click)="removeSupplier(i)">
-                                        <span nz-icon nzType="delete"></span>
-                                    </button>
-                                </td>
-                            </tr>
-                        </tbody>
-                    </nz-table>
+                    <div nz-col [nzMd]="10" [nzXs]="24">
+                        <nz-card nzTitle="Imagen de la Variante" class="info-card" [nzBordered]="false">
+                            <div class="upload-container">
+                                <nz-upload nzListType="picture-card" [(nzFileList)]="fileList"
+                                    [nzBeforeUpload]="beforeUpload" [nzLimit]="1">
+                                    <div>
+                                        <span nz-icon nzType="plus" style="font-size: 24px; color: #1890ff;"></span>
+                                        <div style="margin-top: 8px; font-weight: 500; color: #1890ff;">Subir Foto</div>
+                                    </div>
+                                </nz-upload>
+                                <p class="upload-hint">Esta imagen es específica para este SKU (Color/Talla).
+                                    Recomendado: JPEG o PNG, max 2MB.</p>
+                            </div>
+                        </nz-card>
+                    </div>
                 </div>
+            </nz-tab>
 
-                <div nz-col [nzLg]="9" [nzXs]="24">
-                    <nz-card nzTitle="Cálculo de Rentabilidad" class="pricing-card">
-                        <nz-form-item>
-                            <nz-form-label nzToolTip="Margen de ganancia sobre el costo actual">Ganancia
-                                (%)</nz-form-label>
-                            <nz-input-number formControlName="markup_percentage" [nzMin]="0" style="width: 100%"
-                                [nzFormatter]="formatterPercent"></nz-input-number>
-                        </nz-form-item>
+            <nz-tab [nzTitle]="titleSuppliers">
+                <ng-template #titleSuppliers><span nz-icon nzType="shop"></span> Proveedores y Precios</ng-template>
 
-                        <nz-divider></nz-divider>
-
-                        <div class="final-price-box">
-                            <p>Precio de Venta Final:</p>
-                            <h3 [class.no-current-cost]="!currentCostSelected">
-                                {{ currentCostSelected ? '$ ' + (finalPriceValue | number:'1.2-2') : 'Seleccione un
-                                costo actual' }}
-                            </h3>
-                            <span class="cost-ref" *ngIf="currentCostSelected">Basado en costo de: $ {{ currentCostValue
-                                }}</span>
+                <div nz-row [nzGutter]="24">
+                    <div nz-col [nzLg]="16" [nzXs]="24">
+                        <div class="table-toolbar"
+                            style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 16px;">
+                            <h3 style="margin: 0; font-weight: 600; font-size: 16px; color: #262626;">Lista de
+                                Proveedores</h3>
+                            <button nz-button nzType="dashed" (click)="addSupplier()">
+                                <span nz-icon nzType="plus"></span> Añadir Proveedor
+                            </button>
                         </div>
-                    </nz-card>
-                </div>
-            </div>
-        </nz-tab>
-    </nz-tabset>
 
-    <div class="form-actions">
-        <button nz-button nzType="default" (click)="onCancel()">Cancelar y Volver</button>
-        <button nz-button nzType="primary" (click)="onSave()" [disabled]="productVariationForm.invalid">
-            <span nz-icon nzType="save"></span> Guardar Cambios Avanzados
-        </button>
+                        <nz-table #supplierTable [nzData]="suppliersArray.controls" nzSize="middle"
+                            [nzShowPagination]="false" [nzBordered]="true" class="suppliers-table">
+                            <thead>
+                                <tr>
+                                    <th nzWidth="35%">Proveedor</th>
+                                    <th nzWidth="20%">Costo</th>
+                                    <th nzWidth="15%">Stock</th>
+                                    <th nzWidth="15%" nzAlign="center">Costo Base</th>
+                                    <th nzWidth="15%" nzAlign="center">Acción</th>
+                                </tr>
+                            </thead>
+                            <tbody formArrayName="costsPerSupplier">
+                                <tr *ngFor="let control of suppliersArray.controls; let i = index" [formGroupName]="i">
+                                    <td>
+                                        <nz-form-item style="margin: 0;">
+                                            <nz-form-control nzErrorTip="Requerido">
+                                                <nz-select formControlName="sup_Uuid" style="width: 100%"
+                                                    nzPlaceHolder="Seleccionar">
+                                                    <nz-option *ngFor="let s of suppliersList" [nzLabel]="s.name"
+                                                        [nzValue]="s.uuid"></nz-option>
+                                                </nz-select>
+                                            </nz-form-control>
+                                        </nz-form-item>
+                                    </td>
+                                    <td>
+                                        <nz-form-item style="margin: 0;">
+                                            <nz-form-control nzErrorTip="Requerido">
+                                                <nz-input-number formControlName="cpsup_PriceCost" [nzMin]="0"
+                                                    style="width: 100%"></nz-input-number>
+                                            </nz-form-control>
+                                        </nz-form-item>
+                                    </td>
+                                    <td>
+                                        <nz-form-item style="margin: 0;">
+                                            <nz-form-control>
+                                                <nz-input-number formControlName="cpsup_Stock" [nzMin]="0"
+                                                    style="width: 100%"></nz-input-number>
+                                            </nz-form-control>
+                                        </nz-form-item>
+                                    </td>
+                                    <td nzAlign="center">
+                                        <nz-switch formControlName="cpsup_IsCurrentCost"
+                                            nzTooltipTitle="Fijar como costo por defecto" nz-tooltip
+                                            (ngModelChange)="onCurrentCostChange(i)"></nz-switch>
+                                    </td>
+                                    <td nzAlign="center">
+                                        <button nz-button nzType="text" nzDanger nzShape="circle"
+                                            nzTooltipTitle="Eliminar proveedor" nz-tooltip (click)="removeSupplier(i)">
+                                            <span nz-icon nzType="delete"></span>
+                                        </button>
+                                    </td>
+                                </tr>
+                            </tbody>
+                        </nz-table>
+                    </div>
+
+                    <div nz-col [nzLg]="8" [nzXs]="24">
+                        <nz-card nzTitle="Cálculo de Rentabilidad" class="pricing-card" [nzBordered]="false">
+                            <nz-form-item style="margin-bottom: 24px;">
+                                <nz-form-label
+                                    nzTooltipTitle="Margen de sugerencia que se proyectará sobre el costo base"
+                                    nzRequired>Ganancia (%)</nz-form-label>
+                                <nz-form-control>
+                                    <nz-input-number formControlName="markup_percentage" [nzMin]="0" style="width: 100%"
+                                        nzSize="large" [nzFormatter]="formatterPercent"></nz-input-number>
+                                </nz-form-control>
+                            </nz-form-item>
+
+                            <nz-divider nzText="Precio al Público"></nz-divider>
+
+                            <div class="final-price-box">
+                                <p class="price-label">Precio Sugerido Final</p>
+                                <h3 class="price-value" [class.no-current-cost]="!currentCostSelected">
+                                    {{ currentCostSelected ? '$ ' + (finalPriceValue | number:'1.2-2') : 'Costo no
+                                    seleccionado' }}
+                                </h3>
+                                <p class="cost-reference" *ngIf="currentCostSelected">
+                                    Calculado base a costo de: <strong>$ {{ currentCostValue }}</strong>
+                                </p>
+                            </div>
+                        </nz-card>
+                    </div>
+                </div>
+            </nz-tab>
+        </nz-tabset>
+    </div>
+
+    <div class="sticky-footer">
+        <nz-space>
+            <button *nzSpaceItem nz-button nzType="default" nzSize="large" (click)="onCancel()"
+                style="min-width: 120px;">
+                Cerrar
+            </button>
+            <button *nzSpaceItem nz-button nzType="primary" nzSize="large" (click)="onSave()"
+                [disabled]="productVariationForm.invalid" style="min-width: 200px;">
+                <span nz-icon nzType="save"></span> Guardar Variante
+            </button>
+        </nz-space>
     </div>
 </form>
