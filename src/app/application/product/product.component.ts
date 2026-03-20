@@ -1,4 +1,5 @@
 import { Component, OnInit } from '@angular/core';
+import { CommonModule } from '@angular/common';
 import { Router, ActivatedRoute } from '@angular/router';
 import { FormBuilder, FormGroup, FormArray, Validators, ReactiveFormsModule } from '@angular/forms';
 import { NzDividerModule } from 'ng-zorro-antd/divider';
@@ -8,6 +9,9 @@ import { NzInputModule } from 'ng-zorro-antd/input';
 import { NzTableModule } from 'ng-zorro-antd/table';
 import { NzInputNumberModule } from 'ng-zorro-antd/input-number';
 import { NzButtonModule } from 'ng-zorro-antd/button';
+import { NzCardModule } from 'ng-zorro-antd/card';
+import { NzGridModule } from 'ng-zorro-antd/grid';
+import { NzToolTipModule } from 'ng-zorro-antd/tooltip';
 import { ProductsService } from '@services/products.service';
 import { NzSpaceModule } from 'ng-zorro-antd/space';
 import { MessageService } from '@services/message.service';
@@ -15,6 +19,7 @@ import { MessageService } from '@services/message.service';
 @Component({
   selector: 'app-product',
   imports: [
+    CommonModule,
     ReactiveFormsModule,
     NzDividerModule,
     NzIconModule,
@@ -23,7 +28,10 @@ import { MessageService } from '@services/message.service';
     NzTableModule,
     NzButtonModule,
     NzInputNumberModule,
-    NzSpaceModule
+    NzSpaceModule,
+    NzCardModule,
+    NzGridModule,
+    NzToolTipModule
   ],
   templateUrl: './product.component.html',
   styleUrl: './product.component.scss'

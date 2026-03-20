@@ -1,29 +1,111 @@
-.action-buttons {
+.product-form-container {
     display: flex;
-    gap: 8px;
-    align-items: center;
-}
+    flex-direction: column;
+    height: calc(100vh - 133px);
+    background-color: #f0f2f5;
 
-.form-footer {
-    position: sticky;
-    bottom: 0;
-    background: #fff;
-    padding: 16px 0;
-    margin-top: 24px;
-    border-top: 1px solid #f0f0f0;
-    display: flex;
-    justify-content: flex-end;
-    z-index: 10;
-}
+    .form-scrollable-content {
+        flex: 1;
+        overflow-y: auto;
+        padding: 24px;
 
-.detail-header {
-    margin-bottom: 20px;
+        /* Ocultar barra de scroll para limpieza, mantiene funcion de scroll */
+        &::-webkit-scrollbar {
+            width: 8px;
+        }
 
-    h2 {
-        margin-top: 8px;
+        &::-webkit-scrollbar-thumb {
+            background-color: rgba(0, 0, 0, 0.15);
+            border-radius: 4px;
+
+            &:hover {
+                background-color: rgba(0, 0, 0, 0.25);
+            }
+        }
     }
-}
 
-.detail-actions {
-    text-align: right;
+    .header-actions {
+        margin-bottom: 24px;
+
+        h2 {
+            margin: 0;
+            font-size: 26px;
+            font-weight: 500;
+            color: #1f1f1f;
+        }
+
+        p {
+            margin: 4px 0 0;
+            color: #8c8c8c;
+            font-size: 14px;
+        }
+    }
+
+    .premium-card {
+        border-radius: 8px;
+        box-shadow: 0 4px 12px rgba(0, 0, 0, 0.03);
+
+        ::ng-deep .ant-card-head {
+            border-bottom: 1px solid #f0f0f0;
+            font-size: 16px;
+            font-weight: 500;
+            padding: 0 24px;
+        }
+
+        ::ng-deep .ant-card-body {
+            padding: 24px;
+        }
+    }
+
+    /* BARRA INFERIOR / FOOTER STICKY */
+    .sticky-footer {
+        padding: 16px 24px;
+        background: #fff;
+        border-top: 1px solid #e8e8e8;
+        display: flex;
+        justify-content: flex-end;
+        box-shadow: 0 -4px 12px rgba(0, 0, 0, 0.05);
+        z-index: 10;
+        margin-top: auto;
+        /* Forzar el footer hasta abajo del contenedor flex */
+    }
+
+    /* TABLA DE VARIACIONES Y CAMPOS */
+    .variations-table {
+        ::ng-deep .ant-table-thead>tr>th {
+            background-color: #fafafa;
+            color: #595959;
+            font-weight: 500;
+        }
+
+        ::ng-deep .ant-table-tbody>tr:hover>td {
+            background-color: #fafafa;
+        }
+
+        ::ng-deep .ant-table-tbody>tr>td {
+            padding: 12px;
+            vertical-align: top;
+            /* Alinear inputs arriba previene layout issues de validación */
+        }
+    }
+
+    .variant-inputs {
+        display: flex;
+        flex-direction: column;
+        gap: 8px;
+
+        input {
+            width: 100%;
+            border-radius: 4px;
+        }
+    }
+
+    /* ESTADO VACÍO DE LA TABLA */
+    .empty-container {
+        padding: 40px 0;
+        text-align: center;
+        background: #fafafa;
+        border-radius: 8px;
+        border: 1px dashed #d9d9d9;
+    }
 }

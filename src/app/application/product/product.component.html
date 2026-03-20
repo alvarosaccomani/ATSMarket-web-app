@@ -1,84 +1,133 @@
-<form nz-form [formGroup]="productForm" nzLayout="vertical">
+<form nz-form [formGroup]="productForm" nzLayout="vertical" class="product-form-container">
 
-    <div nz-row [nzGutter]="16">
-        <div nz-col nzSpan="8">
-            <nz-form-item>
-                <nz-form-label>Código Maestro</nz-form-label>
-                <input nz-input formControlName="pro_code" />
-            </nz-form-item>
+    <!-- Contenido Scrolleable para el formulario largo -->
+    <div class="form-scrollable-content">
+
+        <div class="header-actions">
+            <h2>{{ productForm.get('pro_uuid')?.value === 'new' || !productForm.get('pro_uuid')?.value ? 'Nuevo
+                Producto' : 'Editar Producto' }}</h2>
+            <p *ngIf="productForm.get('pro_code')?.value">SKU Maestro: <strong>{{ productForm.get('pro_code')?.value
+                    }}</strong></p>
         </div>
-        <div nz-col nzSpan="16">
-            <nz-form-item>
-                <nz-form-label>Nombre del Producto</nz-form-label>
-                <input nz-input formControlName="pro_name" />
-            </nz-form-item>
-        </div>
-    </div>
 
-    <nz-divider nzText="Variaciones de Producto (SKUs)"></nz-divider>
+        <nz-card nzTitle="Información General" [nzBordered]="false" class="premium-card">
+            <div nz-row [nzGutter]="[24, 24]">
+                <div nz-col [nzXs]="24" [nzMd]="8">
+                    <nz-form-item>
+                        <nz-form-label nzRequired>Código Maestro</nz-form-label>
+                        <nz-form-control nzErrorTip="Requerido">
+                            <input nz-input formControlName="pro_code" placeholder="Ej: REM-01" nzSize="large" />
+                        </nz-form-control>
+                    </nz-form-item>
+                </div>
+                <div nz-col [nzXs]="24" [nzMd]="16">
+                    <nz-form-item>
+                        <nz-form-label nzRequired>Nombre del Producto</nz-form-label>
+                        <nz-form-control nzErrorTip="Requerido">
+                            <input nz-input formControlName="pro_name" placeholder="Ej: Remera Algodón Básica"
+                                nzSize="large" />
+                        </nz-form-control>
+                    </nz-form-item>
+                </div>
+                <div nz-col [nzSpan]="24">
+                    <nz-form-item style="margin-bottom: 0;">
+                        <nz-form-label>Descripción / Notas Internas</nz-form-label>
+                        <nz-form-control>
+                            <textarea nz-input formControlName="pro_description" rows="3"
+                                placeholder="Opcional"></textarea>
+                        </nz-form-control>
+                    </nz-form-item>
+                </div>
+            </div>
+        </nz-card>
 
-    <div formArrayName="productVariations">
-        <nz-table #varTable [nzData]="productVariations.controls" [nzNoResult]="noVariations"
-            [nzFrontPagination]="false" nzSize="small">
-            <thead>
-                <tr>
-                    <th>Código/SKU</th>
-                    <th>Nombre/Descripcion</th>
-                    <th>Color/Talla</th>
-                    <th>Stock</th>
-                    <th>Precio Sugerido</th>
-                    <th>Acción</th>
-                </tr>
-            </thead>
-            <tbody>
-                @for (control of productVariations.controls; track control; let i = $index) {
-                <tr [formGroupName]="i">
-                    <td>
-                        <input nz-input formControlName="prov_code" placeholder="Cod"
-                            style="width: 80px; margin-bottom: 4px;" />
-                        <input nz-input formControlName="prov_sku" placeholder="SKU" />
-                    </td>
-                    <td>
-                        <input nz-input formControlName="prov_name" placeholder="Nombre" style="margin-bottom: 4px;" />
-                        <input nz-input formControlName="prov_description" placeholder="Descripcion" />
-                    </td>
-                    <td>
-                        <input nz-input formControlName="prov_color" placeholder="Color" style="margin-bottom: 4px;" />
-                        <input nz-input formControlName="prov_size" placeholder="Talla/Medida" />
-                    </td>
-                    <td>
-                        <nz-input-number formControlName="prov_stock" [nzMin]="0"></nz-input-number>
-                    </td>
-                    <td>
-                        <nz-input-number formControlName="prov_suggestedminimumsellingprice"
-                            [nzMin]="0"></nz-input-number>
-                    </td>
-                    <td>
-                        <button nz-button nzType="text" (click)="editVariationDetails(i)" nz-tooltip
-                            nzTooltipTitle="Edición avanzada">
-                            <nz-icon nzType="edit" nzTheme="outline" />
-                        </button>
-                        <button nz-button nzType="text" nzDanger (click)="removeVariation(i)">
-                            <span nz-icon nzType="delete"></span>
-                        </button>
-                    </td>
-                </tr>
-                }
-            </tbody>
-        </nz-table>
-    </div>
+        <nz-card nzTitle="Variaciones (SKUs)" [nzBordered]="false" class="premium-card" style="margin-top: 24px;">
+            <div formArrayName="productVariations">
+                <nz-table #varTable [nzData]="productVariations.controls" [nzNoResult]="noVariations"
+                    [nzFrontPagination]="false" [nzShowPagination]="false" nzSize="middle" [nzBordered]="true"
+                    class="variations-table">
+                    <thead>
+                        <tr>
+                            <th nzWidth="20%">Código / SKU</th>
+                            <th nzWidth="25%">Nombre / Desc.</th>
+                            <th nzWidth="15%">Color / Talla</th>
+                            <th nzWidth="15%">Stock</th>
+                            <th nzWidth="15%">Precio Sugerido</th>
+                            <th nzWidth="10%" nzAlign="center">Acción</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        @for (control of productVariations.controls; track control; let i = $index) {
+                        <tr [formGroupName]="i">
+                            <td>
+                                <div class="variant-inputs">
+                                    <input nz-input formControlName="prov_code" placeholder="Cód base" />
+                                    <input nz-input formControlName="prov_sku" placeholder="SKU único" />
+                                </div>
+                            </td>
+                            <td>
+                                <div class="variant-inputs">
+                                    <input nz-input formControlName="prov_name" placeholder="Nombre variant" />
+                                    <input nz-input formControlName="prov_description" placeholder="Desc. breve" />
+                                </div>
+                            </td>
+                            <td>
+                                <div class="variant-inputs">
+                                    <input nz-input formControlName="prov_color" placeholder="Color" />
+                                    <input nz-input formControlName="prov_size" placeholder="Talla" />
+                                </div>
+                            </td>
+                            <td>
+                                <nz-form-item style="margin: 0;">
+                                    <nz-form-control nzErrorTip="Requerido">
+                                        <nz-input-number formControlName="prov_stock" [nzMin]="0"
+                                            style="width: 100%;"></nz-input-number>
+                                    </nz-form-control>
+                                </nz-form-item>
+                            </td>
+                            <td>
+                                <nz-form-item style="margin: 0;">
+                                    <nz-form-control nzErrorTip="Requerido">
+                                        <nz-input-number formControlName="prov_suggestedminimumsellingprice" [nzMin]="0"
+                                            style="width: 100%;"></nz-input-number>
+                                    </nz-form-control>
+                                </nz-form-item>
+                            </td>
+                            <td nzAlign="center">
+                                <nz-space>
+                                    <button *nzSpaceItem nz-button nzType="default" nzShape="circle"
+                                        (click)="editVariationDetails(i)" nz-tooltip
+                                        nzTooltipTitle="Abrir ficha avanzada">
+                                        <nz-icon nzType="expand" nzTheme="outline" style="color: #1890ff;" />
+                                    </button>
+                                    <button *nzSpaceItem nz-button nzType="text" nzDanger nzShape="circle" nz-tooltip
+                                        nzTooltipTitle="Eliminar variante" (click)="removeVariation(i)">
+                                        <span nz-icon nzType="delete"></span>
+                                    </button>
+                                </nz-space>
+                            </td>
+                        </tr>
+                        }
+                    </tbody>
+                </nz-table>
+            </div>
 
-    <button nz-button nzType="dashed" nzBlock (click)="addVariation()" style="margin-top: 16px;">
-        <span nz-icon nzType="plus"></span> Añadir otra variación (Color, Talla, etc.)
-    </button>
-
-    <div class="form-footer">
-        <nz-space>
-            <button *nzSpaceItem nz-button nzType="default" (click)="onCancel()">
-                Cancelar
+            <button nz-button nzType="dashed" nzBlock nzSize="large" (click)="addVariation()" style="margin-top: 16px;">
+                <span nz-icon nzType="plus"></span> Añadir otra variación (Talle, Color, Modelo)
             </button>
-            <button *nzSpaceItem nz-button nzType="primary" (click)="onSave()" [disabled]="productForm.invalid">
-                Guardar Producto y Variaciones
+        </nz-card>
+    </div>
+
+    <!-- Barra de acciones fija en la parte inferior -->
+    <div class="sticky-footer">
+        <nz-space>
+            <button *nzSpaceItem nz-button nzType="default" nzSize="large" (click)="onCancel()"
+                style="min-width: 120px;">
+                Cerrar
+            </button>
+            <button *nzSpaceItem nz-button nzType="primary" nzSize="large" (click)="onSave()"
+                [disabled]="productForm.invalid" style="min-width: 200px;">
+                Guardar Producto
             </button>
         </nz-space>
     </div>
@@ -87,11 +136,13 @@
 
 <ng-template #noVariations>
     <div class="empty-container">
-        <span nz-icon nzType="info-circle" nzTheme="outline" class="empty-icon"></span>
-        <p>Aún no has definido variantes para este producto.</p>
-        <p><small>Las variantes permiten manejar diferentes talles, colores o materiales.</small></p>
-        <button nz-button nzType="primary" nzSize="small" (click)="addVariation()">
-            Crear la primera variante
+        <img src="https://gw.alipayobjects.com/zos/antfincdn/ZHrcdLPrvN/empty.svg" alt="Vacío"
+            style="height: 100px; margin-bottom: 16px;">
+        <h4 style="color: #262626; font-size: 16px;">Aún no has definido variantes para este producto</h4>
+        <p style="color: #8c8c8c; margin-bottom: 24px;">Las variantes te permiten manejar diferentes talles, colores o
+            materiales dentro del mismo producto padre.</p>
+        <button nz-button nzType="primary" nzSize="large" (click)="addVariation()">
+            Comenzar creando una variante
         </button>
     </div>
 </ng-template>
