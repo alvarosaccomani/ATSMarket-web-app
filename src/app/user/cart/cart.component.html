@@ -1,81 +1,112 @@
-<div class="cart-container">
-    <h1><span nz-icon nzType="shopping-cart"></span> Carrito de Compras</h1>
+<div class="cart-page-wrapper">
+    <div class="cart-header">
+        <h1><span nz-icon nzType="shopping-cart" nzTheme="outline"></span> Carrito de Compras</h1>
+        <p>Revisa los artículos que has seleccionado antes de continuar con tu compra.</p>
+    </div>
 
-    <div nz-row [nzGutter]="[24, 24]">
+    <div nz-row [nzGutter]="[32, 32]" class="cart-grid-container">
 
-        <div nz-col [nzXs]="24" [nzMd]="16">
+        <!-- Columna Izquierda: Tabla de Productos -->
+        <div nz-col [nzXs]="24" [nzLg]="16">
 
-            <nz-card>
-                <div *ngIf="!(cartItems$ | async)?.length" class="empty-cart-message">
-                    <nz-empty nzNotFoundImage="simple" nzNotFoundContent="Tu carrito está vacío."></nz-empty>
-                    <button nz-button nzType="link" routerLink="/catalogo">Volver al Catálogo</button>
+            <!-- Estado Vacío -->
+            <nz-card class="premium-cart-card" [nzBordered]="false" *ngIf="!(cartItems$ | async)?.length">
+                <div class="empty-cart-message">
+                    <nz-empty nzNotFoundImage="https://gw.alipayobjects.com/zos/antfincdn/ZHrcdLPrvN/empty.svg"
+                        nzNotFoundContent="Aún no tienes artículos en tu carrito.">
+                        <button nz-button nzType="primary" nzSize="large" routerLink="/catalogo">Descubrir
+                            Productos</button>
+                    </nz-empty>
                 </div>
+            </nz-card>
 
-                <nz-table #basicTable *ngIf="(cartItems$ | async)?.length" [nzData]="(cartItems$ | async)!"
-                    [nzShowPagination]="false" [nzBordered]="true">
+            <!-- Tabla Premium -->
+            <nz-card class="premium-cart-card" [nzBordered]="false" *ngIf="(cartItems$ | async)?.length">
+                <nz-table #cartTable [nzData]="(cartItems$ | async)!" [nzShowPagination]="false" [nzBordered]="false"
+                    class="elegant-table">
 
                     <thead>
                         <tr>
-                            <th *ngFor="let col of listOfColumns">
-                                {{ col.name }}
-                            </th>
+                            <th *ngFor="let col of listOfColumns">{{ col.name }}</th>
                         </tr>
                     </thead>
 
                     <tbody>
-                        <tr *ngFor="let item of basicTable.data">
+                        <tr *ngFor="let item of cartTable.data" class="cart-row">
 
+                            <!-- Producto Info -->
                             <td>
-                                <div class="product-info">
-                                    <img [src]="item['prov_image']" alt="{{ item.prov_name }}" class="cart-img">
-                                    <span class="product-name">{{ item.prov_name }}</span>
+                                <div class="product-info-wrapper">
+                                    <div class="cart-img-box">
+                                        <img [src]="item['prov_image'] ? item['prov_image'] : 'https://placehold.co/100x100/eeeeee/8c8c8c?text=Foto'"
+                                            [alt]="item.prov_name" class="cart-img">
+                                    </div>
+                                    <div class="product-titles">
+                                        <span class="product-name">{{ item.prov_name }}</span>
+                                        <span class="product-sku">Ref: {{ item.prov_uuid }}</span>
+                                    </div>
                                 </div>
                             </td>
 
+                            <!-- Precio Unitario -->
                             <td>
-                                ${{ item.prov_suggestedminimumsellingprice | number: '1.2-2' }}
+                                <span class="unit-price">${{ item.prov_suggestedminimumsellingprice | number: '1.2-2'
+                                    }}</span>
                             </td>
 
+                            <!-- Cantidad -->
                             <td>
-                                <nz-input-number [ngModel]="item.quantity" [nzMin]="1"
+                                <nz-input-number [ngModel]="item.quantity" [nzMin]="1" nzSize="large"
                                     (ngModelChange)="updateItemQuantity(item.prov_uuid, $event)">
                                 </nz-input-number>
                             </td>
 
+                            <!-- Subtotal -->
                             <td>
-                                <strong>${{ item.subtotal | number: '1.2-2' }}</strong>
+                                <span class="subtotal-price">${{ item.subtotal | number: '1.2-2' }}</span>
                             </td>
 
-                            <td>
-                                <button nz-button nzType="text" nzDanger (click)="removeItem(item.prov_uuid)">
-                                    <span nz-icon nzType="delete"></span>
+                            <!-- Eliminar -->
+                            <td style="text-align: right;">
+                                <button nz-button nzType="text" nzDanger nzShape="circle"
+                                    (click)="removeItem(item.prov_uuid)" class="delete-btn">
+                                    <span nz-icon nzType="delete" nzTheme="outline"></span>
                                 </button>
                             </td>
+
                         </tr>
                     </tbody>
                 </nz-table>
             </nz-card>
         </div>
 
-        <div nz-col [nzXs]="24" [nzMd]="8">
-            <nz-card nzTitle="Resumen de la Compra" [nzBordered]="true">
+        <!-- Columna Derecha: Tarjeta Sticky de Resumen -->
+        <div nz-col [nzXs]="24" [nzLg]="8">
+            <div class="sticky-summary-wrapper">
+                <nz-card class="premium-summary-card" nzTitle="Resumen de la Compra" [nzBordered]="false">
 
-                <div class="summary-details">
-                    <nz-statistic nzTitle="Total de Artículos"
-                        [nzValue]="(cartItems$ | async)?.length || 0"></nz-statistic>
-                    <nz-divider></nz-divider>
-                    <nz-statistic nzTitle="Total a Pagar" [nzValue]="totalPrice" [nzValueStyle]="{ color: '#52c41a' }"
-                        [nzPrefix]="'ARS $'">
-                    </nz-statistic>
-                </div>
+                    <div class="summary-details">
+                        <nz-statistic nzTitle="Total de Artículos"
+                            [nzValue]="(cartItems$ | async)?.length || 0"></nz-statistic>
 
-                <div class="checkout-actions">
-                    <button nz-button nzType="primary" nzSize="large" [nzBlock]="true" (click)="checkout()"
-                        [disabled]="!(cartItems$ | async)?.length">
-                        Continuar Compra
-                    </button>
-                </div>
-            </nz-card>
+                        <nz-divider></nz-divider>
+
+                        <div class="total-row">
+                            <span class="total-label">Subtotal a Pagar</span>
+                            <span class="total-value">ARS ${{ totalPrice | number: '1.2-2' }}</span>
+                        </div>
+                    </div>
+
+                    <div class="checkout-actions">
+                        <button nz-button nzType="primary" nzSize="large" [nzBlock]="true" (click)="checkout()"
+                            [disabled]="!(cartItems$ | async)?.length" class="checkout-btn">
+                            Confirmar Orden / Pagar
+                        </button>
+                    </div>
+
+                </nz-card>
+            </div>
         </div>
+
     </div>
 </div>
