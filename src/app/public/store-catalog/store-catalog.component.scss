@@ -1,71 +1,299 @@
 .store-page-wrapper {
-    margin: 70px 0 0 0;
+    padding-top: 64px;
+    /* Empuja el contenido debajo del nav-bar publico */
+    background-color: #f0f2f5;
+    min-height: 100vh;
+}
 
-    .store-header-banner {
+/* -----------------------------
+   HERO BANNER DE LA TIENDA
+------------------------------*/
+.store-hero-banner {
+    position: relative;
+    background-color: #1f1f1f;
+    /* Fallback o fondo liso si no hay banner */
+    background-size: cover;
+    background-position: center;
+    padding: 32px 40px;
+    display: flex;
+    align-items: center;
+    border-bottom: 1px solid #d9d9d9;
+
+    .store-hero-overlay {
+        position: absolute;
+        top: 0;
+        left: 0;
+        width: 100%;
+        height: 100%;
+        background: linear-gradient(to right, rgba(0, 0, 0, 0.8) 0%, rgba(0, 0, 0, 0.4) 100%);
+        z-index: 1;
+    }
+
+    .store-hero-content {
+        position: relative;
+        z-index: 2;
         display: flex;
         align-items: center;
-        gap: 20px;
-        padding: 0 0 20px 0;
+        gap: 24px;
+        width: 100%;
+        max-width: 1200px;
+        margin: 0 auto;
 
         .store-logo {
             width: 100px;
             height: 100px;
             border-radius: 50%;
+            border: 4px solid #ffffff;
+            object-fit: cover;
+            box-shadow: 0 4px 12px rgba(0, 0, 0, 0.15);
+            background-color: #fff;
         }
 
-        .store-name {}
+        .store-info {
+            color: #ffffff;
+            /* Texto claro encima de fondos oscuros */
 
-        .store-description {}
-
-        .store-rubro {}
-    }
-
-    .store-catalogo-layout {
-        display: flex;
-        gap: 20px;
-
-        .store-filters-sidebar {
-            width: 300px;
-
-            .store-filters-container {
-                padding: 20px;
-                background-color: #fff;
-                border-radius: 8px;
-                box-shadow: 0 2px 8px rgba(0, 0, 0, 0.1);
-            }
-        }
-
-        .store-products-grid {
-            flex: 1;
-
-            .store-products-grid-title {}
-
-            .store-no-results {}
-
-            .store-product-card {
-                .store-product-card-image {}
-
-                .store-product-body {
-                    display: flex;
-                    flex-direction: column;
-                    gap: 10px;
-
-                    &::ng-deep .ant-card-meta-description {
-                        color: #8c8c8c;
-                        font-size: 12px;
-                        font-style: italic;
-                    }
-                }
-
-                .store-product-actions {
-                    display: flex;
-                    gap: 10px;
-                }
+            .store-name {
+                margin: 0;
+                font-size: 28px;
+                font-weight: 700;
+                color: #ffffff;
+                text-shadow: 0 2px 4px rgba(0, 0, 0, 0.3);
             }
 
-
+            .store-description {
+                margin: 4px 0 0 0;
+                font-size: 16px;
+                color: rgba(255, 255, 255, 0.85);
+            }
         }
     }
 }
 
-.store-not-found-container {}
+/* -----------------------------
+   LAYOUT DEL CATÁLOGO
+------------------------------*/
+.catalogo-layout {
+    background-color: transparent;
+    max-width: 1600px;
+    margin: 0 auto;
+}
+
+/* Sider premium */
+.filters-sider {
+    background: transparent !important;
+    /* Para que tome el fondo #f0f2f5 y se vean como paneles separados */
+
+    .filters-container {
+        padding: 32px 24px 24px 40px;
+        height: 100%;
+    }
+}
+
+.filter-title {
+    margin-top: 0;
+    margin-bottom: 24px;
+    font-size: 18px;
+    font-weight: 600;
+    color: #262626;
+    display: flex;
+    align-items: center;
+    gap: 8px;
+}
+
+.filter-subtitle {
+    margin: 0 0 12px 0;
+    font-weight: 500;
+    font-size: 14px;
+    color: #595959;
+}
+
+.filter-group {
+    margin-bottom: 24px;
+}
+
+.custom-checkbox-group {
+    display: flex;
+    flex-direction: column;
+    gap: 12px;
+
+    .checkbox-wrapper {
+        margin: 0;
+    }
+}
+
+.price-labels {
+    display: flex;
+    justify-content: space-between;
+    margin-top: 8px;
+
+    .price-bound {
+        font-weight: 500;
+        color: #1890ff;
+        background: #e6f7ff;
+        padding: 4px 8px;
+        border-radius: 4px;
+        font-size: 13px;
+    }
+}
+
+/* Area principal */
+.catalogo-content {
+    padding: 32px 40px;
+    display: flex;
+    flex-direction: column;
+}
+
+.list-header {
+    margin-bottom: 24px;
+
+    .result-count {
+        font-size: 20px;
+        font-weight: 600;
+        color: #1f1f1f;
+        margin: 0;
+    }
+}
+
+/* Cards Premium */
+.premium-product-card {
+    border-radius: 12px;
+    overflow: hidden;
+    border: none;
+    box-shadow: 0 4px 16px rgba(0, 0, 0, 0.04);
+    transition: all 0.3s cubic-bezier(0.25, 0.8, 0.25, 1);
+    display: flex;
+    flex-direction: column;
+    height: 100%;
+
+    &:hover {
+        transform: translateY(-4px);
+        box-shadow: 0 12px 24px rgba(0, 0, 0, 0.08);
+
+        .card-image-wrapper img {
+            transform: scale(1.05);
+        }
+    }
+
+    ::ng-deep .ant-card-cover {
+        margin: 0 !important;
+    }
+
+    .card-image-wrapper {
+        width: 100%;
+        padding-top: 100%;
+        /* Cuadrado 1:1 responsive */
+        position: relative;
+        overflow: hidden;
+        background-color: #fafafa;
+
+        img {
+            position: absolute;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            object-fit: cover;
+            transition: transform 0.4s ease;
+        }
+    }
+
+    ::ng-deep .ant-card-body {
+        flex: 1;
+        display: flex;
+        flex-direction: column;
+    }
+
+    ::ng-deep .ant-card-meta-title {
+        font-size: 16px;
+        font-weight: 600;
+        color: #262626;
+        white-space: normal;
+        display: -webkit-box;
+        -webkit-line-clamp: 2;
+        line-clamp: 2;
+        -webkit-box-orient: vertical;
+        line-height: 1.4;
+        height: 44px;
+        /* Siempre 2 líneas */
+        margin-bottom: 4px;
+    }
+
+    ::ng-deep .ant-card-meta-description {
+        font-size: 13px;
+        color: #8c8c8c;
+    }
+
+    .product-pricing {
+        margin-top: 16px;
+        flex: 1;
+
+        .price-tag {
+            font-size: 22px;
+            font-weight: 700;
+            color: #1890ff;
+        }
+    }
+
+    .product-actions {
+        margin-top: 16px;
+    }
+}
+
+.empty-state {
+    margin-top: 60px;
+    background: #fff;
+    border-radius: 12px;
+    padding: 60px;
+    box-shadow: 0 4px 16px rgba(0, 0, 0, 0.02);
+}
+
+.store-not-found-container {
+    padding-top: 120px;
+    text-align: center;
+}
+
+/* Responsive nativo para móvil */
+.mobile-filter-trigger {
+    display: none;
+    margin-bottom: 24px;
+
+    .full-width-button {
+        width: 100%;
+    }
+}
+
+.filters-container-mobile {
+    padding-bottom: 24px;
+}
+
+@media (max-width: 768px) {
+    .catalogo-content {
+        padding: 16px;
+    }
+
+    .filters-sider {
+        .filters-container {
+            padding: 16px;
+        }
+    }
+
+    .store-hero-banner {
+        padding: 24px 16px;
+
+        .store-hero-content {
+            flex-direction: column;
+            text-align: center;
+            gap: 16px;
+
+            .store-logo {
+                width: 80px;
+                height: 80px;
+            }
+        }
+    }
+
+    .mobile-filter-trigger {
+        display: block;
+    }
+}

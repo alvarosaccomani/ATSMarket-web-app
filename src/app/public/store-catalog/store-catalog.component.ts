@@ -17,6 +17,9 @@ import { NzSliderModule } from 'ng-zorro-antd/slider';
 import { NzInputModule } from 'ng-zorro-antd/input';
 import { NzMessageService } from 'ng-zorro-antd/message';
 import { NzDividerModule } from 'ng-zorro-antd/divider';
+import { NzDrawerModule } from 'ng-zorro-antd/drawer';
+import { NzEmptyModule } from 'ng-zorro-antd/empty';
+import { NzTagModule } from 'ng-zorro-antd/tag';
 
 // DIRECTIVAS
 import { ImagePreloadDirective } from '@directives/image-preload.directive';
@@ -34,7 +37,6 @@ import { CompaniesService } from '@services/companies.service';
     CommonModule,
     FormsModule,
     RouterLink,
-    // NG-ZORRO
     NzLayoutModule,
     NzGridModule,
     NzCardModule,
@@ -45,12 +47,15 @@ import { CompaniesService } from '@services/companies.service';
     NzSliderModule,
     NzInputModule,
     NzDividerModule,
+    NzDrawerModule,
+    NzEmptyModule,
+    NzTagModule,
     ImagePreloadDirective
   ],
   templateUrl: './store-catalog.component.html',
   styleUrl: './store-catalog.component.scss'
 })
-export class StoreCatalogComponent {
+export class StoreCatalogComponent implements OnInit {
 
   public store: CompanyInterface | null = null;
   public companieslug: string = '';
@@ -61,8 +66,18 @@ export class StoreCatalogComponent {
   // Modelos de Filtro
   public searchTerm: string = '';
   public selectedCategory: string | null = null;
+  public materialOptions = ['Resina', 'Madera', 'Plata 925', 'Metal', 'Otro']; // Ejemplo
   public selectedMaterials: string[] = [];
   public priceRange: [number, number] = [0, 50000];
+  public drawerVisible: boolean = false;
+
+  public categoryOptions = [
+    { label: 'Todos', value: null },
+    { label: 'Estatuas & Figuras', value: 'estatuas' },
+    { label: 'Rosarios de Autor', value: 'rosarios' },
+    { label: 'Medallas y Relicarios', value: 'medallas' },
+    { label: 'Otros Artículos', value: 'otros' }
+  ];
 
   constructor(
     private route: ActivatedRoute,
@@ -74,16 +89,13 @@ export class StoreCatalogComponent {
   ) { }
 
   ngOnInit(): void {
-    // Escucha los cambios en el parámetro de la URL (:slug)
     this.route.paramMap.pipe(
-      // 1. Obtiene el slug de la URL
       switchMap((params: ParamMap) => {
         const slug = params.get('slug');
         if (!slug) return of(null);
         this.companieslug = slug;
-        return this.companiesService.getCompanyBySlug(slug); // Busca la información de la tienda
+        return this.companiesService.getCompanyBySlug(slug);
       }),
-      // 2. Cuando tiene la tienda, busca sus productos
       switchMap((store: any) => {
         if (store && store.data) {
           this.store = store.data;
@@ -91,36 +103,51 @@ export class StoreCatalogComponent {
 
         if (!store) {
           this.message.error('Tienda no encontrada o URL incorrecta.');
-          this.router.navigate(['/']); // Redirige al Home Global si no existe
+          this.router.navigate(['/']);
           return of([]);
         }
-        // Llamada al ProductService, filtrando por el slug de la tienda
+
+        // Mock ID for API Request
         return this.productsVariationsService.getProductsVariations('28a0036e-2d6b-4e83-805a-1ca214a6b1e1', '', this.companieslug);
       })
     ).subscribe((products: any) => {
-      this.allStoreProducts = products.data;
-      this.initializeFilters(products.data);
+      this.allStoreProducts = products.data || [];
+      this.initializeFilters(this.allStoreProducts);
       this.applyFilters();
     });
   }
 
-  // Inicializa los rangos de precio y materiales disponibles
   public initializeFilters(products: ProductVariationInterface[]): void {
     if (products.length > 0) {
       const precios = products.map(p => p.prov_suggestedminimumsellingprice);
       const min = Math.min(...precios);
       const max = Math.max(...precios);
-      this.priceRange = [min, max];
+      this.priceRange = [Math.floor(min), Math.ceil(max) > 0 ? Math.ceil(max) : 50000];
     } else {
       this.priceRange = [0, 50000];
     }
   }
 
   public applyFilters(): void {
-    // Lógica de filtrado idéntica a CatalogoComponent, pero usando allStoreProducts
     let result = this.allStoreProducts;
 
-    // ... (Implementar aquí la lógica de filtrado por searchTerm, selectedCategory, selectedMaterials, priceRange) ...
+    if (this.searchTerm) {
+      const term = this.searchTerm.toLowerCase();
+      result = result.filter(p =>
+        p.prov_name.toLowerCase().includes(term) ||
+        p?.prov_sku?.toLowerCase().includes(term)
+      );
+    }
+
+    if (this.selectedCategory) {
+      // result = result.filter(p => p.categoria === this.selectedCategory);
+    }
+
+    if (this.selectedMaterials.length > 0) {
+      // result = result.filter(p => this.selectedMaterials.includes(p.material));
+    }
+
+    result = result.filter(p => p.prov_suggestedminimumsellingprice >= this.priceRange[0] && p.prov_suggestedminimumsellingprice <= this.priceRange[1]);
 
     this.filteredProducts = result;
   }
@@ -130,8 +157,12 @@ export class StoreCatalogComponent {
     this.message.success(`${producto.prov_name} agregado al carrito.`);
   }
 
-  public consultarPrecio(producto: ProductVariationInterface): void {
-    alert(`El precio de ${producto.prov_name} de ${this.store?.cmp_name} es $${producto.prov_suggestedminimumsellingprice}.`);
+  public openDrawer(): void {
+    this.drawerVisible = true;
   }
 
+  public closeDrawer(): void {
+    this.drawerVisible = false;
+    this.applyFilters();
+  }
 }

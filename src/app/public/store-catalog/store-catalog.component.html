@@ -1,75 +1,182 @@
 <div *ngIf="store; else notFound" class="store-page-wrapper">
 
-    <div class="store-header-banner">
-        <img [src]="store.cmp_logo" [alt]="store.cmp_name" class="store-logo">
-        <h1 class="store-name">{{ store.cmp_name }}</h1>
-        <p class="store-description">{{ store.cmp_description }}</p>
-        <!-- TODO: Implementar rubro de tienda -->
-        <!-- <p class="store-rubro">Rubro: {{ store.rubroPersonalizado }}</p> -->
+    <!-- Hero Banner Premium de la Tienda -->
+    <div class="store-hero-banner"
+        [ngStyle]="{'background-image': store.cmp_banner ? 'url(' + store.cmp_banner + ')' : 'none'}">
+        <div class="store-hero-overlay" *ngIf="store.cmp_banner"></div>
+        <div class="store-hero-content">
+            <img [src]="store.cmp_logo ? store.cmp_logo : 'https://placehold.co/150x150/eeeeee/8c8c8c?text=Logo'"
+                [alt]="store.cmp_name" class="store-logo">
+            <div class="store-info">
+                <h1 class="store-name">{{ store.cmp_name }}</h1>
+                <p class="store-description">{{ store.cmp_description || 'Explora nuestro catálogo oficial.' }}</p>
+                <nz-tag [nzColor]="'blue'" style="margin-top: 8px;">Tienda Oficial Verificada</nz-tag>
+            </div>
+        </div>
     </div>
 
-    <nz-layout class="store-catalogo-layout">
+    <!-- Layout Idéntico a Catalog Global -->
+    <nz-layout class="catalogo-layout" nzHasSider>
 
-        <nz-sider [nzWidth]="250" nzCollapsible [nzBreakpoint]="'md'" [nzCollapsedWidth]="0"
-            class="store-filters-sidebar">
-            <div class="store-filters-container">
-                <h3><span nz-icon nzType="filter"></span> Filtrar en {{ store.cmp_name }}</h3>
+        <nz-sider [nzWidth]="280" class="filters-sider" nzBreakpoint="md" [nzCollapsedWidth]="0" [nzZeroTrigger]="null">
+            <div class="filters-container">
+                <h3 class="filter-title"><span nz-icon nzType="filter" nzTheme="outline"></span> Filtrar Tienda</h3>
+
+                <div class="filter-group" style="margin-top: 24px;">
+                    <h4 class="filter-subtitle">Buscar en Tienda</h4>
+                    <nz-input-group [nzPrefix]="'search'">
+                        <input type="text" nz-input [(ngModel)]="searchTerm" (ngModelChange)="applyFilters()"
+                            placeholder="Ej: Medalla, Luján..." nzSize="large" />
+                    </nz-input-group>
+                </div>
 
                 <nz-divider></nz-divider>
 
-                <!-- TODO: Ver como se implementan los filtros-->
-
-                <!-- <div class="filter-group">
-                    <h4>Categoría Personalizada</h4>
+                <div class="filter-group">
+                    <h4 class="filter-subtitle">Categoría</h4>
                     <nz-select [(ngModel)]="selectedCategory" (ngModelChange)="applyFilters()"
-                        nzPlaceHolder="Todas las categorías">
-                        <nz-option [nzLabel]="'Todos'" [nzValue]="null"></nz-option>
-                        <nz-option *ngFor="let cat of store.categoriasPersonalizadas" [nzLabel]="cat"
-                            [nzValue]="cat"></nz-option>
+                        nzPlaceHolder="Todas las categorías" nzSize="large" style="width: 100%;">
+                        <nz-option *ngFor="let option of categoryOptions" [nzLabel]="option.label"
+                            [nzValue]="option.value"></nz-option>
                     </nz-select>
-                </div> -->
+                </div>
 
                 <nz-divider></nz-divider>
 
+                <div class="filter-group">
+                    <h4 class="filter-subtitle">Material / Variantes</h4>
+                    <nz-checkbox-group [(ngModel)]="selectedMaterials" (ngModelChange)="applyFilters()"
+                        class="custom-checkbox-group">
+                        <div *ngFor="let material of materialOptions" class="checkbox-wrapper">
+                            <label nz-checkbox [nzValue]="material">{{ material }}</label>
+                        </div>
+                    </nz-checkbox-group>
+                </div>
+
+                <nz-divider></nz-divider>
+
+                <div class="filter-group">
+                    <h4 class="filter-subtitle">Rango de Precio (ARS)</h4>
+                    <nz-slider [nzRange]="true" [nzDefaultValue]="priceRange" [nzMin]="0" [nzMax]="50000"
+                        (nzOnAfterChange)="applyFilters()" [(ngModel)]="priceRange">
+                    </nz-slider>
+                    <div class="price-labels">
+                        <span class="price-bound">${{ priceRange[0] }}</span>
+                        <span class="price-bound">${{ priceRange[1] }}</span>
+                    </div>
+                </div>
             </div>
         </nz-sider>
 
-        <nz-content class="store-products-grid">
-            <h2 class="store-products-grid-title">{{ filteredProducts.length }} Artículos de {{ store.cmp_name }}</h2>
+        <nz-content class="catalogo-content">
+            <!-- Botón Móvil -->
+            <div class="mobile-filter-trigger">
+                <button nz-button nzType="default" (click)="openDrawer()" class="full-width-button" nzSize="large">
+                    <span nz-icon nzType="filter"></span> Filtrar Artículos
+                </button>
+            </div>
 
-            <div nz-row [nzGutter]="[16, 16]">
-                <div *ngIf="filteredProducts.length === 0" class="store-no-results">
-                </div>
+            <div class="list-header">
+                <h2 class="result-count">{{ filteredProducts.length }} Artículos Encontrados</h2>
+            </div>
 
-                <div nz-col [nzXs]="24" [nzSm]="12" [nzMd]="8" [nzLg]="6" *ngFor="let producto of filteredProducts">
-                    <nz-card [nzHoverable]="true" class="store-product-card" [nzCover]="coverTemplate">
+            <!-- Empty State -->
+            <nz-empty *ngIf="filteredProducts.length === 0"
+                nzNotFoundContent="El vendedor no posee artículos que coincidan." class="empty-state">
+            </nz-empty>
+
+            <!-- Product Grid -->
+            <div nz-row [nzGutter]="[24, 24]" *ngIf="filteredProducts.length > 0">
+                <div nz-col [nzXs]="24" [nzSm]="12" [nzMd]="12" [nzLg]="8" [nzXl]="6"
+                    *ngFor="let producto of filteredProducts">
+
+                    <nz-card [nzHoverable]="true" class="premium-product-card" [nzCover]="coverTemplate"
+                        [nzBodyStyle]="{ padding: '16px' }">
                         <ng-template #coverTemplate>
-                            <img [alt]="producto.prov_name" [src]="producto.prov_image" class="store-product-card-image"
-                                default="assets/img/no-image.png" />
+                            <div class="card-image-wrapper">
+                                <img [alt]="producto.prov_name"
+                                    [src]="producto.prov_image ? producto.prov_image : 'https://placehold.co/400x400/eeeeee/8c8c8c?text=Sin+Foto'"
+                                    class="product-card-image" />
+                            </div>
                         </ng-template>
 
-                        <nz-card-meta class="store-product-body" [nzTitle]="producto.prov_name"
-                            [nzDescription]="'Ref: ' + producto.prov_uuid"></nz-card-meta>
+                        <nz-card-meta [nzTitle]="producto.prov_name"
+                            [nzDescription]="'Ref: ' + (producto.prov_sku || 'N/A')">
+                        </nz-card-meta>
 
-                        <div class="store-product-actions">
-                            <button nz-button nzType="default" (click)="consultarPrecio(producto)">Consultar
-                                Precio</button>
-                            <button nz-button nzType="primary" (click)="agregarAlCarrito(producto)">
-                                <span nz-icon nzType="shopping-cart"></span> Agregar
+                        <div class="product-pricing">
+                            <span class="price-tag">${{ producto.prov_suggestedminimumsellingprice }}</span>
+                        </div>
+
+                        <div class="product-actions" style="margin-top: 16px;">
+                            <button nz-button nzType="primary" nzBlock nzSize="large"
+                                (click)="agregarAlCarrito(producto)">
+                                Añadir al Carrito <span nz-icon nzType="shopping-cart"></span>
                             </button>
                         </div>
                     </nz-card>
                 </div>
             </div>
         </nz-content>
-    </nz-layout>
 
+        <!-- Drawer Lateral Móvil -->
+        <nz-drawer [nzClosable]="true" [nzVisible]="drawerVisible" nzPlacement="left" nzWidth="300px"
+            [nzTitle]="'Filtrar en ' + store.cmp_name" (nzOnClose)="closeDrawer()">
+            <ng-container *nzDrawerContent>
+                <div class="filters-container-mobile">
+                    <div class="filter-group">
+                        <h4 class="filter-subtitle">Buscar en Tienda</h4>
+                        <nz-input-group [nzPrefix]="'search'">
+                            <input type="text" nz-input [(ngModel)]="searchTerm" (ngModelChange)="applyFilters()"
+                                placeholder="Buscar artículo..." nzSize="large" />
+                        </nz-input-group>
+                    </div>
+
+                    <div class="filter-group" style="margin-top:16px;">
+                        <h4 class="filter-subtitle">Categoría</h4>
+                        <nz-select [(ngModel)]="selectedCategory" (ngModelChange)="applyFilters()"
+                            nzPlaceHolder="Todas las categorías" nzSize="large" style="width: 100%;">
+                            <nz-option *ngFor="let option of categoryOptions" [nzLabel]="option.label"
+                                [nzValue]="option.value"></nz-option>
+                        </nz-select>
+                    </div>
+
+                    <div class="filter-group" style="margin-top:16px;">
+                        <h4 class="filter-subtitle">Material</h4>
+                        <nz-checkbox-group [(ngModel)]="selectedMaterials" (ngModelChange)="applyFilters()"
+                            class="custom-checkbox-group">
+                            <div *ngFor="let material of materialOptions" class="checkbox-wrapper">
+                                <label nz-checkbox [nzValue]="material">{{ material }}</label>
+                            </div>
+                        </nz-checkbox-group>
+                    </div>
+
+                    <div class="filter-group" style="margin-top:16px; margin-bottom: 24px;">
+                        <h4 class="filter-subtitle">Rango de Precio (ARS)</h4>
+                        <nz-slider [nzRange]="true" [nzDefaultValue]="priceRange" [nzMin]="0" [nzMax]="50000"
+                            (nzOnAfterChange)="applyFilters()" [(ngModel)]="priceRange">
+                        </nz-slider>
+                        <div class="price-labels">
+                            <span class="price-bound">${{ priceRange[0] }}</span>
+                            <span class="price-bound">${{ priceRange[1] }}</span>
+                        </div>
+                    </div>
+
+                    <button nz-button nzType="primary" nzBlock nzSize="large" (click)="closeDrawer()">
+                        Aplicar y Cerrar
+                    </button>
+                </div>
+            </ng-container>
+        </nz-drawer>
+    </nz-layout>
 </div>
 
 <ng-template #notFound>
     <div class="store-not-found-container">
-        <h1>Tienda No Disponible</h1>
-        <p>Parece que la URL es incorrecta o la tienda no existe.</p>
-        <button nz-button nzType="primary" routerLink="/">Volver al Mercado Global</button>
+        <!-- Reemplazo del empty nativo en caso de error de ruta -->
+        <nz-empty nzNotFoundImage="https://gw.alipayobjects.com/zos/antfincdn/ZHrcdLPrvN/empty.svg"
+            nzNotFoundContent="Tienda No Disponible: Parece que la URL es incorrecta o la tienda ya no está activa.">
+            <button nz-button nzType="primary" routerLink="/">Volver al Catálogo Principal</button>
+        </nz-empty>
     </div>
 </ng-template>
