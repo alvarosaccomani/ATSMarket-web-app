@@ -20,6 +20,7 @@ import { NzDividerModule } from 'ng-zorro-antd/divider';
 import { NzDrawerModule } from 'ng-zorro-antd/drawer';
 import { NzEmptyModule } from 'ng-zorro-antd/empty';
 import { NzTagModule } from 'ng-zorro-antd/tag';
+import { NzPaginationModule } from 'ng-zorro-antd/pagination';
 
 // DIRECTIVAS
 import { ImagePreloadDirective } from '@directives/image-preload.directive';
@@ -50,6 +51,7 @@ import { CompaniesService } from '@services/companies.service';
     NzDrawerModule,
     NzEmptyModule,
     NzTagModule,
+    NzPaginationModule,
     ImagePreloadDirective
   ],
   templateUrl: './store-catalog.component.html',
@@ -62,6 +64,7 @@ export class StoreCatalogComponent implements OnInit {
 
   public allStoreProducts: ProductVariationInterface[] = [];
   public filteredProducts: ProductVariationInterface[] = [];
+  public paginatedProducts: ProductVariationInterface[] = [];
 
   // Modelos de Filtro
   public searchTerm: string = '';
@@ -70,6 +73,11 @@ export class StoreCatalogComponent implements OnInit {
   public selectedMaterials: string[] = [];
   public priceRange: [number, number] = [0, 50000];
   public drawerVisible: boolean = false;
+
+  // Variables de Paginación
+  public currentPage: number = 1;
+  public pageSize: number = 12;
+  public pageSizeOptions: number[] = [12, 24, 48, 96];
 
   public categoryOptions = [
     { label: 'Todos', value: null },
@@ -150,6 +158,26 @@ export class StoreCatalogComponent implements OnInit {
     result = result.filter(p => p.prov_suggestedminimumsellingprice >= this.priceRange[0] && p.prov_suggestedminimumsellingprice <= this.priceRange[1]);
 
     this.filteredProducts = result;
+    this.currentPage = 1;
+    this.updatePagination();
+  }
+
+  // --- MÉTODOS DE PAGINACIÓN ---
+  public updatePagination(): void {
+    const startIndex = (this.currentPage - 1) * this.pageSize;
+    const endIndex = startIndex + this.pageSize;
+    this.paginatedProducts = this.filteredProducts.slice(startIndex, endIndex);
+  }
+
+  public onPageChange(page: number): void {
+    this.currentPage = page;
+    this.updatePagination();
+    window.scrollTo({ top: 0, behavior: 'smooth' }); // Subir al cambiar página
+  }
+
+  public onPageSizeChange(): void {
+    this.currentPage = 1;
+    this.updatePagination();
   }
 
   public agregarAlCarrito(producto: ProductVariationInterface): void {
