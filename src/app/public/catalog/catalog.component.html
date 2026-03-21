@@ -59,8 +59,18 @@
             </button>
         </div>
 
-        <div class="list-header">
+        <!-- Header de Resultados y Paginación (Selector de Cantidad) -->
+        <div class="list-header"
+            style="display: flex; justify-content: space-between; align-items: center; flex-wrap: wrap; gap: 16px;">
             <h2 class="result-count">{{ filteredProducts.length }} Productos Encontrados</h2>
+
+            <div class="page-size-selector" style="display: flex; align-items: center; gap: 8px;">
+                <span style="color: #595959; font-weight: 500;">Mostrar:</span>
+                <nz-select [(ngModel)]="pageSize" (ngModelChange)="onPageSizeChange()" nzSize="large"
+                    style="width: 100px;">
+                    <nz-option *ngFor="let size of pageSizeOptions" [nzLabel]="size" [nzValue]="size"></nz-option>
+                </nz-select>
+            </div>
         </div>
 
         <!-- Empty State -->
@@ -69,9 +79,9 @@
         </nz-empty>
 
         <!-- Product Grid -->
-        <div nz-row [nzGutter]="[24, 24]" *ngIf="filteredProducts.length > 0">
+        <div nz-row [nzGutter]="[24, 24]" *ngIf="paginatedProducts.length > 0">
             <div nz-col [nzXs]="24" [nzSm]="12" [nzMd]="12" [nzLg]="8" [nzXl]="6"
-                *ngFor="let producto of filteredProducts">
+                *ngFor="let producto of paginatedProducts">
 
                 <nz-card [nzHoverable]="true" class="premium-product-card" [nzCover]="coverTemplate"
                     [nzBodyStyle]="{ padding: '16px' }">
@@ -98,6 +108,14 @@
                     </div>
                 </nz-card>
             </div>
+        </div>
+
+        <!-- Numeración de Páginas Inferior -->
+        <div class="pagination-container" style="margin-top: 36px; display: flex; justify-content: flex-end;"
+            *ngIf="filteredProducts.length > 12">
+            <nz-pagination [nzPageIndex]="currentPage" [nzTotal]="filteredProducts.length" [nzPageSize]="pageSize"
+                (nzPageIndexChange)="onPageChange($event)">
+            </nz-pagination>
         </div>
     </nz-content>
 

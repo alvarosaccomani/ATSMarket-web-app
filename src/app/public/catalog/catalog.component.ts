@@ -13,6 +13,7 @@ import { NzInputModule } from 'ng-zorro-antd/input';
 import { NzDividerModule } from 'ng-zorro-antd/divider';
 import { NzDrawerModule } from 'ng-zorro-antd/drawer';
 import { NzEmptyModule } from 'ng-zorro-antd/empty';
+import { NzPaginationModule } from 'ng-zorro-antd/pagination';
 
 import { ProductVariationInterface } from '@interfaces/product-variation';
 import { CartService } from '@services/cart.service';
@@ -34,7 +35,8 @@ import { ProductsService } from '@services/products.service';
     NzInputModule,
     NzDividerModule,
     NzDrawerModule,
-    NzEmptyModule
+    NzEmptyModule,
+    NzPaginationModule
   ],
   templateUrl: './catalog.component.html',
   styleUrl: './catalog.component.scss'
@@ -43,6 +45,7 @@ export class CatalogComponent implements OnInit {
 
   public allProducts: ProductVariationInterface[] = [];
   public filteredProducts: ProductVariationInterface[] = [];
+  public paginatedProducts: ProductVariationInterface[] = []; // Productos a renderizar en la página actual
 
   public searchTerm: string = '';
   public selectedCategory: string | null = null;
@@ -50,6 +53,11 @@ export class CatalogComponent implements OnInit {
   public selectedMaterials: string[] = [];
   public priceRange: [number, number] = [0, 50000];
   public drawerVisible = false;
+
+  // Variables de Paginación
+  public currentPage: number = 1;
+  public pageSize: number = 12;
+  public pageSizeOptions: number[] = [12, 24, 48, 96];
 
   public categoryOptions = [
     { label: 'Todos', value: null },
@@ -102,6 +110,26 @@ export class CatalogComponent implements OnInit {
     result = result.filter(p => p.prov_suggestedminimumsellingprice >= this.priceRange[0] && p.prov_suggestedminimumsellingprice <= this.priceRange[1]);
 
     this.filteredProducts = result;
+    this.currentPage = 1; // Resetear siempre a la primera página al filtrar
+    this.updatePagination();
+  }
+
+  // --- MÉTODOS DE PAGINACIÓN ---
+  public updatePagination(): void {
+    const startIndex = (this.currentPage - 1) * this.pageSize;
+    const endIndex = startIndex + this.pageSize;
+    this.paginatedProducts = this.filteredProducts.slice(startIndex, endIndex);
+  }
+
+  public onPageChange(page: number): void {
+    this.currentPage = page;
+    this.updatePagination();
+    window.scrollTo({ top: 0, behavior: 'smooth' }); // Subir al cambiar página opcionalmente
+  }
+
+  public onPageSizeChange(): void {
+    this.currentPage = 1;
+    this.updatePagination();
   }
 
   public agregarAlCarrito(producto: ProductVariationInterface): void {
