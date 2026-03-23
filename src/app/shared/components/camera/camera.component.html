@@ -1,1 +1,51 @@
-<p>camera works!</p>
+<div class="camera-container">
+    <button class="btn-back" (click)="onClose.emit()">
+        <span nz-icon nzType="arrow-left" nzTheme="outline"></span>
+    </button>
+
+    @if(isLoading) {
+    <div class="loading-overlay">
+        <nz-spin nzSimple nzSize="large"></nz-spin>
+        <span>Iniciando cámara...</span>
+    </div>
+    }
+
+    <video #video autoplay playsinline [style.display]="isCameraActive && !isLoading ? 'block' : 'none'">
+    </video>
+
+    @if(isCameraActive && !isLoading) {
+    <div class="camera-overlay-mask">
+        <div class="scanner-frame">
+            <div class="corner top-left"></div>
+            <div class="corner top-right"></div>
+            <div class="corner bottom-left"></div>
+            <div class="corner bottom-right"></div>
+            <div class="scan-line"></div>
+        </div>
+    </div>
+
+    <div class="capture-ui">
+        <button class="shutter-button" (click)="capturePhoto()"></button>
+        <p class="capture-hint">Encuadre el comprobante</p>
+    </div>
+    }
+
+    <canvas #canvas style="display: none;"></canvas>
+
+    @if(!isCameraActive && capturedImage && !isLoading) {
+    <div class="preview-overlay">
+        <img [src]="capturedImage" alt="Foto capturada">
+
+        <div class="preview-toolbar">
+            <button class="btn-action retake" (click)="retakePhoto()">
+                <span nz-icon nzType="reload" nzTheme="outline"></span> REINTENTAR
+            </button>
+            <button class="btn-action confirm" (click)="savePhoto()">
+                {{ existingImage ? 'CONTINUAR' : 'ACEPTAR' }}
+                <span nz-icon nzType="arrow-right" nzTheme="outline"></span>
+            </button>
+        </div>
+        <div class="editor-hint">¿La foto se ve nítida?</div>
+    </div>
+    }
+</div>

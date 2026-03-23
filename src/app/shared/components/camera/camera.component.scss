@@ -1,0 +1,222 @@
+.camera-container {
+    position: relative;
+    width: 100%;
+    height: 100%;
+    background: #000;
+    overflow: hidden;
+
+    video {
+        width: 100%;
+        height: 100%;
+        object-fit: cover;
+        position: absolute;
+        top: 0;
+        left: 0;
+        z-index: 1;
+    }
+
+    .btn-back {
+        position: absolute;
+        top: 20px;
+        left: 20px;
+        z-index: 1000;
+        background: none;
+        border: none;
+        color: white;
+        font-size: 1.5rem;
+        text-shadow: 0 2px 4px rgba(0, 0, 0, 0.5);
+    }
+
+    .loading-overlay {
+        position: absolute;
+        top: 50%;
+        left: 50%;
+        transform: translate(-50%, -50%);
+        color: white;
+        text-align: center;
+        z-index: 500;
+
+        span {
+            display: block;
+            margin-top: 10px;
+            font-size: 14px;
+        }
+    }
+
+    // UI de disparo
+    .capture-ui {
+        position: absolute;
+        bottom: 40px;
+        width: 100%;
+        display: flex;
+        flex-direction: column;
+        align-items: center;
+        z-index: 80;
+
+        .shutter-button {
+            width: 75px;
+            height: 75px;
+            border-radius: 50%;
+            border: 5px solid #fff;
+            background: rgba(255, 255, 255, 0.3);
+            box-shadow: 0 0 15px rgba(0, 0, 0, 0.5);
+            transition: transform 0.1s;
+
+            &:active {
+                transform: scale(0.9);
+            }
+        }
+    }
+
+    // --- PREVISUALIZACIÓN RÁPIDA (Post-Captura) ---
+    // Esta capa es solo para confirmar que la foto se tomó bien antes de ir al editor profesional
+    .preview-overlay {
+        position: absolute;
+        inset: 0;
+        z-index: 900;
+        background: #000;
+        display: flex;
+        flex-direction: column;
+
+        img {
+            flex: 1;
+            width: 100%;
+            height: 100%;
+            object-fit: contain; // Ver la foto completa
+            background: #111;
+        }
+
+        .preview-toolbar {
+            position: absolute;
+            bottom: 0;
+            width: 100%;
+            height: 120px;
+            background: linear-gradient(transparent, rgba(0, 0, 0, 0.9));
+            display: flex;
+            justify-content: space-around;
+            align-items: center;
+            padding-bottom: 30px;
+            z-index: 1001;
+        }
+
+        .btn-action {
+            border: none;
+            padding: 14px 28px;
+            border-radius: 30px;
+            font-weight: bold;
+            display: flex;
+            align-items: center;
+            gap: 10px;
+            font-size: 14px;
+            cursor: pointer;
+
+            &.retake {
+                background: #333;
+                color: white;
+            }
+
+            &.confirm {
+                background: #25d366;
+                color: white;
+            }
+        }
+
+        .editor-hint {
+            position: absolute;
+            top: 70px;
+            width: 100%;
+            text-align: center;
+            color: #fff;
+            font-weight: 500;
+            text-shadow: 0 2px 4px #000;
+        }
+    }
+}
+
+// Estilos de la máscara (Scanner)
+.camera-overlay-mask {
+    position: absolute;
+    inset: 0;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    z-index: 5;
+    pointer-events: none;
+
+    .scanner-frame {
+        width: 80vw;
+        height: 65vh;
+        position: relative;
+        box-shadow: 0 0 0 1000px rgba(0, 0, 0, 0.5);
+        border: 1px solid rgba(255, 255, 255, 0.3);
+
+        .corner {
+            position: absolute;
+            width: 20px;
+            height: 20px;
+            border: 4px solid #25d366;
+        }
+
+        .top-left {
+            top: -2px;
+            left: -2px;
+            border-right: none;
+            border-bottom: none;
+        }
+
+        .top-right {
+            top: -2px;
+            right: -2px;
+            border-left: none;
+            border-bottom: none;
+        }
+
+        .bottom-left {
+            bottom: -2px;
+            left: -2px;
+            border-right: none;
+            border-top: none;
+        }
+
+        .bottom-right {
+            bottom: -2px;
+            right: -2px;
+            border-left: none;
+            border-top: none;
+        }
+
+        .scan-line {
+            position: absolute;
+            width: 100%;
+            height: 2px;
+            background: #25d366;
+            box-shadow: 0 0 10px #25d366;
+            animation: scan 3s infinite linear;
+        }
+    }
+}
+
+@keyframes scan {
+    0% {
+        top: 0;
+    }
+
+    50% {
+        top: 100%;
+    }
+
+    100% {
+        top: 0;
+    }
+}
+
+.capture-hint {
+    color: white;
+    margin-top: 15px;
+    background: rgba(0, 0, 0, 0.5);
+    padding: 6px 16px;
+    border-radius: 20px;
+    font-size: 13px;
+    text-align: center;
+    z-index: 80;
+}
