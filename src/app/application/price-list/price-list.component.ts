@@ -12,6 +12,9 @@ import { NzButtonModule } from 'ng-zorro-antd/button';
 import { NzEmptyModule } from 'ng-zorro-antd/empty';
 import { NzTagModule } from 'ng-zorro-antd/tag';
 import { NzImageModule } from 'ng-zorro-antd/image';
+import { NzInputNumberModule } from 'ng-zorro-antd/input-number';
+import { NzToolTipModule } from 'ng-zorro-antd/tooltip';
+import { NzMessageService } from 'ng-zorro-antd/message';
 
 import { ProductVariationInterface } from '@interfaces/product-variation';
 import { ProductVariationsService } from '@services/product-variations.service';
@@ -31,6 +34,8 @@ import { CameraComponent } from '../../shared/components/camera/camera.component
     NzEmptyModule,
     NzTagModule,
     NzImageModule,
+    NzInputNumberModule,
+    NzToolTipModule,
     CameraComponent
   ],
   templateUrl: './price-list.component.html',
@@ -47,7 +52,13 @@ export class PriceListComponent implements OnInit {
   expandedRows: { [key: string]: boolean } = {}; // Realiza el seguimiento de qué filas están abiertas
   activeCameraRowId: string | null = null; // Fila que tiene activa la cámara
 
-  constructor(private productService: ProductVariationsService) { }
+  formatterDollar = (value: number): string => `$ ${value}`;
+  parserDollar = (value: string): number => Number(value.replace(/\$\s?|(,*)/g, '')) || 0;
+
+  constructor(
+    private productService: ProductVariationsService,
+    private message: NzMessageService
+  ) { }
 
   ngOnInit(): void {
     this.productService.getProductsVariations('28a0036e-2d6b-4e83-805a-1ca214a6b1e1', '').subscribe((products: any) => {
@@ -77,6 +88,11 @@ export class PriceListComponent implements OnInit {
     product.prov_image = base64Image;
     // Tras confirmar la foto editada, cerramos la cámara
     this.activeCameraRowId = null;
+  }
+
+  savePrice(product: ProductVariationInterface): void {
+    // Aquí enviarás el nuevo número a tu base de datos
+    this.message.success(`¡El precio de "${product.prov_name}" se actualizó temporalmente a $${product.prov_suggestedminimumsellingprice}!`);
   }
 
   private removeAccents(str: string): string {

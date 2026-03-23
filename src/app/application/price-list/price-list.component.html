@@ -86,6 +86,23 @@
                                 <h4 style="margin: 0 0 8px 0; font-size: 16px;">{{ data.prov_name }}</h4>
                                 <p style="color: #595959; margin: 0 0 12px 0;">{{ data.prov_description || 'Sin
                                     descripción adicional para este artículo.' }}</p>
+
+                                <div style="margin-bottom: 16px; display: flex; align-items: flex-end; gap: 8px;">
+                                    <div>
+                                        <label
+                                            style="display: block; font-size: 12px; color: #8c8c8c; margin-bottom: 4px;">Modificar
+                                            Precio Base</label>
+                                        <nz-input-number [(ngModel)]="data.prov_suggestedminimumsellingprice"
+                                            [nzMin]="0" [nzStep]="100" [nzFormatter]="formatterDollar"
+                                            [nzParser]="parserDollar" nzSize="large" style="width: 150px;">
+                                        </nz-input-number>
+                                    </div>
+                                    <button nz-button nzType="default" nzSize="large" (click)="savePrice(data)"
+                                        nz-tooltip="Guardar en base de datos">
+                                        <span nz-icon nzType="save" nzTheme="outline"></span>
+                                    </button>
+                                </div>
+
                                 <div
                                     style="display: flex; gap: 12px; align-items: center; justify-content: space-between;">
                                     <nz-tag nzColor="blue">Stock Disponible</nz-tag>
