@@ -132,6 +132,18 @@
     }
 }
 
+/* 
+ * Corrección de NG-ZORRO para Scroll Horizontal:
+ * Evita que el contenido expandido se vuelva 'sticky' y lo fuerza 
+ * a scrollear fluidamente junto con las otras columnas de la tabla.
+ */
+::ng-deep .ant-table-expanded-row-fixed {
+    position: relative !important;
+    width: 100% !important;
+    min-width: max-content !important;
+    padding: 0 !important;
+}
+
 .empty-state-pad {
     padding: 60px 0;
 }

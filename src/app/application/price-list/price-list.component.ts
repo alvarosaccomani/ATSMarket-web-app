@@ -40,6 +40,8 @@ export class PriceListComponent implements OnInit {
   filteredProducts: ProductVariationInterface[] = [];
   filterText: string = '';
 
+  expandedRows: { [key: string]: boolean } = {}; // Realiza el seguimiento de qué filas están abiertas
+
   constructor(private productService: ProductVariationsService) { }
 
   ngOnInit(): void {
@@ -54,6 +56,11 @@ export class PriceListComponent implements OnInit {
       return basePrice * (1 + this.RECARGO_POSTNET);
     }
     return basePrice;
+  }
+
+  toggleExpand(id: string): void {
+    // Si ya está abierto, lo cierra. Si no existe o está cerrado, lo abre.
+    this.expandedRows[id] = !this.expandedRows[id];
   }
 
   private removeAccents(str: string): string {

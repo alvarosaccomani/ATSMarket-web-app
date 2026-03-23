@@ -42,25 +42,46 @@
 
             <thead>
                 <tr>
+                    <th nzWidth="50px"></th><!-- Ícono expandir -->
                     <th nzWidth="150px">Referencia SKU</th>
-                    <th nzWidth="300px">Nombre del Artículo</th>
+                    <th nzWidth="400px">Nombre del Artículo</th>
                     <th nzWidth="150px" class="text-right">Precio Total de Venta</th>
                 </tr>
             </thead>
             <tbody>
-                <tr *ngFor="let data of priceListTable.data">
-                    <td>
-                        <nz-tag [nzColor]="'default'">{{ data.prov_code || data.prov_sku || (data.pro_uuid | slice:0:8)
-                            || 'S/N' }}</nz-tag>
-                    </td>
-                    <td class="product-name-col">{{ data.prov_name }}</td>
-                    <td class="text-right price-col">
-                        <span class="price-value" [class.highlighted]="paymentMethod === 'postnet'">
-                            {{ getFinalPrice(data.prov_suggestedminimumsellingprice) |
-                            currency:'ARS':'symbol-narrow':'1.0-2' }}
-                        </span>
-                    </td>
-                </tr>
+                <ng-container *ngFor="let data of priceListTable.data">
+                    <tr class="expandable-row" (click)="toggleExpand(data.pro_uuid)" style="cursor: pointer;">
+                        <td [nzExpand]="!!expandedRows[data.pro_uuid]" style="pointer-events: none;"></td>
+                        <td>
+                            <nz-tag [nzColor]="'default'">{{ data.prov_code || data.prov_sku || (data.pro_uuid |
+                                slice:0:8) || 'S/N' }}</nz-tag>
+                        </td>
+                        <td class="product-name-col">{{ data.prov_name }}</td>
+                        <td class="text-right price-col">
+                            <span class="price-value" [class.highlighted]="paymentMethod === 'postnet'">
+                                {{ getFinalPrice(data.prov_suggestedminimumsellingprice) |
+                                currency:'ARS':'symbol-narrow':'1.0-2' }}
+                            </span>
+                        </td>
+                    </tr>
+
+                    <tr [nzExpand]="!!expandedRows[data.pro_uuid]">
+                        <div class="product-details-expansion" style="display: flex; gap: 24px; padding: 16px;">
+                            <img [src]="data.prov_image ? data.prov_image : 'https://placehold.co/150x150/eeeeee/8c8c8c?text=Sin+Foto'"
+                                [alt]="data.prov_name"
+                                style="width: 120px; height: 120px; object-fit: cover; border-radius: 8px; border: 1px solid #e8e8e8;">
+                            <div class="expansion-info"
+                                style="display: flex; flex-direction: column; justify-content: center;">
+                                <h4 style="margin: 0 0 8px 0; font-size: 16px;">{{ data.prov_name }}</h4>
+                                <p style="color: #595959; margin: 0 0 12px 0;">{{ data.prov_description || 'Sin
+                                    descripción adicional para este artículo.' }}</p>
+                                <div>
+                                    <nz-tag nzColor="blue">Stock Disponible</nz-tag>
+                                </div>
+                            </div>
+                        </div>
+                    </tr>
+                </ng-container>
             </tbody>
         </nz-table>
 
