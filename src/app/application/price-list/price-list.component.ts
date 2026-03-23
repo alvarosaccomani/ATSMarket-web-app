@@ -19,6 +19,7 @@ import { NzMessageService } from 'ng-zorro-antd/message';
 import { ProductVariationInterface } from '@interfaces/product-variation';
 import { ProductVariationsService } from '@services/product-variations.service';
 import { CameraComponent } from '../../shared/components/camera/camera.component';
+import { MessageService } from '@services/message.service';
 
 @Component({
   selector: 'app-price-list',
@@ -56,12 +57,13 @@ export class PriceListComponent implements OnInit {
   parserDollar = (value: string): number => Number(value.replace(/\$\s?|(,*)/g, '')) || 0;
 
   constructor(
-    private productService: ProductVariationsService,
-    private message: NzMessageService
+    private _productVariationsService: ProductVariationsService,
+    private message: NzMessageService,
+    private _messageService: MessageService
   ) { }
 
   ngOnInit(): void {
-    this.productService.getProductsVariations('28a0036e-2d6b-4e83-805a-1ca214a6b1e1', '').subscribe((products: any) => {
+    this._productVariationsService.getProductsVariations('28a0036e-2d6b-4e83-805a-1ca214a6b1e1', '').subscribe((products: any) => {
       this.products = [...products.data];
       this.filteredProducts = [...products.data];
     });
@@ -83,16 +85,41 @@ export class PriceListComponent implements OnInit {
     }
   }
 
+  private updateProductVariation(productVariation: any): void {
+    this._productVariationsService.updateProductVariation(productVariation).subscribe(
+      (response: any) => {
+        if (response.success) {
+          this._messageService.success(
+            "Informacion",
+            "El Producto fue actualizado correctamente.",
+            () => {
+            }
+          );
+        } else {
+          //this.status = 'error'
+        }
+      },
+      (error: any) => {
+        let errorMessage = <any>error;
+        console.log(errorMessage);
+
+        if (errorMessage != null) {
+          //this.status = 'error'
+        }
+      }
+    )
+  }
+
   saveNewPhoto(product: ProductVariationInterface, base64Image: string): void {
     // Aquí actualizarías el servidor. Por ahora, parcheamos el objeto en la vista:
     product.prov_image = base64Image;
     // Tras confirmar la foto editada, cerramos la cámara
     this.activeCameraRowId = null;
+    this.updateProductVariation(product);
   }
 
   savePrice(product: ProductVariationInterface): void {
-    // Aquí enviarás el nuevo número a tu base de datos
-    this.message.success(`¡El precio de "${product.prov_name}" se actualizó temporalmente a $${product.prov_suggestedminimumsellingprice}!`);
+    this.updateProductVariation(product);
   }
 
   private removeAccents(str: string): string {
