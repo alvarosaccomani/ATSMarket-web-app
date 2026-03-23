@@ -11,57 +11,65 @@
         </div>
 
         <!-- Seccion Agrupada de Ajustes -->
-        <nz-card class="premium-card" [nzBordered]="false" *ngIf="!isLoading">
-            <nz-list nzItemLayout="horizontal" [nzSplit]="true" class="settings-list">
-                <nz-list-item *ngFor="let setting of settings">
+        <ng-container *ngIf="!isLoading">
+            <div *ngFor="let group of groupedSettings" style="margin-bottom: 24px;">
+                <h3 style="margin-bottom: 12px; color: #1890ff; display: flex; align-items: center; gap: 8px;">
+                    <span nz-icon nzType="appstore" nzTheme="outline"></span>
+                    Configuraciones de {{ group.groupName }}
+                </h3>
 
-                    <nz-list-item-meta>
-                        <nz-list-item-meta-title>
-                            <div style="display: flex; align-items: center; gap: 12px; margin-bottom: 4px;">
-                                <span style="font-size: 16px; color: #1f1f1f; font-weight: 500;">{{
-                                    setting.cmps_parameter }}</span>
-                                <nz-tag [nzColor]="'blue'">{{ setting.cmps_group }}</nz-tag>
+                <nz-card class="premium-card" [nzBordered]="false">
+                    <nz-list nzItemLayout="horizontal" [nzSplit]="true" class="settings-list">
+                        <nz-list-item *ngFor="let setting of group.items">
+
+                            <nz-list-item-meta>
+                                <nz-list-item-meta-title>
+                                    <div style="display: flex; align-items: center; gap: 12px; margin-bottom: 4px;">
+                                        <span style="font-size: 16px; color: #1f1f1f; font-weight: 500;">{{
+                                            setting.cmps_parameter }}</span>
+                                    </div>
+                                </nz-list-item-meta-title>
+                                <nz-list-item-meta-description>
+                                    <span style="color: #8c8c8c; font-size: 14px;">{{ setting.cmps_description }}</span>
+                                </nz-list-item-meta-description>
+                            </nz-list-item-meta>
+
+                            <div nz-list-item-action class="setting-action-control">
+                                <!-- Booleano (Toggle) -->
+                                <nz-switch *ngIf="setting.cmps_datatype === 'boolean'"
+                                    [ngModel]="getBooleanValue(setting.cmps_value)"
+                                    (ngModelChange)="setBooleanValue(setting, $event)">
+                                </nz-switch>
+
+                                <!-- Lista Desplegable (Select) -->
+                                <nz-select *ngIf="setting.cmps_datatype === 'select'" [(ngModel)]="setting.cmps_value"
+                                    style="width: 240px;">
+                                    <nz-option *ngFor="let opt of getOptions(setting.cmps_options)" [nzValue]="opt"
+                                        [nzLabel]="opt">
+                                    </nz-option>
+                                </nz-select>
+
+                                <!-- Hex Color Picker -->
+                                <div *ngIf="setting.cmps_datatype === 'color'" class="color-picker-wrapper">
+                                    <input type="color" class="custom-color-input" [(ngModel)]="setting.cmps_value" />
+                                    <span class="color-hex">{{ setting.cmps_value | uppercase }}</span>
+                                </div>
+
+                                <!-- Number -->
+                                <nz-input-number *ngIf="setting.cmps_datatype === 'number'"
+                                    [(ngModel)]="setting.cmps_value" style="width: 140px;" [nzMin]="0">
+                                </nz-input-number>
+
+                                <!-- Input Texto Libre -->
+                                <input *ngIf="setting.cmps_datatype === 'string'" nz-input
+                                    [(ngModel)]="setting.cmps_value" style="width: 240px;" />
                             </div>
-                        </nz-list-item-meta-title>
-                        <nz-list-item-meta-description>
-                            <span style="color: #8c8c8c; font-size: 14px;">{{ setting.cmps_description }}</span>
-                        </nz-list-item-meta-description>
-                    </nz-list-item-meta>
 
-                    <div nz-list-item-action class="setting-action-control">
-                        <!-- Booleano (Toggle) -->
-                        <nz-switch *ngIf="setting.cmps_datatype === 'boolean'"
-                            [ngModel]="getBooleanValue(setting.cmps_value)"
-                            (ngModelChange)="setBooleanValue(setting, $event)">
-                        </nz-switch>
-
-                        <!-- Lista Desplegable (Select) -->
-                        <nz-select *ngIf="setting.cmps_datatype === 'select'" [(ngModel)]="setting.cmps_value"
-                            style="width: 240px;">
-                            <nz-option *ngFor="let opt of getOptions(setting.cmps_options)" [nzValue]="opt"
-                                [nzLabel]="opt">
-                            </nz-option>
-                        </nz-select>
-
-                        <!-- Hex Color Picker -->
-                        <div *ngIf="setting.cmps_datatype === 'color'" class="color-picker-wrapper">
-                            <input type="color" class="custom-color-input" [(ngModel)]="setting.cmps_value" />
-                            <span class="color-hex">{{ setting.cmps_value | uppercase }}</span>
-                        </div>
-
-                        <!-- Number -->
-                        <nz-input-number *ngIf="setting.cmps_datatype === 'number'" [(ngModel)]="setting.cmps_value"
-                            style="width: 140px;" [nzMin]="0">
-                        </nz-input-number>
-
-                        <!-- Input Texto Libre -->
-                        <input *ngIf="setting.cmps_datatype === 'string'" nz-input [(ngModel)]="setting.cmps_value"
-                            style="width: 240px;" />
-                    </div>
-
-                </nz-list-item>
-            </nz-list>
-        </nz-card>
+                        </nz-list-item>
+                    </nz-list>
+                </nz-card>
+            </div>
+        </ng-container>
     </div>
 
     <div class="sticky-footer">

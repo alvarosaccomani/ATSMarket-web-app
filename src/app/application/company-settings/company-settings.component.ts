@@ -44,6 +44,7 @@ import { CompanySettingInterface } from '@interfaces/company-setting';
 export class CompanySettingsComponent implements OnInit {
 
   public settings: CompanySettingInterface[] = [];
+  public groupedSettings: { groupName: string, items: CompanySettingInterface[] }[] = [];
   public isLoading: boolean = true;
   private cmp_uuid: string = '';
 
@@ -99,6 +100,25 @@ export class CompanySettingsComponent implements OnInit {
       // Si no existe (es una config nueva agregada por primera vez al hardcode), devolvemos el valor por defecto del esquema
       return { ...schemaItem };
     });
+
+    this.groupSettingsByCategory();
+  }
+
+  private groupSettingsByCategory(): void {
+    const groupsMap = new Map<string, CompanySettingInterface[]>();
+
+    for (const setting of this.settings) {
+      const group = setting.cmps_group || 'General';
+      if (!groupsMap.has(group)) {
+        groupsMap.set(group, []);
+      }
+      groupsMap.get(group)!.push(setting);
+    }
+
+    this.groupedSettings = Array.from(groupsMap.entries()).map(([groupName, items]) => ({
+      groupName,
+      items
+    }));
   }
 
   public getOptions(optionsString: string): string[] {
