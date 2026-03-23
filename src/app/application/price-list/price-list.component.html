@@ -1,46 +1,76 @@
-<div class="product-list-container">
-    <h2>📋 Lista de Productos</h2>
-
-    <div class="payment-controls">
-        <label>
-            <input type="radio" name="payment" value="efectivo" [(ngModel)]="paymentMethod" checked>
-            💰 **Efectivo** (Precio base)
-        </label>
-        <label>
-            <input type="radio" name="payment" value="postnet" [(ngModel)]="paymentMethod">
-            💳 **Postnet** (+10% Recargo)
-        </label>
+<div class="price-list-wrapper">
+    <div class="header-actions">
+        <h2><span nz-icon nzType="container" nzTheme="outline"></span> Lista de Precios</h2>
+        <p>Consulta rápidamente los precios actualizados de tus productos y su recargo por método de pago.</p>
     </div>
 
-    <div class="filter-controls">
-        <input type="text" placeholder="Filtrar por nombre o ID..." [(ngModel)]="filterText" (input)="applyFilter()"
-            class="filter-input">
-    </div>
+    <nz-card class="premium-card" [nzBordered]="false">
 
-    <div class="table-responsive-wrapper">
-        <table class="data-table">
+        <!-- Controles Superiores -->
+        <div class="toolbar-controls">
+
+            <div class="search-box">
+                <nz-input-group [nzPrefix]="prefixIconSearch" nzSize="large">
+                    <input type="text" nz-input placeholder="Filtrar por nombre o ID de artículo..."
+                        [(ngModel)]="filterText" (ngModelChange)="applyFilter()" />
+                </nz-input-group>
+                <ng-template #prefixIconSearch>
+                    <span nz-icon nzType="search"></span>
+                </ng-template>
+            </div>
+
+            <div class="payment-switch">
+                <span class="switch-label">Cobro:</span>
+                <div class="radio-container-mobile">
+                    <nz-radio-group [(ngModel)]="paymentMethod" nzButtonStyle="solid" nzSize="large">
+                        <label nz-radio-button nzValue="efectivo">
+                            <span nz-icon nzType="dollar" nzTheme="outline"></span> Efectivo
+                        </label>
+                        <label nz-radio-button nzValue="postnet">
+                            <span nz-icon nzType="credit-card" nzTheme="outline"></span> Postnet
+                        </label>
+                    </nz-radio-group>
+                </div>
+            </div>
+
+        </div>
+
+        <!-- Tabla de Datos -->
+        <nz-table #priceListTable [nzData]="filteredProducts" [nzFrontPagination]="true" [nzPageSize]="15"
+            [nzShowSizeChanger]="true" [nzPageSizeOptions]="[15, 30, 60, 150]" [nzBordered]="false"
+            class="elegant-table" [nzNoResult]="noResultsTemplate" [nzScroll]="{ x: '600px' }">
+
             <thead>
                 <tr>
-                    <th>ID</th>
-                    <th>Nombre</th>
-                    <th>Precio **({{ paymentMethod === 'efectivo' ? 'Efectivo' : 'Postnet' }})**</th>
+                    <th nzWidth="150px">Referencia SKU</th>
+                    <th nzWidth="300px">Nombre del Artículo</th>
+                    <th nzWidth="150px" class="text-right">Precio Total de Venta</th>
                 </tr>
             </thead>
             <tbody>
-                <tr *ngFor="let product of filteredProducts">
-                    <td>{{ product.prov_code }}</td>
-                    <td>{{ product.prov_name }}</td>
-                    <td>{{ getFinalPrice(product.prov_suggestedminimumsellingprice) | currency:'USD':'symbol':'1.0-2' }}
+                <tr *ngFor="let data of priceListTable.data">
+                    <td>
+                        <nz-tag [nzColor]="'default'">{{ data.prov_code || data.prov_sku || (data.pro_uuid | slice:0:8)
+                            || 'S/N' }}</nz-tag>
+                    </td>
+                    <td class="product-name-col">{{ data.prov_name }}</td>
+                    <td class="text-right price-col">
+                        <span class="price-value" [class.highlighted]="paymentMethod === 'postnet'">
+                            {{ getFinalPrice(data.prov_suggestedminimumsellingprice) |
+                            currency:'ARS':'symbol-narrow':'1.0-2' }}
+                        </span>
                     </td>
                 </tr>
             </tbody>
-            <tfoot *ngIf="filteredProducts.length === 0">
-                <tr>
-                    <td colspan="4" class="no-results">
-                        No se encontraron productos que coincidan con "{{ filterText }}".
-                    </td>
-                </tr>
-            </tfoot>
-        </table>
-    </div>
+        </nz-table>
+
+    </nz-card>
 </div>
+
+<!-- Template: Sin Resultados -->
+<ng-template #noResultsTemplate>
+    <div class="empty-state-pad">
+        <nz-empty nzNotFoundImage="https://gw.alipayobjects.com/zos/antfincdn/ZHrcdLPrvN/empty.svg"
+            nzNotFoundContent="No se encontraron artículos con ese filtro."></nz-empty>
+    </div>
+</ng-template>

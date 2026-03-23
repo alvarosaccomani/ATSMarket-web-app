@@ -1,6 +1,17 @@
 import { Component, OnInit } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { FormsModule } from '@angular/forms';
+
+// NG-ZORRO
+import { NzCardModule } from 'ng-zorro-antd/card';
+import { NzTableModule } from 'ng-zorro-antd/table';
+import { NzInputModule } from 'ng-zorro-antd/input';
+import { NzIconModule } from 'ng-zorro-antd/icon';
+import { NzRadioModule } from 'ng-zorro-antd/radio';
+import { NzButtonModule } from 'ng-zorro-antd/button';
+import { NzEmptyModule } from 'ng-zorro-antd/empty';
+import { NzTagModule } from 'ng-zorro-antd/tag';
+
 import { ProductVariationInterface } from '@interfaces/product-variation';
 import { ProductVariationsService } from '@services/product-variations.service';
 
@@ -9,23 +20,27 @@ import { ProductVariationsService } from '@services/product-variations.service';
   imports: [
     CommonModule,
     FormsModule,
+    NzCardModule,
+    NzTableModule,
+    NzInputModule,
+    NzIconModule,
+    NzRadioModule,
+    NzButtonModule,
+    NzEmptyModule,
+    NzTagModule
   ],
   templateUrl: './price-list.component.html',
   styleUrl: './price-list.component.scss'
 })
 export class PriceListComponent implements OnInit {
-  // 💡 NUEVOS ATRIBUTOS para el manejo de pagos
   paymentMethod: 'efectivo' | 'postnet' = 'efectivo'; // Por defecto: Efectivo
   private readonly RECARGO_POSTNET = 0.10; // 10%
 
   products: ProductVariationInterface[] = [];
-
   filteredProducts: ProductVariationInterface[] = [];
   filterText: string = '';
 
-  constructor(
-    private productService: ProductVariationsService
-  ) { }
+  constructor(private productService: ProductVariationsService) { }
 
   ngOnInit(): void {
     this.productService.getProductsVariations('28a0036e-2d6b-4e83-805a-1ca214a6b1e1', '').subscribe((products: any) => {
@@ -34,25 +49,17 @@ export class PriceListComponent implements OnInit {
     });
   }
 
-  // 💡 NUEVO MÉTODO: Calcula el precio final basado en el método de pago seleccionado.
   getFinalPrice(basePrice: number): number {
     if (this.paymentMethod === 'postnet') {
-      // Precio + 10% de recargo
       return basePrice * (1 + this.RECARGO_POSTNET);
     }
-    // Si es 'efectivo', devuelve el precio base
     return basePrice;
   }
 
-  /**
-   * 💡 Función Auxiliar para eliminar acentos.
-   * Utiliza la normalización Unicode (NFD) para separar el carácter base del acento.
-   */
   private removeAccents(str: string): string {
     return str.normalize("NFD").replace(/[\u0300-\u036f]/g, "");
   }
 
-  // 5. Función de filtrado
   applyFilter(): void {
     const rawFilterValue = this.filterText.toLowerCase().trim();
 
@@ -61,17 +68,12 @@ export class PriceListComponent implements OnInit {
       return;
     }
 
-    // 1. Normalizar el valor de búsqueda (el input del usuario)
     const normalizedFilterValue = this.removeAccents(rawFilterValue);
 
     this.filteredProducts = this.products.filter(product => {
-      // 2. Normalizar el nombre del producto para la comparación
       const normalizedProductName = this.removeAccents(product.prov_name.toLowerCase());
-
       return (
-        // Búsqueda en Nombre (Normalizado)
         normalizedProductName.includes(normalizedFilterValue) ||
-        // Búsqueda en ID (sin normalización, ya que es un número)
         product.pro_uuid.toString().includes(rawFilterValue)
       );
     });
