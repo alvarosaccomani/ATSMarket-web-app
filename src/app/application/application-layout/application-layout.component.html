@@ -21,7 +21,7 @@
                         <a [routerLink]="'company/new'">Agregar Nueva</a>
                     </li>
                     <li nz-menu-item>
-                        <a [routerLink]="'my-companies'"></a>Listado
+                        <a [routerLink]="'my-companies'">Listado</a>
                     </li>
                 </ul>
             </li>
@@ -37,9 +37,14 @@
                         <a [routerLink]="'product/new'">Agregar Nuevo</a>
                     </li>
                     <li nz-menu-item>
-                        <a [routerLink]="'products'"></a>Listado
+                        <a [routerLink]="'products'">Listado</a>
                     </li>
                 </ul>
+            </li>
+            <li nz-menu-item [routerLink]="['/application/company-settings', activeCompany?.cmp_uuid]"
+                *ngIf="activeCompany">
+                <span nz-icon nzType="setting"></span>
+                <span>Configuración Empresa</span>
             </li>
         </ul>
     </nz-sider>
@@ -48,6 +53,14 @@
             <nz-icon class="trigger" [nzType]="isCollapsed ? 'menu-unfold' : 'menu-fold'"
                 (click)="isCollapsed = !isCollapsed" />
             <div class="header-right" style="display: flex; align-items: center; gap: 24px; padding-right: 24px;">
+
+                <!-- Botón de Acceso Directo de Configuración -->
+                <button nz-button nzType="text" nzShape="circle" style="background-color: #f5f5f5;"
+                    nzTooltipTitle="Ajustes de mi Empresa" nz-tooltip
+                    [routerLink]="['/application/company-settings', activeCompany?.cmp_uuid]" *ngIf="activeCompany">
+                    <span nz-icon nzType="setting" nzTheme="outline" style="font-size: 18px;"></span>
+                </button>
+
                 <!-- Menú Desplegable de Tienda Activa -->
                 <a nz-dropdown [nzDropdownMenu]="companyMenu" class="company-selector"
                     style="color: black; font-size: 16px; display: flex; align-items: center; cursor: pointer;">
@@ -76,13 +89,15 @@
                     </a>
                     <nz-dropdown-menu #userMenu="nzDropdownMenu">
                         <ul nz-menu>
-                            <!-- <li nz-menu-item>
+                            <li nz-menu-item>
                                 <span nz-icon nzType="user" style="margin-right: 8px;"></span> Mi Perfil
-                            </li> -->
-                            <!-- <li nz-menu-item>
-                                <span nz-icon nzType="setting" style="margin-right: 8px;"></span> Configuración
-                            </li> 
-                            <li nz-menu-divider></li> -->
+                            </li>
+                            <li nz-menu-item *ngIf="activeCompany"
+                                [routerLink]="['/application/company-settings', activeCompany?.cmp_uuid]">
+                                <span nz-icon nzType="setting" style="margin-right: 8px;"></span> Configuración de la
+                                Empresa
+                            </li>
+                            <li nz-menu-divider></li>
                             <li nz-menu-item nzDanger (click)="logout()">
                                 <span nz-icon nzType="logout" style="margin-right: 8px;"></span> Cerrar sesión
                             </li>

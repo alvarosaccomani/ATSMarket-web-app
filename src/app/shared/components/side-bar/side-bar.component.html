@@ -24,6 +24,10 @@
             <span>Historial de Ventas</span>
         </li>
         <li nz-divider></li>
+        <li nz-menu-item [routerLink]="['company-settings', companyUuid]" *ngIf="companyUuid">
+            <span nz-icon nzType="setting"></span>
+            <span>Configuración Empresa</span>
+        </li>
         <li nz-menu-item routerLink="/">
             <span nz-icon nzType="arrow-left"></span>
             <span>Volver al Market</span>

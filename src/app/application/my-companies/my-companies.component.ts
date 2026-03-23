@@ -121,4 +121,8 @@ export class MyCompaniesComponent implements OnInit {
   public editCompany(cmp_uuid: string): void {
     this._router.navigate(['/application/company', cmp_uuid]);
   }
+
+  public settingsCompany(cmp_uuid: string): void {
+    this._router.navigate(['/application/company-settings', cmp_uuid]);
+  }
 }

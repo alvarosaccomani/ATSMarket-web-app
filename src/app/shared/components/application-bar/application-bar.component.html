@@ -1,6 +1,14 @@
 <nz-header class="app-header">
-    <div class="header-right">
-        <span class="user-name">Hola, Vendedor Santiago</span>
-        <nz-avatar nzIcon="user" nzSrc="assets/img/user-avatar.png"></nz-avatar>
+    <div class="header-right" style="display: flex; align-items: center; gap: 24px;">
+        <button nz-button nzType="text" nzShape="circle" style="background-color: #f5f5f5;"
+            nzTooltipTitle="Ajustes de mi Empresa" nz-tooltip
+            [routerLink]="['/application/company-settings', companyUuid]" *ngIf="companyUuid">
+            <span nz-icon nzType="setting" nzTheme="outline" style="font-size: 18px;"></span>
+        </button>
+
+        <div style="display: flex; align-items: center; gap: 8px;">
+            <span class="user-name">Hola, {{ userName || 'Administrador' }}</span>
+            <nz-avatar nzIcon="user" nzSrc="assets/img/user-avatar.png"></nz-avatar>
+        </div>
     </div>
 </nz-header>

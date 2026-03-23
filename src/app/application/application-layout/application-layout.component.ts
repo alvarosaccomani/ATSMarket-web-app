@@ -9,6 +9,8 @@ import { NzIconModule } from 'ng-zorro-antd/icon';
 import { NzMenuModule } from 'ng-zorro-antd/menu';
 import { NzAvatarModule } from 'ng-zorro-antd/avatar';
 import { NzDropDownModule } from 'ng-zorro-antd/dropdown';
+import { NzButtonModule } from 'ng-zorro-antd/button';
+import { NzToolTipModule } from 'ng-zorro-antd/tooltip';
 import { ApplicationBarComponent } from '@components/application-bar/application-bar.component';
 
 import { SessionService } from '@services/session.service';
@@ -27,6 +29,8 @@ import { UserRolesCompanyService } from '@services/user-roles-company.service';
     NzMenuModule,
     NzAvatarModule,
     NzDropDownModule,
+    NzButtonModule,
+    NzToolTipModule,
     ApplicationBarComponent
   ],
   templateUrl: './application-layout.component.html',
