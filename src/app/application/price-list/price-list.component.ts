@@ -15,6 +15,7 @@ import { NzImageModule } from 'ng-zorro-antd/image';
 
 import { ProductVariationInterface } from '@interfaces/product-variation';
 import { ProductVariationsService } from '@services/product-variations.service';
+import { CameraComponent } from '../../shared/components/camera/camera.component';
 
 @Component({
   selector: 'app-price-list',
@@ -29,7 +30,8 @@ import { ProductVariationsService } from '@services/product-variations.service';
     NzButtonModule,
     NzEmptyModule,
     NzTagModule,
-    NzImageModule
+    NzImageModule,
+    CameraComponent
   ],
   templateUrl: './price-list.component.html',
   styleUrl: './price-list.component.scss'
@@ -43,6 +45,7 @@ export class PriceListComponent implements OnInit {
   filterText: string = '';
 
   expandedRows: { [key: string]: boolean } = {}; // Realiza el seguimiento de qué filas están abiertas
+  activeCameraRowId: string | null = null; // Fila que tiene activa la cámara
 
   constructor(private productService: ProductVariationsService) { }
 
@@ -63,6 +66,17 @@ export class PriceListComponent implements OnInit {
   toggleExpand(id: string): void {
     // Si ya está abierto, lo cierra. Si no existe o está cerrado, lo abre.
     this.expandedRows[id] = !this.expandedRows[id];
+    // Al colapsar la fila, también apagamos cualquier cámara activa en ella
+    if (!this.expandedRows[id] && this.activeCameraRowId === id) {
+      this.activeCameraRowId = null;
+    }
+  }
+
+  saveNewPhoto(product: ProductVariationInterface, base64Image: string): void {
+    // Aquí actualizarías el servidor. Por ahora, parcheamos el objeto en la vista:
+    product.prov_image = base64Image;
+    // Tras confirmar la foto editada, cerramos la cámara
+    this.activeCameraRowId = null;
   }
 
   private removeAccents(str: string): string {

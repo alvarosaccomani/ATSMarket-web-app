@@ -66,6 +66,15 @@
                     </tr>
 
                     <tr [nzExpand]="!!expandedRows[data.pro_uuid]">
+                        <!-- Vista: Modo Cámara Activa (Pantalla Completa) -->
+                        <div *ngIf="activeCameraRowId === data.pro_uuid"
+                            style="position: fixed; top: 0; left: 0; width: 100vw; height: 100vh; z-index: 99999; background: black;">
+                            <app-camera [existingImage]="data.prov_image" (onPhotoSaved)="saveNewPhoto(data, $event)"
+                                (onClose)="activeCameraRowId = null">
+                            </app-camera>
+                        </div>
+
+                        <!-- Vista: Contenido Normal Expansión -->
                         <div class="product-details-expansion" style="display: flex; gap: 24px; padding: 16px;">
                             <img nz-image
                                 [nzSrc]="data.prov_image ? data.prov_image : 'https://placehold.co/150x150/eeeeee/8c8c8c?text=Sin+Foto'"
@@ -73,12 +82,20 @@
                                 [alt]="data.prov_name"
                                 style="width: 120px; height: 120px; object-fit: cover; border-radius: 8px; border: 1px solid #e8e8e8; cursor: zoom-in;">
                             <div class="expansion-info"
-                                style="display: flex; flex-direction: column; justify-content: center;">
+                                style="display: flex; flex-direction: column; justify-content: center; flex: 1;">
                                 <h4 style="margin: 0 0 8px 0; font-size: 16px;">{{ data.prov_name }}</h4>
                                 <p style="color: #595959; margin: 0 0 12px 0;">{{ data.prov_description || 'Sin
                                     descripción adicional para este artículo.' }}</p>
-                                <div>
+                                <div
+                                    style="display: flex; gap: 12px; align-items: center; justify-content: space-between;">
                                     <nz-tag nzColor="blue">Stock Disponible</nz-tag>
+
+                                    <!-- Botón para Abrir Cámara -->
+                                    <button nz-button nzType="primary" nzShape="round"
+                                        (click)="activeCameraRowId = data.pro_uuid">
+                                        <span nz-icon nzType="camera" nzTheme="outline"></span>
+                                        {{ data.prov_image ? 'Cambiar Foto' : 'Tomar Foto' }}
+                                    </button>
                                 </div>
                             </div>
                         </div>
