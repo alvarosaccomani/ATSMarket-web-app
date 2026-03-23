@@ -67,9 +67,11 @@
 
                     <tr [nzExpand]="!!expandedRows[data.pro_uuid]">
                         <div class="product-details-expansion" style="display: flex; gap: 24px; padding: 16px;">
-                            <img [src]="data.prov_image ? data.prov_image : 'https://placehold.co/150x150/eeeeee/8c8c8c?text=Sin+Foto'"
+                            <img nz-image
+                                [nzSrc]="data.prov_image ? data.prov_image : 'https://placehold.co/150x150/eeeeee/8c8c8c?text=Sin+Foto'"
+                                [nzFallback]="'https://placehold.co/150x150/eeeeee/8c8c8c?text=Sin+Foto'"
                                 [alt]="data.prov_name"
-                                style="width: 120px; height: 120px; object-fit: cover; border-radius: 8px; border: 1px solid #e8e8e8;">
+                                style="width: 120px; height: 120px; object-fit: cover; border-radius: 8px; border: 1px solid #e8e8e8; cursor: zoom-in;">
                             <div class="expansion-info"
                                 style="display: flex; flex-direction: column; justify-content: center;">
                                 <h4 style="margin: 0 0 8px 0; font-size: 16px;">{{ data.prov_name }}</h4>

@@ -11,6 +11,7 @@ import { NzRadioModule } from 'ng-zorro-antd/radio';
 import { NzButtonModule } from 'ng-zorro-antd/button';
 import { NzEmptyModule } from 'ng-zorro-antd/empty';
 import { NzTagModule } from 'ng-zorro-antd/tag';
+import { NzImageModule } from 'ng-zorro-antd/image';
 
 import { ProductVariationInterface } from '@interfaces/product-variation';
 import { ProductVariationsService } from '@services/product-variations.service';
@@ -27,7 +28,8 @@ import { ProductVariationsService } from '@services/product-variations.service';
     NzRadioModule,
     NzButtonModule,
     NzEmptyModule,
-    NzTagModule
+    NzTagModule,
+    NzImageModule
   ],
   templateUrl: './price-list.component.html',
   styleUrl: './price-list.component.scss'
