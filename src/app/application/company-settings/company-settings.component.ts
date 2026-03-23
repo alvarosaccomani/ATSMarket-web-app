@@ -67,20 +67,37 @@ export class CompanySettingsComponent implements OnInit {
     this.isLoading = true;
     this._settingsService.getCompaniesSettings(this.cmp_uuid).subscribe({
       next: (response) => {
-        if (response && response.data && response.data.length > 0) {
-          this.settings = response.data;
-        } else {
-          // Si la API devuelve un array vacío, usamos los mocks temporalmente para la UI
-          this.settings = this.getMockSettings();
-        }
+        const dbSettings: CompanySettingInterface[] = response?.data || [];
+        this.mergeSettings(dbSettings);
         this.isLoading = false;
       },
       error: (err) => {
         console.error('Error al cargar settings', err);
-        // Si la API falla, usamos mock para ver el diseño
-        this.settings = this.getMockSettings();
+        this.mergeSettings([]);
         this.isLoading = false;
       }
+    });
+  }
+
+  private mergeSettings(dbSettings: CompanySettingInterface[]): void {
+    const schema = this.getSettingsSchema();
+    this.settings = schema.map(schemaItem => {
+      // Buscar si el ajuste ya existe guardado en la Base de Datos para esta empresa
+      const existing = dbSettings.find(db => db.cmps_key === schemaItem.cmps_key);
+
+      if (existing) {
+        // Si existe, combinamos su valor real en DB pero actualizamos textos descriptivos por si cambiaron en el frontend
+        return {
+          ...existing,
+          cmps_parameter: schemaItem.cmps_parameter,
+          cmps_description: schemaItem.cmps_description,
+          cmps_group: schemaItem.cmps_group,
+          cmps_options: schemaItem.cmps_options
+        };
+      }
+
+      // Si no existe (es una config nueva agregada por primera vez al hardcode), devolvemos el valor por defecto del esquema
+      return { ...schemaItem };
     });
   }
 
@@ -101,8 +118,21 @@ export class CompanySettingsComponent implements OnInit {
     setting.cmps_value = val ? 'true' : 'false';
   }
 
-  private getMockSettings(): CompanySettingInterface[] {
+  private getSettingsSchema(): CompanySettingInterface[] {
     return [
+      {
+        cmp_uuid: this.cmp_uuid,
+        cmps_uuid: '1',
+        cmps_key: 'search_filter_mode',
+        cmps_parameter: 'Rubros y Categorias',
+        cmps_description: 'Que Rubros y Categorias se mostraran en el arbol de filtro.',
+        cmps_datatype: 'select',
+        cmps_value: 'GLOBAL',
+        cmps_group: 'Busqueda',
+        cmps_options: '["GLOBAL", "LOCAL"]',
+        cmps_updatedat: new Date(),
+        cmps_createdat: new Date()
+      },
       {
         cmp_uuid: this.cmp_uuid,
         cmps_uuid: '1',
