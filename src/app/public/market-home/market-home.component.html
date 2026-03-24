@@ -27,7 +27,8 @@
     <section class="section-padding categories-section">
         <div class="section-header">
             <h2 nz-typography>Explora por Categoría</h2>
-            <a class="view-all">Ver todas <span nz-icon nzType="arrow-right"></span></a>
+            <a class="view-all" [routerLink]="['/public/categories-list']">Ver todas <span nz-icon
+                    nzType="arrow-right"></span></a>
         </div>
 
         <div nz-row [nzGutter]="[16, 16]" class="category-grid">
