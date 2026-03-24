@@ -23,7 +23,7 @@ export class ProductVariationsService {
 
     let params = new HttpParams();
 
-    return this._http.get<ProductVariationResults>(`http://195.200.2.27:3002/api/products-variations/${cmp_uuid}`, { headers, params });
+    return this._http.get<ProductVariationResults>(`${environment.apiUrl}products-variations/${cmp_uuid}`, { headers, params });
   }
 
   /**
