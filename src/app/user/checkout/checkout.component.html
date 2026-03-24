@@ -1,98 +1,133 @@
 <div class="checkout-wrapper">
-    <h1>Finalizar Compra</h1>
+    <div class="page-max-width">
 
-    <div nz-row [nzGutter]="[32, 32]">
+        <!-- Header & Stepper -->
+        <div class="checkout-header">
+            <h1 class="page-title">Finalizar Compra</h1>
+            <p class="page-subtitle">Completá tus datos para procesar el pedido.</p>
 
-        <div nz-col [nzXs]="24" [nzMd]="16">
-            <nz-card nzTitle="Datos de Envío" [nzBordered]="true">
-                <form nz-form [formGroup]="shippingForm" (ngSubmit)="submitForm()">
-
-                    <div nz-row [nzGutter]="[16, 16]">
-                        <div nz-col [nzXs]="24" [nzSm]="12">
-                            <nz-form-item>
-                                <nz-form-control nzErrorTip="Requerido">
-                                    <nz-input-group>
-                                        <input nz-input formControlName="nombre" placeholder="Nombre" />
-                                    </nz-input-group>
-                                </nz-form-control>
-                            </nz-form-item>
-                        </div>
-                        <div nz-col [nzXs]="24" [nzSm]="12">
-                            <nz-form-item>
-                                <nz-form-control nzErrorTip="Requerido">
-                                    <input nz-input formControlName="apellido" placeholder="Apellido" />
-                                </nz-form-control>
-                            </nz-form-item>
-                        </div>
-                    </div>
-
-                    <nz-form-item>
-                        <nz-form-control nzErrorTip="Requerido">
-                            <nz-input-group>
-                                <input nz-input formControlName="direccion" placeholder="Calle y Número" />
-                            </nz-input-group>
-                        </nz-form-control>
-                    </nz-form-item>
-
-                    <nz-form-item>
-                        <nz-form-control nzErrorTip="Teléfono inválido">
-                            <nz-input-group>
-                                <input nz-input formControlName="telefono" placeholder="Teléfono" />
-                            </nz-input-group>
-                        </nz-form-control>
-                    </nz-form-item>
-
-                    <div nz-row [nzGutter]="[16, 16]">
-                        <div nz-col [nzXs]="24" [nzSm]="8">
-                            <nz-form-item>
-                                <nz-form-control nzErrorTip="Requerido">
-                                    <input nz-input formControlName="ciudad" placeholder="Ciudad" />
-                                </nz-form-control>
-                            </nz-form-item>
-                        </div>
-                        <div nz-col [nzXs]="24" [nzSm]="8">
-                            <nz-form-item>
-                                <nz-form-control nzErrorTip="Requerido">
-                                    <input nz-input formControlName="provincia" placeholder="Provincia" />
-                                </nz-form-control>
-                            </nz-form-item>
-                        </div>
-                        <div nz-col [nzXs]="24" [nzSm]="8">
-                            <nz-form-item>
-                                <nz-form-control nzErrorTip="Requerido">
-                                    <input nz-input formControlName="codigoPostal" placeholder="C.P." />
-                                </nz-form-control>
-                            </nz-form-item>
-                        </div>
-                    </div>
-
-                    <nz-form-item class="submit-row">
-                        <button nz-button [nzType]="'primary'" [nzSize]="'large'" [nzBlock]="true"
-                            [disabled]="shippingForm.invalid">
-                            Confirmar Orden y Pagar
-                        </button>
-                    </nz-form-item>
-
-                </form>
-            </nz-card>
+            <nz-steps [nzCurrent]="1" class="checkout-steps">
+                <nz-step nzTitle="Carrito" nzIcon="shopping-cart"></nz-step>
+                <nz-step nzTitle="Datos y Envío" nzIcon="environment"></nz-step>
+                <nz-step nzTitle="Pago" nzIcon="credit-card"></nz-step>
+            </nz-steps>
         </div>
 
-        <div nz-col [nzXs]="24" [nzMd]="8">
-            <nz-card nzTitle="Resumen de la Orden" [nzBordered]="true">
-                <nz-statistic nzTitle="Artículos en Carrito" [nzValue]="cartItemCount"></nz-statistic>
+        <div nz-row [nzGutter]="[32, 32]">
 
-                <nz-divider></nz-divider>
+            <!-- Left Column: Formulario -->
+            <div nz-col [nzXs]="24" [nzLg]="16">
+                <nz-card class="premium-card" nzTitle="Información de Envío" [nzBordered]="false">
+                    <form nz-form [formGroup]="shippingForm" (ngSubmit)="submitForm()" nzLayout="vertical">
 
-                <nz-statistic nzTitle="Total de la Compra" [nzValue]="totalPrice" [nzValueStyle]="{ color: '#1890ff' }"
-                    [nzPrefix]="'ARS $'">
-                </nz-statistic>
+                        <div nz-row [nzGutter]="[16, 0]">
+                            <div nz-col [nzXs]="24" [nzSm]="12">
+                                <nz-form-item>
+                                    <nz-form-label nzRequired>Nombre</nz-form-label>
+                                    <nz-form-control nzErrorTip="Ingresá tu nombre">
+                                        <input nz-input formControlName="nombre" placeholder="Ej: Juan"
+                                            nzSize="large" />
+                                    </nz-form-control>
+                                </nz-form-item>
+                            </div>
+                            <div nz-col [nzXs]="24" [nzSm]="12">
+                                <nz-form-item>
+                                    <nz-form-label nzRequired>Apellido</nz-form-label>
+                                    <nz-form-control nzErrorTip="Ingresá tu apellido">
+                                        <input nz-input formControlName="apellido" placeholder="Ej: Pérez"
+                                            nzSize="large" />
+                                    </nz-form-control>
+                                </nz-form-item>
+                            </div>
+                        </div>
 
-                <nz-divider></nz-divider>
+                        <nz-form-item>
+                            <nz-form-label nzRequired>Dirección de Entrega</nz-form-label>
+                            <nz-form-control nzErrorTip="Ingresá la calle y número">
+                                <input nz-input formControlName="direccion"
+                                    placeholder="Ej: Av. Corrientes 1234, Piso 5 Depto A" nzSize="large" />
+                            </nz-form-control>
+                        </nz-form-item>
 
-                <p>El costo de envío se calculará en la pasarela de pago.</p>
-                <button nz-button nzType="link" routerLink="/carrito">Modificar Carrito</button>
+                        <nz-form-item>
+                            <nz-form-label nzRequired>Teléfono de Contacto</nz-form-label>
+                            <nz-form-control nzErrorTip="Ingresá un número válido (sólo números)">
+                                <input nz-input formControlName="telefono" placeholder="Ej: 1123456789"
+                                    nzSize="large" />
+                            </nz-form-control>
+                        </nz-form-item>
 
-            </nz-card>
+                        <div nz-row [nzGutter]="[16, 0]">
+                            <div nz-col [nzXs]="24" [nzSm]="8">
+                                <nz-form-item>
+                                    <nz-form-label nzRequired>Ciudad</nz-form-label>
+                                    <nz-form-control nzErrorTip="Requerido">
+                                        <input nz-input formControlName="ciudad" placeholder="Ciudad" nzSize="large" />
+                                    </nz-form-control>
+                                </nz-form-item>
+                            </div>
+                            <div nz-col [nzXs]="24" [nzSm]="8">
+                                <nz-form-item>
+                                    <nz-form-label nzRequired>Provincia</nz-form-label>
+                                    <nz-form-control nzErrorTip="Requerido">
+                                        <input nz-input formControlName="provincia" placeholder="Provincia"
+                                            nzSize="large" />
+                                    </nz-form-control>
+                                </nz-form-item>
+                            </div>
+                            <div nz-col [nzXs]="24" [nzSm]="8">
+                                <nz-form-item>
+                                    <nz-form-label nzRequired>Cód. Postal</nz-form-label>
+                                    <nz-form-control nzErrorTip="Requerido">
+                                        <input nz-input formControlName="codigoPostal" placeholder="C.P."
+                                            nzSize="large" />
+                                    </nz-form-control>
+                                </nz-form-item>
+                            </div>
+                        </div>
+
+                    </form>
+                </nz-card>
+            </div>
+
+            <!-- Right Column: Resumen Resbaladizo -->
+            <div nz-col [nzXs]="24" [nzLg]="8">
+                <div class="sticky-summary">
+                    <nz-card class="premium-card summary-card" nzTitle="Resumen de la Orden" [nzBordered]="false">
+                        <div class="summary-details">
+                            <div class="summary-row">
+                                <span>Artículos en Carrito</span>
+                                <strong>{{ cartItemCount }}</strong>
+                            </div>
+
+                            <nz-divider></nz-divider>
+
+                            <div class="summary-row total-row">
+                                <span>Total del Pedido</span>
+                                <span class="total-price">ARS ${{ totalPrice | number:'1.2-2' }}</span>
+                            </div>
+
+                            <p class="shipping-notice">
+                                <span nz-icon nzType="info-circle" nzTheme="outline"></span>
+                                El costo de envío definitivo se calculará en la pasarela de pago o será acordado con el
+                                vendedor.
+                            </p>
+                        </div>
+
+                        <button nz-button nzType="primary" nzSize="large" nzBlock class="submit-btn"
+                            (click)="submitForm()" [disabled]="shippingForm.invalid">
+                            Confirmar y Pagar
+                        </button>
+
+                        <div class="back-to-cart">
+                            <a routerLink="/user/cart">
+                                <span nz-icon nzType="arrow-left" nzTheme="outline"></span> Volver al carrito
+                            </a>
+                        </div>
+                    </nz-card>
+                </div>
+            </div>
+
         </div>
     </div>
 </div>

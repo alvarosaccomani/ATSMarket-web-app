@@ -1,7 +1,7 @@
 import { Component, OnInit } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { FormBuilder, FormGroup, Validators, ReactiveFormsModule } from '@angular/forms';
-import { Router } from '@angular/router';
+import { Router, RouterLink } from '@angular/router';
 // NG-ZORRO IMPORTS
 import { NzGridModule } from 'ng-zorro-antd/grid';
 import { NzCardModule } from 'ng-zorro-antd/card';
@@ -12,6 +12,8 @@ import { NzSelectModule } from 'ng-zorro-antd/select';
 import { NzDividerModule } from 'ng-zorro-antd/divider';
 import { NzStatisticModule } from 'ng-zorro-antd/statistic';
 import { NzMessageService } from 'ng-zorro-antd/message';
+import { NzStepsModule } from 'ng-zorro-antd/steps';
+import { NzIconModule } from 'ng-zorro-antd/icon';
 
 // SERVICIOS Y MODELOS
 import { CartService } from '@services/cart.service';
@@ -21,6 +23,7 @@ import { CartService } from '@services/cart.service';
   imports: [
     CommonModule,
     ReactiveFormsModule,
+    RouterLink,
     NzGridModule,
     NzCardModule,
     NzFormModule,
@@ -28,7 +31,9 @@ import { CartService } from '@services/cart.service';
     NzButtonModule,
     NzSelectModule,
     NzDividerModule,
-    NzStatisticModule
+    NzStatisticModule,
+    NzStepsModule,
+    NzIconModule
   ],
   templateUrl: './checkout.component.html',
   styleUrl: './checkout.component.scss'
