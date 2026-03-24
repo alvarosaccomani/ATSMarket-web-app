@@ -1,0 +1,94 @@
+.categories-list-container {
+    background-color: #f7f9fc;
+    min-height: calc(100vh - 64px);
+    padding: 104px 24px 64px;
+}
+
+.page-max-width {
+    max-width: 1200px;
+    margin: 0 auto;
+    background-color: #ffffff;
+    border-radius: 8px;
+    box-shadow: 0 4px 12px rgba(0, 0, 0, 0.05);
+    padding: 40px;
+}
+
+.header-section {
+    margin-bottom: 40px;
+
+    .page-title {
+        display: flex;
+        align-items: center;
+        font-size: 28px;
+        font-weight: 500;
+        color: #1f1f1f;
+        margin: 0;
+        letter-spacing: 0.5px;
+    }
+}
+
+.loading-state {
+    text-align: center;
+    padding: 60px 0;
+}
+
+.directory-container {
+    .category-block {
+        margin-bottom: 32px;
+
+        .rubro-title {
+            font-size: 20px;
+            font-weight: 600;
+            color: #262626;
+            margin-bottom: 24px;
+        }
+
+        .subcategory-grid {
+            margin-bottom: 32px;
+        }
+
+        .subcategory-link {
+            display: inline-block;
+            font-size: 15px;
+            color: #595959;
+            text-decoration: none;
+            transition: color 0.3s ease;
+            cursor: pointer;
+            width: 100%;
+            padding: 4px 0;
+
+            &:hover {
+                color: #1890ff;
+            }
+        }
+
+        .block-divider {
+            margin: 0;
+            border-color: #f0f0f0;
+        }
+
+        /* Ocultar el divider en el último elemento */
+        &:last-child {
+            margin-bottom: 0;
+
+            .block-divider {
+                display: none;
+            }
+        }
+    }
+}
+
+/* Responsividad */
+@media (max-width: 768px) {
+    .categories-list-container {
+        padding: 16px;
+    }
+
+    .page-max-width {
+        padding: 24px;
+    }
+
+    .header-section .page-title {
+        font-size: 24px;
+    }
+}

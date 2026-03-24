@@ -1,1 +1,40 @@
-<p>categories-list works!</p>
+<div class="categories-list-container">
+    <div class="page-max-width">
+        <!-- Header Section -->
+        <div class="header-section">
+            <h1 class="page-title">
+                <nz-avatar nzIcon="appstore" [nzSize]="48"
+                    style="background-color: #8c8c8c; margin-right: 16px;"></nz-avatar>
+                CATEGORIAS
+            </h1>
+            <nz-divider></nz-divider>
+        </div>
+
+        <!-- Loading Spinner -->
+        <div *ngIf="isLoading" class="loading-state">
+            <nz-spin nzSimple nzSize="large"></nz-spin>
+        </div>
+
+        <!-- Masonry / Directory Display -->
+        <div class="directory-container" *ngIf="!isLoading">
+            <div class="category-block" *ngFor="let group of groupedCategories">
+                <h2 class="rubro-title">{{ group.item.gitm_name }}</h2>
+
+                <!-- Category Grid for this Rubro -->
+                <div nz-row [nzGutter]="[24, 16]" class="subcategory-grid">
+                    <div nz-col [nzXs]="24" [nzSm]="12" [nzMd]="8" [nzLg]="6" *ngFor="let cat of group.categories">
+                        <a class="subcategory-link" (click)="goToCategory(cat.gcat_uuid)">
+                            {{ cat.gcat_name }}
+                        </a>
+                    </div>
+                </div>
+
+                <nz-divider class="block-divider"></nz-divider>
+            </div>
+
+            <div *ngIf="groupedCategories.length === 0" style="text-align: center; padding: 40px; color: #8c8c8c;">
+                No hay categorias disponibles por el momento.
+            </div>
+        </div>
+    </div>
+</div>
