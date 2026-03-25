@@ -1,4 +1,5 @@
-import { Injectable } from '@angular/core';
+import { Injectable, PLATFORM_ID, Inject } from '@angular/core';
+import { isPlatformBrowser } from '@angular/common';
 import { BehaviorSubject, Observable } from 'rxjs';
 import { CartItemInterface } from '@interfaces/cart-item.interface';
 import { ProductVariationInterface } from '@interfaces/product-variation';
@@ -7,17 +8,29 @@ import { ProductVariationInterface } from '@interfaces/product-variation';
   providedIn: 'root'
 })
 export class CartService {
-  // BehaviorSubject guarda el estado actual del carrito de forma reactiva
   private cartItemsSubject: BehaviorSubject<CartItemInterface[]> = new BehaviorSubject<CartItemInterface[]>([]);
-
-  // Observable al que se suscribirán los componentes (Navbar, Carrito)
   public cartItems$: Observable<CartItemInterface[]> = this.cartItemsSubject.asObservable();
+  private readonly STORAGE_KEY = 'ats_market_cart';
 
-  constructor() {
-    // Carga inicial (opcional: puedes cargar desde localStorage o una API aquí)
+  constructor(@Inject(PLATFORM_ID) private platformId: Object) {
+    if (isPlatformBrowser(this.platformId)) {
+      const savedCart = localStorage.getItem(this.STORAGE_KEY);
+      if (savedCart) {
+        try {
+          const parsed = JSON.parse(savedCart);
+          this.cartItemsSubject.next(parsed);
+        } catch (e) {
+          console.error('Error cargando el carrito desde LocalStorage', e);
+        }
+      }
+    }
   }
 
-  // --- Lógica de Estado ---
+  private syncToLocalStorage(items: CartItemInterface[]): void {
+    if (isPlatformBrowser(this.platformId)) {
+      localStorage.setItem(this.STORAGE_KEY, JSON.stringify(items));
+    }
+  }
 
   private calculateSubtotal(item: CartItemInterface): number {
     return item.prov_suggestedminimumsellingprice * item.quantity;
@@ -26,8 +39,6 @@ export class CartService {
   public getTotalPrice(): number {
     return this.cartItemsSubject.value.reduce((total, item) => total + item.subtotal, 0);
   }
-
-  // --- Acciones de Compra ---
 
   public addToCart(product: ProductVariationInterface, quantity: number = 1): void {
     const currentItems = this.cartItemsSubject.value;
@@ -45,7 +56,8 @@ export class CartService {
       currentItems.push(newItem);
     }
 
-    this.cartItemsSubject.next([...currentItems]); // Emite el nuevo estado
+    this.cartItemsSubject.next([...currentItems]);
+    this.syncToLocalStorage(currentItems);
   }
 
   public updateQuantity(productId: string, quantity: number): void {
@@ -56,15 +68,20 @@ export class CartService {
       itemToUpdate.quantity = quantity < 1 ? 1 : quantity;
       itemToUpdate.subtotal = this.calculateSubtotal(itemToUpdate);
       this.cartItemsSubject.next([...currentItems]);
+      this.syncToLocalStorage(currentItems);
     }
   }
 
   public removeFromCart(productId: string): void {
     const filteredItems = this.cartItemsSubject.value.filter(item => item.prov_uuid !== productId);
     this.cartItemsSubject.next(filteredItems);
+    this.syncToLocalStorage(filteredItems);
   }
 
   public clearCart(): void {
     this.cartItemsSubject.next([]);
+    if (isPlatformBrowser(this.platformId)) {
+      localStorage.removeItem(this.STORAGE_KEY);
+    }
   }
 }
