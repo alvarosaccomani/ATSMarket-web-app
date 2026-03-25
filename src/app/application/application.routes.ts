@@ -10,6 +10,7 @@ import { ProductsComponent } from './products/products.component';
 import { ProductComponent } from './product/product.component';
 import { ProductVariationComponent } from './product-variation/product-variation.component';
 import { OrdersReceivedComponent } from './orders-received/orders-received.component';
+import { CustomersComponent } from './customers/customers.component';
 
 export const APPLICATION_ROUTES: Routes = [
     {
@@ -24,7 +25,8 @@ export const APPLICATION_ROUTES: Routes = [
             { path: 'products', component: ProductsComponent },
             { path: 'product/:pro_uuid', component: ProductComponent },
             { path: 'product-variation/:pro_uuid/:prov_uuid', component: ProductVariationComponent },
-            { path: 'orders-received', component: OrdersReceivedComponent }
+            { path: 'orders-received', component: OrdersReceivedComponent },
+            { path: 'customers', component: CustomersComponent }
         ]
     }
 ];
