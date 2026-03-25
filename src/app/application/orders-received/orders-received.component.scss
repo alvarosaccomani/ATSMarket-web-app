@@ -1,0 +1,136 @@
+.orders-dashboard-wrapper {
+    padding: 24px;
+    background-color: #f7f9fc;
+    min-height: calc(100vh - 64px);
+}
+
+.dashboard-header {
+    margin-bottom: 24px;
+
+    .page-title {
+        font-size: 28px;
+        font-weight: 600;
+        color: #1f1f1f;
+        margin-bottom: 4px;
+    }
+
+    .page-subtitle {
+        color: #8c8c8c;
+        font-size: 15px;
+    }
+}
+
+.premium-card {
+    border-radius: 12px;
+    box-shadow: 0 4px 24px rgba(0, 0, 0, 0.04);
+}
+
+.clickable-row {
+    cursor: pointer;
+    transition: background-color 0.2s;
+
+    &:hover {
+        background-color: #fafafa;
+    }
+}
+
+.order-number {
+    font-weight: 500;
+    color: #1890ff;
+}
+
+.customer-name {
+    font-weight: 500;
+}
+
+.order-total {
+    font-weight: 600;
+    font-size: 15px;
+}
+
+// Drawer Styles
+.drawer-content-wrapper {
+    display: flex;
+    flex-direction: column;
+}
+
+.drawer-header-status {
+    display: flex;
+    align-items: center;
+}
+
+.order-item-list {
+    display: flex;
+    flex-direction: column;
+    gap: 16px;
+}
+
+.order-item {
+    display: flex;
+    justify-content: space-between;
+    align-items: flex-start;
+    padding-bottom: 12px;
+    border-bottom: 1px dashed #f0f0f0;
+
+    &:last-child {
+        border-bottom: none;
+    }
+
+    .item-main {
+        display: flex;
+        flex-direction: column;
+        flex: 1;
+        padding-right: 16px;
+
+        .item-name {
+            font-weight: 500;
+            color: #262626;
+            margin-bottom: 4px;
+        }
+
+        .item-sku {
+            font-size: 12px;
+            color: #8c8c8c;
+        }
+    }
+
+    .item-metrics {
+        display: flex;
+        flex-direction: column;
+        align-items: flex-end;
+        min-width: 80px;
+
+        .item-qty {
+            font-size: 13px;
+            color: #595959;
+            margin-bottom: 4px;
+        }
+
+        .item-subtotal {
+            font-weight: 600;
+            color: #262626;
+        }
+    }
+}
+
+.order-grand-total {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    background-color: #f7f9fc;
+    padding: 16px;
+    border-radius: 8px;
+    margin-top: 8px;
+
+    span:first-child {
+        font-size: 16px;
+        font-weight: 500;
+        color: #595959;
+    }
+
+    .g-total-price {
+        font-size: 20px;
+        font-weight: 600;
+        color: #1890ff;
+    }
+}
