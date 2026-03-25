@@ -1,1 +1,130 @@
-<p>analytics works!</p>
+<div class="analytics-dashboard-wrapper">
+
+    <div class="dashboard-header">
+        <div class="header-titles">
+            <h1 class="page-title">Rendimiento (Últimos 30 días)</h1>
+            <p class="page-subtitle">Revisa las métricas clave del crecimiento de tu tienda.</p>
+        </div>
+    </div>
+
+    <!-- FILA 1: KPIs Principales -->
+    <div nz-row [nzGutter]="[16, 16]" class="kpi-row">
+
+        <div nz-col nzXs="24" nzSm="12" nzLg="6">
+            <nz-card class="premium-card kpi-card">
+                <nz-statistic [nzValue]="kpiRevenue" [nzTitle]="'Ingresos Brutos'" [nzPrefix]="'$'"
+                    [nzValueTemplate]="revenueTemplate" [nzSuffix]="'ARS'">
+                </nz-statistic>
+                <ng-template #revenueTemplate let-value>
+                    <span style="color: #1890ff; font-weight: 600;">{{ value | number:'1.2-2' }}</span>
+                </ng-template>
+                <div class="kpi-trend trend-up">
+                    <span nz-icon nzType="arrow-up"></span> +12.5% vs Mes Anterior
+                </div>
+            </nz-card>
+        </div>
+
+        <div nz-col nzXs="24" nzSm="12" nzLg="6">
+            <nz-card class="premium-card kpi-card">
+                <nz-statistic [nzValue]="kpiOrders" [nzTitle]="'Pedidos Finalizados'">
+                </nz-statistic>
+                <div class="kpi-trend trend-up">
+                    <span nz-icon nzType="arrow-up"></span> +4.2% vs Mes Anterior
+                </div>
+            </nz-card>
+        </div>
+
+        <div nz-col nzXs="24" nzSm="12" nzLg="6">
+            <nz-card class="premium-card kpi-card">
+                <nz-statistic [nzValue]="kpiTicket" [nzTitle]="'Ticket Promedio'" [nzPrefix]="'$'"
+                    [nzValueTemplate]="ticketTemplate">
+                </nz-statistic>
+                <ng-template #ticketTemplate let-value>
+                    <span style="font-weight: 500;">{{ value | number:'1.2-2' }}</span>
+                </ng-template>
+                <div class="kpi-trend trend-down">
+                    <span nz-icon nzType="arrow-down"></span> -1.5% vs Mes Anterior
+                </div>
+            </nz-card>
+        </div>
+
+        <div nz-col nzXs="24" nzSm="12" nzLg="6">
+            <nz-card class="premium-card kpi-card">
+                <nz-statistic [nzValue]="kpiCustomers" [nzTitle]="'Clientes Activos (Compradores)'">
+                </nz-statistic>
+                <div class="kpi-trend trend-up">
+                    <span nz-icon nzType="arrow-up"></span> +18.2% vs Mes Anterior
+                </div>
+            </nz-card>
+        </div>
+    </div>
+
+    <!-- FILA 2: Gráficos de Barras (Mix de Categorías) y Top Products -->
+    <div nz-row [nzGutter]="[16, 16]" class="charts-row">
+
+        <!-- Columna Izquierda: Mix de Ventas -->
+        <div nz-col nzXs="24" nzLg="8">
+            <nz-card class="premium-card full-height-card" nzTitle="Distribución de Ingresos">
+                <div class="category-bars-container">
+                    <div class="category-bar-item" *ngFor="let cat of categoryMix">
+                        <div class="cat-bar-header">
+                            <span class="cat-name">{{ cat.category }}</span>
+                            <span class="cat-pct">{{ cat.percentage }}%</span>
+                        </div>
+                        <nz-progress [nzPercent]="cat.percentage" [nzStrokeColor]="cat.color" nzStatus="active"
+                            [nzShowInfo]="false"></nz-progress>
+                    </div>
+                </div>
+            </nz-card>
+        </div>
+
+        <!-- Columna Derecha: Ranking de Productos -->
+        <div nz-col nzXs="24" nzLg="16">
+            <nz-card class="premium-card full-height-card" nzTitle="Ranking de Productos (Top 5)">
+                <nz-table #topProductsTable [nzData]="topProducts" nzShowPagination="false" nzSize="middle">
+                    <thead>
+                        <tr>
+                            <th nzWidth="35%">Producto Estrella</th>
+                            <th nzWidth="20%">Rubro</th>
+                            <th nzWidth="15%">Unidades</th>
+                            <th nzWidth="20%">Ingresos Generados</th>
+                            <th nzWidth="10%">Trend</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        <tr *ngFor="let data of topProductsTable.data">
+                            <td>
+                                <div class="product-cell">
+                                    <nz-avatar nzShape="square"
+                                        [nzSrc]="'https://api.dicebear.com/7.x/identicon/svg?seed=' + data.sku"
+                                        style="background-color: #fafafa; border: 1px solid #e8e8e8;"></nz-avatar>
+                                    <div class="product-info">
+                                        <span class="product-name">{{ data.name }}</span>
+                                        <span class="product-sku">Cod: {{ data.sku }}</span>
+                                    </div>
+                                </div>
+                            </td>
+                            <td>
+                                <span class="product-category">{{ data.category }}</span>
+                            </td>
+                            <td>
+                                <span class="product-volume">{{ data.salesVolume | number }}</span>
+                            </td>
+                            <td>
+                                <span class="product-revenue">${{ data.revenue | number:'1.2-2' }}</span>
+                            </td>
+                            <td>
+                                <span nz-icon nzType="arrow-up" style="color: #52c41a; font-size: 16px;"
+                                    *ngIf="data.trend === 'up'"></span>
+                                <span nz-icon nzType="arrow-down" style="color: #f5222d; font-size: 16px;"
+                                    *ngIf="data.trend === 'down'"></span>
+                            </td>
+                        </tr>
+                    </tbody>
+                </nz-table>
+            </nz-card>
+        </div>
+
+    </div>
+
+</div>
