@@ -63,8 +63,20 @@
                         <a routerLink="orders-received">Pedidos Recibidos</a>
                     </li>
                     <li nz-menu-item>
-                        <a routerLink="customers">Mis Clientes</a>
+                        <a routerLink="finances">Gestor Billetera</a>
                     </li>
+                </ul>
+            </li>
+
+            <li nz-submenu nzTitle="Configuración" nzIcon="setting">
+                <ul>
+                    <li nz-menu-item>
+                        <a routerLink="addresses">
+                            <span nz-icon nzType="environment"></span>
+                            Mis Direcciones
+                        </a>
+                    </li>
+                    <li nz-menu-item>Métricas</li>
                 </ul>
             </li>
             <li nz-menu-item [routerLink]="['/application/company-settings', activeCompany?.cmp_uuid]"

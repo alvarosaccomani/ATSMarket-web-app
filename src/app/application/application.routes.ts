@@ -14,6 +14,7 @@ import { CustomersComponent } from './customers/customers.component';
 import { SuppliersComponent } from './suppliers/suppliers.component';
 import { AnalyticsComponent } from './analytics/analytics.component';
 import { FinancesComponent } from './finances/finances.component';
+import { AddressesComponent } from './addresses/addresses.component';
 
 export const APPLICATION_ROUTES: Routes = [
     {
@@ -32,7 +33,8 @@ export const APPLICATION_ROUTES: Routes = [
             { path: 'customers', component: CustomersComponent },
             { path: 'suppliers', component: SuppliersComponent },
             { path: 'analytics', component: AnalyticsComponent },
-            { path: 'finances', component: FinancesComponent }
+            { path: 'finances', component: FinancesComponent },
+            { path: 'addresses', component: AddressesComponent }
         ]
     }
 ];
