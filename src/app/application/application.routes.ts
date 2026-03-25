@@ -9,6 +9,7 @@ import { DistPriceListComponent } from './dist-price-list/dist-price-list.compon
 import { ProductsComponent } from './products/products.component';
 import { ProductComponent } from './product/product.component';
 import { ProductVariationComponent } from './product-variation/product-variation.component';
+import { OrdersReceivedComponent } from './orders-received/orders-received.component';
 
 export const APPLICATION_ROUTES: Routes = [
     {
@@ -22,7 +23,8 @@ export const APPLICATION_ROUTES: Routes = [
             { path: 'dist-price-list', component: DistPriceListComponent },
             { path: 'products', component: ProductsComponent },
             { path: 'product/:pro_uuid', component: ProductComponent },
-            { path: 'product-variation/:pro_uuid/:prov_uuid', component: ProductVariationComponent }
+            { path: 'product-variation/:pro_uuid/:prov_uuid', component: ProductVariationComponent },
+            { path: 'orders-received', component: OrdersReceivedComponent }
         ]
     }
 ];
