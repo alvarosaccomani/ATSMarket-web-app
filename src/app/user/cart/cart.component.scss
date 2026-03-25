@@ -1,166 +1,45 @@
-.cart-page-wrapper {
-    background-color: #f0f2f5;
+.cart-wrapper {
+    background-color: #f7f9fc;
     min-height: calc(100vh - 64px);
-    padding: 104px 40px 60px;
-    /* 64px del nav + 40px top padding visual */
+    padding: 104px 24px 64px;
 }
 
-.cart-header {
-    max-width: 1400px;
-    margin: 0 auto 32px;
-
-    h1 {
-        margin: 0;
-        font-size: 28px;
-        font-weight: 700;
-        color: #1f1f1f;
-        display: flex;
-        align-items: center;
-        gap: 12px;
-    }
-
-    p {
-        margin: 8px 0 0 0;
-        font-size: 16px;
-        color: #595959;
-    }
-}
-
-.cart-grid-container {
-    max-width: 1400px;
+.page-max-width {
+    max-width: 1200px;
     margin: 0 auto;
 }
 
-/* Tarjetas Principales */
-.premium-cart-card {
-    border-radius: 12px;
-    box-shadow: 0 4px 16px rgba(0, 0, 0, 0.03);
-    margin-bottom: 24px;
-
-    ::ng-deep .ant-card-body {
-        padding: 32px;
-    }
-}
-
-.empty-cart-message {
-    padding: 60px 0;
+.cart-header {
     text-align: center;
-}
+    margin-bottom: 48px;
 
-/* Estilos de la Tabla */
-.elegant-table {
-    ::ng-deep .ant-table-thead>tr>th {
-        background: transparent;
-        border-bottom: 2px solid #f0f0f0;
+    .page-title {
+        font-size: 32px;
+        font-weight: 600;
+        color: #1f1f1f;
+        margin-bottom: 8px;
+    }
+
+    .page-subtitle {
+        font-size: 16px;
         color: #8c8c8c;
-        font-weight: 500;
-        font-size: 14px;
-        text-transform: uppercase;
-        padding: 16px 8px;
-    }
-
-    ::ng-deep .ant-table-tbody>tr>td {
-        padding: 24px 8px;
-        border-bottom: 1px solid #f5f5f5;
-        vertical-align: middle;
     }
 }
 
-.cart-row {
-    transition: background-color 0.3s;
-
-    &:hover {
-        background-color: #fafafa !important;
-    }
-}
-
-.product-info-wrapper {
-    display: flex;
-    align-items: center;
-    gap: 20px;
-
-    .cart-img-box {
-        width: 80px;
-        height: 80px;
-        border-radius: 8px;
-        overflow: hidden;
-        border: 1px solid #e8e8e8;
-        background-color: #fff;
-        flex-shrink: 0;
-
-        .cart-img {
-            width: 100%;
-            height: 100%;
-            object-fit: cover;
-        }
-    }
-
-    .product-titles {
-        display: flex;
-        flex-direction: column;
-        gap: 4px;
-
-        .product-name {
-            font-size: 16px;
-            font-weight: 600;
-            color: #262626;
-        }
-
-        .product-sku {
-            font-size: 13px;
-            color: #8c8c8c;
-        }
-    }
-}
-
-.unit-price {
-    font-size: 15px;
-    color: #595959;
-}
-
-.subtotal-price {
-    font-size: 16px;
-    font-weight: 700;
-    color: #1f1f1f;
-}
-
-.delete-btn {
-    opacity: 0.6;
-    transition: opacity 0.3s;
-
-    &:hover {
-        opacity: 1;
-        background: #fff1f0;
-    }
-
-    ::ng-deep .anticon {
-        font-size: 18px;
-    }
-}
-
-/* -----------------------------
-   Panel de Resumen (Sticky)
-------------------------------*/
-.sticky-summary-wrapper {
-    position: sticky;
-    top: 100px;
-    /* Queda flotando al bajar */
-    z-index: 10;
-}
-
-.premium-summary-card {
+.premium-card {
     border-radius: 12px;
-    box-shadow: 0 4px 24px rgba(0, 0, 0, 0.06);
+    box-shadow: 0 4px 24px rgba(0, 0, 0, 0.04);
 
     ::ng-deep .ant-card-head {
         border-bottom: 1px solid #f0f0f0;
         padding: 0 24px;
-        min-height: 60px;
+        min-height: 64px;
+        display: flex;
+        align-items: center;
 
         .ant-card-head-title {
             font-size: 18px;
             font-weight: 600;
-            padding: 16px 0;
         }
     }
 
@@ -169,48 +48,198 @@
     }
 }
 
-.total-row {
+.cart-item-row {
     display: flex;
-    flex-direction: column;
-    gap: 8px;
-    margin-bottom: 32px;
+    align-items: center;
+    padding: 24px 0;
+    border-bottom: 1px solid #f0f0f0;
 
-    .total-label {
+    &:first-child {
+        padding-top: 0;
+    }
+
+    .item-image {
+        width: 80px;
+        height: 80px;
+        flex-shrink: 0;
+        border-radius: 8px;
+        overflow: hidden;
+        border: 1px solid #e8e8e8;
+
+        img {
+            width: 100%;
+            height: 100%;
+            object-fit: cover;
+        }
+    }
+
+    .item-details {
+        flex: 1;
+        padding: 0 24px;
+
+        .item-name {
+            font-size: 16px;
+            font-weight: 500;
+            color: #262626;
+            margin-bottom: 4px;
+        }
+
+        .item-store {
+            font-size: 13px;
+            color: #8c8c8c;
+            margin: 0;
+        }
+    }
+
+    .item-quantity {
+        width: 120px;
+        text-align: center;
+    }
+
+    .item-price {
+        width: 120px;
+        text-align: right;
         font-size: 16px;
-        color: #595959;
+        color: #262626;
+    }
+
+    .item-actions {
+        width: 60px;
+        text-align: right;
+
+        .delete-btn {
+            color: #ff4d4f;
+            font-size: 18px;
+            cursor: pointer;
+
+            &:hover {
+                color: #ff7875;
+            }
+        }
+    }
+}
+
+.cart-footer-actions {
+    margin-top: 24px;
+    display: flex;
+    justify-content: flex-end;
+}
+
+// Summary styles matching the checkout page
+.sticky-summary {
+    position: sticky;
+    top: 100px;
+}
+
+.summary-card {
+    .summary-details {
+        margin-bottom: 32px;
+
+        .summary-row {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            font-size: 16px;
+            color: #595959;
+            margin-bottom: 16px;
+        }
+
+        .total-row {
+            font-size: 18px;
+            font-weight: 600;
+            color: #262626;
+
+            .total-price {
+                font-size: 24px;
+                color: #1890ff;
+            }
+        }
+
+        .shipping-notice {
+            font-size: 13px;
+            color: #8c8c8c;
+            background-color: #f5f5f5;
+            padding: 12px;
+            border-radius: 6px;
+            display: flex;
+            align-items: flex-start;
+            gap: 8px;
+            margin-top: 24px;
+            margin-bottom: 0;
+
+            span[nz-icon] {
+                margin-top: 3px;
+                color: #1890ff;
+            }
+        }
+    }
+
+    .submit-btn {
+        height: 48px;
+        font-size: 16px;
         font-weight: 500;
+        border-radius: 6px;
+        margin-bottom: 16px;
+        transition: transform 0.2s ease, box-shadow 0.2s ease;
+
+        &:not([disabled]):hover {
+            transform: translateY(-2px);
+            box-shadow: 0 4px 12px rgba(24, 144, 255, 0.3);
+        }
     }
 
-    .total-value {
-        font-size: 32px;
-        font-weight: 800;
-        color: #52c41a;
-        /* Verde que inspira confianza/checkout */
-        letter-spacing: -0.5px;
+    .back-to-catalog {
+        text-align: center;
+
+        a {
+            color: #8c8c8c;
+            font-size: 14px;
+            transition: color 0.3s ease;
+
+            &:hover {
+                color: #1890ff;
+            }
+        }
     }
 }
 
-.checkout-btn {
-    height: 50px;
-    font-size: 16px;
-    font-weight: 600;
-    border-radius: 8px;
-    box-shadow: 0 4px 12px rgba(24, 144, 255, 0.3);
-
-    &:hover:not([disabled]) {
-        transform: translateY(-2px);
-        box-shadow: 0 6px 16px rgba(24, 144, 255, 0.4);
-    }
+.empty-cart-container {
+    background: #fff;
+    border-radius: 12px;
+    padding: 60px 24px;
+    text-align: center;
+    box-shadow: 0 4px 24px rgba(0, 0, 0, 0.04);
 }
 
-/* Responsividad extra */
-@media (max-width: 992px) {
-    .cart-page-wrapper {
+@media (max-width: 768px) {
+    .cart-wrapper {
         padding: 80px 16px 40px;
     }
 
-    .sticky-summary-wrapper {
+    .cart-item-row {
+        flex-direction: column;
+        align-items: flex-start;
         position: relative;
-        top: 0;
+        padding-right: 40px;
+
+        .item-details {
+            padding: 16px 0;
+            width: 100%;
+        }
+
+        .item-quantity {
+            text-align: left;
+            margin-bottom: 12px;
+        }
+
+        .item-price {
+            text-align: left;
+        }
+
+        .item-actions {
+            position: absolute;
+            top: 24px;
+            right: 0;
+        }
     }
 }

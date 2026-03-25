@@ -1,112 +1,96 @@
-<div class="cart-page-wrapper">
-    <div class="cart-header">
-        <h1><span nz-icon nzType="shopping-cart" nzTheme="outline"></span> Carrito de Compras</h1>
-        <p>Revisa los artículos que has seleccionado antes de continuar con tu compra.</p>
-    </div>
+<div class="cart-wrapper">
+    <div class="page-max-width">
+        <!-- Header -->
+        <div class="cart-header">
+            <h1 class="page-title">Mi Carrito</h1>
+            <p class="page-subtitle">Revisa tus productos antes de finalizar la compra.</p>
+        </div>
 
-    <div nz-row [nzGutter]="[32, 32]" class="cart-grid-container">
+        <!-- Render Cart or Empty State -->
+        <ng-container *ngIf="(cartItems$ | async) as items">
 
-        <!-- Columna Izquierda: Tabla de Productos -->
-        <div nz-col [nzXs]="24" [nzLg]="16">
-
-            <!-- Estado Vacío -->
-            <nz-card class="premium-cart-card" [nzBordered]="false" *ngIf="!(cartItems$ | async)?.length">
-                <div class="empty-cart-message">
-                    <nz-empty nzNotFoundImage="https://gw.alipayobjects.com/zos/antfincdn/ZHrcdLPrvN/empty.svg"
-                        nzNotFoundContent="Aún no tienes artículos en tu carrito.">
-                        <button nz-button nzType="primary" nzSize="large" routerLink="/catalogo">Descubrir
-                            Productos</button>
-                    </nz-empty>
-                </div>
-            </nz-card>
-
-            <!-- Tabla Premium -->
-            <nz-card class="premium-cart-card" [nzBordered]="false" *ngIf="(cartItems$ | async)?.length">
-                <nz-table #cartTable [nzData]="(cartItems$ | async)!" [nzShowPagination]="false" [nzBordered]="false"
-                    class="elegant-table">
-
-                    <thead>
-                        <tr>
-                            <th *ngFor="let col of listOfColumns">{{ col.name }}</th>
-                        </tr>
-                    </thead>
-
-                    <tbody>
-                        <tr *ngFor="let item of cartTable.data" class="cart-row">
-
-                            <!-- Producto Info -->
-                            <td>
-                                <div class="product-info-wrapper">
-                                    <div class="cart-img-box">
-                                        <img [src]="item['prov_image'] ? item['prov_image'] : 'https://placehold.co/100x100/eeeeee/8c8c8c?text=Foto'"
-                                            [alt]="item.prov_name" class="cart-img">
-                                    </div>
-                                    <div class="product-titles">
-                                        <span class="product-name">{{ item.prov_name }}</span>
-                                        <span class="product-sku">Ref: {{ item.prov_uuid }}</span>
-                                    </div>
-                                </div>
-                            </td>
-
-                            <!-- Precio Unitario -->
-                            <td>
-                                <span class="unit-price">${{ item.prov_suggestedminimumsellingprice | number: '1.2-2'
-                                    }}</span>
-                            </td>
-
-                            <!-- Cantidad -->
-                            <td>
-                                <nz-input-number [ngModel]="item.quantity" [nzMin]="1" nzSize="large"
-                                    (ngModelChange)="updateItemQuantity(item.prov_uuid, $event)">
-                                </nz-input-number>
-                            </td>
-
-                            <!-- Subtotal -->
-                            <td>
-                                <span class="subtotal-price">${{ item.subtotal | number: '1.2-2' }}</span>
-                            </td>
-
-                            <!-- Eliminar -->
-                            <td style="text-align: right;">
-                                <button nz-button nzType="text" nzDanger nzShape="circle"
-                                    (click)="removeItem(item.prov_uuid)" class="delete-btn">
+            <div *ngIf="items.length > 0; else emptyCart" nz-row [nzGutter]="[32, 32]">
+                <!-- Left Column: Items List -->
+                <div nz-col [nzXs]="24" [nzLg]="16">
+                    <nz-card class="premium-card" nzTitle="Productos Seleccionados" [nzBordered]="false">
+                        <div class="cart-item-row" *ngFor="let item of items">
+                            <div class="item-image">
+                                <img [src]="item.prov_image ? item.prov_image : 'https://placehold.co/80x80/eeeeee/8c8c8c?text=Sin+Foto'"
+                                    [alt]="item.prov_name">
+                            </div>
+                            <div class="item-details">
+                                <h3 class="item-name">{{ item.prov_name }}</h3>
+                                <p class="item-store">SKU: {{ item.prov_sku || 'N/A' }}</p>
+                            </div>
+                            <div class="item-quantity">
+                                <nz-input-number [ngModel]="item.quantity" [nzMin]="1" [nzMax]="99" [nzStep]="1"
+                                    (ngModelChange)="onQuantityChange(item.prov_uuid, $event)"></nz-input-number>
+                            </div>
+                            <div class="item-price">
+                                <strong>ARS ${{ item.subtotal | number:'1.2-2' }}</strong>
+                            </div>
+                            <div class="item-actions">
+                                <a nz-popconfirm nzPopconfirmTitle="¿Quitar del carrito?"
+                                    (nzOnConfirm)="onRemoveItem(item.prov_uuid)" class="delete-btn">
                                     <span nz-icon nzType="delete" nzTheme="outline"></span>
-                                </button>
-                            </td>
-
-                        </tr>
-                    </tbody>
-                </nz-table>
-            </nz-card>
-        </div>
-
-        <!-- Columna Derecha: Tarjeta Sticky de Resumen -->
-        <div nz-col [nzXs]="24" [nzLg]="8">
-            <div class="sticky-summary-wrapper">
-                <nz-card class="premium-summary-card" nzTitle="Resumen de la Compra" [nzBordered]="false">
-
-                    <div class="summary-details">
-                        <nz-statistic nzTitle="Total de Artículos"
-                            [nzValue]="(cartItems$ | async)?.length || 0"></nz-statistic>
-
-                        <nz-divider></nz-divider>
-
-                        <div class="total-row">
-                            <span class="total-label">Subtotal a Pagar</span>
-                            <span class="total-value">ARS ${{ totalPrice | number: '1.2-2' }}</span>
+                                </a>
+                            </div>
                         </div>
-                    </div>
 
-                    <div class="checkout-actions">
-                        <button nz-button nzType="primary" nzSize="large" [nzBlock]="true" (click)="checkout()"
-                            [disabled]="!(cartItems$ | async)?.length" class="checkout-btn">
-                            Confirmar Orden / Pagar
-                        </button>
-                    </div>
+                        <div class="cart-footer-actions">
+                            <button nz-button nzType="default" nzDanger (click)="clearCart()">Vaciar Carrito</button>
+                        </div>
+                    </nz-card>
+                </div>
 
-                </nz-card>
+                <!-- Right Column: Summary -->
+                <div nz-col [nzXs]="24" [nzLg]="8">
+                    <div class="sticky-summary">
+                        <nz-card class="premium-card summary-card" nzTitle="Resumen" [nzBordered]="false">
+                            <div class="summary-details">
+                                <div class="summary-row">
+                                    <span>Productos ({{ items.length }})</span>
+                                    <span>ARS ${{ getTotal() | number:'1.2-2' }}</span>
+                                </div>
+                                <nz-divider></nz-divider>
+                                <div class="summary-row total-row">
+                                    <span>Total Sugerido</span>
+                                    <span class="total-price">ARS ${{ getTotal() | number:'1.2-2' }}</span>
+                                </div>
+                                <p class="shipping-notice">
+                                    <span nz-icon nzType="info-circle" nzTheme="outline"></span>
+                                    El total es estimado sujeto a confirmación del vendedor.
+                                </p>
+                            </div>
+
+                            <button nz-button nzType="primary" nzSize="large" nzBlock class="submit-btn"
+                                routerLink="/user/checkout">
+                                Continuar Compra
+                            </button>
+
+                            <div class="back-to-catalog">
+                                <a routerLink="/public/market-home">
+                                    <span nz-icon nzType="arrow-left" nzTheme="outline"></span> Seguir comprando
+                                </a>
+                            </div>
+                        </nz-card>
+                    </div>
+                </div>
             </div>
-        </div>
 
+            <!-- Empty State -->
+            <ng-template #emptyCart>
+                <div class="empty-cart-container">
+                    <nz-empty nzNotFoundImage="https://gw.alipayobjects.com/zos/antfincdn/ZHrcdLPrvN/empty.svg"
+                        nzNotFoundContent="Tu carrito está vacío.">
+                    </nz-empty>
+                    <button nz-button nzType="primary" nzSize="large" routerLink="/public/market-home"
+                        style="margin-top: 24px;">
+                        Descubrir Productos
+                    </button>
+                </div>
+            </ng-template>
+
+        </ng-container>
     </div>
 </div>

@@ -1,82 +1,65 @@
-import { Component, OnInit, OnDestroy } from '@angular/core';
-import { Router } from '@angular/router';
-import { CommonModule, AsyncPipe } from '@angular/common';
+import { Component, OnInit } from '@angular/core';
+import { CommonModule } from '@angular/common';
 import { FormsModule } from '@angular/forms';
-import { CartItemInterface } from '@interfaces/cart-item.interface';
-import { CartService } from '@services/cart.service';
-import { Observable, Subscription } from 'rxjs';
-import { NzButtonModule } from 'ng-zorro-antd/button';
-import { NzCardModule } from 'ng-zorro-antd/card';
-import { NzDividerModule } from 'ng-zorro-antd/divider';
-import { NzEmptyModule } from 'ng-zorro-antd/empty';
+import { RouterLink } from '@angular/router';
+import { Observable } from 'rxjs';
+
 import { NzGridModule } from 'ng-zorro-antd/grid';
+import { NzCardModule } from 'ng-zorro-antd/card';
+import { NzTableModule } from 'ng-zorro-antd/table';
+import { NzButtonModule } from 'ng-zorro-antd/button';
 import { NzIconModule } from 'ng-zorro-antd/icon';
 import { NzInputNumberModule } from 'ng-zorro-antd/input-number';
-import { NzStatisticModule } from 'ng-zorro-antd/statistic';
-import { NzTableModule } from 'ng-zorro-antd/table';
+import { NzDividerModule } from 'ng-zorro-antd/divider';
+import { NzEmptyModule } from 'ng-zorro-antd/empty';
+import { NzPopconfirmModule } from 'ng-zorro-antd/popconfirm';
+
+import { CartService } from '@services/cart.service';
+import { CartItemInterface } from '@interfaces/cart-item.interface';
 
 @Component({
   selector: 'app-cart',
+  standalone: true,
   imports: [
     CommonModule,
     FormsModule,
-    AsyncPipe,
-    NzButtonModule,
-    NzCardModule,
-    NzDividerModule,
-    NzEmptyModule,
+    RouterLink,
     NzGridModule,
+    NzCardModule,
+    NzTableModule,
+    NzButtonModule,
     NzIconModule,
     NzInputNumberModule,
-    NzStatisticModule,
-    NzTableModule
+    NzDividerModule,
+    NzEmptyModule,
+    NzPopconfirmModule
   ],
   templateUrl: './cart.component.html',
   styleUrl: './cart.component.scss'
 })
-export class CartComponent implements OnInit, OnDestroy {
+export class CartComponent implements OnInit {
 
   public cartItems$: Observable<CartItemInterface[]>;
-  public totalPrice: number = 0;
-  public cartSubscription: Subscription = new Subscription();
 
-  // Definición de las columnas de la tabla para la lógica responsive
-  public listOfColumns = [
-    { name: 'Producto', responsive: 'xs' },
-    { name: 'Precio Unitario', responsive: 'md' }, // Ocultar en SM y XS
-    { name: 'Cantidad', responsive: 'xs' },
-    { name: 'Subtotal', responsive: 'xs' },
-    { name: 'Acción', responsive: 'xs' }
-  ];
-
-  constructor(
-    private cartService: CartService,
-    private _router: Router
-  ) {
+  constructor(public cartService: CartService) {
     this.cartItems$ = this.cartService.cartItems$;
   }
 
-  ngOnInit(): void {
-    // Suscripción para mantener el precio total actualizado en la vista
-    this.cartSubscription = this.cartItems$.subscribe(() => {
-      this.totalPrice = this.cartService.getTotalPrice();
-    });
-  }
+  ngOnInit(): void { }
 
-  ngOnDestroy(): void {
-    this.cartSubscription.unsubscribe();
-  }
-
-  public updateItemQuantity(productId: string, quantity: number): void {
+  public onQuantityChange(productId: string, quantity: number): void {
     this.cartService.updateQuantity(productId, quantity);
   }
 
-  public removeItem(productId: string): void {
+  public onRemoveItem(productId: string): void {
     this.cartService.removeFromCart(productId);
   }
 
-  public checkout(): void {
-    this._router.navigate(['/user/checkout']);
+  public clearCart(): void {
+    this.cartService.clearCart();
   }
 
+  public getTotal(): number {
+    return this.cartService.getTotalPrice();
+  }
 }
