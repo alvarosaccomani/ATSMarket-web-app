@@ -10,6 +10,7 @@ import { NzDividerModule } from 'ng-zorro-antd/divider';
 import { NzDescriptionsModule } from 'ng-zorro-antd/descriptions';
 import { NzMessageService } from 'ng-zorro-antd/message';
 import { NzCardModule } from 'ng-zorro-antd/card';
+import { NzAlertModule } from 'ng-zorro-antd/alert';
 
 // Tipado mock para los pedidos
 export interface OrderItem {
@@ -29,6 +30,9 @@ export interface Order {
   ord_total: number;
   ord_status: 'PENDING' | 'PROCESSING' | 'SHIPPED' | 'CANCELLED';
   ord_items: OrderItem[];
+  pay_method?: 'TRANSFERENCIA' | 'MERCADOPAGO';
+  pay_transaction_id?: string;
+  pay_status?: 'AWAITING_VERIFICATION' | 'VERIFIED' | 'REJECTED';
 }
 
 @Component({
@@ -44,7 +48,8 @@ export interface Order {
     NzDrawerModule,
     NzDividerModule,
     NzDescriptionsModule,
-    NzCardModule
+    NzCardModule,
+    NzAlertModule
   ],
   templateUrl: './orders-received.component.html',
   styleUrl: './orders-received.component.scss'
@@ -100,13 +105,26 @@ export class OrdersReceivedComponent implements OnInit {
 
   // --- ACCIONES DE ESTADO (KANBAN) ---
 
-  public markAsProcessing(order: Order, event: Event): void {
-    event.stopPropagation(); // Evita abrir el drawer al hacer click en el botón
+  public approvePayment(order: Order, event?: Event): void {
+    if (event) event.stopPropagation();
     const idx = this.allOrders.findIndex(o => o.ord_uuid === order.ord_uuid);
     if (idx !== -1) {
+      this.allOrders[idx].pay_status = 'VERIFIED';
       this.allOrders[idx].ord_status = 'PROCESSING';
       this.filterOrdersIntoTabs();
-      this.message.info(`Pedido ${order.ord_number} pasó a Preparación.`);
+      this.message.success(`Pago Aprobado. Pedido ${order.ord_number} pasó a Preparación.`);
+      this.isDrawerVisible = false;
+    }
+  }
+
+  public rejectPayment(order: Order): void {
+    const idx = this.allOrders.findIndex(o => o.ord_uuid === order.ord_uuid);
+    if (idx !== -1) {
+      this.allOrders[idx].pay_status = 'REJECTED';
+      this.allOrders[idx].ord_status = 'CANCELLED';
+      this.filterOrdersIntoTabs();
+      this.message.error(`Pago Rechazado. Pedido ${order.ord_number} fue cancelado.`);
+      this.isDrawerVisible = false;
     }
   }
 
@@ -145,6 +163,9 @@ export class OrdersReceivedComponent implements OnInit {
         cus_phone: '+54 11 4455-6677',
         ord_total: 125000,
         ord_status: 'PENDING',
+        pay_method: 'TRANSFERENCIA',
+        pay_transaction_id: 'TRX-9982442',
+        pay_status: 'AWAITING_VERIFICATION',
         ord_items: [
           { name: 'Rosario Madera Olivo', sku: 'ROS-OLI', quantity: 100, price: 500 },
           { name: 'Medalla San Benito', sku: 'MED-BEN', quantity: 150, price: 500 }
@@ -159,6 +180,9 @@ export class OrdersReceivedComponent implements OnInit {
         cus_phone: '+54 223 555-1234',
         ord_total: 45000,
         ord_status: 'PENDING',
+        pay_method: 'MERCADOPAGO',
+        pay_transaction_id: 'MP-55112233',
+        pay_status: 'AWAITING_VERIFICATION',
         ord_items: [
           { name: 'Estatua Virgen de Luján 30cm', sku: 'EST-LUJ-30', quantity: 2, price: 22500 }
         ]
