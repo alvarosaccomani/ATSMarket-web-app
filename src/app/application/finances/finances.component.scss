@@ -1,0 +1,88 @@
+.finances-dashboard-wrapper {
+    padding: 24px;
+    background-color: #f7f9fc;
+    min-height: calc(100vh - 64px);
+}
+
+.dashboard-header {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    margin-bottom: 24px;
+    flex-wrap: wrap;
+    gap: 16px;
+
+    .page-title {
+        font-size: 28px;
+        font-weight: 600;
+        color: #1f1f1f;
+        margin-bottom: 4px;
+    }
+
+    .page-subtitle {
+        color: #8c8c8c;
+        font-size: 15px;
+        margin: 0;
+    }
+}
+
+.premium-card {
+    border-radius: 12px;
+    box-shadow: 0 4px 24px rgba(0, 0, 0, 0.04);
+}
+
+.balance-row {
+    margin-bottom: 24px !important;
+}
+
+.balance-card {
+    position: relative;
+    overflow: hidden;
+    padding-left: 12px;
+
+    &.highlight-card {
+        border-top: 4px solid #52c41a;
+    }
+
+    &.bg-light {
+        background-color: #fafafa;
+    }
+
+    .balance-icon-wrapper {
+        position: absolute;
+        top: 24px;
+        right: 24px;
+        font-size: 32px;
+        opacity: 0.15;
+    }
+
+    .highlight-value {
+        color: #52c41a;
+        font-weight: 700;
+        font-size: 32px;
+    }
+}
+
+.withdraw-btn {
+    display: flex;
+    align-items: center;
+    gap: 8px;
+    font-weight: 600;
+}
+
+// Historial tabla
+.tx-id {
+    font-family: monospace;
+    font-size: 13px;
+    color: #8c8c8c;
+}
+
+.tx-amount {
+    font-weight: 600;
+    color: #262626;
+}
+
+.tx-dest {
+    font-size: 14px;
+    color: #595959;
+}
