@@ -1,1 +1,153 @@
-<p>addresses works!</p>
+<div class="addresses-dashboard-wrapper">
+
+    <div class="dashboard-header">
+        <div class="header-titles">
+            <h1 class="page-title">Libreta de Direcciones</h1>
+            <p class="page-subtitle">Gestiona tus ubicaciones de entrega para realizar pedidos más rápido.</p>
+        </div>
+        <div class="header-actions">
+            <button nz-button nzType="primary" nzSize="large" (click)="openCreateModal()">
+                <span nz-icon nzType="plus"></span>
+                Agregar Domicilio
+            </button>
+        </div>
+    </div>
+
+    <!-- GRILLA DE DIRECCIONES -->
+    <div nz-row [nzGutter]="[16, 16]">
+
+        <!-- Tarjeta "En Blanco" para invitar a crear una -->
+        <div nz-col nzXs="24" nzSm="12" nzLg="8" *ngIf="addresses.length === 0">
+            <div class="empty-address-card" (click)="openCreateModal()">
+                <span nz-icon nzType="environment" nzTheme="outline" class="empty-icon"></span>
+                <h3>Aún no tienes direcciones</h3>
+                <p>Haz clic para añadir tu primer domicilio de entrega.</p>
+            </div>
+        </div>
+
+        <!-- Tarjetas de Direcciones Guardadas -->
+        <div nz-col nzXs="24" nzSm="12" nzLg="8" *ngFor="let adr of addresses">
+            <nz-card class="premium-card address-card">
+
+                <div class="adr-icon-badge">
+                    <span nz-icon nzType="home" nzTheme="fill"></span>
+                </div>
+
+                <div class="adr-details">
+                    <h3 class="adr-street">{{ adr.adr_alias || 'Domicilio' }}</h3>
+                    <p style="margin-bottom: 4px; color: #1890ff;"><strong>{{ adr.adr_recipientname }}</strong> <span
+                            *ngIf="adr.adr_contactphone">({{ adr.adr_contactphone }})</span></p>
+                    <p class="adr-location" style="margin-bottom: 4px;">{{ adr.adr_address }}<br>{{ adr.adr_city }}, {{
+                        adr.adr_province }} (CP: {{ adr.adr_postalcode }})</p>
+                    <p class="adr-location" *ngIf="adr.adr_reference" style="font-size: 13px; font-style: italic;">Nota:
+                        {{ adr.adr_reference }}</p>
+                </div>
+
+                <div
+                    style="margin-top: 16px; border-top: 1px solid #f0f0f0; padding-top: 12px; display: flex; justify-content: flex-end;">
+                    <a nz-popconfirm nzPopconfirmTitle="¿Seguro querés eliminar esta dirección?"
+                        (nzOnConfirm)="removeAddress(adr.adr_uuid)" class="delete-action">
+                        <span nz-icon nzType="delete"></span> Eliminar
+                    </a>
+                </div>
+
+            </nz-card>
+        </div>
+
+    </div>
+
+</div>
+
+<!-- MODAL: AGREGAR DIRECCIÓN -->
+<nz-modal [(nzVisible)]="isModalVisible" nzTitle="Añadir Nueva Dirección" [nzFooter]="modalFooter"
+    (nzOnCancel)="closeModal()" nzWidth="600px" nzCentered>
+
+    <ng-container *nzModalContent>
+        <form nz-form [formGroup]="addressForm" nzLayout="vertical">
+
+            <div nz-row [nzGutter]="16">
+                <div nz-col nzSpan="12">
+                    <nz-form-item>
+                        <nz-form-label nzRequired>Alias de la Dirección</nz-form-label>
+                        <nz-form-control nzErrorTip="Requerido">
+                            <input nz-input formControlName="adr_alias" placeholder="Ej: Trabajo, Galpón Sur"
+                                nzSize="large" />
+                        </nz-form-control>
+                    </nz-form-item>
+                </div>
+                <div nz-col nzSpan="12">
+                    <nz-form-item>
+                        <nz-form-label nzRequired>Nombre de Quien Recibe</nz-form-label>
+                        <nz-form-control nzErrorTip="Requerido">
+                            <input nz-input formControlName="adr_recipient_name" placeholder="Ej: Marta López"
+                                nzSize="large" />
+                        </nz-form-control>
+                    </nz-form-item>
+                </div>
+            </div>
+
+            <nz-form-item>
+                <nz-form-label nzRequired>Calle y Altura Exacta</nz-form-label>
+                <nz-form-control nzErrorTip="Requerido">
+                    <input nz-input formControlName="adr_address" placeholder="Ej: Av. San Martín 1500"
+                        nzSize="large" />
+                </nz-form-control>
+            </nz-form-item>
+
+            <nz-form-item>
+                <nz-form-label>Piso, Depto o Referencias (Instrucciones Logísticas)</nz-form-label>
+                <nz-form-control>
+                    <input nz-input formControlName="adr_reference" placeholder="Ej: Bloque B, Timbre 4 / Portón gris"
+                        nzSize="large" />
+                </nz-form-control>
+            </nz-form-item>
+
+            <div nz-row [nzGutter]="16">
+                <div nz-col nzSpan="12">
+                    <nz-form-item>
+                        <nz-form-label nzRequired>Ciudad / Localidad</nz-form-label>
+                        <nz-form-control nzErrorTip="Requerido">
+                            <input nz-input formControlName="adr_city" placeholder="Ciudad" nzSize="large" />
+                        </nz-form-control>
+                    </nz-form-item>
+                </div>
+                <div nz-col nzSpan="12">
+                    <nz-form-item>
+                        <nz-form-label nzRequired>Cód. Postal</nz-form-label>
+                        <nz-form-control nzErrorTip="Requerido">
+                            <input nz-input formControlName="adr_postalcode" placeholder="C.P." nzSize="large" />
+                        </nz-form-control>
+                    </nz-form-item>
+                </div>
+            </div>
+
+            <div nz-row [nzGutter]="16">
+                <div nz-col nzSpan="12">
+                    <nz-form-item>
+                        <nz-form-label nzRequired>Provincia</nz-form-label>
+                        <nz-form-control nzErrorTip="Requerido">
+                            <input nz-input formControlName="adr_province" placeholder="Ej: Buenos Aires"
+                                nzSize="large" />
+                        </nz-form-control>
+                    </nz-form-item>
+                </div>
+                <div nz-col nzSpan="12">
+                    <nz-form-item>
+                        <nz-form-label nzRequired>Celular / Teléfono de Envío</nz-form-label>
+                        <nz-form-control nzErrorTip="Ingresá solo números">
+                            <input nz-input formControlName="adr_contact_phone" placeholder="Sin Guiones (+54 11...)"
+                                nzSize="large" />
+                        </nz-form-control>
+                    </nz-form-item>
+                </div>
+            </div>
+
+        </form>
+    </ng-container>
+
+    <ng-template #modalFooter>
+        <button nz-button nzType="default" (click)="closeModal()">Cancelar</button>
+        <button nz-button nzType="primary" (click)="submitNewAddress()">Guardar Dirección Final</button>
+    </ng-template>
+
+</nz-modal>

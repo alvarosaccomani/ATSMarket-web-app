@@ -1,0 +1,124 @@
+.addresses-dashboard-wrapper {
+    padding: 24px;
+    background-color: #f7f9fc;
+    min-height: calc(100vh - 64px);
+}
+
+.dashboard-header {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    margin-bottom: 32px;
+    flex-wrap: wrap;
+    gap: 16px;
+
+    .page-title {
+        font-size: 28px;
+        font-weight: 600;
+        color: #1f1f1f;
+        margin-bottom: 4px;
+    }
+
+    .page-subtitle {
+        color: #8c8c8c;
+        font-size: 15px;
+        margin: 0;
+    }
+}
+
+.premium-card {
+    border-radius: 12px;
+    box-shadow: 0 4px 24px rgba(0, 0, 0, 0.04);
+}
+
+/* Empty State Card */
+.empty-address-card {
+    border: 2px dashed #d9d9d9;
+    border-radius: 12px;
+    background-color: #fafafa;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    padding: 40px 24px;
+    text-align: center;
+    cursor: pointer;
+    transition: all 0.3s;
+    height: 100%;
+    min-height: 200px;
+
+    &:hover {
+        border-color: #1890ff;
+        background-color: #e6f7ff;
+    }
+
+    .empty-icon {
+        font-size: 48px;
+        color: #bfbfbf;
+        margin-bottom: 16px;
+    }
+
+    h3 {
+        font-size: 18px;
+        font-weight: 600;
+        color: #595959;
+        margin-bottom: 8px;
+    }
+
+    p {
+        color: #8c8c8c;
+        font-size: 14px;
+        margin: 0;
+    }
+}
+
+/* Saved Address Card */
+.address-card {
+    position: relative;
+    height: 100%;
+
+    .adr-icon-badge {
+        position: absolute;
+        top: 24px;
+        right: 24px;
+        font-size: 24px;
+        color: #e6f7ff; // Light blue background tone
+        background-color: #1890ff;
+        width: 48px;
+        height: 48px;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        border-radius: 50%;
+        opacity: 0.1; // Make it a watermark
+    }
+
+    .adr-details {
+        h3.adr-street {
+            font-size: 16px;
+            font-weight: 600;
+            color: #262626;
+            margin-bottom: 8px;
+        }
+
+        p.adr-location {
+            font-size: 14px;
+            color: #595959;
+            margin: 0;
+            line-height: 1.5;
+        }
+    }
+}
+
+.delete-action {
+    color: #f5222d;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    gap: 8px;
+
+    &:hover {
+        color: #cf1322;
+        background-color: #fff1f0;
+    }
+}
