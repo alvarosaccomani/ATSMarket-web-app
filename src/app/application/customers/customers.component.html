@@ -1,1 +1,144 @@
-<p>customers works!</p>
+<div class="customers-dashboard-wrapper">
+
+    <div class="dashboard-header">
+        <div class="header-titles">
+            <h1 class="page-title">Directorio de Clientes</h1>
+            <p class="page-subtitle">Gestiona tu cartera de compradores y analiza su historial.</p>
+        </div>
+
+        <div class="header-actions">
+            <nz-input-group [nzPrefix]="prefixIconSearch" nzSize="large" style="width: 300px;">
+                <input type="text" nz-input placeholder="Buscar por nombre, email o tel..." [(ngModel)]="searchTerm"
+                    (ngModelChange)="applyFilters()" />
+            </nz-input-group>
+            <ng-template #prefixIconSearch>
+                <span nz-icon nzType="search"></span>
+            </ng-template>
+        </div>
+    </div>
+
+    <!-- MAIN DIRECTORY TABLE -->
+    <nz-card class="premium-card" [nzBordered]="false">
+        <nz-table #customersTable [nzData]="filteredCustomers" nzSize="middle" [nzPageSize]="10">
+            <thead>
+                <tr>
+                    <th nzWidth="30%">Cliente</th>
+                    <th nzWidth="20%">Contacto</th>
+                    <th nzWidth="15%">Segmento</th>
+                    <th nzWidth="15%">Ingresos Generados</th>
+                    <th nzWidth="10%">Pedidos</th>
+                    <th nzWidth="10%">Acciones</th>
+                </tr>
+            </thead>
+            <tbody>
+                <tr *ngFor="let data of customersTable.data" class="clickable-row" (click)="openCustomerProfile(data)">
+                    <td>
+                        <div class="customer-cell">
+                            <nz-avatar nzIcon="user"
+                                [nzSrc]="'https://api.dicebear.com/7.x/initials/svg?seed=' + data.cus_name"
+                                style="background-color: #f56a00;"></nz-avatar>
+                            <div class="customer-info">
+                                <span class="customer-name">{{ data.cus_name }}</span>
+                                <span class="customer-document">Doc: {{ data.cus_document }}</span>
+                            </div>
+                        </div>
+                    </td>
+                    <td>
+                        <div class="contact-cell">
+                            <span class="contact-email">{{ data.cus_email }}</span>
+                            <span class="contact-phone">{{ data.cus_phone }}</span>
+                        </div>
+                    </td>
+                    <td>
+                        <nz-tag [nzColor]="getSegmentColor(data.cus_type)">{{ getSegmentLabel(data.cus_type) }}</nz-tag>
+                    </td>
+                    <td>
+                        <span class="lifetime-value">${{ data.total_spent | number:'1.2-2' }}</span>
+                    </td>
+                    <td>
+                        <span class="orders-count">{{ data.total_orders }}</span>
+                    </td>
+                    <td>
+                        <button nz-button nzType="default" nzSize="small"
+                            (click)="openCustomerProfile(data)">Perfil</button>
+                    </td>
+                </tr>
+            </tbody>
+        </nz-table>
+    </nz-card>
+</div>
+
+<!-- DRAWER: PERFIL DEL CLIENTE -->
+<nz-drawer [nzVisible]="isDrawerVisible" nzPlacement="right" [nzTitle]="drawerTitle" [nzWidth]="'500px'"
+    (nzOnClose)="closeDrawer()">
+
+    <ng-container *nzDrawerContent>
+        <div *ngIf="selectedCustomer" class="drawer-content-wrapper">
+
+            <div class="profile-header">
+                <nz-avatar [nzSize]="64" nzIcon="user"
+                    [nzSrc]="'https://api.dicebear.com/7.x/initials/svg?seed=' + selectedCustomer.cus_name"
+                    style="background-color: #f56a00;"></nz-avatar>
+                <div class="profile-header-info">
+                    <h2>{{ selectedCustomer.cus_name }}</h2>
+                    <nz-tag [nzColor]="getSegmentColor(selectedCustomer.cus_type)">{{
+                        getSegmentLabel(selectedCustomer.cus_type) }}</nz-tag>
+                </div>
+            </div>
+
+            <nz-divider></nz-divider>
+
+            <nz-descriptions nzTitle="Información de Contacto" [nzColumn]="1" nzSize="small">
+                <nz-descriptions-item nzTitle="Email">{{ selectedCustomer.cus_email }}</nz-descriptions-item>
+                <nz-descriptions-item nzTitle="Teléfono">{{ selectedCustomer.cus_phone }}</nz-descriptions-item>
+                <nz-descriptions-item nzTitle="Identificación">{{ selectedCustomer.cus_document
+                    }}</nz-descriptions-item>
+                <nz-descriptions-item nzTitle="Última Compra">
+                    {{ selectedCustomer.last_order_date ? (selectedCustomer.last_order_date | date:'mediumDate') :
+                    'Nunca' }}
+                </nz-descriptions-item>
+            </nz-descriptions>
+
+            <nz-divider></nz-divider>
+
+            <div class="kpi-grid">
+                <div class="kpi-box">
+                    <span class="kpi-label">Pedidos Totales</span>
+                    <span class="kpi-value">{{ selectedCustomer.total_orders }}</span>
+                </div>
+                <div class="kpi-box">
+                    <span class="kpi-label">Total Gastado</span>
+                    <span class="kpi-value kpi-money">${{ selectedCustomer.total_spent | number:'1.2-2' }}</span>
+                </div>
+            </div>
+
+            <nz-divider></nz-divider>
+
+            <h3 class="history-title">Historial de Compras</h3>
+
+            <div class="empty-state" *ngIf="selectedCustomer.order_history.length === 0">
+                <nz-empty nzNotFoundImage="simple"
+                    nzNotFoundContent="Este cliente aún no ha finalizado una compra."></nz-empty>
+            </div>
+
+            <div class="order-history-list" *ngIf="selectedCustomer.order_history.length > 0">
+                <div class="history-item" *ngFor="let order of selectedCustomer.order_history">
+                    <div class="history-main">
+                        <span class="h-order-number">{{ order.order_number }}</span>
+                        <span class="h-order-date">{{ order.date | date:'dd MMM yyyy' }}</span>
+                    </div>
+                    <div class="history-metrics">
+                        <nz-tag [nzColor]="getStatusColor(order.status)" [nzBordered]="false">{{
+                            getStatusLabel(order.status) }}</nz-tag>
+                        <span class="h-order-total">${{ order.total | number:'1.0-0' }}</span>
+                    </div>
+                </div>
+            </div>
+
+        </div>
+    </ng-container>
+
+    <ng-template #drawerTitle>
+        Ficha del Cliente
+    </ng-template>
+</nz-drawer>

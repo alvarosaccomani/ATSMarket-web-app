@@ -1,0 +1,185 @@
+.customers-dashboard-wrapper {
+    padding: 24px;
+    background-color: #f7f9fc;
+    min-height: calc(100vh - 64px);
+}
+
+.dashboard-header {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    margin-bottom: 24px;
+    flex-wrap: wrap;
+    gap: 16px;
+
+    .page-title {
+        font-size: 28px;
+        font-weight: 600;
+        color: #1f1f1f;
+        margin-bottom: 4px;
+    }
+
+    .page-subtitle {
+        color: #8c8c8c;
+        font-size: 15px;
+        margin: 0;
+    }
+}
+
+.premium-card {
+    border-radius: 12px;
+    box-shadow: 0 4px 24px rgba(0, 0, 0, 0.04);
+}
+
+.clickable-row {
+    cursor: pointer;
+    transition: background-color 0.2s;
+
+    &:hover {
+        background-color: #fafafa;
+    }
+}
+
+.customer-cell {
+    display: flex;
+    align-items: center;
+    gap: 12px;
+
+    .customer-info {
+        display: flex;
+        flex-direction: column;
+
+        .customer-name {
+            font-weight: 500;
+            color: #262626;
+        }
+
+        .customer-document {
+            font-size: 12px;
+            color: #8c8c8c;
+        }
+    }
+}
+
+.contact-cell {
+    display: flex;
+    flex-direction: column;
+
+    .contact-email {
+        color: #1890ff;
+        font-size: 13px;
+    }
+
+    .contact-phone {
+        font-size: 13px;
+        color: #595959;
+    }
+}
+
+.lifetime-value {
+    font-weight: 600;
+    font-size: 15px;
+    color: #262626;
+}
+
+.orders-count {
+    font-weight: 500;
+    color: #595959;
+}
+
+// DRAWER STYLES
+.drawer-content-wrapper {
+    display: flex;
+    flex-direction: column;
+}
+
+.profile-header {
+    display: flex;
+    align-items: center;
+    gap: 16px;
+
+    .profile-header-info {
+        h2 {
+            margin: 0 0 4px 0;
+            font-weight: 600;
+        }
+    }
+}
+
+.kpi-grid {
+    display: flex;
+    gap: 16px;
+
+    .kpi-box {
+        flex: 1;
+        background-color: #f7f9fc;
+        border-radius: 8px;
+        padding: 16px;
+        display: flex;
+        flex-direction: column;
+        align-items: center;
+
+        .kpi-label {
+            font-size: 13px;
+            color: #8c8c8c;
+            margin-bottom: 4px;
+        }
+
+        .kpi-value {
+            font-size: 24px;
+            font-weight: 600;
+            color: #262626;
+
+            &.kpi-money {
+                color: #1890ff;
+            }
+        }
+    }
+}
+
+.history-title {
+    font-size: 16px;
+    font-weight: 600;
+    margin-bottom: 16px;
+}
+
+.order-history-list {
+    display: flex;
+    flex-direction: column;
+    gap: 12px;
+}
+
+.history-item {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    padding: 12px;
+    border: 1px solid #f0f0f0;
+    border-radius: 8px;
+
+    .history-main {
+        display: flex;
+        flex-direction: column;
+
+        .h-order-number {
+            font-weight: 500;
+            color: #1f1f1f;
+        }
+
+        .h-order-date {
+            font-size: 12px;
+            color: #8c8c8c;
+        }
+    }
+
+    .history-metrics {
+        display: flex;
+        align-items: center;
+        gap: 12px;
+
+        .h-order-total {
+            font-weight: 600;
+            font-size: 15px;
+        }
+    }
+}
