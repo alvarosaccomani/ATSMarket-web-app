@@ -24,4 +24,15 @@ export class CompaniesSettingsService {
 
     return this._http.get<CompanySettingResults>(`${environment.apiUrl}companies-settings/${cmp_uuid}`, { headers, params });
   }
+
+  /**
+   * Guarda una configuración de empresa.
+   * @returns Observable de una configuración de empresa.
+   */
+  public saveCompanySetting(companySetting: any): Observable<any> {
+    let params = JSON.stringify(companySetting);
+    let headers = new HttpHeaders().set('content-type', 'application/json');
+
+    return this._http.post(environment.apiUrl + 'company-setting', params, { headers: headers });
+  }
 }
