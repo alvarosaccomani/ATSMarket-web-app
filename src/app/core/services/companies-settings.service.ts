@@ -35,4 +35,15 @@ export class CompaniesSettingsService {
 
     return this._http.post(environment.apiUrl + 'company-setting', params, { headers: headers });
   }
+
+  /**
+   * Actualiza una configuración de empresa.
+   * @returns Observable de una configuración de empresa.
+   */
+  public updateCompanySetting(companySetting: any): Observable<any> {
+    let params = JSON.stringify(companySetting);
+    let headers = new HttpHeaders().set('content-type', 'application/json');
+
+    return this._http.put(environment.apiUrl + 'company-setting/' + companySetting.cmp_uuid + '/' + companySetting.cmps_uuid, params, { headers: headers });
+  }
 }
