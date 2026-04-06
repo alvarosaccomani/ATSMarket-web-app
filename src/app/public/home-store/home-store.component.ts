@@ -12,10 +12,13 @@ import { NzIconModule } from 'ng-zorro-antd/icon';
 import { NzModalModule } from 'ng-zorro-antd/modal';
 import { NzGridModule } from 'ng-zorro-antd/grid';
 import { NzMessageService } from 'ng-zorro-antd/message';
+import { NzSpinModule } from 'ng-zorro-antd/spin';
 
 import { ProductVariationInterface } from '@interfaces/product-variation';
 import { CategoryInterface } from '@interfaces/category.interface';
 import { CompaniesService } from '@services/companies.service';
+import { CompaniesSettingsService } from '@services/companies-settings.service';
+import { CompanySettingInterface } from '@interfaces/company-setting';
 
 @Component({
   selector: 'app-home',
@@ -29,7 +32,8 @@ import { CompaniesService } from '@services/companies.service';
     NzDividerModule,
     NzButtonModule,
     NzIconModule,
-    NzModalModule
+    NzModalModule,
+    NzSpinModule
   ],
   templateUrl: './home-store.component.html',
   styleUrl: './home-store.component.scss'
@@ -43,10 +47,15 @@ export class HomeStoreComponent {
   // Propiedad para las categorías que se mostrarán en la grilla del Home
   public categorias: CategoryInterface[] = [];
 
+  // Almacena las configuraciones de la tienda (clave: valor)
+  public storeSettings: { [key: string]: any } = {};
+  public isSettingsLoading: boolean = true;
+
   constructor(
     private route: ActivatedRoute,
     private router: Router,
     private companiesService: CompaniesService,
+    private companiesSettingsService: CompaniesSettingsService,
     // private productService: ProductService, // Si tuvieras un servicio
     // private cartService: CartService,
     private message: NzMessageService
@@ -60,26 +69,31 @@ export class HomeStoreComponent {
         const slug = params.get('slug');
         if (!slug) return of(null);
         this.companieSlug = slug;
-        return this.companiesService.getCompanyBySlug(slug); // Busca la información de la tienda
+        return this.companiesService.getCompanyBySlug(slug);
       }),
-      // 2. Cuando tiene la tienda, busca sus productos
-      // switchMap((store: any) => {
-      //   if (store && store.data) {
-      //     this.store = store.data;
-      //   }
+      // 2. Si la empresa existe, obtenemos sus configuraciones
+      switchMap((companyResults: any) => {
+        if (!companyResults || !companyResults.data || companyResults.data.length === 0) {
+          this.message.error('Tienda no encontrada o URL incorrecta.');
+          this.router.navigate(['/']);
+          return of(null);
+        }
 
-      //   if (!store) {
-      //     this.message.error('Tienda no encontrada o URL incorrecta.');
-      //     this.router.navigate(['/']); // Redirige al Home Global si no existe
-      //     return of([]);
-      //   }
-      //   // Llamada al ProductService, filtrando por el slug de la tienda
-      //   return this.productsVariationsService.getProductsVariations('28a0036e-2d6b-4e83-805a-1ca214a6b1e1', '', this.companieslug);
-      // })
-    ).subscribe((products: any) => {
-      // this.allStoreProducts = products.data;
-      // this.initializeFilters(products.data);
-      // this.applyFilters();
+        const company = companyResults.data;
+        // Cargamos todas las configuraciones para el cmp_uuid de la empresa
+        return this.companiesSettingsService.getCompaniesSettings(company.cmp_uuid);
+      })
+    ).subscribe((settingsResults: any) => {
+      if (settingsResults && settingsResults.data) {
+        // Mapeamos el array de configuraciones a un objeto { CLAVE: VALOR }
+        this.mapSettings(settingsResults.data);
+        this.isSettingsLoading = false;
+      } else {
+        this.isSettingsLoading = false;
+      }
+    }, (error) => {
+      this.isSettingsLoading = false;
+      console.error('Error al cargar configuraciones:', error);
     });
 
     // 1. Cargar productos destacados (simulación)
@@ -121,15 +135,46 @@ export class HomeStoreComponent {
   // Método para la consulta de precio discreta
 
   public consultarPrecio(producto: ProductVariationInterface): void {
-    // Aquí puedes usar nz-modal o nz-notification
-    // Para el ejemplo, usaremos un simple alert:
-    alert(`El precio de "${producto.prov_name}" es $${producto.prov_suggestedminimumsellingprice}.`);
+    const whatsapp = this.getSetting('STORE_WHATSAPP', '');
+    const message = `Hola, me interesa el producto: ${producto.prov_name} (Ref: ${producto.prov_sku})`;
 
-    // **NOTA:** En producción, esto debería abrir un modal con nz-modal
-    // o integrarse con la lógica de QR/referencia.
+    if (whatsapp) {
+      const url = `https://wa.me/${whatsapp}?text=${encodeURIComponent(message)}`;
+      window.open(url, '_blank');
+    } else {
+      // Fallback si no hay WhatsApp configurado
+      alert(`Consulta por "${producto.prov_name}" (Ref: ${producto.prov_sku}). Contacte con la tienda para más información.`);
+    }
   }
 
   public goToStoreCatalog(): void {
     this.router.navigate(['/public/store-catalog', this.companieSlug]);
+  }
+
+  /**
+   * Mapea el array de configuraciones a un objeto clave-valor
+   */
+  private mapSettings(settings: CompanySettingInterface[]): void {
+    this.storeSettings = {};
+    settings.forEach(s => {
+      // Intentamos convertir a booleano si parece un booleano
+      if (s.cmps_value === 'true') {
+        this.storeSettings[s.cmps_key] = true;
+      } else if (s.cmps_value === 'false') {
+        this.storeSettings[s.cmps_key] = false;
+      } else {
+        this.storeSettings[s.cmps_key] = s.cmps_value;
+      }
+    });
+
+    // Logging para verificar que las configuraciones llegaron
+    console.log('Store Settings Mapped:', this.storeSettings);
+  }
+
+  /**
+   * Obtiene un valor de configuración con un valor por defecto
+   */
+  public getSetting(key: string, defaultValue: any): any {
+    return this.storeSettings[key] !== undefined ? this.storeSettings[key] : defaultValue;
   }
 }
