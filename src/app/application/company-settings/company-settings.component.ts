@@ -1,4 +1,5 @@
 import { Component, OnInit } from '@angular/core';
+import { forkJoin } from 'rxjs';
 import { CommonModule, Location } from '@angular/common';
 import { FormsModule } from '@angular/forms';
 import { ActivatedRoute } from '@angular/router';
@@ -486,8 +487,45 @@ export class CompanySettingsComponent implements OnInit {
 
   public onSave(): void {
     console.log('Guardando configuración:', this.settings);
-    this._messageService.success('Configuración Guardada', 'Las configuraciones avanzadas se actualizaron correctamente.', () => {
-      this._location.back();
+    this.isLoading = true;
+
+    // Preparamos las peticiones para guardar cada configuración
+    const saveRequests = this.settings.map(setting => {
+      const payload = { ...setting };
+      payload.cmp_uuid = this.cmp_uuid;
+
+      // Si el cmps_uuid es solo un número (placeholder del esquema inicial),
+      // lo eliminamos para que el backend lo trate como una nueva inserción.
+      // Caso contrario, usamos el método de actualización.
+      const isNew = !payload.cmps_uuid || payload.cmps_uuid.length < 5;
+
+      if (isNew) {
+        delete (payload as any).cmps_uuid;
+        return this._settingsService.saveCompanySetting(payload);
+      } else {
+        return this._settingsService.updateCompanySetting(payload);
+      }
+    });
+
+    if (saveRequests.length === 0) {
+      this.isLoading = false;
+      this._messageService.warning('Sin cambios', 'No hay configuraciones para guardar.');
+      return;
+    }
+
+    // Ejecutamos todas las peticiones en paralelo
+    forkJoin(saveRequests).subscribe({
+      next: (results) => {
+        this.isLoading = false;
+        this._messageService.success('Configuración Guardada', 'Las configuraciones se procesaron correctamente.', () => {
+          this._location.back();
+        });
+      },
+      error: (err) => {
+        console.error('Error al procesar configuraciones', err);
+        this.isLoading = false;
+        this._messageService.error('Error al guardar', 'Hubo un problema al procesar los ajustes. Por favor, reintente.');
+      }
     });
   }
 
