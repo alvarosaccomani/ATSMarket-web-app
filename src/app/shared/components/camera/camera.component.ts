@@ -16,6 +16,9 @@ import { CommonModule } from '@angular/common';
 })
 export class CameraComponent implements AfterViewInit, OnDestroy, OnChanges {
   @Input() existingImage: string | null = null;
+  @Input() showScannerFrame: boolean = true;
+  @Input() captureHintText: string = 'Encuadre el comprobante';
+  @Input() showCaptureHint: boolean = true;
   @Output() onPhotoSaved = new EventEmitter<string>();
   @Output() onClose = new EventEmitter<void>();
 

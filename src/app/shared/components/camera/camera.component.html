@@ -26,6 +26,7 @@
     </video>
 
     @if(isCameraActive && !isLoading) {
+    @if(showScannerFrame) {
     <div class="camera-overlay-mask">
         <div class="scanner-frame">
             <div class="corner top-left"></div>
@@ -35,10 +36,13 @@
             <div class="scan-line"></div>
         </div>
     </div>
+    }
 
     <div class="capture-ui">
         <button class="shutter-button" (click)="capturePhoto()"></button>
-        <p class="capture-hint">Encuadre el comprobante</p>
+        @if(showCaptureHint && captureHintText) {
+        <p class="capture-hint">{{ captureHintText }}</p>
+        }
     </div>
     }
 

@@ -69,7 +69,11 @@
                         <!-- Vista: Modo Cámara Activa (Pantalla Completa) -->
                         <div *ngIf="activeCameraRowId === data.pro_uuid"
                             style="position: fixed; top: 0; left: 0; width: 100vw; height: 100vh; z-index: 99999; background: black;">
-                            <app-camera [existingImage]="data.prov_image" (onPhotoSaved)="saveNewPhoto(data, $event)"
+                            <app-camera 
+                                [existingImage]="data.prov_image" 
+                                [showScannerFrame]="false" 
+                                [showCaptureHint]="false"
+                                (onPhotoSaved)="saveNewPhoto(data, $event)"
                                 (onClose)="activeCameraRowId = null">
                             </app-camera>
                         </div>
