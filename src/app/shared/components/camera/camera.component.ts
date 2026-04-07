@@ -88,8 +88,8 @@ export class CameraComponent implements AfterViewInit, OnDestroy, OnChanges {
     const context = canvas.getContext('2d');
     if (context) {
       context.drawImage(video, 0, 0, canvas.width, canvas.height);
-      // Extraemos la imagen en alta calidad (JPEG 1.0)
-      this.capturedImage = canvas.toDataURL('image/jpeg', 1.0);
+      // Extraemos la imagen en formato WebP con calidad 80% (pesa mucho menos que un JPEG sin pérdida visual)
+      this.capturedImage = canvas.toDataURL('image/webp', 0.80);
     }
 
     this.isCameraActive = false;
