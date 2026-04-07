@@ -10,6 +10,18 @@
     </div>
     }
 
+    @if(cameraError) {
+    <div class="loading-overlay" style="background: rgba(0,0,0,0.85); padding: 30px 20px; border-radius: 16px; width: 85%; max-width: 350px;">
+        <span nz-icon nzType="warning" nzTheme="outline" style="font-size: 42px; color: #ffaa00; margin-bottom: 20px; display: inline-block;"></span>
+        <p style="font-size: 15px; font-weight: 500; line-height: 1.4; margin-bottom: 24px;">
+            {{ cameraError }}
+        </p>
+        <button (click)="retakePhoto()" style="background: #25d366; color: white; border: none; padding: 12px 30px; border-radius: 30px; font-weight: bold; cursor: pointer; display: flex; align-items: center; justify-content: center; width: 100%; gap: 8px;">
+            <span nz-icon nzType="reload" nzTheme="outline"></span> REINTENTAR
+        </button>
+    </div>
+    }
+
     <video #video autoplay playsinline [style.display]="isCameraActive && !isLoading ? 'block' : 'none'">
     </video>
 

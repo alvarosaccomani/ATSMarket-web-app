@@ -25,6 +25,7 @@ export class CameraComponent implements AfterViewInit, OnDestroy, OnChanges {
   public isCameraActive = true;
   public isLoading = true;
   public capturedImage: string | null = null; // Almacena la captura para previsualización rápida
+  public cameraError: string | null = null; // Almacena el mensaje si se niegan los permisos
 
   private mediaStream: MediaStream | null = null;
 
@@ -53,6 +54,7 @@ export class CameraComponent implements AfterViewInit, OnDestroy, OnChanges {
   public async startCamera() {
     try {
       this.isLoading = true;
+      this.cameraError = null;
       if (this.mediaStream) this.stopCamera();
 
       const stream = await navigator.mediaDevices.getUserMedia({
@@ -72,6 +74,7 @@ export class CameraComponent implements AfterViewInit, OnDestroy, OnChanges {
     } catch (error) {
       console.error('Error cámara:', error);
       this.isLoading = false;
+      this.cameraError = 'No se pudo acceder a la cámara. Por favor, verifique los permisos en su navegador.';
     }
   }
 
