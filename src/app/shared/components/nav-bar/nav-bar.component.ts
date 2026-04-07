@@ -52,6 +52,7 @@ export class NavBarComponent implements OnInit {
   public activeStore: CompanyInterface | null = null;
   public storeLogoUrl: string = '';
   public storeName: string = 'ATS Market';
+  public navbarColor: string = '#001529'; // Color por defecto (dark)
 
   constructor(
     private cartService: CartService,
@@ -74,6 +75,7 @@ export class NavBarComponent implements OnInit {
 
     this._storeContext.storeSettings$.subscribe(() => {
       this.updateLogo();
+      this.updateNavbarColor();
     });
   }
 
@@ -81,6 +83,11 @@ export class NavBarComponent implements OnInit {
     // Prioridad: Ajuste personalizado de logo > Logo de la empresa > Vacío (texto)
     const customLogo = this._storeContext.getSetting('STORE_LOGO_URL');
     this.storeLogoUrl = customLogo || this.activeStore?.cmp_logo || '';
+  }
+
+  private updateNavbarColor(): void {
+    const customColor = this._storeContext.getSetting('THEME_NAVBAR_COLOR');
+    this.navbarColor = customColor || '#001529';
   }
 
   // Maneja el cambio en el campo de búsqueda.

@@ -23,6 +23,16 @@
     .ant-menu-item-selected {
         color: var(--ant-primary-color) !important;
     }
+
+    /* Submenús del Navbar dinámicos */
+    .ant-menu-submenu-popup, .ant-menu-sub {
+        background-color: var(--navbar-background-color, #001529) !important;
+    }
+
+    .ant-menu-submenu-popup .ant-menu-item, 
+    .ant-menu-submenu-popup .ant-menu-submenu-title {
+        background-color: transparent !important;
+    }
 }
 
 /* Contenido Principal para evitar que el header fijo lo tape */

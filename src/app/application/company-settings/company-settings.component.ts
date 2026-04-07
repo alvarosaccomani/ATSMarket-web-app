@@ -182,6 +182,19 @@ export class CompanySettingsComponent implements OnInit {
       },
       {
         cmp_uuid: this.cmp_uuid,
+        cmps_uuid: '2b',
+        cmps_key: 'THEME_NAVBAR_COLOR',
+        cmps_parameter: 'Color de Barra de Navegación',
+        cmps_description: 'Define el color de fondo para la cabecera (Navbar) en el catálogo público.',
+        cmps_datatype: 'color',
+        cmps_value: '#001529',
+        cmps_group: 'Apariencia',
+        cmps_options: '',
+        cmps_updatedat: new Date(),
+        cmps_createdat: new Date()
+      },
+      {
+        cmp_uuid: this.cmp_uuid,
         cmps_uuid: '3',
         cmps_key: 'MAX_CART_ITEMS',
         cmps_parameter: 'Límite de Ítems en Carrito',

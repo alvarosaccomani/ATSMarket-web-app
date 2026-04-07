@@ -56,6 +56,8 @@
     margin: 0;
     /* Aseguramos que no crezca, dejando espacio para el buscador */
     flex-shrink: 0;
+    background: transparent !important;
+    border-bottom: none !important;
 
     li {
         list-style: none;

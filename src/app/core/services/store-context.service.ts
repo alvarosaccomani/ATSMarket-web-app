@@ -64,6 +64,10 @@ export class StoreContextService {
             if (settingsMap['THEME_PRIMARY_COLOR']) {
               this.applyTheme(settingsMap['THEME_PRIMARY_COLOR']);
             }
+
+            // Aplicar color de Navbar
+            const navColor = settingsMap['THEME_NAVBAR_COLOR'] || '#001529';
+            document.documentElement.style.setProperty('--navbar-background-color', navColor);
             
             this._isLoading.next(false);
           },
@@ -104,5 +108,6 @@ export class StoreContextService {
     this._storeSettings.next({});
     // Resetear el color primario al valor por defecto al salir de una tienda
     document.documentElement.style.removeProperty('--ant-primary-color');
+    document.documentElement.style.removeProperty('--navbar-background-color');
   }
 }

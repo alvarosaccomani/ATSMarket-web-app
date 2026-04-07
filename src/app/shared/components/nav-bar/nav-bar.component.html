@@ -1,4 +1,4 @@
-<nz-header class="app-header">
+<nz-header class="app-header" [style.backgroundColor]="navbarColor">
     <div class="logo">
         <a [routerLink]="activeStore ? '/public/home-store/' + activeStore.cmp_slug : '/public/market-home'">
             <img *ngIf="storeLogoUrl" [src]="storeLogoUrl" [alt]="storeName" class="logo-image" />
@@ -29,26 +29,24 @@
             <span nz-icon nzType="user"></span> Ingresar
         </li>
 
-        <li nz-submenu *ngIf="userIdentity" [nzTitle]="userTitle">
-            <ul>
-                <li nz-menu-item routerLink="/application/my-companies">
+        <li nz-menu-item *ngIf="userIdentity" nz-dropdown [nzDropdownMenu]="userMenu" nzPlacement="bottomRight" style="padding: 0 16px;">
+            <div style="display: flex; align-items: center; gap: 8px;">
+                <nz-avatar nzIcon="user" nzSize="small" nzSrc="assets/img/user-avatar.png"></nz-avatar>
+                <span>Hola, {{ userIdentity.usr_name || userIdentity.usr_user }}</span>
+            </div>
+        </li>
+
+        <nz-dropdown-menu #userMenu="nzDropdownMenu">
+            <ul nz-menu>
+                <li nz-menu-item routerLink="/application/my-companies" style="color: black;">
                     <span nz-icon nzType="shop" style="margin-right: 8px;"></span> Administrar Tiendas
                 </li>
-                <!-- Espacio de perfil de cuenta reservado para compras, favoritos, etc. -->
                 <li nz-menu-divider></li>
                 <li nz-menu-item nzDanger (click)="logout()">
                     <span nz-icon nzType="logout" style="margin-right: 8px;"></span> Cerrar sesión
                 </li>
             </ul>
-        </li>
-
-        <!-- Template del título visual del avatar -->
-        <ng-template #userTitle>
-            <div style="display: flex; align-items: center; gap: 8px;">
-                <nz-avatar nzIcon="user" nzSize="small" nzSrc="assets/img/user-avatar.png"></nz-avatar>
-                <span>Hola, {{ userIdentity.usr_name || userIdentity.usr_user }}</span>
-            </div>
-        </ng-template>
+        </nz-dropdown-menu>
     </ul>
 
     <button nz-button class="menu-toggle-button" nzType="default" (click)="openDrawer()">
