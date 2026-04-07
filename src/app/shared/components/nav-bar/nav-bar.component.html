@@ -1,8 +1,9 @@
 <nz-header class="app-header">
     <div class="logo">
-        <a routerLink="/home">
-            <span nz-icon nzType="shop" nzTheme="outline"></span>
-            <span class="site-title">Santos de Luján</span>
+        <a [routerLink]="activeStore ? '/public/home-store/' + activeStore.cmp_slug : '/public/market-home'">
+            <img *ngIf="storeLogoUrl" [src]="storeLogoUrl" [alt]="storeName" class="logo-image" />
+            <span *ngIf="!storeLogoUrl" nz-icon nzType="shop" nzTheme="outline"></span>
+            <span class="site-title">{{ storeName }}</span>
         </a>
     </div>
 

@@ -25,12 +25,12 @@ import { NzPaginationModule } from 'ng-zorro-antd/pagination';
 // DIRECTIVAS
 import { ImagePreloadDirective } from '@directives/image-preload.directive';
 
-// SERVICIOS Y MODELOS
 import { ProductVariationInterface } from '@interfaces/product-variation';
 import { CompanyInterface } from '@interfaces/company';
 import { CartService } from '@services/cart.service';
 import { ProductVariationsService } from '@services/product-variations.service';
-import { CompaniesService } from '@services/companies.service';
+import { StoreContextService } from '@services/store-context.service';
+import { CompanySettingInterface } from '@interfaces/company-setting';
 
 @Component({
   selector: 'app-store',
@@ -90,39 +90,43 @@ export class StoreCatalogComponent implements OnInit {
   constructor(
     private route: ActivatedRoute,
     private router: Router,
-    private companiesService: CompaniesService,
+    private _storeContext: StoreContextService,
     private productsVariationsService: ProductVariationsService,
     private cartService: CartService,
     private message: NzMessageService
   ) { }
 
   ngOnInit(): void {
-    this.route.paramMap.pipe(
-      switchMap((params: ParamMap) => {
-        const slug = params.get('slug');
-        if (!slug) return of(null);
-        this.companieslug = slug;
-        return this.companiesService.getCompanyBySlug(slug);
-      }),
-      switchMap((store: any) => {
-        if (store && store.data) {
-          this.store = store.data;
-        }
-
-        if (!store) {
-          this.message.error('Tienda no encontrada o URL incorrecta.');
-          this.router.navigate(['/']);
-          return of([]);
-        }
-
-        // Mock ID for API Request
-        return this.productsVariationsService.getProductsVariations('28a0036e-2d6b-4e83-805a-1ca214a6b1e1', '', this.companieslug);
-      })
-    ).subscribe((products: any) => {
-      this.allStoreProducts = products.data || [];
-      this.initializeFilters(this.allStoreProducts);
-      this.applyFilters();
+    // Escuchar el slug de la URL
+    this.route.paramMap.subscribe(params => {
+      this.companieslug = params.get('slug') || '';
     });
+
+    // Suscribirse a la tienda activa (ya detectada por el Layout)
+    this._storeContext.activeStore$.subscribe(store => {
+      if (store) {
+        this.store = store;
+        this.loadProducts(store.cmp_uuid);
+      }
+    });
+
+    // Suscribirse a las configuraciones
+    this._storeContext.storeSettings$.subscribe(settings => {
+      // Si necesitamos hacer algo específico con los settings aquí
+    });
+  }
+
+  private loadProducts(cmp_uuid: string): void {
+    if (!cmp_uuid) return;
+
+    this.productsVariationsService.getProductsVariations(cmp_uuid, '', this.companieslug)
+      .subscribe((products: any) => {
+        this.allStoreProducts = products.data || [];
+        this.initializeFilters(this.allStoreProducts);
+        this.applyFilters();
+      }, (error: any) => {
+        console.error('Error al cargar productos:', error);
+      });
   }
 
   public initializeFilters(products: ProductVariationInterface[]): void {
@@ -192,5 +196,9 @@ export class StoreCatalogComponent implements OnInit {
   public closeDrawer(): void {
     this.drawerVisible = false;
     this.applyFilters();
+  }
+
+  public getSetting(key: string, defaultValue: any): any {
+    return this._storeContext.getSetting(key, defaultValue);
   }
 }

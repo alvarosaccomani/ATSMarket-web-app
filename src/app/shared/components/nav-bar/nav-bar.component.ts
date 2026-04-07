@@ -17,6 +17,8 @@ import { NzButtonModule } from 'ng-zorro-antd/button';
 import { CartItemInterface } from '@interfaces/cart-item.interface';
 import { CartService } from '@services/cart.service';
 import { SessionService } from '@services/session.service';
+import { StoreContextService } from '@services/store-context.service';
+import { CompanyInterface } from '@interfaces/company';
 
 @Component({
   selector: 'app-nav-bar',
@@ -46,16 +48,39 @@ export class NavBarComponent implements OnInit {
   // Usuario
   public userIdentity: any = null;
 
+  // Contexto de Tienda
+  public activeStore: CompanyInterface | null = null;
+  public storeLogoUrl: string = '';
+  public storeName: string = 'ATS Market';
+
   constructor(
     private cartService: CartService,
     private _sessionService: SessionService,
-    private _router: Router
+    private _router: Router,
+    private _storeContext: StoreContextService
   ) {
     this.cartItems$ = this.cartService.cartItems$;
   }
 
   ngOnInit(): void {
     this.userIdentity = this._sessionService.getIdentity();
+
+    // Suscribirse a cambios en la tienda activa
+    this._storeContext.activeStore$.subscribe(store => {
+      this.activeStore = store;
+      this.storeName = store?.cmp_name || 'ATS Market';
+      this.updateLogo();
+    });
+
+    this._storeContext.storeSettings$.subscribe(() => {
+      this.updateLogo();
+    });
+  }
+
+  private updateLogo(): void {
+    // Prioridad: Ajuste personalizado de logo > Logo de la empresa > Vacío (texto)
+    const customLogo = this._storeContext.getSetting('STORE_LOGO_URL');
+    this.storeLogoUrl = customLogo || this.activeStore?.cmp_logo || '';
   }
 
   // Maneja el cambio en el campo de búsqueda.

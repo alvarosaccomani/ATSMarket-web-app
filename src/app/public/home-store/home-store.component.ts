@@ -16,9 +16,8 @@ import { NzSpinModule } from 'ng-zorro-antd/spin';
 
 import { ProductVariationInterface } from '@interfaces/product-variation';
 import { CategoryInterface } from '@interfaces/category.interface';
-import { CompaniesService } from '@services/companies.service';
-import { CompaniesSettingsService } from '@services/companies-settings.service';
-import { CompanySettingInterface } from '@interfaces/company-setting';
+import { StoreContextService } from '@services/store-context.service';
+import { CartService } from '@services/cart.service';
 
 @Component({
   selector: 'app-home',
@@ -54,46 +53,24 @@ export class HomeStoreComponent {
   constructor(
     private route: ActivatedRoute,
     private router: Router,
-    private companiesService: CompaniesService,
-    private companiesSettingsService: CompaniesSettingsService,
-    // private productService: ProductService, // Si tuvieras un servicio
-    // private cartService: CartService,
+    private _storeContext: StoreContextService,
+    private _cartService: CartService,
     private message: NzMessageService
   ) { }
 
   ngOnInit(): void {
-    // Escucha los cambios en el parámetro de la URL (:slug)
-    this.route.paramMap.pipe(
-      // 1. Obtiene el slug de la URL
-      switchMap((params: ParamMap) => {
-        const slug = params.get('slug');
-        if (!slug) return of(null);
-        this.companieSlug = slug;
-        return this.companiesService.getCompanyBySlug(slug);
-      }),
-      // 2. Si la empresa existe, obtenemos sus configuraciones
-      switchMap((companyResults: any) => {
-        if (!companyResults || !companyResults.data || companyResults.data.length === 0) {
-          this.message.error('Tienda no encontrada o URL incorrecta.');
-          this.router.navigate(['/']);
-          return of(null);
-        }
+    // Escucha el slug de la URL para guardar referencia si es necesario
+    this.route.paramMap.subscribe(params => {
+      this.companieSlug = params.get('slug') || '';
+    });
 
-        const company = companyResults.data;
-        // Cargamos todas las configuraciones para el cmp_uuid de la empresa
-        return this.companiesSettingsService.getCompaniesSettings(company.cmp_uuid);
-      })
-    ).subscribe((settingsResults: any) => {
-      if (settingsResults && settingsResults.data) {
-        // Mapeamos el array de configuraciones a un objeto { CLAVE: VALOR }
-        this.mapSettings(settingsResults.data);
-        this.isSettingsLoading = false;
-      } else {
-        this.isSettingsLoading = false;
-      }
-    }, (error) => {
-      this.isSettingsLoading = false;
-      console.error('Error al cargar configuraciones:', error);
+    // Suscribirse a las configuraciones globales detectadas por el Layout
+    this._storeContext.storeSettings$.subscribe(settings => {
+      this.storeSettings = settings;
+    });
+
+    this._storeContext.isLoading$.subscribe(loading => {
+      this.isSettingsLoading = loading;
     });
 
     // 1. Cargar productos destacados (simulación)
@@ -147,34 +124,26 @@ export class HomeStoreComponent {
     }
   }
 
-  public goToStoreCatalog(): void {
-    this.router.navigate(['/public/store-catalog', this.companieSlug]);
+  public agregarAlCarrito(producto: ProductVariationInterface): void {
+    // Validar stock si no se permiten pedidos sin stock
+    const allowBackorders = this.getSetting('ALLOW_BACKORDERS', true);
+    if (!allowBackorders && producto.prov_stock <= 0) {
+      this.message.error('Lo sentimos, este producto no tiene stock disponible.');
+      return;
+    }
+
+    this._cartService.addToCart(producto, 1);
+    this.message.success(`${producto.prov_name} agregado al carrito.`);
   }
 
-  /**
-   * Mapea el array de configuraciones a un objeto clave-valor
-   */
-  private mapSettings(settings: CompanySettingInterface[]): void {
-    this.storeSettings = {};
-    settings.forEach(s => {
-      // Intentamos convertir a booleano si parece un booleano
-      if (s.cmps_value === 'true') {
-        this.storeSettings[s.cmps_key] = true;
-      } else if (s.cmps_value === 'false') {
-        this.storeSettings[s.cmps_key] = false;
-      } else {
-        this.storeSettings[s.cmps_key] = s.cmps_value;
-      }
-    });
-
-    // Logging para verificar que las configuraciones llegaron
-    console.log('Store Settings Mapped:', this.storeSettings);
+  public goToStoreCatalog(): void {
+    this.router.navigate(['/public/store-catalog', this.companieSlug]);
   }
 
   /**
    * Obtiene un valor de configuración con un valor por defecto
    */
   public getSetting(key: string, defaultValue: any): any {
-    return this.storeSettings[key] !== undefined ? this.storeSettings[key] : defaultValue;
+    return this._storeContext.getSetting(key, defaultValue);
   }
 }

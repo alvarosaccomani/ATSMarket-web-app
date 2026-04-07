@@ -1,4 +1,30 @@
-/* You can add global styles to this file, and also import other style files */
+/* Tematización Dinámica Scoped para la Tienda */
+.store-context {
+    --ant-primary-color: #1890ff; /* Valor por defecto dentro del contexto */
+
+    /* Overrides para usar la variable dinámica solo aquí */
+    .ant-btn-primary {
+        background-color: var(--ant-primary-color) !important;
+        border-color: var(--ant-primary-color) !important;
+    }
+
+    .ant-btn-primary:hover, .ant-btn-primary:focus {
+        filter: brightness(1.1);
+    }
+
+    .ant-spin-dot i {
+        background-color: var(--ant-primary-color) !important;
+    }
+
+    .ant-tabs-ink-bar {
+        background-color: var(--ant-primary-color) !important;
+    }
+
+    .ant-menu-item-selected {
+        color: var(--ant-primary-color) !important;
+    }
+}
+
 /* Contenido Principal para evitar que el header fijo lo tape */
 .app-content {
     /* padding superior igual a la altura del header */

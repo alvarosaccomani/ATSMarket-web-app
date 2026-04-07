@@ -9,6 +9,10 @@
                         <h1>{{ getSetting('HOME_BANNER_TITLE', 'Santuario en tu Hogar') }}</h1>
                         <p>{{ getSetting('HOME_BANNER_SUBTITLE', 'Artículos de Fe y Devoción seleccionados desde Luján.') }}
                         </p>
+                        <div class="banner-price-meta" *ngIf="getSetting('HOME_BANNER_PRICE', '')">
+                            <span class="banner-price-label">Desde</span>
+                            <span class="banner-price-value">{{ getSetting('CURRENCY', '$') }} {{ getSetting('HOME_BANNER_PRICE', '') }}</span>
+                        </div>
                         <button nz-button nzType="primary" nzSize="large" (click)="goToStoreCatalog()">
                             {{ getSetting('HOME_BANNER_BUTTON_TEXT', 'Explorar Catálogo') }} 
                             <span nz-icon nzType="arrow-right"></span>
@@ -54,11 +58,17 @@
 
                         <nz-card-meta [nzTitle]="prod.prov_name" [nzDescription]="'Ref: ' + prod.prov_sku"></nz-card-meta>
 
-                        <div class="product-actions">
+                        <div class="product-price-display" style="margin-top: 12px; font-weight: 600; font-size: 1.1rem; color: var(--ant-primary-color);">
+                            {{ getSetting('CURRENCY', '$') }} {{ prod.prov_suggestedminimumsellingprice }}
+                        </div>
+
+                        <div class="product-actions" style="margin-top: 16px;">
                             <button nz-button nzType="default" (click)="consultarPrecio(prod)">
-                                Consultar Precio
+                                <span nz-icon nzType="whatsapp"></span> Consultar
                             </button>
-                            <button nz-button nzType="primary" disabled>
+                            <button nz-button nzType="primary" 
+                                [disabled]="!getSetting('ALLOW_BACKORDERS', true) && prod.prov_stock <= 0"
+                                (click)="agregarAlCarrito(prod)">
                                 <span nz-icon nzType="shopping-cart"></span> Agregar
                             </button>
                         </div>

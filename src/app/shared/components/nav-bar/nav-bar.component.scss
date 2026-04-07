@@ -19,6 +19,13 @@
     text-decoration: none;
     display: flex;
     align-items: center;
+    height: 100%;
+}
+
+.logo-image {
+    max-height: 40px;
+    width: auto;
+    object-fit: contain;
 }
 
 .site-title {

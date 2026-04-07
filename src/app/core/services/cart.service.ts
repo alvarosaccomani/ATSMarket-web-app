@@ -3,6 +3,8 @@ import { isPlatformBrowser } from '@angular/common';
 import { BehaviorSubject, Observable } from 'rxjs';
 import { CartItemInterface } from '@interfaces/cart-item.interface';
 import { ProductVariationInterface } from '@interfaces/product-variation';
+import { StoreContextService } from './store-context.service';
+import { NzMessageService } from 'ng-zorro-antd/message';
 
 @Injectable({
   providedIn: 'root'
@@ -12,7 +14,11 @@ export class CartService {
   public cartItems$: Observable<CartItemInterface[]> = this.cartItemsSubject.asObservable();
   private readonly STORAGE_KEY = 'ats_market_cart';
 
-  constructor(@Inject(PLATFORM_ID) private platformId: Object) {
+  constructor(
+    @Inject(PLATFORM_ID) private platformId: Object,
+    private _storeContext: StoreContextService,
+    private message: NzMessageService
+  ) {
     if (isPlatformBrowser(this.platformId)) {
       const savedCart = localStorage.getItem(this.STORAGE_KEY);
       if (savedCart) {
@@ -42,6 +48,14 @@ export class CartService {
 
   public addToCart(product: ProductVariationInterface, quantity: number = 1): void {
     const currentItems = this.cartItemsSubject.value;
+    const totalQuantity = currentItems.reduce((sum, item) => sum + item.quantity, 0);
+    const maxItems = Number(this._storeContext.getSetting('MAX_CART_ITEMS', 100));
+
+    if (totalQuantity + quantity > maxItems) {
+      this.message.warning(`No puedes agregar más artículos. El límite es de ${maxItems} unidades.`);
+      return;
+    }
+
     const existingItem = currentItems.find(item => item.prov_uuid === product.prov_uuid);
 
     if (existingItem) {

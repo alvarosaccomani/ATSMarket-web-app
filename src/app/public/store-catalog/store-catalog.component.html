@@ -56,13 +56,13 @@
                 <nz-divider></nz-divider>
 
                 <div class="filter-group">
-                    <h4 class="filter-subtitle">Rango de Precio (ARS)</h4>
+                    <h4 class="filter-subtitle">Rango de Precio</h4>
                     <nz-slider [nzRange]="true" [nzDefaultValue]="priceRange" [nzMin]="0" [nzMax]="50000"
                         (nzOnAfterChange)="applyFilters()" [(ngModel)]="priceRange">
                     </nz-slider>
                     <div class="price-labels">
-                        <span class="price-bound">${{ priceRange[0] }}</span>
-                        <span class="price-bound">${{ priceRange[1] }}</span>
+                        <span class="price-bound">{{ getSetting('CURRENCY', '$') }} {{ priceRange[0] }}</span>
+                        <span class="price-bound">{{ getSetting('CURRENCY', '$') }} {{ priceRange[1] }}</span>
                     </div>
                 </div>
             </div>
@@ -114,11 +114,12 @@
                         </nz-card-meta>
 
                         <div class="product-pricing">
-                            <span class="price-tag">${{ producto.prov_suggestedminimumsellingprice }}</span>
+                            <span class="price-tag">{{ getSetting('CURRENCY', '$') }} {{ producto.prov_suggestedminimumsellingprice }}</span>
                         </div>
 
                         <div class="product-actions" style="margin-top: 16px;">
                             <button nz-button nzType="primary" nzBlock nzSize="large"
+                                [disabled]="!getSetting('ALLOW_BACKORDERS', true) && producto.prov_stock <= 0"
                                 (click)="agregarAlCarrito(producto)">
                                 Añadir al Carrito <span nz-icon nzType="shopping-cart"></span>
                             </button>
@@ -169,13 +170,13 @@
                     </div>
 
                     <div class="filter-group" style="margin-top:16px; margin-bottom: 24px;">
-                        <h4 class="filter-subtitle">Rango de Precio (ARS)</h4>
+                        <h4 class="filter-subtitle">Rango de Precio</h4>
                         <nz-slider [nzRange]="true" [nzDefaultValue]="priceRange" [nzMin]="0" [nzMax]="50000"
                             (nzOnAfterChange)="applyFilters()" [(ngModel)]="priceRange">
                         </nz-slider>
                         <div class="price-labels">
-                            <span class="price-bound">${{ priceRange[0] }}</span>
-                            <span class="price-bound">${{ priceRange[1] }}</span>
+                            <span class="price-bound">{{ getSetting('CURRENCY', '$') }} {{ priceRange[0] }}</span>
+                            <span class="price-bound">{{ getSetting('CURRENCY', '$') }} {{ priceRange[1] }}</span>
                         </div>
                     </div>
 

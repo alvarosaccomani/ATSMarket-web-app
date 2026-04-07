@@ -1,4 +1,4 @@
-<nz-layout class="app-layout">
+<nz-layout class="app-layout" [class.store-context]="(isStoreActive$ | async)">
     <app-nav-bar></app-nav-bar>
 
     <nz-content class="app-content">
