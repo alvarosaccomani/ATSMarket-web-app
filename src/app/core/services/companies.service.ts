@@ -46,4 +46,23 @@ export class CompaniesService {
 
     return this._http.get<CompanyResults>(`${environment.apiUrl}featured-companies`, { headers, params });
   }
+
+  /**
+   * Obtiene la información de una company por su UUID.
+   * @param cmp_uuid El identificador único de la company.
+   */
+  public getCompanyById(cmp_uuid: string): Observable<CompanyResults> {
+    const headers = new HttpHeaders().set('content-type', 'application/json');
+    return this._http.get<CompanyResults>(`${environment.apiUrl}company/${cmp_uuid}`, { headers });
+  }
+
+  /**
+   * Actualiza la información de una company.
+   * @param cmp_uuid El identificador único de la company.
+   * @param data Los datos a actualizar.
+   */
+  public updateCompany(cmp_uuid: string, data: any): Observable<any> {
+    const headers = new HttpHeaders().set('content-type', 'application/json');
+    return this._http.put(`${environment.apiUrl}company/${cmp_uuid}`, data, { headers });
+  }
 }
