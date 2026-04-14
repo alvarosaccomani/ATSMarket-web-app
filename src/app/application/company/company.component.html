@@ -76,6 +76,69 @@
                         </div>
                     </div>
                 </nz-card>
+
+                <nz-card nzTitle="Configuración de Negocio" class="premium-card" [nzBordered]="false" style="margin-top: 24px;">
+                    <div nz-row [nzGutter]="[16, 16]">
+                        <div nz-col [nzMd]="8" [nzXs]="24">
+                            <nz-form-item>
+                                <nz-form-label nzRequired>Moneda</nz-form-label>
+                                <nz-form-control>
+                                    <nz-select formControlName="cmp_currency">
+                                        <nz-option nzValue="ARS" nzLabel="Peso Argentino (ARS)"></nz-option>
+                                        <nz-option nzValue="USD" nzLabel="Dólar Estadounidense (USD)"></nz-option>
+                                        <nz-option nzValue="EUR" nzLabel="Euro (EUR)"></nz-option>
+                                    </nz-select>
+                                </nz-form-control>
+                            </nz-form-item>
+                        </div>
+                        <div nz-col [nzMd]="8" [nzXs]="24">
+                            <nz-form-item>
+                                <nz-form-label>Color Primario (Tema)</nz-form-label>
+                                <nz-form-control>
+                                    <input nz-input formControlName="cmp_primarycolor" type="color" style="height: 40px; padding: 4px;" />
+                                </nz-form-control>
+                            </nz-form-item>
+                        </div>
+                        <div nz-col [nzMd]="8" [nzXs]="24">
+                            <nz-form-item>
+                                <nz-form-label>Permitir Backorders</nz-form-label>
+                                <nz-form-control>
+                                    <nz-switch formControlName="cmp_allowbackorders"></nz-switch>
+                                    <span style="margin-left: 8px; color: #666;">Permite vender sin stock</span>
+                                </nz-form-control>
+                            </nz-form-item>
+                        </div>
+                    </div>
+                </nz-card>
+
+                <nz-card nzTitle="Redes Sociales" class="premium-card" [nzBordered]="false" style="margin-top: 24px;">
+                    <div nz-row [nzGutter]="[16, 16]">
+                        <div nz-col [nzMd]="8" [nzXs]="24">
+                            <nz-form-item>
+                                <nz-form-label>WhatsApp (Link directo)</nz-form-label>
+                                <nz-form-control>
+                                    <input nz-input formControlName="cmp_whatsapp" placeholder="https://wa.me/54911..." />
+                                </nz-form-control>
+                            </nz-form-item>
+                        </div>
+                        <div nz-col [nzMd]="8" [nzXs]="24">
+                            <nz-form-item>
+                                <nz-form-label>Instagram (&#64;user)</nz-form-label>
+                                <nz-form-control>
+                                    <input nz-input formControlName="cmp_instagram" placeholder="&#64;mitienda" />
+                                </nz-form-control>
+                            </nz-form-item>
+                        </div>
+                        <div nz-col [nzMd]="8" [nzXs]="24">
+                            <nz-form-item>
+                                <nz-form-label>Facebook (Link)</nz-form-label>
+                                <nz-form-control>
+                                    <input nz-input formControlName="cmp_facebook" placeholder="facebook.com/mitienda" />
+                                </nz-form-control>
+                            </nz-form-item>
+                        </div>
+                    </div>
+                </nz-card>
             </div>
 
             <!-- Columna Derecha: Multimedia -->

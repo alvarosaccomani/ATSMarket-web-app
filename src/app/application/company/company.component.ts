@@ -13,8 +13,10 @@ import { NzSpaceModule } from 'ng-zorro-antd/space';
 import { NzIconModule } from 'ng-zorro-antd/icon';
 import { NzUploadModule, NzUploadFile } from 'ng-zorro-antd/upload';
 import { NzGridModule } from 'ng-zorro-antd/grid';
+import { NzSwitchModule } from 'ng-zorro-antd/switch';
 
 import { MessageService } from '@services/message.service';
+import { CompaniesService } from '@services/companies.service';
 
 @Component({
   selector: 'app-company',
@@ -29,7 +31,8 @@ import { MessageService } from '@services/message.service';
     NzSpaceModule,
     NzIconModule,
     NzUploadModule,
-    NzGridModule
+    NzGridModule,
+    NzSwitchModule
   ],
   templateUrl: './company.component.html',
   styleUrl: './company.component.scss'
@@ -40,13 +43,15 @@ export class CompanyComponent implements OnInit {
   public logoFileList: NzUploadFile[] = [];
   public bannerFileList: NzUploadFile[] = [];
   public isEditing: boolean = false;
+  public isLoading: boolean = false;
 
   constructor(
     private fb: FormBuilder,
     private _route: ActivatedRoute,
     private _router: Router,
     private location: Location,
-    private _messageService: MessageService
+    private _messageService: MessageService,
+    private _companiesService: CompaniesService
   ) { }
 
   ngOnInit(): void {
@@ -58,20 +63,21 @@ export class CompanyComponent implements OnInit {
       cmp_phone: [''],
       cmp_email: ['', [Validators.email]],
       cmp_description: [''],
-      cmp_status: ['active', Validators.required]
+      cmp_status: ['active', Validators.required],
+      // Nuevos campos migrados desde settings
+      cmp_currency: ['ARS', Validators.required],
+      cmp_whatsapp: [''],
+      cmp_instagram: [''],
+      cmp_facebook: [''],
+      cmp_allowbackorders: [true],
+      cmp_primarycolor: ['#1890ff']
     });
 
     this._route.params.subscribe(params => {
       const cmp_uuid = params['cmp_uuid'];
       if (cmp_uuid && cmp_uuid !== 'new') {
         this.isEditing = true;
-        // Mock load temporal de la data real
-        this.companyForm.patchValue({
-          cmp_uuid: cmp_uuid,
-          cmp_name: 'Empresa',
-          cmp_slug: 'empresa',
-          cmp_status: 'active'
-        });
+        this.getCompanyById(cmp_uuid);
       }
     });
 
@@ -80,6 +86,23 @@ export class CompanyComponent implements OnInit {
       if (!this.isEditing && val) {
         const slug = val.toLowerCase().replace(/ /g, '-').replace(/[^\w-]+/g, '');
         this.companyForm.patchValue({ cmp_slug: slug }, { emitEvent: false });
+      }
+    });
+  }
+
+  private getCompanyById(cmp_uuid: string): void {
+    this.isLoading = true;
+    this._companiesService.getCompanyById(cmp_uuid).subscribe({
+      next: (res) => {
+        if (res.data) {
+          const company = res.data;
+          this.companyForm.patchValue(company);
+        }
+        this.isLoading = false;
+      },
+      error: (err) => {
+        this._messageService.error('Error', 'No se pudo cargar la información de la empresa.');
+        this.isLoading = false;
       }
     });
   }
@@ -96,10 +119,28 @@ export class CompanyComponent implements OnInit {
 
   public onSave(): void {
     if (this.companyForm.valid) {
-      console.log('Guardando empresa:', this.companyForm.value);
-      this._messageService.success('¡Éxito!', 'Los datos de la empresa han sido guardados.', () => {
-        this.location.back();
-      });
+      const cmp_uuid = this.companyForm.get('cmp_uuid')?.value;
+      const data = this.companyForm.value;
+
+      this.isLoading = true;
+      if (this.isEditing) {
+        this._companiesService.updateCompany(cmp_uuid, data).subscribe({
+          next: () => {
+            this._messageService.success('¡Éxito!', 'Los datos de la empresa han sido actualizados.', () => {
+              this.location.back();
+            });
+            this.isLoading = false;
+          },
+          error: (err) => {
+            this._messageService.error('Error', 'Hubo un problema al guardar los cambios.');
+            this.isLoading = false;
+          }
+        });
+      } else {
+        // Lógica para crear nueva empresa (pendiente si se requiere)
+        console.log('Crear nueva empresa:', data);
+        this.isLoading = false;
+      }
     } else {
       Object.values(this.companyForm.controls).forEach(control => {
         if (control.invalid) {
