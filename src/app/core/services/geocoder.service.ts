@@ -1,7 +1,8 @@
 import { Injectable } from '@angular/core';
 import { HttpClient } from '@angular/common/http';
 import { Observable } from 'rxjs';
-import { map } from 'rxjs/operators';
+import { catchError, map } from 'rxjs/operators';
+import { of } from 'rxjs';
 
 export interface GeocodingResult {
   place_id: number;
@@ -35,6 +36,14 @@ export class GeocoderService {
         lat: r.lat,
         lon: r.lon
       })))
+    );
+  }
+
+  public reverseGeocode(lat: number, lon: number): Observable<string | null> {
+    const url = `https://nominatim.openstreetmap.org/reverse?format=json&lat=${lat}&lon=${lon}`;
+    return this.http.get<any>(url).pipe(
+      map((res: any) => res?.display_name || null),
+      catchError(() => of(null))
     );
   }
 }
