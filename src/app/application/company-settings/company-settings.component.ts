@@ -154,32 +154,8 @@ export class CompanySettingsComponent implements OnInit {
         cmps_updatedat: new Date(),
         cmps_createdat: new Date()
       },
-      {
-        cmp_uuid: this.cmp_uuid,
-        cmps_uuid: '1',
-        cmps_key: 'ALLOW_BACKORDERS',
-        cmps_parameter: 'Permitir Reservas (Backorders)',
-        cmps_description: 'Si se activa, los clientes podrán comprar productos listados que no tengan stock inmediato.',
-        cmps_datatype: 'boolean',
-        cmps_value: 'true',
-        cmps_group: 'Ventas',
-        cmps_options: '',
-        cmps_updatedat: new Date(),
-        cmps_createdat: new Date()
-      },
-      {
-        cmp_uuid: this.cmp_uuid,
-        cmps_uuid: '2',
-        cmps_key: 'THEME_PRIMARY_COLOR',
-        cmps_parameter: 'Color Principal de Tienda',
-        cmps_description: 'Define el acento de color para botones y resaltados interactivos en el catálogo público.',
-        cmps_datatype: 'color',
-        cmps_value: '#1890ff',
-        cmps_group: 'Apariencia',
-        cmps_options: '',
-        cmps_updatedat: new Date(),
-        cmps_createdat: new Date()
-      },
+
+
       {
         cmp_uuid: this.cmp_uuid,
         cmps_uuid: '2b',
@@ -206,19 +182,7 @@ export class CompanySettingsComponent implements OnInit {
         cmps_updatedat: new Date(),
         cmps_createdat: new Date()
       },
-      {
-        cmp_uuid: this.cmp_uuid,
-        cmps_uuid: '4',
-        cmps_key: 'CURRENCY',
-        cmps_parameter: 'Moneda Preferida',
-        cmps_description: 'Tipo de Moneda visual usada globalmente para todos los artículos en el escaparate.',
-        cmps_datatype: 'select',
-        cmps_value: 'ARS',
-        cmps_group: 'General',
-        cmps_options: 'ARS,USD,EUR,CLP',
-        cmps_updatedat: new Date(),
-        cmps_createdat: new Date()
-      },
+
       // --- GRUPO: TIENDA - HOME ---
       {
         cmp_uuid: this.cmp_uuid,
@@ -235,23 +199,10 @@ export class CompanySettingsComponent implements OnInit {
       },
       {
         cmp_uuid: this.cmp_uuid,
-        cmps_uuid: '11',
-        cmps_key: 'HOME_BANNER_TITLE',
-        cmps_parameter: 'Título del Banner',
-        cmps_description: 'Texto principal que se resalta en el banner de la tienda.',
-        cmps_datatype: 'string',
-        cmps_value: 'Santuario en tu Hogar',
-        cmps_group: 'Tienda - Home',
-        cmps_options: '',
-        cmps_updatedat: new Date(),
-        cmps_createdat: new Date()
-      },
-      {
-        cmp_uuid: this.cmp_uuid,
         cmps_uuid: '12',
-        cmps_key: 'HOME_BANNER_SUBTITLE',
-        cmps_parameter: 'Subtítulo del Banner',
-        cmps_description: 'Descripción breve que aparece debajo del título principal en el banner.',
+        cmps_key: 'HOME_BANNER_DESCRIPTION',
+        cmps_parameter: 'Descripción Banner (Marketing)',
+        cmps_description: 'Texto promocional o slogan que aparece resaltado en el banner principal.',
         cmps_datatype: 'string',
         cmps_value: 'Artículos de Fe y Devoción seleccionados desde Luján.',
         cmps_group: 'Tienda - Home',
@@ -259,19 +210,7 @@ export class CompanySettingsComponent implements OnInit {
         cmps_updatedat: new Date(),
         cmps_createdat: new Date()
       },
-      {
-        cmp_uuid: this.cmp_uuid,
-        cmps_uuid: '13',
-        cmps_key: 'HOME_BANNER_IMAGE',
-        cmps_parameter: 'URL Imagen Banner',
-        cmps_description: 'URL de la imagen de fondo para el banner de la tienda.',
-        cmps_datatype: 'string',
-        cmps_value: '',
-        cmps_group: 'Tienda - Home',
-        cmps_options: '',
-        cmps_updatedat: new Date(),
-        cmps_createdat: new Date()
-      },
+
       {
         cmp_uuid: this.cmp_uuid,
         cmps_uuid: '14',
@@ -441,60 +380,6 @@ export class CompanySettingsComponent implements OnInit {
         cmps_updatedat: new Date(),
         cmps_createdat: new Date()
       },
-      // --- GRUPO: TIENDA - CONTACTO ---
-      {
-        cmp_uuid: this.cmp_uuid,
-        cmps_uuid: '30',
-        cmps_key: 'STORE_WHATSAPP',
-        cmps_parameter: 'WhatsApp de Contacto',
-        cmps_description: 'Número de WhatsApp para recibir consultas de clientes.',
-        cmps_datatype: 'string',
-        cmps_value: '',
-        cmps_group: 'Tienda - Contacto',
-        cmps_options: '',
-        cmps_updatedat: new Date(),
-        cmps_createdat: new Date()
-      },
-      {
-        cmp_uuid: this.cmp_uuid,
-        cmps_uuid: '31',
-        cmps_key: 'STORE_INSTAGRAM',
-        cmps_parameter: 'Perfil de Instagram',
-        cmps_description: 'Enlace al perfil de Instagram de la tienda.',
-        cmps_datatype: 'string',
-        cmps_value: '',
-        cmps_group: 'Tienda - Contacto',
-        cmps_options: '',
-        cmps_updatedat: new Date(),
-        cmps_createdat: new Date()
-      },
-      {
-        cmp_uuid: this.cmp_uuid,
-        cmps_uuid: '32',
-        cmps_key: 'STORE_FACEBOOK',
-        cmps_parameter: 'Perfil de Facebook',
-        cmps_description: 'Enlace a la página de Facebook de la tienda.',
-        cmps_datatype: 'string',
-        cmps_value: '',
-        cmps_group: 'Tienda - Contacto',
-        cmps_options: '',
-        cmps_updatedat: new Date(),
-        cmps_createdat: new Date()
-      },
-      // --- GRUPO: TIENDA - IDENTIDAD ---
-      {
-        cmp_uuid: this.cmp_uuid,
-        cmps_uuid: '40',
-        cmps_key: 'STORE_LOGO_URL',
-        cmps_parameter: 'Logo Personalizado',
-        cmps_description: 'URL del logo que se mostrará específicamente en la tienda pública.',
-        cmps_datatype: 'string',
-        cmps_value: '',
-        cmps_group: 'Tienda - Identidad',
-        cmps_options: '',
-        cmps_updatedat: new Date(),
-        cmps_createdat: new Date()
-      }
     ];
   }
 

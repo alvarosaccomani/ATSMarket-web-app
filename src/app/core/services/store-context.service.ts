@@ -60,9 +60,10 @@ export class StoreContextService {
             }
             this._storeSettings.next(settingsMap);
             
-            // Aplicar tema dinámico si existe el color
-            if (settingsMap['THEME_PRIMARY_COLOR']) {
-              this.applyTheme(settingsMap['THEME_PRIMARY_COLOR']);
+            // Aplicar tema dinámico (Configuración tiene prioridad, fallback a Compañía)
+            const primaryColor = settingsMap['THEME_PRIMARY_COLOR'] || company.cmp_primarycolor;
+            if (primaryColor) {
+              this.applyTheme(primaryColor);
             }
 
             // Aplicar color de Navbar
@@ -86,11 +87,54 @@ export class StoreContextService {
   }
 
   /**
-   * Obtiene un ajuste específico de la tienda actual.
+   * Obtiene un ajuste específico de la tienda actual con lógica de fallback.
    */
   public getSetting(key: string, defaultValue: any = null): any {
     const settings = this._storeSettings.getValue();
-    return settings[key] !== undefined ? settings[key] : defaultValue;
+    const company = this._activeStore.getValue();
+
+    let value = settings[key];
+
+    // Si el valor no existe o es un string vacío, intentamos fallback a la tabla de empresa
+    if (value === undefined || value === null || value === '') {
+      if (company) {
+        switch (key) {
+          case 'STORE_LOGO_URL':
+            value = company.cmp_logo;
+            break;
+          case 'HOME_BANNER_IMAGE':
+            value = company.cmp_banner;
+            break;
+          case 'HOME_BANNER_TITLE':
+            value = company.cmp_name;
+            break;
+          case 'STORE_WHATSAPP':
+            value = company.cmp_whatsapp || company.cmp_phone;
+            break;
+          case 'STORE_INSTAGRAM':
+            value = company.cmp_instagram;
+            break;
+          case 'STORE_FACEBOOK':
+            value = company.cmp_facebook;
+            break;
+          case 'HOME_BANNER_DESCRIPTION': // Nueva clave renombrada
+          case 'HOME_BANNER_SUBTITLE':    // Compatibilidad con clave anterior
+            value = company.cmp_description;
+            break;
+          case 'CURRENCY':
+            value = company.cmp_currency;
+            break;
+          case 'ALLOW_BACKORDERS':
+            value = company.cmp_allowbackorders;
+            break;
+          case 'THEME_PRIMARY_COLOR':
+            value = company.cmp_primarycolor;
+            break;
+        }
+      }
+    }
+
+    return (value !== undefined && value !== null && value !== '') ? value : defaultValue;
   }
 
   /**
