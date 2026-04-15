@@ -3,6 +3,8 @@ export interface CompanyInterface {
     cmp_uuid: string,
     cmp_name: string,
     cmp_address: string,
+    cmp_lat: number,
+    cmp_lng: number,
     cmp_phone: string,
     cmp_email: string,
     cmp_slug: string,

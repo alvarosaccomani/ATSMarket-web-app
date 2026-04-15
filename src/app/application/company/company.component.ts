@@ -63,6 +63,8 @@ export class CompanyComponent implements OnInit {
       cmp_name: ['', [Validators.required, Validators.minLength(3)]],
       cmp_slug: ['', Validators.required],
       cmp_address: [''],
+      cmp_lat: [null],
+      cmp_lng: [null],
       cmp_phone: [''],
       cmp_email: ['', [Validators.email]],
       cmp_description: [''],
@@ -164,7 +166,9 @@ export class CompanyComponent implements OnInit {
 
   public handleLocationSelected(location: SelectedLocation): void {
     this.companyForm.patchValue({
-      cmp_address: location.address
+      cmp_address: location.address,
+      cmp_lat: location.lat,
+      cmp_lng: location.lng
     });
   }
 }

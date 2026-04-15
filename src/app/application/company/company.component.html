@@ -86,6 +86,8 @@
                             <div class="map-container-inner">
                                 <app-map-picker 
                                     [showJsonOutput]="false"
+                                    [initialLat]="companyForm.get('cmp_lat')?.value"
+                                    [initialLng]="companyForm.get('cmp_lng')?.value"
                                     (locationSelected)="handleLocationSelected($event)">
                                 </app-map-picker>
                             </div>
