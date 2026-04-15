@@ -17,6 +17,7 @@ import { NzSwitchModule } from 'ng-zorro-antd/switch';
 
 import { MessageService } from '@services/message.service';
 import { CompaniesService } from '@services/companies.service';
+import { MapPickerComponent, SelectedLocation } from '../../shared/components/map-picker/map-picker.component';
 
 @Component({
   selector: 'app-company',
@@ -32,7 +33,8 @@ import { CompaniesService } from '@services/companies.service';
     NzIconModule,
     NzUploadModule,
     NzGridModule,
-    NzSwitchModule
+    NzSwitchModule,
+    MapPickerComponent
   ],
   templateUrl: './company.component.html',
   styleUrl: './company.component.scss'
@@ -44,6 +46,7 @@ export class CompanyComponent implements OnInit {
   public bannerFileList: NzUploadFile[] = [];
   public isEditing: boolean = false;
   public isLoading: boolean = false;
+  public showMapPicker: boolean = false;
 
   constructor(
     private fb: FormBuilder,
@@ -153,5 +156,15 @@ export class CompanyComponent implements OnInit {
 
   public onCancel(): void {
     this.location.back();
+  }
+
+  public toggleMapPicker(): void {
+    this.showMapPicker = !this.showMapPicker;
+  }
+
+  public handleLocationSelected(location: SelectedLocation): void {
+    this.companyForm.patchValue({
+      cmp_address: location.address
+    });
   }
 }

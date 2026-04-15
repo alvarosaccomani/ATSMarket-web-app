@@ -67,12 +67,28 @@
                         </div>
                         <div nz-col [nzSpan]="24">
                             <nz-form-item style="margin-bottom: 0;">
-                                <nz-form-label>Dirección Física / Logística</nz-form-label>
+                                <div style="display: flex; justify-content: space-between; align-items: center;">
+                                    <nz-form-label>Dirección Física / Logística</nz-form-label>
+                                    <button nz-button nzType="link" nzSize="small" (click)="toggleMapPicker()" style="margin: 0 0 8px 5px">
+                                        <span nz-icon [nzType]="showMapPicker ? 'up' : 'environment'"></span>
+                                        {{ showMapPicker ? 'Cerrar mapa' : 'Seleccionar en mapa' }}
+                                    </button>
+                                </div>
                                 <nz-form-control>
                                     <input nz-input formControlName="cmp_address"
                                         placeholder="Ej: Av. Rivadavia 1234, Local 5, CABA" />
                                 </nz-form-control>
                             </nz-form-item>
+                        </div>
+
+                        <!-- Sección de Mapa Colapsable -->
+                        <div nz-col [nzSpan]="24" *ngIf="showMapPicker" class="map-collapse-section">
+                            <div class="map-container-inner">
+                                <app-map-picker 
+                                    [showJsonOutput]="false"
+                                    (locationSelected)="handleLocationSelected($event)">
+                                </app-map-picker>
+                            </div>
                         </div>
                     </div>
                 </nz-card>

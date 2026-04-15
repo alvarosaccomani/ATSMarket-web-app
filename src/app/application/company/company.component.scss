@@ -67,4 +67,35 @@
         z-index: 10;
         margin-top: auto;
     }
+
+    .map-collapse-section {
+        margin-top: 16px;
+        margin-bottom: 8px;
+        border: 1px solid #f0f0f0;
+        border-radius: 8px;
+        overflow: hidden;
+        background: #fff;
+        box-shadow: 0 4px 12px rgba(0, 0, 0, 0.05);
+        animation: slideDown 0.3s cubic-bezier(0.23, 1, 0.32, 1);
+
+        .map-container-inner {
+            height: 400px;
+            width: 100%;
+
+            ::ng-deep .map-picker-container {
+                height: 400px !important;
+            }
+        }
+    }
+}
+
+@keyframes slideDown {
+    from {
+        opacity: 0;
+        transform: translateY(-8px);
+    }
+    to {
+        opacity: 1;
+        transform: translateY(0);
+    }
 }
