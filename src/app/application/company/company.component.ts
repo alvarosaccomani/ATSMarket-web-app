@@ -128,24 +128,32 @@ export class CompanyComponent implements OnInit {
       const data = this.companyForm.value;
 
       this.isLoading = true;
-      if (this.isEditing) {
-        this._companiesService.updateCompany(cmp_uuid, data).subscribe({
-          next: () => {
-            this._messageService.success('¡Éxito!', 'Los datos de la empresa han sido actualizados.', () => {
-              this.location.back();
-            });
-            this.isLoading = false;
-          },
-          error: (err) => {
-            this._messageService.error('Error', 'Hubo un problema al guardar los cambios.');
-            this.isLoading = false;
-          }
-        });
-      } else {
-        // Lógica para crear nueva empresa (pendiente si se requiere)
-        console.log('Crear nueva empresa:', data);
-        this.isLoading = false;
-      }
+
+      const request$ = this.isEditing
+        ? this._companiesService.updateCompany(cmp_uuid, data)
+        : this._companiesService.saveCompany(data);
+
+      request$.subscribe({
+        next: () => {
+          const successMsg = this.isEditing
+            ? 'Los datos de la empresa han sido actualizados.'
+            : 'La empresa ha sido creada exitosamente.';
+
+          this._messageService.success('¡Éxito!', successMsg, () => {
+            this.location.back();
+          });
+          this.isLoading = false;
+        },
+        error: (err) => {
+          const errorMsg = this.isEditing
+            ? 'Hubo un problema al guardar los cambios.'
+            : 'Hubo un problema al crear la empresa.';
+
+          this._messageService.error('Error', errorMsg);
+          this.isLoading = false;
+          console.error(err);
+        }
+      });
     } else {
       Object.values(this.companyForm.controls).forEach(control => {
         if (control.invalid) {
