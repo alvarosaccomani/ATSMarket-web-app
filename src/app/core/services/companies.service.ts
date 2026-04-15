@@ -57,6 +57,15 @@ export class CompaniesService {
   }
 
   /**
+   * Crea una nueva company.
+   * @param data Los datos de la nueva company.
+   */
+  public saveCompany(company: any): Observable<any> {
+    const headers = new HttpHeaders().set('content-type', 'application/json');
+    return this._http.post(`${environment.apiUrl}company`, company, { headers });
+  }
+
+  /**
    * Actualiza la información de una company.
    * @param cmp_uuid El identificador único de la company.
    * @param data Los datos a actualizar.
