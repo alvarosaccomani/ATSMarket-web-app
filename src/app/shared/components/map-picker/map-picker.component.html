@@ -1,1 +1,28 @@
-<p>map-picker works!</p>
+<div class="map-picker-container">
+  <!-- Input de búsqueda (arriba a la izquierda) -->
+   @if(showSearch) {
+    <div class="search-control">
+      <nz-input-group nzPrefixIcon="search">
+        <input
+          type="text"
+          nz-input
+          [(ngModel)]="searchQuery"
+          (keyup.enter)="onSearch()"
+          placeholder="Buscar dirección..."
+        />
+      </nz-input-group>
+      <button nz-button nzType="primary" (click)="onSearch()">Buscar</button>
+    </div>
+   }
+
+  <!-- Mapa -->
+  <div #map id="map"></div>
+
+  <!-- JSON de salida -->
+   @if(showJsonOutput && selectedLocation) {
+       <div class="json-output">
+         <h4>Dirección seleccionada:</h4>
+         <pre>{{ locationJson }}</pre>
+       </div>
+   }
+</div>
