@@ -16,7 +16,9 @@ import { NzBreadCrumbModule } from 'ng-zorro-antd/breadcrumb';
 
 import { MessageService } from '@services/message.service';
 import { MaterialsService } from '@services/materials.service';
+import { GlobalMaterialsService } from '@services/global-materials.service';
 import { SessionService } from '@services/session.service';
+import { GlobalMaterialInterface } from '@interfaces/global-material';
 
 @Component({
   selector: 'app-material',
@@ -43,6 +45,7 @@ export class MaterialComponent implements OnInit {
   public materialForm!: FormGroup;
   public isEditing: boolean = false;
   public isLoading: boolean = false;
+  public globalMaterials: GlobalMaterialInterface[] = [];
   private cmp_uuid!: string;
 
   constructor(
@@ -52,16 +55,18 @@ export class MaterialComponent implements OnInit {
     private location: Location,
     private _messageService: MessageService,
     private _materialsService: MaterialsService,
+    private _globalMaterialsService: GlobalMaterialsService,
     private _sessionService: SessionService
   ) { }
 
   ngOnInit(): void {
     this.cmp_uuid = this._sessionService.getCompany().cmp_uuid;
+    this.getGlobalMaterials();
 
     this.materialForm = this.fb.group({
       cmp_uuid: [this.cmp_uuid],
       mat_uuid: [''],
-      gmat_uuid: [''], // Por ahora manual, luego podría ser un select de grupos
+      gmat_uuid: [null, [Validators.required]],
       mat_name: ['', [Validators.required, Validators.minLength(2)]],
       mat_description: ['']
     });
@@ -71,6 +76,17 @@ export class MaterialComponent implements OnInit {
       if (mat_uuid && mat_uuid !== 'new') {
         this.isEditing = true;
         this.getMaterialById(mat_uuid);
+      }
+    });
+  }
+
+  private getGlobalMaterials(): void {
+    this._globalMaterialsService.getGlobalMaterials().subscribe({
+      next: (res) => {
+        this.globalMaterials = res.data;
+      },
+      error: (err) => {
+        console.error('Error loading global materials:', err);
       }
     });
   }

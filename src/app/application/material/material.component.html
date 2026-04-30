@@ -32,9 +32,11 @@
                     <div nz-row [nzGutter]="16">
                         <div nz-col nzSpan="24">
                             <nz-form-item>
-                                <nz-form-label>Grupo / Categoría (GMAT UUID)</nz-form-label>
-                                <nz-form-control>
-                                    <input nz-input formControlName="gmat_uuid" placeholder="ID del grupo de material" />
+                                <nz-form-label nzRequired>Material Global</nz-form-label>
+                                <nz-form-control nzErrorTip="Por favor, selecciona un grupo para este material">
+                                    <nz-select formControlName="gmat_uuid" nzPlaceHolder="Selecciona el tipo de material" nzShowSearch>
+                                        <nz-option *ngFor="let item of globalMaterials" [nzLabel]="item.gmat_name" [nzValue]="item.gmat_uuid"></nz-option>
+                                    </nz-select>
                                 </nz-form-control>
                             </nz-form-item>
                         </div>
