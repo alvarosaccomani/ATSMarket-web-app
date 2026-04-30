@@ -1,6 +1,7 @@
 import { Component, OnInit } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { FormsModule } from '@angular/forms';
+import { RouterModule } from '@angular/router';
 import { Observable, map, combineLatest, BehaviorSubject } from 'rxjs';
 
 import { NzTableModule } from 'ng-zorro-antd/table';
@@ -24,6 +25,7 @@ import { MaterialsService } from '@services/materials.service';
   imports: [
     CommonModule,
     FormsModule,
+    RouterModule,
     NzTableModule,
     NzCardModule,
     NzButtonModule,
