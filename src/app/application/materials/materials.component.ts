@@ -2,7 +2,7 @@ import { Component, OnInit } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { FormsModule } from '@angular/forms';
 import { RouterModule } from '@angular/router';
-import { Observable, map, combineLatest, BehaviorSubject } from 'rxjs';
+import { Observable, map, combineLatest, BehaviorSubject, switchMap } from 'rxjs';
 
 import { NzTableModule } from 'ng-zorro-antd/table';
 import { NzCardModule } from 'ng-zorro-antd/card';
@@ -18,6 +18,7 @@ import { NzAvatarModule } from 'ng-zorro-antd/avatar';
 import { MaterialInterface } from '@interfaces/material';
 import { SessionService } from '@services/session.service';
 import { MaterialsService } from '@services/materials.service';
+import { MessageService } from '@services/message.service';
 
 @Component({
   selector: 'app-materials',
@@ -46,6 +47,7 @@ export class MaterialsComponent implements OnInit {
   
   // Flujo de datos reactivo
   private searchTerm$ = new BehaviorSubject<string>('');
+  private refreshData$ = new BehaviorSubject<void>(undefined);
   public filteredMaterials$!: Observable<MaterialInterface[]>;
 
   // Control del Drawer
@@ -54,7 +56,8 @@ export class MaterialsComponent implements OnInit {
 
   constructor(
     private _sessionService: SessionService,
-    private _materialService: MaterialsService
+    private _materialService: MaterialsService,
+    private _messageService: MessageService
   ) { }
 
   ngOnInit(): void {
@@ -62,7 +65,9 @@ export class MaterialsComponent implements OnInit {
 
     // Combinamos la carga de datos con el filtro de búsqueda
     this.filteredMaterials$ = combineLatest([
-      this._materialService.getMaterials(this.cmp_uuid),
+      this.refreshData$.pipe(
+        switchMap(() => this._materialService.getMaterials(this.cmp_uuid))
+      ),
       this.searchTerm$.asObservable()
     ]).pipe(
       map(([results, term]) => {
@@ -90,5 +95,25 @@ export class MaterialsComponent implements OnInit {
   public closeDrawer(): void {
     this.isDrawerVisible = false;
     setTimeout(() => this.selectedMaterial = null, 300);
+  }
+
+  public onDeleteMaterial(material: MaterialInterface): void {
+    this._messageService.confirm(
+      '¿Estás seguro?',
+      `Esta acción eliminará permanentemente el material: ${material.mat_name}`,
+      () => {
+        this._materialService.deleteMaterial(this.cmp_uuid, material.mat_uuid).subscribe({
+          next: () => {
+            this._messageService.success('¡Eliminado!', 'El material ha sido eliminado correctamente.');
+            this.closeDrawer();
+            this.refreshData$.next(); // Recargamos la lista
+          },
+          error: (err) => {
+            this._messageService.error('Error', 'No se pudo eliminar el material.');
+            console.error(err);
+          }
+        });
+      }
+    );
   }
 }

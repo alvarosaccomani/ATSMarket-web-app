@@ -95,7 +95,7 @@
 
             <div style="margin-top: 32px; display: flex; gap: 8px;">
                 <button nz-button nzType="primary" nzBlock [routerLink]="['/application/material', selectedMaterial.mat_uuid]">Editar Especificación</button>
-                <button nz-button nzDanger nzBlock>Eliminar</button>
+                <button nz-button nzDanger nzBlock (click)="onDeleteMaterial(selectedMaterial)">Eliminar</button>
             </div>
         </div>
     </ng-container>
