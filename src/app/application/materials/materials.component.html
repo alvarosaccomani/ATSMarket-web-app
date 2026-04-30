@@ -50,7 +50,9 @@
                         </div>
                     </td>
                     <td>
-                        <nz-tag nzColor="blue">{{ data.gmat_uuid ? 'Categorizado' : 'Sin Grupo' }}</nz-tag>
+                        <nz-tag [nzColor]="data.gmat_uuid ? 'blue' : 'default'">
+                            {{ getGlobalMaterialName(data.gmat_uuid) }}
+                        </nz-tag>
                     </td>
                     <td>
                         <span class="date-cell">{{ data.mat_createdat | date:'dd/MM/yyyy' }}</span>
@@ -83,7 +85,9 @@
                 <nz-descriptions-item nzTitle="Descripción">
                     {{ selectedMaterial.mat_description || 'Sin descripción detallada.' }}
                 </nz-descriptions-item>
-                <nz-descriptions-item nzTitle="Grupo Relacionado">{{ selectedMaterial.gmat_uuid }}</nz-descriptions-item>
+                <nz-descriptions-item nzTitle="Grupo Relacionado">
+                    <nz-tag nzColor="blue">{{ getGlobalMaterialName(selectedMaterial.gmat_uuid) }}</nz-tag>
+                </nz-descriptions-item>
             </nz-descriptions>
 
             <nz-divider></nz-divider>

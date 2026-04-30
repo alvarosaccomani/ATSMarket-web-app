@@ -16,8 +16,10 @@ import { NzInputModule } from 'ng-zorro-antd/input';
 import { NzAvatarModule } from 'ng-zorro-antd/avatar';
 
 import { MaterialInterface } from '@interfaces/material';
+import { GlobalMaterialInterface } from '@interfaces/global-material';
 import { SessionService } from '@services/session.service';
 import { MaterialsService } from '@services/materials.service';
+import { GlobalMaterialsService } from '@services/global-materials.service';
 import { MessageService } from '@services/message.service';
 
 @Component({
@@ -53,15 +55,18 @@ export class MaterialsComponent implements OnInit {
   // Control del Drawer
   public selectedMaterial: MaterialInterface | null = null;
   public isDrawerVisible = false;
+  public globalMaterials: GlobalMaterialInterface[] = [];
 
   constructor(
     private _sessionService: SessionService,
     private _materialService: MaterialsService,
+    private _globalMaterialsService: GlobalMaterialsService,
     private _messageService: MessageService
   ) { }
 
   ngOnInit(): void {
     this.cmp_uuid = this._sessionService.getCompany().cmp_uuid;
+    this.getGlobalMaterials();
 
     // Combinamos la carga de datos con el filtro de búsqueda
     this.filteredMaterials$ = combineLatest([
@@ -115,5 +120,21 @@ export class MaterialsComponent implements OnInit {
         });
       }
     );
+  }
+
+  private getGlobalMaterials(): void {
+    this._globalMaterialsService.getGlobalMaterials().subscribe({
+      next: (res) => {
+        this.globalMaterials = res.data;
+      },
+      error: (err) => {
+        console.error('Error loading global materials:', err);
+      }
+    });
+  }
+
+  public getGlobalMaterialName(gmat_uuid: string): string {
+    const found = this.globalMaterials.find(m => m.gmat_uuid === gmat_uuid);
+    return found ? found.gmat_name : 'Sin Grupo';
   }
 }
