@@ -11,7 +11,7 @@
                     (input)="onSearch(txtSearch.value)" #txtSearch />
             </nz-input-group>
 
-            <button nz-button nzType="primary" nzSize="large">
+            <button nz-button nzType="primary" nzSize="large" [routerLink]="['/application/global-item/new']">
                 <span nz-icon nzType="plus"></span> Nuevo Rubro Global
             </button>
 
@@ -93,7 +93,7 @@
             </nz-descriptions>
 
             <div style="margin-top: 32px; display: flex; gap: 8px;">
-                <button nz-button nzType="primary" nzBlock>Editar Rubro</button>
+                <button nz-button nzType="primary" nzBlock [routerLink]="['/application/global-item', selectedGlobalItem.gitm_uuid]">Editar Rubro</button>
                 <button nz-button nzDanger nzBlock (click)="onDeleteGlobalItem(selectedGlobalItem)">Eliminar</button>
             </div>
         </div>
