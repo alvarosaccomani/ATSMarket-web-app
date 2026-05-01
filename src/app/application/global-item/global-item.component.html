@@ -1,1 +1,83 @@
-<p>global-item works!</p>
+<div class="item-page-wrapper">
+    
+    <nz-breadcrumb>
+        <nz-breadcrumb-item>Catálogo</nz-breadcrumb-item>
+        <nz-breadcrumb-item>
+            <a [routerLink]="['/application/global-items']">Rubros Globales</a>
+        </nz-breadcrumb-item>
+        <nz-breadcrumb-item>{{ isEditing ? 'Editar Rubro' : 'Nuevo Rubro' }}</nz-breadcrumb-item>
+    </nz-breadcrumb>
+
+    <div class="page-header">
+        <h1 class="page-title">{{ isEditing ? 'Editar Rubro Global' : 'Crear Rubro Global' }}</h1>
+        <p class="page-subtitle">Define una categoría base para organizar los productos de la plataforma.</p>
+    </div>
+
+    <div nz-row [nzGutter]="24">
+        <div nz-col [nzXs]="24" [nzLg]="16">
+            <nz-card [nzBordered]="false" class="premium-card">
+                <form nz-form [formGroup]="globalItemForm" nzLayout="vertical">
+                    
+                    <div nz-row [nzGutter]="16">
+                        <div nz-col nzSpan="24">
+                            <nz-form-item>
+                                <nz-form-label nzRequired>Nombre del Rubro Global</nz-form-label>
+                                <nz-form-control nzErrorTip="Por favor, ingresa el nombre (min 2 caracteres)">
+                                    <input nz-input formControlName="gitm_name" placeholder="Ej. Ferretería, Iluminación, Herramientas, etc." />
+                                </nz-form-control>
+                            </nz-form-item>
+                        </div>
+                    </div>
+
+                    <div nz-row [nzGutter]="16">
+                        <div nz-col nzSpan="24">
+                            <nz-form-item>
+                                <nz-form-label>Descripción / Alcance del Rubro</nz-form-label>
+                                <nz-form-control>
+                                    <textarea nz-input formControlName="gitm_description" [nzAutosize]="{ minRows: 4, maxRows: 8 }" placeholder="Describe qué tipo de productos pertenecen a este rubro..."></textarea>
+                                </nz-form-control>
+                            </nz-form-item>
+                        </div>
+                    </div>
+
+                    <div nz-row [nzGutter]="16">
+                        <div nz-col nzSpan="24">
+                            <nz-form-item>
+                                <nz-form-label>Imagen de Portada (URL)</nz-form-label>
+                                <nz-form-control>
+                                    <input nz-input formControlName="gitm_image" placeholder="URL de la imagen representativa del rubro" />
+                                </nz-form-control>
+                            </nz-form-item>
+                        </div>
+                    </div>
+
+                    <div class="form-actions">
+                        <nz-space>
+                            <button *nzSpaceItem nz-button nzType="default" (click)="onCancel()" [disabled]="isLoading">
+                                Cancelar
+                            </button>
+                            <button *nzSpaceItem nz-button nzType="primary" (click)="onSave()" [nzLoading]="isLoading">
+                                {{ isEditing ? 'Actualizar Rubro Global' : 'Crear Rubro Global' }}
+                            </button>
+                        </nz-space>
+                    </div>
+
+                </form>
+            </nz-card>
+        </div>
+
+        <div nz-col [nzXs]="24" [nzLg]="8">
+            <nz-card [nzBordered]="false" class="premium-card info-card" nzTitle="Clasificación del Sistema">
+                <div class="info-content">
+                    <span nz-icon nzType="appstore" nzTheme="outline" class="info-icon"></span>
+                    <p>Los <strong>Rubros Globales</strong> organizan el catálogo público de la plataforma.</p>
+                    <p>Una correcta definición de rubros facilita que los clientes encuentren los productos de las empresas asociadas.</p>
+                    <div class="warning-box">
+                        <span nz-icon nzType="info-circle" nzTheme="fill"></span>
+                        <span>Los cambios en los rubros afectan la navegación del portal de ventas y el filtrado por categorías.</span>
+                    </div>
+                </div>
+            </nz-card>
+        </div>
+    </div>
+</div>
