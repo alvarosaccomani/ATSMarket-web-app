@@ -1,1 +1,101 @@
-<p>global-materials works!</p>
+<div class="materials-dashboard-wrapper">
+    <div class="dashboard-header">
+        <div class="header-titles">
+            <h1 class="page-title">Catálogo Maestro Global</h1>
+            <p class="page-subtitle">Definiciones base de materiales para todas las empresas.</p>
+        </div>
+
+        <div class="header-actions">
+            <nz-input-group [nzPrefix]="prefixIconSearch" nzSize="large" style="width: 320px; margin-right: 16px;">
+                <input type="text" nz-input placeholder="Buscar material global..." 
+                    (input)="onSearch(txtSearch.value)" #txtSearch />
+            </nz-input-group>
+
+            <button nz-button nzType="primary" nzSize="large">
+                <span nz-icon nzType="plus"></span> Nuevo Material Global
+            </button>
+
+            <ng-template #prefixIconSearch>
+                <span nz-icon nzType="search"></span>
+            </ng-template>
+        </div>
+    </div>
+
+    <nz-card class="premium-card" [nzBordered]="false">
+        <nz-table 
+            #materialsTable 
+            [nzData]="(filteredGlobalMaterials$ | async) || []" 
+            nzSize="middle" 
+            [nzPageSize]="20"
+            [nzScroll]="{ y: 'calc(100vh - 310px)' }">
+            <thead>
+                <tr>
+                    <th nzWidth="40%">Material Global</th>
+                    <th nzWidth="25%">Descripción</th>
+                    <th nzWidth="20%">Fecha Registro</th>
+                    <th nzWidth="15%">Acciones</th>
+                </tr>
+            </thead>
+            <tbody>
+                <tr *ngFor="let data of materialsTable.data" class="clickable-row" (click)="openGlobalMaterialDetail(data)">
+                    <td>
+                        <div class="material-cell">
+                            <nz-avatar nzIcon="global"
+                                [nzSrc]="data.gmat_image || 'https://api.dicebear.com/7.x/initials/svg?seed=' + data.gmat_name"
+                                style="background-color: #f6ffed; border: 1px solid #b7eb8f;"></nz-avatar>
+                            <div class="material-info">
+                                <span class="material-name">{{ data.gmat_name }}</span>
+                                <span class="material-uuid">UUID: {{ data.gmat_uuid.substring(0,8) }}</span>
+                            </div>
+                        </div>
+                    </td>
+                    <td>
+                        <span class="description-cell">{{ data.gmat_description || 'Sin descripción' }}</span>
+                    </td>
+                    <td>
+                        <span class="date-cell">{{ data.gmat_createdat | date:'dd/MM/yyyy' }}</span>
+                    </td>
+                    <td>
+                        <button nz-button nzType="link" (click)="openGlobalMaterialDetail(data)">Detalles</button>
+                    </td>
+                </tr>
+            </tbody>
+        </nz-table>
+    </nz-card>
+</div>
+
+<!-- Drawer de Detalles -->
+<nz-drawer [nzVisible]="isDrawerVisible" nzPlacement="right" nzTitle="Detalle de Material Global" [nzWidth]="'500px'" (nzOnClose)="closeDrawer()">
+    <ng-container *nzDrawerContent>
+        <div *ngIf="selectedGlobalMaterial" class="drawer-content-wrapper">
+            <div class="profile-header">
+                <nz-avatar [nzSize]="64" nzIcon="global" [nzSrc]="selectedGlobalMaterial.gmat_image" style="background-color: #fafafa; border: 1px solid #e8e8e8;"></nz-avatar>
+                <div class="profile-header-info">
+                    <h2>{{ selectedGlobalMaterial.gmat_name }}</h2>
+                    <span style="color: #8c8c8c;">ID: {{ selectedGlobalMaterial.gmat_uuid }}</span>
+                </div>
+            </div>
+
+            <nz-divider></nz-divider>
+
+            <nz-descriptions nzTitle="Información General" [nzColumn]="1" nzSize="small">
+                <nz-descriptions-item nzTitle="Nombre">{{ selectedGlobalMaterial.gmat_name }}</nz-descriptions-item>
+                <nz-descriptions-item nzTitle="Descripción">
+                    {{ selectedGlobalMaterial.gmat_description || 'Sin descripción detallada.' }}
+                </nz-descriptions-item>
+            </nz-descriptions>
+
+            <nz-divider></nz-divider>
+
+            <nz-descriptions nzTitle="Auditoría" [nzColumn]="1" nzSize="small">
+                <nz-descriptions-item nzTitle="Creado">{{ selectedGlobalMaterial.gmat_createdat | date:'medium' }}</nz-descriptions-item>
+                <nz-descriptions-item nzTitle="Última Modificación">{{ selectedGlobalMaterial.gmat_updatedat | date:'medium' }}</nz-descriptions-item>
+            </nz-descriptions>
+
+            <div style="margin-top: 32px; display: flex; gap: 8px;">
+                <button nz-button nzType="primary" nzBlock>Editar Global</button>
+                <button nz-button nzDanger nzBlock (click)="onDeleteGlobalMaterial(selectedGlobalMaterial)">Eliminar</button>
+            </div>
+        </div>
+    </ng-container>
+</nz-drawer>
