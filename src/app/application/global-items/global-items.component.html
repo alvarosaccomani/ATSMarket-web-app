@@ -1,1 +1,101 @@
-<p>global-items works!</p>
+<div class="items-dashboard-wrapper">
+    <div class="dashboard-header">
+        <div class="header-titles">
+            <h1 class="page-title">Rubros Globales</h1>
+            <p class="page-subtitle">Categorización base de productos para todo el sistema.</p>
+        </div>
+
+        <div class="header-actions">
+            <nz-input-group [nzPrefix]="prefixIconSearch" nzSize="large" style="width: 320px; margin-right: 16px;">
+                <input type="text" nz-input placeholder="Buscar rubro global..." 
+                    (input)="onSearch(txtSearch.value)" #txtSearch />
+            </nz-input-group>
+
+            <button nz-button nzType="primary" nzSize="large">
+                <span nz-icon nzType="plus"></span> Nuevo Rubro Global
+            </button>
+
+            <ng-template #prefixIconSearch>
+                <span nz-icon nzType="search"></span>
+            </ng-template>
+        </div>
+    </div>
+
+    <nz-card class="premium-card" [nzBordered]="false">
+        <nz-table 
+            #itemsTable 
+            [nzData]="(filteredGlobalItems$ | async) || []" 
+            nzSize="middle" 
+            [nzPageSize]="20"
+            [nzScroll]="{ y: 'calc(100vh - 310px)' }">
+            <thead>
+                <tr>
+                    <th nzWidth="40%">Rubro Global</th>
+                    <th nzWidth="25%">Descripción</th>
+                    <th nzWidth="20%">Fecha Registro</th>
+                    <th nzWidth="15%">Acciones</th>
+                </tr>
+            </thead>
+            <tbody>
+                <tr *ngFor="let data of itemsTable.data" class="clickable-row" (click)="openGlobalItemDetail(data)">
+                    <td>
+                        <div class="item-cell">
+                            <nz-avatar nzIcon="appstore"
+                                [nzSrc]="data.gitm_image || 'https://api.dicebear.com/7.x/initials/svg?seed=' + data.gitm_name"
+                                style="background-color: #fff7e6; border: 1px solid #ffd591;"></nz-avatar>
+                            <div class="item-info">
+                                <span class="item-name">{{ data.gitm_name }}</span>
+                                <span class="item-uuid">UUID: {{ data.gitm_uuid.substring(0,8) }}</span>
+                            </div>
+                        </div>
+                    </td>
+                    <td>
+                        <span class="description-cell">{{ data.gitm_description || 'Sin descripción' }}</span>
+                    </td>
+                    <td>
+                        <span class="date-cell">{{ data.gitm_createdat | date:'dd/MM/yyyy' }}</span>
+                    </td>
+                    <td>
+                        <button nz-button nzType="link" (click)="openGlobalItemDetail(data)">Detalles</button>
+                    </td>
+                </tr>
+            </tbody>
+        </nz-table>
+    </nz-card>
+</div>
+
+<!-- Drawer de Detalles -->
+<nz-drawer [nzVisible]="isDrawerVisible" nzPlacement="right" nzTitle="Detalle de Rubro Global" [nzWidth]="'500px'" (nzOnClose)="closeDrawer()">
+    <ng-container *nzDrawerContent>
+        <div *ngIf="selectedGlobalItem" class="drawer-content-wrapper">
+            <div class="profile-header">
+                <nz-avatar [nzSize]="64" nzIcon="appstore" [nzSrc]="selectedGlobalItem.gitm_image" style="background-color: #fafafa; border: 1px solid #e8e8e8;"></nz-avatar>
+                <div class="profile-header-info">
+                    <h2>{{ selectedGlobalItem.gitm_name }}</h2>
+                    <span style="color: #8c8c8c;">ID: {{ selectedGlobalItem.gitm_uuid }}</span>
+                </div>
+            </div>
+
+            <nz-divider></nz-divider>
+
+            <nz-descriptions nzTitle="Información General" [nzColumn]="1" nzSize="small">
+                <nz-descriptions-item nzTitle="Nombre">{{ selectedGlobalItem.gitm_name }}</nz-descriptions-item>
+                <nz-descriptions-item nzTitle="Descripción">
+                    {{ selectedGlobalItem.gitm_description || 'Sin descripción detallada.' }}
+                </nz-descriptions-item>
+            </nz-descriptions>
+
+            <nz-divider></nz-divider>
+
+            <nz-descriptions nzTitle="Auditoría" [nzColumn]="1" nzSize="small">
+                <nz-descriptions-item nzTitle="Creado">{{ selectedGlobalItem.gitm_createdat | date:'medium' }}</nz-descriptions-item>
+                <nz-descriptions-item nzTitle="Última Modificación">{{ selectedGlobalItem.gitm_updatedat | date:'medium' }}</nz-descriptions-item>
+            </nz-descriptions>
+
+            <div style="margin-top: 32px; display: flex; gap: 8px;">
+                <button nz-button nzType="primary" nzBlock>Editar Rubro</button>
+                <button nz-button nzDanger nzBlock (click)="onDeleteGlobalItem(selectedGlobalItem)">Eliminar</button>
+            </div>
+        </div>
+    </ng-container>
+</nz-drawer>
