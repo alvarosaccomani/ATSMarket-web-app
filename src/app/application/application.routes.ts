@@ -7,6 +7,7 @@ import { CompanySettingsComponent } from './company-settings/company-settings.co
 import { PriceListComponent } from './price-list/price-list.component';
 import { DistPriceListComponent } from './dist-price-list/dist-price-list.component';
 import { GlobalMaterialsComponent } from './global-materials/global-materials.component';
+import { GlobalMaterialComponent } from './global-material/global-material.component';
 import { MaterialsComponent } from './materials/materials.component';
 import { MaterialComponent } from './material/material.component';
 import { ProductsComponent } from './products/products.component';
@@ -30,6 +31,7 @@ export const APPLICATION_ROUTES: Routes = [
             { path: 'price-list', component: PriceListComponent },
             { path: 'dist-price-list', component: DistPriceListComponent },
             { path: 'global-materials', component: GlobalMaterialsComponent },
+            { path: 'global-material/:gmat_uuid', component: GlobalMaterialComponent },
             { path: 'materials', component: MaterialsComponent },
             { path: 'material/:mat_uuid', component: MaterialComponent },
             { path: 'products', component: ProductsComponent },
