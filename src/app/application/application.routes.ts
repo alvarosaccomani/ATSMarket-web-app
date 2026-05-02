@@ -8,6 +8,7 @@ import { PriceListComponent } from './price-list/price-list.component';
 import { DistPriceListComponent } from './dist-price-list/dist-price-list.component';
 import { GlobalItemsComponent } from './global-items/global-items.component';
 import { GlobalItemComponent } from './global-item/global-item.component';
+import { GlobalCategoriesComponent } from './global-categories/global-categories.component';
 import { GlobalMaterialsComponent } from './global-materials/global-materials.component';
 import { GlobalMaterialComponent } from './global-material/global-material.component';
 import { MaterialsComponent } from './materials/materials.component';
@@ -34,6 +35,7 @@ export const APPLICATION_ROUTES: Routes = [
             { path: 'dist-price-list', component: DistPriceListComponent },
             { path: 'global-items', component: GlobalItemsComponent },
             { path: 'global-item/:gitm_uuid', component: GlobalItemComponent },
+            { path: 'global-categories', component: GlobalCategoriesComponent },
             { path: 'global-materials', component: GlobalMaterialsComponent },
             { path: 'global-material/:gmat_uuid', component: GlobalMaterialComponent },
             { path: 'materials', component: MaterialsComponent },
