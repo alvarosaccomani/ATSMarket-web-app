@@ -31,6 +31,10 @@ import { CartService } from '@services/cart.service';
 import { ProductVariationsService } from '@services/product-variations.service';
 import { StoreContextService } from '@services/store-context.service';
 import { CompanySettingInterface } from '@interfaces/company-setting';
+import { GlobalCategoriesService } from '@services/global-categories.service';
+import { GlobalMaterialsService } from '@services/global-materials.service';
+import { GlobalMaterialInterface } from '@interfaces/global-material';
+import { GlobalItemInterface } from '@interfaces/global-item';
 
 @Component({
   selector: 'app-store',
@@ -69,8 +73,7 @@ export class StoreCatalogComponent implements OnInit {
   // Modelos de Filtro
   public searchTerm: string = '';
   public selectedCategory: string | null = null;
-  public materialOptions = ['Resina', 'Madera', 'Plata 925', 'Metal', 'Otro']; // Ejemplo
-  public selectedMaterials: string[] = [];
+  public materialOptions: { label: string, value: string, checked: boolean }[] = [];
   public priceRange: [number, number] = [0, 50000];
   public drawerVisible: boolean = false;
 
@@ -79,12 +82,8 @@ export class StoreCatalogComponent implements OnInit {
   public pageSize: number = 12;
   public pageSizeOptions: number[] = [12, 24, 48, 96];
 
-  public categoryOptions = [
-    { label: 'Todos', value: null },
-    { label: 'Estatuas & Figuras', value: 'estatuas' },
-    { label: 'Rosarios de Autor', value: 'rosarios' },
-    { label: 'Medallas y Relicarios', value: 'medallas' },
-    { label: 'Otros Artículos', value: 'otros' }
+  public categoryOptions: { label: string, value: string | null }[] = [
+    { label: 'Todos', value: null }
   ];
 
   constructor(
@@ -93,6 +92,8 @@ export class StoreCatalogComponent implements OnInit {
     private _storeContext: StoreContextService,
     private productsVariationsService: ProductVariationsService,
     private cartService: CartService,
+    private _globalCategoriesService: GlobalCategoriesService,
+    private _globalMaterialsService: GlobalMaterialsService,
     private message: NzMessageService
   ) { }
 
@@ -113,6 +114,25 @@ export class StoreCatalogComponent implements OnInit {
     // Suscribirse a las configuraciones
     this._storeContext.storeSettings$.subscribe(settings => {
       // Si necesitamos hacer algo específico con los settings aquí
+    });
+
+    this.loadGlobalFilters();
+  }
+
+  private loadGlobalFilters(): void {
+    // Cargar Categorías
+    this._globalCategoriesService.getGlobalCategories().subscribe(res => {
+      const categories = res.data.map(i => ({ label: i.gcat_name, value: i.gcat_uuid }));
+      this.categoryOptions = [{ label: 'Todos', value: null }, ...categories];
+    });
+
+    // Cargar Materiales
+    this._globalMaterialsService.getGlobalMaterials().subscribe(res => {
+      this.materialOptions = res.data.map(m => ({
+        label: m.gmat_name,
+        value: m.gmat_uuid,
+        checked: false
+      }));
     });
   }
 
@@ -152,11 +172,15 @@ export class StoreCatalogComponent implements OnInit {
     }
 
     if (this.selectedCategory) {
-      // result = result.filter(p => p.categoria === this.selectedCategory);
+      result = result.filter((p: any) => p.itm_uuid === this.selectedCategory);
     }
 
-    if (this.selectedMaterials.length > 0) {
-      // result = result.filter(p => this.selectedMaterials.includes(p.material));
+    const selectedMaterialIds = this.materialOptions
+      .filter(m => m.checked)
+      .map(m => m.value);
+
+    if (selectedMaterialIds.length > 0) {
+      result = result.filter((p: any) => selectedMaterialIds.includes(p.gmat_uuid));
     }
 
     result = result.filter(p => p.prov_suggestedminimumsellingprice >= this.priceRange[0] && p.prov_suggestedminimumsellingprice <= this.priceRange[1]);
