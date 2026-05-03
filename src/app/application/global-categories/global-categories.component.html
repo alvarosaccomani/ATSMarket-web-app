@@ -1,1 +1,101 @@
-<p>global-categories works!</p>
+<div class="categories-dashboard-wrapper">
+    <div class="dashboard-header">
+        <div class="header-titles">
+            <h1 class="page-title">Categorías Globales</h1>
+            <p class="page-subtitle">Organización estructural del catálogo para la navegación del cliente.</p>
+        </div>
+
+        <div class="header-actions">
+            <nz-input-group [nzPrefix]="prefixIconSearch" nzSize="large" style="width: 320px; margin-right: 16px;">
+                <input type="text" nz-input placeholder="Buscar categoría global..." 
+                    (input)="onSearch(txtSearch.value)" #txtSearch />
+            </nz-input-group>
+
+            <button nz-button nzType="primary" nzSize="large">
+                <span nz-icon nzType="plus"></span> Nueva Categoría Global
+            </button>
+
+            <ng-template #prefixIconSearch>
+                <span nz-icon nzType="search"></span>
+            </ng-template>
+        </div>
+    </div>
+
+    <nz-card class="premium-card" [nzBordered]="false">
+        <nz-table 
+            #categoriesTable 
+            [nzData]="(filteredGlobalCategories$ | async) || []" 
+            nzSize="middle" 
+            [nzPageSize]="20"
+            [nzScroll]="{ y: 'calc(100vh - 310px)' }">
+            <thead>
+                <tr>
+                    <th nzWidth="40%">Categoría Global</th>
+                    <th nzWidth="25%">Descripción</th>
+                    <th nzWidth="20%">Fecha Registro</th>
+                    <th nzWidth="15%">Acciones</th>
+                </tr>
+            </thead>
+            <tbody>
+                <tr *ngFor="let data of categoriesTable.data" class="clickable-row" (click)="openGlobalCategoryDetail(data)">
+                    <td>
+                        <div class="category-cell">
+                            <nz-avatar nzIcon="tags"
+                                [nzSrc]="data.gcat_image || 'https://api.dicebear.com/7.x/initials/svg?seed=' + data.gcat_name"
+                                style="background-color: #e6f7ff; border: 1px solid #91d5ff;"></nz-avatar>
+                            <div class="category-info">
+                                <span class="category-name">{{ data.gcat_name }}</span>
+                                <span class="category-uuid">UUID: {{ data.gcat_uuid.substring(0,8) }}</span>
+                            </div>
+                        </div>
+                    </td>
+                    <td>
+                        <span class="description-cell">{{ data.gcat_description || 'Sin descripción' }}</span>
+                    </td>
+                    <td>
+                        <span class="date-cell">{{ data.gcat_createdat | date:'dd/MM/yyyy' }}</span>
+                    </td>
+                    <td>
+                        <button nz-button nzType="link" (click)="openGlobalCategoryDetail(data)">Detalles</button>
+                    </td>
+                </tr>
+            </tbody>
+        </nz-table>
+    </nz-card>
+</div>
+
+<!-- Drawer de Detalles -->
+<nz-drawer [nzVisible]="isDrawerVisible" nzPlacement="right" nzTitle="Detalle de Categoría Global" [nzWidth]="'500px'" (nzOnClose)="closeDrawer()">
+    <ng-container *nzDrawerContent>
+        <div *ngIf="selectedGlobalCategory" class="drawer-content-wrapper">
+            <div class="profile-header">
+                <nz-avatar [nzSize]="64" nzIcon="tags" [nzSrc]="selectedGlobalCategory.gcat_image" style="background-color: #fafafa; border: 1px solid #e8e8e8;"></nz-avatar>
+                <div class="profile-header-info">
+                    <h2>{{ selectedGlobalCategory.gcat_name }}</h2>
+                    <span style="color: #8c8c8c;">ID: {{ selectedGlobalCategory.gcat_uuid }}</span>
+                </div>
+            </div>
+
+            <nz-divider></nz-divider>
+
+            <nz-descriptions nzTitle="Información General" [nzColumn]="1" nzSize="small">
+                <nz-descriptions-item nzTitle="Nombre">{{ selectedGlobalCategory.gcat_name }}</nz-descriptions-item>
+                <nz-descriptions-item nzTitle="Descripción">
+                    {{ selectedGlobalCategory.gcat_description || 'Sin descripción detallada.' }}
+                </nz-descriptions-item>
+            </nz-descriptions>
+
+            <nz-divider></nz-divider>
+
+            <nz-descriptions nzTitle="Auditoría" [nzColumn]="1" nzSize="small">
+                <nz-descriptions-item nzTitle="Creado">{{ selectedGlobalCategory.gcat_createdat | date:'medium' }}</nz-descriptions-item>
+                <nz-descriptions-item nzTitle="Última Modificación">{{ selectedGlobalCategory.gcat_updatedat | date:'medium' }}</nz-descriptions-item>
+            </nz-descriptions>
+
+            <div style="margin-top: 32px; display: flex; gap: 8px;">
+                <button nz-button nzType="primary" nzBlock>Editar Categoría</button>
+                <button nz-button nzDanger nzBlock (click)="onDeleteGlobalCategory(selectedGlobalCategory)">Eliminar</button>
+            </div>
+        </div>
+    </ng-container>
+</nz-drawer>
