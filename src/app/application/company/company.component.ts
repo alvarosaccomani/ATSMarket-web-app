@@ -159,6 +159,7 @@ export class CompanyComponent implements OnInit {
               this._userRolesCompanyService.saveUserRolCompany(userRolCompany).subscribe({
                 next: () => {
                   this._messageService.success('¡Éxito!', 'Empresa creada y rol asignado correctamente.', () => {
+                    this._sessionService.refreshCompanies$.next();
                     this.location.back();
                   });
                 },
@@ -169,6 +170,7 @@ export class CompanyComponent implements OnInit {
               });
             } else {
               this._messageService.success('¡Éxito!', 'La empresa ha sido creada exitosamente.', () => {
+                this._sessionService.refreshCompanies$.next();
                 this.location.back();
               });
             }

@@ -1,5 +1,5 @@
 import { Injectable } from '@angular/core';
-import { BehaviorSubject } from 'rxjs';
+import { BehaviorSubject, Subject } from 'rxjs';
 
 export interface SessionData {
   identity?: any;
@@ -13,6 +13,7 @@ export interface SessionData {
 export class SessionService {
 
   private sessionSubject = new BehaviorSubject<SessionData | null>(this.getStoredSession());
+  public refreshCompanies$ = new Subject<void>();
 
   constructor() { }
 

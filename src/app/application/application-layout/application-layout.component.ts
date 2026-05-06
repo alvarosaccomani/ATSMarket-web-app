@@ -66,6 +66,15 @@ export class ApplicationLayoutComponent implements OnInit {
           }
         });
     }
+
+    this._sessionService.refreshCompanies$.subscribe(() => {
+      if (this.userIdentity) {
+        this._userRolesCompanyService.getUserRolesCompanyByUser(this.userIdentity.usr_uuid!)
+          .subscribe((response: any) => {
+            this.userRolesCompany = this.groupByCompany(response.data);
+          });
+      }
+    });
   }
 
   public groupByCompany(data: any[]): any[] {
