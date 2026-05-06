@@ -125,4 +125,8 @@ export class MyCompaniesComponent implements OnInit {
   public settingsCompany(cmp_uuid: string): void {
     this._router.navigate(['/application/company-settings', cmp_uuid]);
   }
+
+  public userRolCompany(cmp_uuid: string): void {
+    this._router.navigate(['/application/user-rol-company', cmp_uuid]);
+  }
 }

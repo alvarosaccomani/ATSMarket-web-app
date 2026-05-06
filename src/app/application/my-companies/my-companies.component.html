@@ -38,6 +38,11 @@
                         (click)="settingsCompany(company.cmp_uuid); $event.stopPropagation()">
                         <span nz-icon nzType="setting"></span>
                     </button>
+                    <button nz-button nzType="default" nzTooltipTitle="Asignar Roles/Usuarios" nz-tooltip
+                        *ngIf="isAdmin(company.roles)"
+                        (click)="userRolCompany(company.cmp_uuid); $event.stopPropagation()">
+                        <span nz-icon nzType="usergroup-add"></span>
+                    </button>
                     <button nz-button nzType="primary" style="flex: 1;"
                         (click)="selectCompany(company); $event.stopPropagation()">
                         Gestionar <span nz-icon nzType="arrow-right"></span>
