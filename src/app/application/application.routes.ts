@@ -4,6 +4,7 @@ import { ApplicationLayoutComponent } from './application-layout/application-lay
 import { MyCompaniesComponent } from './my-companies/my-companies.component';
 import { CompanyComponent } from './company/company.component';
 import { CompanySettingsComponent } from './company-settings/company-settings.component';
+import { UserRolCompanyComponent } from './user-rol-company/user-rol-company.component';
 import { PriceListComponent } from './price-list/price-list.component';
 import { DistPriceListComponent } from './dist-price-list/dist-price-list.component';
 import { GlobalItemsComponent } from './global-items/global-items.component';
@@ -32,6 +33,7 @@ export const APPLICATION_ROUTES: Routes = [
             { path: 'my-companies', component: MyCompaniesComponent },
             { path: 'company/:cmp_uuid', component: CompanyComponent },
             { path: 'company-settings/:cmp_uuid', component: CompanySettingsComponent },
+            { path: 'user-rol-company/:cmp_uuid', component: UserRolCompanyComponent },
             { path: 'price-list', component: PriceListComponent },
             { path: 'dist-price-list', component: DistPriceListComponent },
             { path: 'global-items', component: GlobalItemsComponent },
