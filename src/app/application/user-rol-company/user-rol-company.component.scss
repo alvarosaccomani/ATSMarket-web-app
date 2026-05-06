@@ -1,0 +1,121 @@
+.user-rol-company-wrapper {
+    padding: 24px;
+    background-color: #f7f9fc;
+    height: calc(100vh - 64px); // Altura de la cabecera del layout
+    display: flex;
+    flex-direction: column;
+    overflow: hidden;
+
+    .header-actions {
+        flex-shrink: 0;
+        display: flex;
+        justify-content: space-between;
+        align-items: flex-end;
+        margin-bottom: 24px;
+
+        .header-titles {
+            .back-btn {
+                padding-left: 0;
+                margin-bottom: 8px;
+                color: #8c8c8c;
+                display: flex;
+                align-items: center;
+                gap: 4px;
+
+                &:hover {
+                    color: #1890ff;
+                }
+            }
+
+            .page-title {
+                font-size: 24px;
+                font-weight: 600;
+                color: #262626;
+                margin: 0;
+            }
+
+            .page-subtitle {
+                font-size: 14px;
+                color: #8c8c8c;
+                margin: 4px 0 0 0;
+
+                strong {
+                    color: #595959;
+                }
+            }
+        }
+    }
+
+    .assignment-card {
+        flex-shrink: 0;
+        border-radius: 8px;
+        box-shadow: 0 2px 8px rgba(0, 0, 0, 0.05);
+        margin-bottom: 16px;
+        
+        ::ng-deep .ant-card-body {
+            padding: 16px 24px;
+        }
+
+        .inline-assignment-form {
+            .ant-form-item {
+                margin-right: 0;
+            }
+        }
+    }
+
+    .premium-card {
+        flex: 1;
+        display: flex;
+        flex-direction: column;
+        border-radius: 8px;
+        box-shadow: 0 2px 8px rgba(0, 0, 0, 0.05);
+        overflow: hidden;
+
+        ::ng-deep .ant-card-body {
+            flex: 1;
+            padding: 0;
+            display: flex;
+            flex-direction: column;
+            overflow: hidden;
+            
+            // Ajuste para la tabla dentro de la tarjeta
+            .ant-table-wrapper {
+                height: 100%;
+            }
+        }
+
+        .user-cell {
+            display: flex;
+            align-items: center;
+            gap: 12px;
+            padding-left: 12px;
+
+            .user-name {
+                font-weight: 500;
+                color: #262626;
+            }
+        }
+
+        .role-badge {
+            padding: 4px 10px;
+            border-radius: 4px;
+            font-size: 12px;
+            font-weight: 500;
+            text-transform: capitalize;
+            background-color: #f0f0f0;
+            color: #595959;
+
+            &.admin, &.administrador, &.owner {
+                background-color: #fff7e6;
+                color: #fa8c16;
+                border: 1px solid #ffd591;
+            }
+
+            &.user, &.usuario {
+                background-color: #e6f7ff;
+                color: #1890ff;
+                border: 1px solid #91d5ff;
+            }
+        }
+    }
+}

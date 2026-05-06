@@ -1,1 +1,78 @@
-<p>user-rol-company works!</p>
+<div class="user-rol-company-wrapper">
+    <div class="header-actions">
+        <div class="header-titles">
+            <button nz-button nzType="text" (click)="onBack()" class="back-btn">
+                <span nz-icon nzType="arrow-left"></span> Volver
+            </button>
+            <h1 class="page-title">Asignación de Usuarios y Roles</h1>
+            <p class="page-subtitle" *ngIf="company">Gestionando acceso para: <strong>{{ company.cmp_name }}</strong></p>
+        </div>
+    </div>
+
+    <nz-card class="assignment-card" [nzBordered]="false" style="margin-bottom: 16px;">
+        <div class="form-container">
+            <form nz-form [formGroup]="assignmentForm" (ngSubmit)="onAddAssignment()">
+                <div style="display: flex; gap: 16px; align-items: center;">
+                    <nz-form-item style="flex: 1; margin-bottom: 0;">
+                        <nz-form-control nzErrorTip="Selecciona un usuario">
+                            <nz-select formControlName="usr_uuid" nzShowSearch nzAllowClear nzPlaceHolder="Seleccionar Usuario" 
+                                [nzServerSearch]="true" (nzOnSearch)="loadUsers($event)" style="width: 100%;">
+                                <nz-option *ngFor="let u of users" [nzLabel]="u.usr_name + ' ' + u.usr_surname + ' (' + u.usr_email + ')'" [nzValue]="u.usr_uuid"></nz-option>
+                            </nz-select>
+                        </nz-form-control>
+                    </nz-form-item>
+
+                    <nz-form-item style="width: 250px; margin-bottom: 0;">
+                        <nz-form-control nzErrorTip="Selecciona un rol">
+                            <nz-select formControlName="rol_uuid" nzPlaceHolder="Seleccionar Rol" style="width: 100%;">
+                                <nz-option *ngFor="let r of roles" [nzLabel]="r.rol_name" [nzValue]="r.rol_uuid"></nz-option>
+                            </nz-select>
+                        </nz-form-control>
+                    </nz-form-item>
+
+                    <nz-form-item style="margin-bottom: 0;">
+                        <button nz-button nzType="primary" [nzLoading]="isSaving" [disabled]="assignmentForm.invalid" style="height: 40px;">
+                            <span nz-icon nzType="user-add"></span> Asignar
+                        </button>
+                    </nz-form-item>
+                </div>
+            </form>
+        </div>
+    </nz-card>
+
+    <nz-card class="premium-card" [nzBordered]="false">
+        <nz-table #basicTable [nzData]="userRolesList" [nzLoading]="isLoading" nzSize="middle" [nzScroll]="{ y: 'calc(100vh - 360px)' }">
+            <thead>
+                <tr>
+                    <th>Usuario</th>
+                    <th>Email</th>
+                    <th>Rol</th>
+                    <th>Fecha Asignación</th>
+                    <th nzAlign="right">Acciones</th>
+                </tr>
+            </thead>
+            <tbody>
+                <tr *ngFor="let data of basicTable.data">
+                    <td>
+                        <div class="user-cell">
+                            <nz-avatar nzIcon="user" [nzSrc]="data.usr?.usr_image || ''"></nz-avatar>
+                            <span class="user-name">{{ data.usr?.usr_name }} {{ data.usr?.usr_surname }}</span>
+                        </div>
+                    </td>
+                    <td>{{ data.usr?.usr_email }}</td>
+                    <td>
+                        <span class="role-badge" [class]="data.rol?.rol_name?.toLowerCase()">
+                            {{ data.rol?.rol_name }}
+                        </span>
+                    </td>
+                    <td>{{ data.usrrolcmp_createdat | date:'dd/MM/yyyy HH:mm' }}</td>
+                    <td nzAlign="right">
+                        <button nz-button nzType="text" nzDanger (click)="onDeleteAssignment(data)">
+                            <span nz-icon nzType="delete"></span>
+                        </button>
+                    </td>
+                </tr>
+            </tbody>
+        </nz-table>
+    </nz-card>
+</div>
