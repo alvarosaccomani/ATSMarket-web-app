@@ -17,6 +17,8 @@ import { NzSwitchModule } from 'ng-zorro-antd/switch';
 
 import { MessageService } from '@services/message.service';
 import { CompaniesService } from '@services/companies.service';
+import { SessionService } from '@services/session.service';
+import { UserRolesCompanyService } from '@services/user-roles-company.service';
 import { MapPickerComponent, SelectedLocation } from '../../shared/components/map-picker/map-picker.component';
 
 @Component({
@@ -54,7 +56,9 @@ export class CompanyComponent implements OnInit {
     private _router: Router,
     private location: Location,
     private _messageService: MessageService,
-    private _companiesService: CompaniesService
+    private _companiesService: CompaniesService,
+    private _sessionService: SessionService,
+    private _userRolesCompanyService: UserRolesCompanyService
   ) { }
 
   ngOnInit(): void {
@@ -134,14 +138,45 @@ export class CompanyComponent implements OnInit {
         : this._companiesService.saveCompany(data);
 
       request$.subscribe({
-        next: () => {
-          const successMsg = this.isEditing
-            ? 'Los datos de la empresa han sido actualizados.'
-            : 'La empresa ha sido creada exitosamente.';
+        next: (res: any) => {
+          if (!this.isEditing) {
+            // Si es nueva, asignar rol al usuario actual
+            const identity = this._sessionService.getIdentity();
+            const roles = this._sessionService.getCompany()?.roles;
+            const adminRol = roles.find((r: any) => 
+              r.rol_name.toLowerCase() === 'admin' || 
+              r.rol_name.toLowerCase() === 'administrador' || 
+              r.rol_name.toLowerCase() === 'owner'
+            );
 
-          this._messageService.success('¡Éxito!', successMsg, () => {
-            this.location.back();
-          });
+            if (identity && adminRol && res.data) {
+              const userRolCompany = {
+                cmp_uuid: res.data.cmp_uuid,
+                usr_uuid: identity.usr_uuid,
+                rol_uuid: adminRol.rol_uuid
+              };
+
+              this._userRolesCompanyService.saveUserRolCompany(userRolCompany).subscribe({
+                next: () => {
+                  this._messageService.success('¡Éxito!', 'Empresa creada y rol asignado correctamente.', () => {
+                    this.location.back();
+                  });
+                },
+                error: () => {
+                  this._messageService.warning('Advertencia', 'La empresa se creó, pero no se pudo asignar el rol automáticamente.');
+                  this.location.back();
+                }
+              });
+            } else {
+              this._messageService.success('¡Éxito!', 'La empresa ha sido creada exitosamente.', () => {
+                this.location.back();
+              });
+            }
+          } else {
+            this._messageService.success('¡Éxito!', 'Los datos de la empresa han sido actualizados.', () => {
+              this.location.back();
+            });
+          }
           this.isLoading = false;
         },
         error: (err) => {
