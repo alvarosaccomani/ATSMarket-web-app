@@ -67,7 +67,7 @@
                     </td>
                     <td>
                         <nz-tag nzColor="blue">
-                            {{ data.productVariations?.length || 0 }} variaciones
+                            {{ data.productVariations.length || 0 }} variaciones
                         </nz-tag>
                     </td>
                     <td>
@@ -122,7 +122,7 @@
 
             <nz-divider></nz-divider>
 
-            <h3 class="section-title">Variaciones Detectadas ({{ selectedProduct.productVariations?.length || 0 }})</h3>
+            <h3 class="section-title">Variaciones Detectadas ({{ selectedProduct.productVariations.length || 0 }})</h3>
             <div class="variations-mini-list">
                 <div *ngFor="let v of selectedProduct.productVariations" class="variation-item">
                     <div class="v-info">
@@ -133,7 +133,7 @@
                         ${{ v.prov_suggestedminimumsellingprice | number:'1.2-2' }}
                     </div>
                 </div>
-                <div *ngIf="!selectedProduct.productVariations?.length" class="no-variations">
+                <div *ngIf="!selectedProduct.productVariations.length" class="no-variations">
                     Este producto no posee variaciones configuradas.
                 </div>
             </div>
