@@ -124,7 +124,7 @@
 
             <h3 class="section-title">Variaciones Detectadas ({{ selectedProduct.productVariations?.length || 0 }})</h3>
             <div class="variations-mini-list">
-                <div *ngFor="let v of selectedProduct.productVariations" class="variation-item">
+                <div *ngFor="let v of selectedProduct.productVariations || []" class="variation-item">
                     <div class="v-info">
                         <strong>{{ v.prov_name }}</strong>
                         <span>SKU: {{ v.prov_sku }}</span>

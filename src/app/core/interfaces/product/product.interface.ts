@@ -11,5 +11,5 @@ export interface ProductInterface {
     cat_uuid: string;
     pro_createdat: Date;
     pro_updatedat: Date;
-    productVariations: ProductVariationInterface[]
+    productVariations?: ProductVariationInterface[]
 }
