@@ -1,1 +1,114 @@
-<p>supplier works!</p>
+<div class="supplier-form-wrapper">
+    <div class="form-header">
+        <div class="header-titles">
+            <h1 class="page-title">{{ supplierForm.get('sup_uuid')?.value ? 'Editar Proveedor' : 'Nuevo Proveedor' }}</h1>
+            <p class="page-subtitle">Gestiona la información de contacto y términos comerciales de tu proveedor.</p>
+        </div>
+        <div class="header-actions">
+            <nz-space>
+                <button *nzSpaceItem nz-button nzType="default" (click)="onCancel()">Cancelar</button>
+                <button *nzSpaceItem nz-button nzType="primary" (click)="onSave()" [nzLoading]="isLoading"
+                    [disabled]="supplierForm.invalid">
+                    <span nz-icon nzType="save"></span> Guardar
+                </button>
+            </nz-space>
+        </div>
+    </div>
+
+    <form nz-form [formGroup]="supplierForm" nzLayout="vertical">
+        <div nz-row [nzGutter]="24">
+            <!-- COLUMNA PRINCIPAL: DATOS GENERALES -->
+            <div nz-col [nzXs]="24" [nzLg]="16">
+                <nz-card class="premium-card" nzTitle="Información del Proveedor" [nzBordered]="false">
+                    <div nz-row [nzGutter]="16">
+                        <div nz-col nzSpan="24">
+                            <nz-form-item>
+                                <nz-form-label nzRequired>Nombre Completo / Razón Social</nz-form-label>
+                                <nz-form-control nzErrorTip="Por favor ingrese el nombre">
+                                    <input nz-input formControlName="sup_fullname" placeholder="Ej: Distribuidora San Juan" />
+                                </nz-form-control>
+                            </nz-form-item>
+                        </div>
+
+                        <div nz-col [nzXs]="24" [nzMd]="12">
+                            <nz-form-item>
+                                <nz-form-label>Correo Electrónico</nz-form-label>
+                                <nz-form-control nzErrorTip="Ingrese un email válido">
+                                    <input nz-input formControlName="sup_email" placeholder="contacto@proveedor.com" />
+                                </nz-form-control>
+                            </nz-form-item>
+                        </div>
+
+                        <div nz-col [nzXs]="24" [nzMd]="12">
+                            <nz-form-item>
+                                <nz-form-label>Teléfono de Contacto</nz-form-label>
+                                <nz-form-control>
+                                    <input nz-input formControlName="sup_phone" placeholder="+54 11 ..." />
+                                </nz-form-control>
+                            </nz-form-item>
+                        </div>
+                    </div>
+                </nz-card>
+
+                <nz-card class="premium-card" nzTitle="Configuración Avanzada" [nzBordered]="false" style="margin-top: 24px;">
+                    <p style="color: #8c8c8c; margin-bottom: 16px;">Configura parámetros adicionales para la relación comercial.</p>
+                    <div nz-row [nzGutter]="16">
+                        <div nz-col nzSpan="12">
+                            <nz-form-item>
+                                <nz-form-label>Términos de Pago</nz-form-label>
+                                <nz-form-control>
+                                    <nz-input-group nzPrefixIcon="credit-card">
+                                        <input nz-input disabled placeholder="Próximamente..." />
+                                    </nz-input-group>
+                                </nz-form-control>
+                            </nz-form-item>
+                        </div>
+                        <div nz-col nzSpan="12">
+                            <nz-form-item>
+                                <nz-form-label>Categoría Interna</nz-form-label>
+                                <nz-form-control>
+                                    <nz-input-group nzPrefixIcon="tags">
+                                        <input nz-input disabled placeholder="Próximamente..." />
+                                    </nz-input-group>
+                                </nz-form-control>
+                            </nz-form-item>
+                        </div>
+                    </div>
+                </nz-card>
+            </div>
+
+            <!-- COLUMNA LATERAL: ESTADO Y METADATA -->
+            <div nz-col [nzXs]="24" [nzLg]="8">
+                <nz-card class="premium-card side-info" [nzBordered]="false">
+                    <div class="status-summary">
+                        <div class="status-icon-wrapper">
+                            <span nz-icon nzType="shop" nzTheme="outline"></span>
+                        </div>
+                        <div class="status-details">
+                            <span class="status-label">Estado de la Relación</span>
+                            <span class="status-value">ACTIVO</span>
+                        </div>
+                    </div>
+                    
+                    <nz-divider></nz-divider>
+                    
+                    <div class="meta-info">
+                        <div class="meta-item">
+                            <span class="meta-label">ID Proveedor:</span>
+                            <span class="meta-value">{{ supplierForm.get('sup_uuid')?.value || 'Nuevo' }}</span>
+                        </div>
+                        <div class="meta-item" *ngIf="supplierForm.get('sup_uuid')?.value">
+                            <span class="meta-label">Última actualización:</span>
+                            <span class="meta-value">Hoy</span>
+                        </div>
+                    </div>
+                </nz-card>
+
+                <div class="helper-box" style="margin-top: 24px;">
+                    <span nz-icon nzType="info-circle" nzTheme="fill"></span>
+                    <p>Asegúrate de completar el nombre y el correo para poder enviar órdenes de compra automáticas en el futuro.</p>
+                </div>
+            </div>
+        </div>
+    </form>
+</div>
