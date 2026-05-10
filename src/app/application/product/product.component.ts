@@ -12,9 +12,13 @@ import { NzButtonModule } from 'ng-zorro-antd/button';
 import { NzCardModule } from 'ng-zorro-antd/card';
 import { NzGridModule } from 'ng-zorro-antd/grid';
 import { NzToolTipModule } from 'ng-zorro-antd/tooltip';
-import { ProductsService } from '@services/products.service';
+import { SessionService } from '@services/session.service';
+import { ItemsService } from '@services/items.service';
+import { CategoriesService } from '@services/categories.service';
+import { NzSelectModule } from 'ng-zorro-antd/select';
 import { NzSpaceModule } from 'ng-zorro-antd/space';
 import { MessageService } from '@services/message.service';
+import { ProductsService } from '@services/products.service';
 
 @Component({
   selector: 'app-product',
@@ -31,7 +35,8 @@ import { MessageService } from '@services/message.service';
     NzSpaceModule,
     NzCardModule,
     NzGridModule,
-    NzToolTipModule
+    NzToolTipModule,
+    NzSelectModule
   ],
   templateUrl: './product.component.html',
   styleUrl: './product.component.scss'
@@ -39,11 +44,18 @@ import { MessageService } from '@services/message.service';
 export class ProductComponent {
 
   productForm!: FormGroup;
+  public categories: any[] = [];
+  public items: any[] = [];
+  public currentCmpUuid: string = '';
+  public isLoading: boolean = false;
 
   constructor(
     private fb: FormBuilder,
     private _router: Router,
     private _route: ActivatedRoute,
+    private _sessionService: SessionService,
+    private _itemsService: ItemsService,
+    private _categoriesService: CategoriesService,
     private _productsService: ProductsService,
     private _messageService: MessageService
   ) { }
@@ -63,9 +75,14 @@ export class ProductComponent {
       productVariations: this.fb.array([])
     });
 
+    const company = this._sessionService.getCompany();
+    this.currentCmpUuid = company.cmp_uuid;
+
     this.productForm.patchValue({
-      cmp_uuid: '28a0036e-2d6b-4e83-805a-1ca214a6b1e1'
+      cmp_uuid: this.currentCmpUuid
     });
+
+    this.loadItems(this.currentCmpUuid);
 
     this._route.params.subscribe((params) => {
       if (params['pro_uuid'] && params['pro_uuid'] != 'new') {
@@ -78,6 +95,48 @@ export class ProductComponent {
         this.addVariation();
       }
     });
+
+    // Debug de validación
+    this.productForm.statusChanges.subscribe(status => {
+      if (status === 'INVALID') {
+        const invalidFields: string[] = [];
+        const controls = this.productForm.controls;
+        for (const name in controls) {
+          if (controls[name].invalid) {
+            invalidFields.push(name);
+          }
+        }
+        console.log('Campos inválidos en raíz:', invalidFields);
+        
+        this.productVariations.controls.forEach((group, i) => {
+          if (group.invalid) {
+            console.log(`Variación ${i} es inválida`);
+          }
+        });
+      }
+    });
+
+    // Escuchar cambios en el Rubro para cargar categorías
+    this.productForm.get('itm_uuid')?.valueChanges.subscribe(itmUuid => {
+      if (itmUuid) {
+        this.loadCategories(itmUuid);
+      } else {
+        this.categories = [];
+      }
+    });
+  }
+
+  private loadCategories(itm_uuid: string): void {
+    if (!itm_uuid) return;
+    this._categoriesService.getCategories(this.currentCmpUuid, itm_uuid).subscribe((res: any) => {
+      this.categories = res.data || [];
+    });
+  }
+
+  private loadItems(cmp_uuid: string): void {
+    this._itemsService.getItems(cmp_uuid).subscribe((res: any) => {
+      this.items = res.data || [];
+    });
   }
 
   // Getter para acceder al array de variaciones fácilmente
@@ -86,8 +145,10 @@ export class ProductComponent {
   }
 
   private getProductById(cmp_uuid: string, pro_uuid: string): void {
+    this.isLoading = true;
     this._productsService.getProductById(cmp_uuid, pro_uuid).subscribe(
       (response: any) => {
+        this.isLoading = false;
         if (response.success) {
           console.info(response.data);
           const productData = response.data;
@@ -116,8 +177,8 @@ export class ProductComponent {
           variationsArray.forEach((variation: any) => {
             const variationGroup = this.fb.group({
               cmp_uuid: [variation.cmp_uuid || '', Validators.required],
-              pro_uuid: [variation.pro_uuid || '', Validators.required],
-              prov_uuid: [variation.prov_uuid || '', Validators.required],
+              pro_uuid: [variation.pro_uuid || ''],
+              prov_uuid: [variation.prov_uuid || ''],
               prov_code: [variation.prov_code || '', Validators.required],
               prov_sku: [variation.prov_sku || '', Validators.required],
               prov_name: [variation.prov_name || '', Validators.required],
@@ -137,6 +198,7 @@ export class ProductComponent {
         }
       },
       (error: any) => {
+        this.isLoading = false;
         let errorMessage = <any>error;
         console.log(errorMessage);
 
@@ -150,9 +212,9 @@ export class ProductComponent {
   // Método para añadir una fila de variación
   public addVariation(): void {
     const variationGroup = this.fb.group({
-      cmp_uuid: ['', Validators.required],
-      pro_uuid: ['', Validators.required],
-      prov_uuid: ['', Validators.required],
+      cmp_uuid: [this.currentCmpUuid, Validators.required],
+      pro_uuid: [this.productForm.get('pro_uuid')?.value || ''],
+      prov_uuid: [''],
       prov_code: ['', Validators.required],
       prov_sku: ['', Validators.required],
       prov_name: ['', Validators.required],
@@ -177,8 +239,10 @@ export class ProductComponent {
   }
 
   private insertProduct(product: any): void {
+    this.isLoading = true;
     this._productsService.saveProduct(product).subscribe(
       (response: any) => {
+        this.isLoading = false;
         if (response.success) {
           this._messageService.success(
             "Informacion",
@@ -192,6 +256,7 @@ export class ProductComponent {
         }
       },
       (error: any) => {
+        this.isLoading = false;
         let errorMessage = <any>error;
         console.log(errorMessage);
 
@@ -203,8 +268,10 @@ export class ProductComponent {
   }
 
   private updateProduct(product: any): void {
+    this.isLoading = true;
     this._productsService.updateProduct(product).subscribe(
       (response: any) => {
+        this.isLoading = false;
         if (response.success) {
           this._messageService.success(
             "Informacion",
@@ -218,6 +285,7 @@ export class ProductComponent {
         }
       },
       (error: any) => {
+        this.isLoading = false;
         let errorMessage = <any>error;
         console.log(errorMessage);
 
@@ -235,6 +303,25 @@ export class ProductComponent {
       } else {
         this.insertProduct(this.productForm.value);
       }
+    } else {
+      console.warn('Formulario inválido:', this.productForm.value);
+      Object.keys(this.productForm.controls).forEach(key => {
+        const controlErrors = this.productForm.get(key)?.errors;
+        if (controlErrors != null) {
+          console.log('Error en campo ' + key + ':', controlErrors);
+        }
+      });
+      // También chequear el FormArray
+      const variations = this.productVariations;
+      variations.controls.forEach((group, index) => {
+        const g = group as FormGroup;
+        Object.keys(g.controls).forEach(key => {
+          const controlErrors = g.get(key)?.errors;
+          if (controlErrors != null) {
+            console.log('Error en variación ' + index + ' campo ' + key + ':', controlErrors);
+          }
+        });
+      });
     }
   }
 

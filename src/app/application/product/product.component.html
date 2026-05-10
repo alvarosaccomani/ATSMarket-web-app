@@ -29,6 +29,30 @@
                         </nz-form-control>
                     </nz-form-item>
                 </div>
+                <div nz-col [nzXs]="24" [nzMd]="12">
+                    <nz-form-item>
+                        <nz-form-label nzRequired>Rubro</nz-form-label>
+                        <nz-form-control nzErrorTip="Por favor selecciona un rubro">
+                            <nz-select formControlName="itm_uuid" nzPlaceHolder="Selecciona el rubro" nzSize="large">
+                                @for (item of items; track item.itm_uuid) {
+                                    <nz-option [nzValue]="item.itm_uuid" [nzLabel]="item.itm_name"></nz-option>
+                                }
+                            </nz-select>
+                        </nz-form-control>
+                    </nz-form-item>
+                </div>
+                <div nz-col [nzXs]="24" [nzMd]="12">
+                    <nz-form-item>
+                        <nz-form-label nzRequired>Categoría</nz-form-label>
+                        <nz-form-control nzErrorTip="Por favor selecciona una categoría">
+                            <nz-select formControlName="cat_uuid" nzPlaceHolder="Selecciona la categoría" nzSize="large">
+                                @for (cat of categories; track cat.cat_uuid) {
+                                    <nz-option [nzValue]="cat.cat_uuid" [nzLabel]="cat.cat_name"></nz-option>
+                                }
+                            </nz-select>
+                        </nz-form-control>
+                    </nz-form-item>
+                </div>
                 <div nz-col [nzSpan]="24">
                     <nz-form-item style="margin-bottom: 0;">
                         <nz-form-label>Descripción / Notas Internas</nz-form-label>
@@ -127,8 +151,8 @@
                 Cerrar
             </button>
             <button *nzSpaceItem nz-button nzType="primary" nzSize="large" (click)="onSave()"
-                [disabled]="productForm.invalid" style="min-width: 200px;">
-                Guardar Producto
+                [disabled]="productForm.invalid || isLoading" [nzLoading]="isLoading" style="min-width: 200px;">
+                {{ isLoading ? 'Guardando...' : 'Guardar Producto' }}
             </button>
         </nz-space>
     </div>
