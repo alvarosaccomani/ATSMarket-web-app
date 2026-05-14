@@ -15,6 +15,8 @@ import { ApplicationBarComponent } from '@components/application-bar/application
 
 import { SessionService } from '@services/session.service';
 import { UserRolesCompanyService } from '@services/user-roles-company.service';
+import { MenuInterface } from '@interfaces/menu';
+import { MenusService } from '@services/menus.service';
 
 @Component({
   selector: 'app-application-layout',
@@ -43,9 +45,12 @@ export class ApplicationLayoutComponent implements OnInit {
   public activeCompany: any = null;
   public userIdentity: any = null;
 
+  public menuItems: MenuInterface[] = [];
+
   constructor(
     private _sessionService: SessionService,
     private _userRolesCompanyService: UserRolesCompanyService,
+    private _menusService: MenusService,
     private _router: Router
   ) { }
 
@@ -74,6 +79,17 @@ export class ApplicationLayoutComponent implements OnInit {
             this.userRolesCompany = this.groupByCompany(response.data);
           });
       }
+    });
+
+    this.loadMenuTree();
+  }
+
+  private loadMenuTree(): void {
+    this._menusService.getMenuItemsTree().subscribe({
+      next: (res) => {
+        this.menuItems = res.data;
+      },
+      error: (err) => console.error('Error loading menu tree', err)
     });
   }
 

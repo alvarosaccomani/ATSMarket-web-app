@@ -15,75 +15,26 @@
         [nzTrigger]="null">
         <div class="logo"></div>
         <ul nz-menu nzTheme="dark" nzMode="inline">
-            <li nz-menu-item>
-                <a routerLink="analytics" style="color: white;">
-                    <span nz-icon nzType="dashboard"></span>
-                    <span>Panel de Control</span>
-                </a>
-            </li>
-            <li nz-menu-item>
-                <a routerLink="finances">
-                    <span nz-icon nzType="wallet"></span>
-                    <span>Mi Billetera</span>
-                </a>
-            </li>
-            <li nz-submenu nzTitle="Tiendas" nzIcon="shop">
-                <ul>
-                    <li nz-menu-item>
-                        <a [routerLink]="'company/new'">Agregar Nueva</a>
-                    </li>
-                    <li nz-menu-item>
-                        <a [routerLink]="'my-companies'">Listado</a>
-                    </li>
-                </ul>
-            </li>
-            <li nz-submenu nzTitle="Proveedores" nzIcon="team">
-                <ul>
-                    <li nz-menu-item>
-                        <a>Agregar Nuevo</a>
-                    </li>
-                    <li nz-menu-item>
-                        <a routerLink="suppliers">Listado</a>
-                    </li>
-                </ul>
-            </li>
-            <li nz-submenu nzTitle="Productos" nzIcon="appstore">
-                <ul>
-                    <li nz-menu-item>
-                        <a [routerLink]="'product/new'">Agregar Nuevo</a>
-                    </li>
-                    <li nz-menu-item>
-                        <a [routerLink]="'products'">Listado</a>
-                    </li>
-                </ul>
-            </li>
-            <li nz-submenu nzTitle="Ventas / Clientes" nzIcon="shopping-cart">
-                <ul>
-                    <li nz-menu-item>
-                        <a routerLink="orders-received">Pedidos Recibidos</a>
-                    </li>
-                    <li nz-menu-item>
-                        <a routerLink="finances">Gestor Billetera</a>
-                    </li>
-                </ul>
-            </li>
+            <ng-container *ngFor="let item of menuItems">
+                <!-- Simple Menu Item -->
+                <li nz-menu-item *ngIf="(!item.items || item.items.length === 0) && (!item.mnu_route?.includes('company-settings') || activeCompany)"
+                    [routerLink]="item.mnu_route?.includes('company-settings') ? [item.mnu_route, activeCompany?.cmp_uuid] : item.mnu_route">
+                    <span nz-icon [nzType]="item.mnu_icon!" *ngIf="item.mnu_icon"></span>
+                    <span>{{ item.mnu_title }}</span>
+                </li>
 
-            <li nz-submenu nzTitle="Configuración" nzIcon="setting">
-                <ul>
-                    <li nz-menu-item>
-                        <a routerLink="addresses">
-                            <span nz-icon nzType="environment"></span>
-                            Mis Direcciones
-                        </a>
-                    </li>
-                    <li nz-menu-item>Métricas</li>
-                </ul>
-            </li>
-            <li nz-menu-item [routerLink]="['/application/company-settings', activeCompany?.cmp_uuid]"
-                *ngIf="activeCompany">
-                <span nz-icon nzType="setting"></span>
-                <span>Configuración Empresa</span>
-            </li>
+                <!-- Submenu -->
+                <li nz-submenu *ngIf="item.items && item.items.length > 0" [nzTitle]="item.mnu_title!" [nzIcon]="item.mnu_icon!">
+                    <ul>
+                        <li nz-menu-item *ngFor="let child of item.items">
+                            <a [routerLink]="child.mnu_route">
+                                <span nz-icon [nzType]="child.mnu_icon!" *ngIf="child.mnu_icon"></span>
+                                <span>{{ child.mnu_title }}</span>
+                            </a>
+                        </li>
+                    </ul>
+                </li>
+            </ng-container>
         </ul>
     </nz-sider>
     <nz-layout>
