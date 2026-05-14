@@ -149,4 +149,10 @@ export class MenuItemsComponent implements OnInit {
       }
     });
   }
+
+  public getParentTitle(parentUuid: string | null): string {
+    if (!parentUuid) return 'Raíz';
+    const parent = this.allMenus.find(m => m.mnu_uuid === parentUuid);
+    return parent ? parent.mnu_title || 'Sin título' : 'Desconocido';
+  }
 }

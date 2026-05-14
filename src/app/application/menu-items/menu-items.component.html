@@ -30,11 +30,12 @@
             [nzScroll]="{ y: 'calc(100vh - 310px)' }">
             <thead>
                 <tr>
-                    <th nzWidth="30%">Título / Icono</th>
-                    <th nzWidth="25%">Ruta</th>
+                    <th nzWidth="25%">Título / Icono</th>
+                    <th nzWidth="20%">Ruta</th>
+                    <th nzWidth="15%">Padre</th>
                     <th nzWidth="10%">Orden</th>
                     <th nzWidth="15%">Estado</th>
-                    <th nzWidth="10%">Acciones</th>
+                    <th nzWidth="15%">Acciones</th>
                 </tr>
             </thead>
             <tbody>
@@ -51,6 +52,11 @@
                     </td>
                     <td>
                         <code class="route-tag">{{ data.mnu_route || '(Sin ruta)' }}</code>
+                    </td>
+                    <td>
+                        <nz-tag [nzColor]="data.mnu_parent_uuid ? 'purple' : 'default'">
+                            {{ getParentTitle(data.mnu_parent_uuid) }}
+                        </nz-tag>
                     </td>
                     <td>
                         <div style="display: flex; align-items: center; gap: 8px;">
