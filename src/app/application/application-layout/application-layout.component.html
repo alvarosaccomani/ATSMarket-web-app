@@ -16,22 +16,24 @@
         <div class="logo"></div>
         <ul nz-menu nzTheme="dark" nzMode="inline">
             <ng-container *ngFor="let item of menuItems">
-                <!-- Simple Menu Item -->
-                <li nz-menu-item *ngIf="(!item.items || item.items.length === 0) && (!item.mnu_route?.includes('company-settings') || activeCompany)"
-                    [routerLink]="item.mnu_route?.includes('company-settings') ? [item.mnu_route, activeCompany?.cmp_uuid] : item.mnu_route">
+                <!-- Simple Menu Item (Level 1) -->
+                <li nz-menu-item *ngIf="(!item.items || item.items.length === 0) && (!item.mnu_showifcompanyactive || activeCompany)"
+                    [routerLink]="item.mnu_showifcompanyactive ? [item.mnu_route, activeCompany?.cmp_uuid] : item.mnu_route">
                     <span nz-icon [nzType]="item.mnu_icon!" *ngIf="item.mnu_icon"></span>
                     <span>{{ item.mnu_title }}</span>
                 </li>
 
-                <!-- Submenu -->
-                <li nz-submenu *ngIf="item.items && item.items.length > 0" [nzTitle]="item.mnu_title!" [nzIcon]="item.mnu_icon!">
+                <!-- Submenu (Level 1) -->
+                <li nz-submenu *ngIf="item.items && item.items.length > 0 && (!item.mnu_showifcompanyactive || activeCompany)" 
+                    [nzTitle]="item.mnu_title!" [nzIcon]="item.mnu_icon!">
                     <ul>
-                        <li nz-menu-item *ngFor="let child of item.items">
-                            <a [routerLink]="child.mnu_route">
+                        <ng-container *ngFor="let child of item.items">
+                            <li nz-menu-item *ngIf="!child.mnu_showifcompanyactive || activeCompany"
+                                [routerLink]="child.mnu_showifcompanyactive ? [child.mnu_route, activeCompany?.cmp_uuid] : child.mnu_route">
                                 <span nz-icon [nzType]="child.mnu_icon!" *ngIf="child.mnu_icon"></span>
                                 <span>{{ child.mnu_title }}</span>
-                            </a>
-                        </li>
+                            </li>
+                        </ng-container>
                     </ul>
                 </li>
             </ng-container>

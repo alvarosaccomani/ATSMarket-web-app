@@ -8,6 +8,7 @@ export interface MenuInterface {
     mnu_order: number | null,
     mnu_itemactive: boolean | null,
     mnu_active: boolean | null,
+    mnu_showifcompanyactive: boolean | null,
     mnu_createdat: Date | null,
     mnu_updatedat: Date | null,
     items?: MenuInterface[]

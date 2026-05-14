@@ -78,6 +78,7 @@ export class MenuItemComponent implements OnInit {
       mnu_route: [null],
       mnu_order: [0, [Validators.required]],
       mnu_parent_uuid: [null],
+      mnu_showifcompanyactive: [false],
       mnu_itemactive: [true],
       mnu_active: [true]
     });

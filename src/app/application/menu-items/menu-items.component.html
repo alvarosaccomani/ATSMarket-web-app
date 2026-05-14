@@ -30,10 +30,11 @@
             [nzScroll]="{ y: 'calc(100vh - 310px)' }">
             <thead>
                 <tr>
-                    <th nzWidth="25%">Título / Icono</th>
-                    <th nzWidth="20%">Ruta</th>
+                    <th nzWidth="20%">Título / Icono</th>
+                    <th nzWidth="15%">Ruta</th>
                     <th nzWidth="15%">Padre</th>
                     <th nzWidth="10%">Orden</th>
+                    <th nzWidth="10%">Solo Tienda</th>
                     <th nzWidth="15%">Estado</th>
                     <th nzWidth="15%">Acciones</th>
                 </tr>
@@ -70,6 +71,10 @@
                                 </button>
                             </div>
                         </div>
+                    </td>
+                    <td>
+                        <span nz-icon [nzType]="data.mnu_showifcompanyactive ? 'check-circle' : 'minus-circle'" 
+                            [style.color]="data.mnu_showifcompanyactive ? '#52c41a' : '#d9d9d9'"></span>
                     </td>
                     <td>
                         <nz-tag [nzColor]="data.mnu_active ? 'success' : 'error'">

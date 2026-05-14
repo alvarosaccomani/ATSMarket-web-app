@@ -74,7 +74,16 @@
                 </div>
 
                 <!-- Estados -->
-                <div nz-col [nzSpan]="12">
+                <div nz-col [nzSpan]="8">
+                    <nz-form-item>
+                        <nz-form-label>Depende de Tienda Activa</nz-form-label>
+                        <nz-form-control>
+                            <nz-switch formControlName="mnu_showifcompanyactive"></nz-switch>
+                            <span style="margin-left: 8px;">{{ menuForm.get('mnu_showifcompanyactive')?.value ? 'Sí' : 'No' }}</span>
+                        </nz-form-control>
+                    </nz-form-item>
+                </div>
+                <div nz-col [nzSpan]="8">
                     <nz-form-item>
                         <nz-form-label>Estado Ítem</nz-form-label>
                         <nz-form-control>
@@ -83,7 +92,7 @@
                         </nz-form-control>
                     </nz-form-item>
                 </div>
-                <div nz-col [nzSpan]="12">
+                <div nz-col [nzSpan]="8">
                     <nz-form-item>
                         <nz-form-label>Estado Global</nz-form-label>
                         <nz-form-control>
