@@ -1,0 +1,62 @@
+.menu-item-wrapper {
+    padding: 24px;
+    background-color: #f7f9fc;
+    min-height: calc(100vh - 64px);
+    display: flex;
+    flex-direction: column;
+
+    .header-actions {
+        flex-shrink: 0;
+        display: flex;
+        justify-content: space-between;
+        align-items: flex-end;
+        margin-bottom: 24px;
+
+        .header-titles {
+            .back-btn {
+                padding-left: 0;
+                margin-bottom: 8px;
+                color: #8c8c8c;
+                display: flex;
+                align-items: center;
+                gap: 4px;
+
+                &:hover {
+                    color: #1890ff;
+                }
+            }
+
+            .page-title {
+                font-size: 24px;
+                font-weight: 600;
+                color: #262626;
+                margin: 0;
+            }
+
+            .page-subtitle {
+                font-size: 14px;
+                color: #8c8c8c;
+                margin: 4px 0 0 0;
+
+                strong {
+                    color: #595959;
+                }
+            }
+        }
+    }
+
+    .premium-card {
+        border-radius: 8px;
+        box-shadow: 0 2px 8px rgba(0, 0, 0, 0.05);
+        max-width: 900px;
+        
+        ::ng-deep .ant-card-body {
+            padding: 24px;
+        }
+    }
+
+    .form-actions {
+        border-top: 1px solid #f0f0f0;
+        padding-top: 24px;
+    }
+}

@@ -1,1 +1,105 @@
-<p>menu-item works!</p>
+<div class="menu-item-wrapper">
+    <div class="header-actions">
+        <div class="header-titles">
+            <button nz-button nzType="text" (click)="onBack()" class="back-btn">
+                <span nz-icon nzType="arrow-left"></span> Volver
+            </button>
+            <h1 class="page-title">{{ isNew ? 'Nuevo Ítem de Menú' : 'Editar Ítem de Menú' }}</h1>
+            <p class="page-subtitle" *ngIf="!isNew && menu">ID: <strong>{{ menu.mnu_uuid }}</strong></p>
+        </div>
+    </div>
+
+    <nz-card class="premium-card" [nzBordered]="false">
+        <form nz-form [formGroup]="menuForm" (ngSubmit)="onSave()" nzLayout="vertical">
+            <div nz-row [nzGutter]="24">
+                <!-- Título y Icono -->
+                <div nz-col [nzSpan]="12">
+                    <nz-form-item>
+                        <nz-form-label nzRequired>Título del Menú</nz-form-label>
+                        <nz-form-control nzErrorTip="El título es obligatorio">
+                            <input nz-input formControlName="mnu_title" placeholder="Ej: Dashboard, Productos..." />
+                        </nz-form-control>
+                    </nz-form-item>
+                </div>
+                <div nz-col [nzSpan]="12">
+                    <nz-form-item>
+                        <nz-form-label>Icono (NG-ZORRO)</nz-form-label>
+                        <nz-form-control>
+                            <nz-input-group [nzPrefix]="prefixIcon">
+                                <input nz-input formControlName="mnu_icon" placeholder="Ej: dashboard, shop, setting..." />
+                            </nz-input-group>
+                            <ng-template #prefixIcon>
+                                <span nz-icon [nzType]="menuForm.get('mnu_icon')?.value || 'question'"></span>
+                            </ng-template>
+                        </nz-form-control>
+                    </nz-form-item>
+                </div>
+
+                <!-- Ruta y Orden -->
+                <div nz-col [nzSpan]="16">
+                    <nz-form-item>
+                        <nz-form-label>Ruta (Ruta de Angular)</nz-form-label>
+                        <nz-form-control>
+                            <input nz-input formControlName="mnu_route" placeholder="Ej: analytics, products/list..." />
+                        </nz-form-control>
+                    </nz-form-item>
+                </div>
+                <div nz-col [nzSpan]="8">
+                    <nz-form-item>
+                        <nz-form-label nzRequired>Orden de Aparición</nz-form-label>
+                        <nz-form-control>
+                            <nz-input-number formControlName="mnu_order" [nzMin]="0" [nzStep]="1" style="width: 100%;"></nz-input-number>
+                        </nz-form-control>
+                    </nz-form-item>
+                </div>
+
+                <!-- Padre y Descripción -->
+                <div nz-col [nzSpan]="12">
+                    <nz-form-item>
+                        <nz-form-label>Menú Padre</nz-form-label>
+                        <nz-form-control>
+                            <nz-select formControlName="mnu_parent_uuid" nzAllowClear nzPlaceHolder="Seleccionar menú raíz si aplica">
+                                <nz-option *ngFor="let p of parentMenus" [nzLabel]="p.mnu_title!" [nzValue]="p.mnu_uuid"></nz-option>
+                            </nz-select>
+                        </nz-form-control>
+                    </nz-form-item>
+                </div>
+                <div nz-col [nzSpan]="12">
+                    <nz-form-item>
+                        <nz-form-label>Descripción</nz-form-label>
+                        <nz-form-control>
+                            <input nz-input formControlName="mnu_description" placeholder="Breve descripción interna" />
+                        </nz-form-control>
+                    </nz-form-item>
+                </div>
+
+                <!-- Estados -->
+                <div nz-col [nzSpan]="12">
+                    <nz-form-item>
+                        <nz-form-label>Estado Ítem</nz-form-label>
+                        <nz-form-control>
+                            <nz-switch formControlName="mnu_itemactive"></nz-switch>
+                            <span style="margin-left: 8px;">{{ menuForm.get('mnu_itemactive')?.value ? 'Visible' : 'Oculto' }}</span>
+                        </nz-form-control>
+                    </nz-form-item>
+                </div>
+                <div nz-col [nzSpan]="12">
+                    <nz-form-item>
+                        <nz-form-label>Estado Global</nz-form-label>
+                        <nz-form-control>
+                            <nz-switch formControlName="mnu_active"></nz-switch>
+                            <span style="margin-left: 8px;">{{ menuForm.get('mnu_active')?.value ? 'Activo' : 'Inactivo' }}</span>
+                        </nz-form-control>
+                    </nz-form-item>
+                </div>
+            </div>
+
+            <div class="form-actions" style="margin-top: 24px; text-align: right;">
+                <button nz-button type="button" (click)="onBack()" style="margin-right: 8px;">Cancelar</button>
+                <button nz-button nzType="primary" [nzLoading]="isSaving" [disabled]="menuForm.invalid">
+                    <span nz-icon nzType="save"></span> Guardar Cambios
+                </button>
+            </div>
+        </form>
+    </nz-card>
+</div>
