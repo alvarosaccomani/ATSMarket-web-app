@@ -2,6 +2,7 @@ import { Routes } from '@angular/router';
 
 import { ApplicationLayoutComponent } from './application-layout/application-layout.component';
 import { MenuItemsComponent } from './menu-items/menu-items.component';
+import { MenuItemComponent } from './menu-item/menu-item.component';
 import { MyCompaniesComponent } from './my-companies/my-companies.component';
 import { CompanyComponent } from './company/company.component';
 import { CompanySettingsComponent } from './company-settings/company-settings.component';
@@ -33,6 +34,7 @@ export const APPLICATION_ROUTES: Routes = [
         component: ApplicationLayoutComponent,
         children: [
             { path: 'menu-items', component: MenuItemsComponent },
+            { path: 'menu-item/:mnu_uuid', component: MenuItemComponent },
             { path: 'my-companies', component: MyCompaniesComponent },
             { path: 'company/:cmp_uuid', component: CompanyComponent },
             { path: 'company-settings/:cmp_uuid', component: CompanySettingsComponent },
