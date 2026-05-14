@@ -7,7 +7,7 @@ import { MenuResults } from '../interfaces/menu';
 @Injectable({
   providedIn: 'root'
 })
-export class MenusService {
+export class AppMenusService {
 
   constructor(
     private _http: HttpClient

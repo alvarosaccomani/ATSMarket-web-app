@@ -14,7 +14,7 @@ import { NzSwitchModule } from 'ng-zorro-antd/switch';
 import { NzGridModule } from 'ng-zorro-antd/grid';
 import { NzInputNumberModule } from 'ng-zorro-antd/input-number';
 
-import { MenusService } from '@services/menus.service';
+import { AppMenusService } from '@services/app-menus.service';
 import { MessageService } from '@services/message.service';
 import { MenuInterface } from '@interfaces/menu';
 
@@ -52,7 +52,7 @@ export class MenuItemComponent implements OnInit {
     private _router: Router,
     private _location: Location,
     private _fb: FormBuilder,
-    private _menusService: MenusService,
+    private _appMmenusService: AppMenusService,
     private _messageService: MessageService
   ) { }
 
@@ -84,7 +84,7 @@ export class MenuItemComponent implements OnInit {
   }
 
   private loadMenu(): void {
-    this._menusService.getMenuById(this.mnu_uuid).subscribe({
+    this._appMmenusService.getMenuById(this.mnu_uuid).subscribe({
       next: (res) => {
         this.menu = res.data;
         this.menuForm.patchValue(res.data);
@@ -97,7 +97,7 @@ export class MenuItemComponent implements OnInit {
   }
 
   private loadParentMenus(): void {
-    this._menusService.getMenus().subscribe({
+    this._appMmenusService.getMenus().subscribe({
       next: (res) => {
         // Filtramos para no ponerse a sí mismo como padre si estamos editando
         this.parentMenus = res.data.filter(m => m.mnu_uuid !== this.mnu_uuid);
@@ -112,7 +112,7 @@ export class MenuItemComponent implements OnInit {
       const data = this.menuForm.value;
 
       if (this.isNew) {
-        this._menusService.saveMenu(data).subscribe({
+        this._appMmenusService.saveMenu(data).subscribe({
           next: (res) => {
             this.isSaving = false;
             this._messageService.success('¡Éxito!', 'Ítem de menú creado correctamente.');
@@ -124,7 +124,7 @@ export class MenuItemComponent implements OnInit {
           }
         });
       } else {
-        this._menusService.updateMenu(this.mnu_uuid, data).subscribe({
+        this._appMmenusService.updateMenu(this.mnu_uuid, data).subscribe({
           next: (res) => {
             this.isSaving = false;
             this._messageService.success('¡Éxito!', 'Ítem de menú actualizado correctamente.');

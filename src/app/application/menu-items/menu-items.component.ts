@@ -18,7 +18,7 @@ import { NzAvatarModule } from 'ng-zorro-antd/avatar';
 import { NzToolTipModule } from 'ng-zorro-antd/tooltip';
 
 import { MenuInterface } from '@interfaces/menu';
-import { MenusService } from '@services/menus.service';
+import { AppMenusService } from '@services/app-menus.service';
 import { MessageService } from '@services/message.service';
 
 @Component({
@@ -57,7 +57,7 @@ export class MenuItemsComponent implements OnInit {
   private allMenus: MenuInterface[] = [];
 
   constructor(
-    private _menusService: MenusService,
+    private _appMmenusService: AppMenusService,
     private _messageService: MessageService
   ) { }
 
@@ -65,7 +65,7 @@ export class MenuItemsComponent implements OnInit {
     // Combinamos la carga de datos con el filtro de búsqueda
     this.filteredMenus$ = combineLatest([
       this.refreshData$.pipe(
-        switchMap(() => this._menusService.getMenus()),
+        switchMap(() => this._appMmenusService.getMenus()),
         tap(results => this.allMenus = results.data)
       ),
       this.searchTerm$.asObservable()
@@ -103,7 +103,7 @@ export class MenuItemsComponent implements OnInit {
       '¿Estás seguro?',
       `Esta acción eliminará permanentemente el ítem de menú: ${item.mnu_title}`,
       () => {
-        this._menusService.deleteMenu(item.mnu_uuid!).subscribe({
+        this._appMmenusService.deleteMenu(item.mnu_uuid!).subscribe({
           next: () => {
             this._messageService.success('¡Eliminado!', 'El ítem de menú ha sido eliminado correctamente.');
             this.closeDrawer();
@@ -136,8 +136,8 @@ export class MenuItemsComponent implements OnInit {
     const newTargetOrder = currentOrder === targetOrder ? targetOrder + (direction === 'up' ? 1 : -1) : currentOrder;
 
     // Actualizamos ambos ítems
-    const update1 = this._menusService.updateMenu(item.mnu_uuid!, { mnu_order: newCurrentOrder });
-    const update2 = this._menusService.updateMenu(targetItem.mnu_uuid!, { mnu_order: newTargetOrder });
+    const update1 = this._appMmenusService.updateMenu(item.mnu_uuid!, { mnu_order: newCurrentOrder });
+    const update2 = this._appMmenusService.updateMenu(targetItem.mnu_uuid!, { mnu_order: newTargetOrder });
 
     combineLatest([update1, update2]).subscribe({
       next: () => {

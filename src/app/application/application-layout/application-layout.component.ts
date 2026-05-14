@@ -16,7 +16,7 @@ import { ApplicationBarComponent } from '@components/application-bar/application
 import { SessionService } from '@services/session.service';
 import { UserRolesCompanyService } from '@services/user-roles-company.service';
 import { MenuInterface } from '@interfaces/menu';
-import { MenusService } from '@services/menus.service';
+import { AppMenusService } from '@services/app-menus.service';
 
 @Component({
   selector: 'app-application-layout',
@@ -50,7 +50,7 @@ export class ApplicationLayoutComponent implements OnInit {
   constructor(
     private _sessionService: SessionService,
     private _userRolesCompanyService: UserRolesCompanyService,
-    private _menusService: MenusService,
+    private _appMmenusService: AppMenusService,
     private _router: Router
   ) { }
 
@@ -85,7 +85,7 @@ export class ApplicationLayoutComponent implements OnInit {
   }
 
   private loadMenuTree(): void {
-    this._menusService.getMenuItemsTree().subscribe({
+    this._appMmenusService.getMenuItemsTree().subscribe({
       next: (res) => {
         this.menuItems = res.data;
       },
