@@ -54,4 +54,13 @@ export class MenusService {
     const headers = new HttpHeaders().set('content-type', 'application/json');
     return this._http.delete<{ data: any }>(`${environment.apiUrl}menu/${mnu_uuid}`, { headers });
   }
+
+  /**
+   * Obtiene los ítems del menú en formato de árbol.
+   */
+  public getMenuItemsTree(): Observable<{ data: any[] }> {
+    const headers = new HttpHeaders().set('content-type', 'application/json');
+    let params = new HttpParams();
+    return this._http.get<{ data: any[] }>(`${environment.apiUrl}menu-tree`, { headers, params });
+  }
 }
