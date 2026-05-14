@@ -9,5 +9,6 @@ export interface MenuInterface {
     mnu_itemactive: boolean | null,
     mnu_active: boolean | null,
     mnu_createdat: Date | null,
-    mnu_updatedat: Date | null
+    mnu_updatedat: Date | null,
+    items?: MenuInterface[]
 }
