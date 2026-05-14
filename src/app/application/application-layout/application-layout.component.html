@@ -98,10 +98,9 @@
             </div>
         </nz-header>
         <nz-content>
-            <!-- <nz-breadcrumb>
-                <nz-breadcrumb-item>User</nz-breadcrumb-item>
-                <nz-breadcrumb-item>Bill</nz-breadcrumb-item>
-            </nz-breadcrumb> -->
+            <nz-breadcrumb style="margin:16px 0;">
+                <nz-breadcrumb-item *ngFor="let crumb of breadcrumbs">{{ crumb }}</nz-breadcrumb-item>
+            </nz-breadcrumb>
             <router-outlet></router-outlet>
         </nz-content>
         <nz-footer>Implement By ATS</nz-footer>

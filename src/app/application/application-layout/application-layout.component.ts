@@ -1,6 +1,7 @@
 import { Component, OnInit } from '@angular/core';
-import { RouterOutlet, RouterLink, Router } from '@angular/router';
+import { RouterOutlet, RouterLink, Router, NavigationEnd } from '@angular/router';
 import { CommonModule } from '@angular/common';
+import { filter } from 'rxjs';
 
 import { NzLayoutModule } from 'ng-zorro-antd/layout';
 import { SideBarComponent } from '@components/side-bar/side-bar.component';
@@ -46,6 +47,7 @@ export class ApplicationLayoutComponent implements OnInit {
   public userIdentity: any = null;
 
   public menuItems: MenuInterface[] = [];
+  public breadcrumbs: string[] = ['Inicio'];
 
   constructor(
     private _sessionService: SessionService,
@@ -82,15 +84,52 @@ export class ApplicationLayoutComponent implements OnInit {
     });
 
     this.loadMenuTree();
+
+    // Suscribirse a cambios de ruta para breadcrumbs
+    this._router.events.pipe(
+      filter(event => event instanceof NavigationEnd)
+    ).subscribe((event: any) => {
+      this.updateBreadcrumbs(event.urlAfterRedirects);
+    });
   }
 
   private loadMenuTree(): void {
     this._appMmenusService.getMenuItemsTree().subscribe({
       next: (res) => {
         this.menuItems = res.data;
+        // Una vez cargado el menú, inicializamos breadcrumbs
+        this.updateBreadcrumbs(this._router.url);
       },
-      error: (err) => console.error('Error loading menu tree', err)
+      error: (err) => {
+        console.error('Error al cargar el menú:', err);
+      }
     });
+  }
+
+  private updateBreadcrumbs(url: string): void {
+    const path: string[] = ['ATS Market']; // Nombre base
+    
+    // Buscamos en el árbol de menús
+    for (const item of this.menuItems) {
+      // Caso 1: El ítem padre coincide
+      if (item.mnu_route && url.includes(item.mnu_route)) {
+        path.push(item.mnu_title || '');
+        break;
+      }
+      
+      // Caso 2: Uno de los hijos coincide
+      if (item.items && item.items.length > 0) {
+        const child = item.items.find(c => c.mnu_route && url.includes(c.mnu_route));
+        if (child) {
+          path.push(item.mnu_title || '');
+          path.push(child.mnu_title || '');
+          break;
+        }
+      }
+    }
+
+    // Si no se encontró nada (ej: dashboard), podrías añadir lógica por defecto o dejar solo el base
+    this.breadcrumbs = path;
   }
 
   public groupByCompany(data: any[]): any[] {
