@@ -24,6 +24,30 @@ export class MenusService {
   }
 
   /**
+   * Obtiene un menú por su UUID.
+   */
+  public getMenuById(mnu_uuid: string): Observable<{ data: any }> {
+    const headers = new HttpHeaders().set('content-type', 'application/json');
+    return this._http.get<{ data: any }>(`${environment.apiUrl}menu/${mnu_uuid}`, { headers });
+  }
+
+  /**
+   * Crea un nuevo menú.
+   */
+  public saveMenu(menu: any): Observable<{ data: any }> {
+    const headers = new HttpHeaders().set('content-type', 'application/json');
+    return this._http.post<{ data: any }>(`${environment.apiUrl}menu`, menu, { headers });
+  }
+
+  /**
+   * Actualiza un menú existente.
+   */
+  public updateMenu(mnu_uuid: string, menu: any): Observable<{ data: any }> {
+    const headers = new HttpHeaders().set('content-type', 'application/json');
+    return this._http.put<{ data: any }>(`${environment.apiUrl}menu/${mnu_uuid}`, menu, { headers });
+  }
+
+  /**
    * Elimina un menú.
    */
   public deleteMenu(mnu_uuid: string): Observable<{ data: any }> {
