@@ -46,6 +46,18 @@ export class MenuItemComponent implements OnInit {
   public menuForm!: FormGroup;
   public isSaving: boolean = false;
   public isNew: boolean = false;
+  public availableIcons: string[] = [
+    'dashboard', 'setting', 'user', 'team', 'appstore', 'shopping-cart', 'shop', 
+    'container', 'database', 'file-text', 'lock', 'mail', 'bell', 'home', 
+    'tags', 'unordered-list', 'ordered-list', 'search', 'plus', 'edit', 
+    'delete', 'info-circle', 'question-circle', 'exclamation-circle', 
+    'check-circle', 'close-circle', 'pie-chart', 'line-chart', 'bar-chart',
+    'audit', 'bank', 'barcode', 'book', 'build', 'camera', 'car', 'cloud', 
+    'customer-service', 'export', 'gift', 'heart', 'idcard', 'import', 
+    'insurance', 'money-collect', 'notification', 'phone', 'printer', 
+    'project', 'rest', 'safety-certificate', 'save', 'schedule', 'tool', 
+    'wallet', 'reconciliation', 'profile'
+  ];
 
   constructor(
     private _route: ActivatedRoute,

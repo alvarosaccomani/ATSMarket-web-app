@@ -25,12 +25,12 @@
                     <nz-form-item>
                         <nz-form-label>Icono (NG-ZORRO)</nz-form-label>
                         <nz-form-control>
-                            <nz-input-group [nzPrefix]="prefixIcon">
-                                <input nz-input formControlName="mnu_icon" placeholder="Ej: dashboard, shop, setting..." />
-                            </nz-input-group>
-                            <ng-template #prefixIcon>
-                                <span nz-icon [nzType]="menuForm.get('mnu_icon')?.value || 'question'"></span>
-                            </ng-template>
+                            <nz-select formControlName="mnu_icon" nzShowSearch nzAllowClear nzPlaceHolder="Selecciona un icono">
+                                <nz-option *ngFor="let icon of availableIcons" [nzValue]="icon" [nzLabel]="icon" nzCustomContent>
+                                    <span nz-icon [nzType]="icon" style="margin-right: 8px;"></span>
+                                    <span>{{ icon }}</span>
+                                </nz-option>
+                            </nz-select>
                         </nz-form-control>
                     </nz-form-item>
                 </div>
