@@ -2,7 +2,7 @@ import { Component, OnInit } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { FormsModule } from '@angular/forms';
 import { RouterModule } from '@angular/router';
-import { Observable, map, combineLatest, BehaviorSubject, switchMap } from 'rxjs';
+import { Observable, map, combineLatest, BehaviorSubject, switchMap, tap } from 'rxjs';
 
 // NG-ZORRO
 import { NzTableModule } from 'ng-zorro-antd/table';
@@ -54,6 +54,8 @@ export class MenuItemsComponent implements OnInit {
   public selectedMenu: MenuInterface | null = null;
   public isDrawerVisible = false;
 
+  private allMenus: MenuInterface[] = [];
+
   constructor(
     private _menusService: MenusService,
     private _messageService: MessageService
@@ -63,7 +65,8 @@ export class MenuItemsComponent implements OnInit {
     // Combinamos la carga de datos con el filtro de búsqueda
     this.filteredMenus$ = combineLatest([
       this.refreshData$.pipe(
-        switchMap(() => this._menusService.getMenus())
+        switchMap(() => this._menusService.getMenus()),
+        tap(results => this.allMenus = results.data)
       ),
       this.searchTerm$.asObservable()
     ]).pipe(
@@ -100,9 +103,7 @@ export class MenuItemsComponent implements OnInit {
       '¿Estás seguro?',
       `Esta acción eliminará permanentemente el ítem de menú: ${item.mnu_title}`,
       () => {
-        // Asumiendo que existe el método deleteMenu en el servicio (siguiendo el patrón)
-        // Si no existe, fallará, pero el usuario pidió seguir el modelo de global-items
-        (this._menusService as any).deleteMenu(item.mnu_uuid).subscribe({
+        this._menusService.deleteMenu(item.mnu_uuid!).subscribe({
           next: () => {
             this._messageService.success('¡Eliminado!', 'El ítem de menú ha sido eliminado correctamente.');
             this.closeDrawer();
@@ -115,5 +116,37 @@ export class MenuItemsComponent implements OnInit {
         });
       }
     );
+  }
+
+  public moveItem(item: MenuInterface, direction: 'up' | 'down'): void {
+    const currentIndex = this.allMenus.findIndex(m => m.mnu_uuid === item.mnu_uuid);
+    if (currentIndex === -1) return;
+
+    const targetIndex = direction === 'up' ? currentIndex - 1 : currentIndex + 1;
+    if (targetIndex < 0 || targetIndex >= this.allMenus.length) return;
+
+    const targetItem = this.allMenus[targetIndex];
+
+    // Intercambiamos los órdenes
+    const currentOrder = item.mnu_order || 0;
+    const targetOrder = targetItem.mnu_order || 0;
+
+    // Si los órdenes son iguales, forzamos una diferencia
+    const newCurrentOrder = targetOrder;
+    const newTargetOrder = currentOrder === targetOrder ? targetOrder + (direction === 'up' ? 1 : -1) : currentOrder;
+
+    // Actualizamos ambos ítems
+    const update1 = this._menusService.updateMenu(item.mnu_uuid!, { mnu_order: newCurrentOrder });
+    const update2 = this._menusService.updateMenu(targetItem.mnu_uuid!, { mnu_order: newTargetOrder });
+
+    combineLatest([update1, update2]).subscribe({
+      next: () => {
+        this.refreshData$.next();
+      },
+      error: (err) => {
+        this._messageService.error('Error', 'No se pudo actualizar el orden.');
+        console.error(err);
+      }
+    });
   }
 }

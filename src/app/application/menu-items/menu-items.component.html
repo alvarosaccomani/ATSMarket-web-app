@@ -53,7 +53,17 @@
                         <code class="route-tag">{{ data.mnu_route || '(Sin ruta)' }}</code>
                     </td>
                     <td>
-                        <nz-tag nzColor="blue">{{ data.mnu_order }}</nz-tag>
+                        <div style="display: flex; align-items: center; gap: 8px;">
+                            <nz-tag nzColor="blue">{{ data.mnu_order }}</nz-tag>
+                            <div style="display: flex; flex-direction: column;">
+                                <button nz-button nzType="text" nzSize="small" (click)="$event.stopPropagation(); moveItem(data, 'up')" style="height: 14px; line-height: 1;">
+                                    <span nz-icon nzType="caret-up" style="font-size: 10px;"></span>
+                                </button>
+                                <button nz-button nzType="text" nzSize="small" (click)="$event.stopPropagation(); moveItem(data, 'down')" style="height: 14px; line-height: 1;">
+                                    <span nz-icon nzType="caret-down" style="font-size: 10px;"></span>
+                                </button>
+                            </div>
+                        </div>
                     </td>
                     <td>
                         <nz-tag [nzColor]="data.mnu_active ? 'success' : 'error'">
