@@ -1,1 +1,112 @@
-<p>menu-items works!</p>
+<div class="items-dashboard-wrapper">
+    <div class="dashboard-header">
+        <div class="header-titles">
+            <h1 class="page-title">Gestión de Menús</h1>
+            <p class="page-subtitle">Configuración dinámica de la navegación del sistema.</p>
+        </div>
+
+        <div class="header-actions">
+            <nz-input-group [nzPrefix]="prefixIconSearch" nzSize="large" style="width: 320px; margin-right: 16px;">
+                <input type="text" nz-input placeholder="Buscar ítem de menú..." 
+                    (input)="onSearch(txtSearch.value)" #txtSearch />
+            </nz-input-group>
+
+            <button nz-button nzType="primary" nzSize="large" [routerLink]="['/application/menu-item/new']">
+                <span nz-icon nzType="plus"></span> Nuevo Ítem
+            </button>
+
+            <ng-template #prefixIconSearch>
+                <span nz-icon nzType="search"></span>
+            </ng-template>
+        </div>
+    </div>
+
+    <nz-card class="premium-card" [nzBordered]="false">
+        <nz-table 
+            #menuTable 
+            [nzData]="(filteredMenus$ | async) || []" 
+            nzSize="middle" 
+            [nzPageSize]="20"
+            [nzScroll]="{ y: 'calc(100vh - 310px)' }">
+            <thead>
+                <tr>
+                    <th nzWidth="30%">Título / Icono</th>
+                    <th nzWidth="25%">Ruta</th>
+                    <th nzWidth="10%">Orden</th>
+                    <th nzWidth="15%">Estado</th>
+                    <th nzWidth="10%">Acciones</th>
+                </tr>
+            </thead>
+            <tbody>
+                <tr *ngFor="let data of menuTable.data" class="clickable-row" (click)="openMenuDetail(data)">
+                    <td>
+                        <div class="item-cell">
+                            <nz-avatar [nzIcon]="data.mnu_icon || 'menu'"
+                                style="background-color: #f0f5ff; border: 1px solid #adc6ff; color: #2f54eb;"></nz-avatar>
+                            <div class="item-info">
+                                <span class="item-name">{{ data.mnu_title }}</span>
+                                <span class="item-uuid">UUID: {{ data.mnu_uuid?.substring(0,8) }}</span>
+                            </div>
+                        </div>
+                    </td>
+                    <td>
+                        <code class="route-tag">{{ data.mnu_route || '(Sin ruta)' }}</code>
+                    </td>
+                    <td>
+                        <nz-tag nzColor="blue">{{ data.mnu_order }}</nz-tag>
+                    </td>
+                    <td>
+                        <nz-tag [nzColor]="data.mnu_active ? 'success' : 'error'">
+                            {{ data.mnu_active ? 'Activo' : 'Inactivo' }}
+                        </nz-tag>
+                    </td>
+                    <td>
+                        <button nz-button nzType="link" (click)="$event.stopPropagation(); openMenuDetail(data)">Detalles</button>
+                    </td>
+                </tr>
+            </tbody>
+        </nz-table>
+    </nz-card>
+</div>
+
+<!-- Drawer de Detalles -->
+<nz-drawer [nzVisible]="isDrawerVisible" nzPlacement="right" nzTitle="Detalle de Ítem de Menú" [nzWidth]="'500px'" (nzOnClose)="closeDrawer()">
+    <ng-container *nzDrawerContent>
+        <div *ngIf="selectedMenu" class="drawer-content-wrapper">
+            <div class="profile-header">
+                <nz-avatar [nzSize]="64" [nzIcon]="selectedMenu.mnu_icon || 'menu'" style="background-color: #fafafa; border: 1px solid #e8e8e8; color: #1890ff;"></nz-avatar>
+                <div class="profile-header-info">
+                    <h2>{{ selectedMenu.mnu_title }}</h2>
+                    <span style="color: #8c8c8c;">ID: {{ selectedMenu.mnu_uuid }}</span>
+                </div>
+            </div>
+
+            <nz-divider></nz-divider>
+
+            <nz-descriptions nzTitle="Configuración" [nzColumn]="1" nzSize="small">
+                <nz-descriptions-item nzTitle="Título">{{ selectedMenu.mnu_title }}</nz-descriptions-item>
+                <nz-descriptions-item nzTitle="Ruta">
+                    <code>{{ selectedMenu.mnu_route || 'N/A' }}</code>
+                </nz-descriptions-item>
+                <nz-descriptions-item nzTitle="Icono">{{ selectedMenu.mnu_icon || 'N/A' }}</nz-descriptions-item>
+                <nz-descriptions-item nzTitle="Orden">{{ selectedMenu.mnu_order }}</nz-descriptions-item>
+                <nz-descriptions-item nzTitle="Padre">{{ selectedMenu.mnu_parent_uuid || 'Raíz (Nivel 0)' }}</nz-descriptions-item>
+                <nz-descriptions-item nzTitle="Descripción">
+                    {{ selectedMenu.mnu_description || 'Sin descripción.' }}
+                </nz-descriptions-item>
+            </nz-descriptions>
+
+            <nz-divider></nz-divider>
+
+            <nz-descriptions nzTitle="Auditoría" [nzColumn]="1" nzSize="small">
+                <nz-descriptions-item nzTitle="Creado">{{ selectedMenu.mnu_createdat | date:'medium' }}</nz-descriptions-item>
+                <nz-descriptions-item nzTitle="Última Modificación">{{ selectedMenu.mnu_updatedat | date:'medium' }}</nz-descriptions-item>
+            </nz-descriptions>
+
+            <div style="margin-top: 32px; display: flex; gap: 8px;">
+                <button nz-button nzType="primary" nzBlock [routerLink]="['/application/menu-item', selectedMenu.mnu_uuid]">Editar Ítem</button>
+                <button nz-button nzDanger nzBlock (click)="onDeleteMenu(selectedMenu)">Eliminar</button>
+            </div>
+        </div>
+    </ng-container>
+</nz-drawer>
