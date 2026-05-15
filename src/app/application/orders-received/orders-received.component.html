@@ -30,9 +30,9 @@
                     <tbody>
                         <tr *ngFor="let data of pendingTable.data" class="clickable-row"
                             (click)="openOrderDetails(data)">
-                            <td class="order-number">{{ data.ord_number }}</td>
+                            <td class="order-number">#{{ data.ord_ordernumber }}</td>
                             <td>{{ data.ord_date | date:'dd/MM/yyyy HH:mm' }}</td>
-                            <td class="customer-name">{{ data.cus_name }}</td>
+                            <td class="customer-name">{{ data.cus_uuid | slice:0:8 }}...</td>
                             <td class="order-total">${{ data.ord_total | number:'1.2-2' }}</td>
                             <td>
                                 <nz-tag [nzColor]="getStatusColor(data.ord_status)">{{ getStatusLabel(data.ord_status)
@@ -69,9 +69,9 @@
                     <tbody>
                         <tr *ngFor="let data of processingTable.data" class="clickable-row"
                             (click)="openOrderDetails(data)">
-                            <td class="order-number">{{ data.ord_number }}</td>
+                            <td class="order-number">#{{ data.ord_ordernumber }}</td>
                             <td>{{ data.ord_date | date:'dd/MM/yyyy HH:mm' }}</td>
-                            <td class="customer-name">{{ data.cus_name }}</td>
+                            <td class="customer-name">{{ data.cus_uuid | slice:0:8 }}...</td>
                             <td class="order-total">${{ data.ord_total | number:'1.2-2' }}</td>
                             <td>
                                 <nz-tag [nzColor]="getStatusColor(data.ord_status)">{{ getStatusLabel(data.ord_status)
@@ -110,9 +110,9 @@
                     <tbody>
                         <tr *ngFor="let data of shippedTable.data" class="clickable-row"
                             (click)="openOrderDetails(data)">
-                            <td class="order-number">{{ data.ord_number }}</td>
+                            <td class="order-number">#{{ data.ord_ordernumber }}</td>
                             <td>{{ data.ord_date | date:'dd/MM/yyyy' }}</td>
-                            <td class="customer-name">{{ data.cus_name }}</td>
+                            <td class="customer-name">{{ data.cus_uuid | slice:0:8 }}...</td>
                             <td class="order-total">${{ data.ord_total | number:'1.2-2' }}</td>
                             <td>
                                 <nz-tag [nzColor]="getStatusColor(data.ord_status)">{{ getStatusLabel(data.ord_status)
@@ -139,7 +139,7 @@
         <div *ngIf="selectedOrder" class="drawer-content-wrapper">
 
             <div class="drawer-header-status">
-                <h2 style="margin: 0;">{{ selectedOrder.ord_number }}</h2>
+                <h2 style="margin: 0;">#{{ selectedOrder.ord_ordernumber }}</h2>
                 <nz-tag [nzColor]="getStatusColor(selectedOrder.ord_status)" style="margin-left: auto;">
                     {{ getStatusLabel(selectedOrder.ord_status) }}
                 </nz-tag>
@@ -153,8 +153,7 @@
                     [nzDescription]="paymentDesc">
                 </nz-alert>
                 <ng-template #paymentDesc>
-                    El cliente indicó haber pagado vía <strong>{{ selectedOrder.pay_method }}</strong>.<br>
-                    N° de Operación/Comprobante: <strong>{{ selectedOrder.pay_transaction_id }}</strong>
+                    El cliente ha realizado un pedido. Por favor, verificar y procesar.
 
                     <div style="margin-top: 16px; display: flex; gap: 8px;">
                         <button nz-button nzType="primary" nzSize="small"
@@ -166,9 +165,7 @@
             </div>
 
             <nz-descriptions nzTitle="Datos del Cliente" [nzColumn]="1" nzSize="small">
-                <nz-descriptions-item nzTitle="Nombre">{{ selectedOrder.cus_name }}</nz-descriptions-item>
-                <nz-descriptions-item nzTitle="Email">{{ selectedOrder.cus_email }}</nz-descriptions-item>
-                <nz-descriptions-item nzTitle="Teléfono">{{ selectedOrder.cus_phone }}</nz-descriptions-item>
+                <nz-descriptions-item nzTitle="ID Cliente">{{ selectedOrder.cus_uuid }}</nz-descriptions-item>
             </nz-descriptions>
 
             <nz-divider></nz-divider>
@@ -176,16 +173,7 @@
             <h3 style="font-size: 16px; font-weight: 500; margin-bottom: 16px;">Contenido del Pedido</h3>
 
             <div class="order-item-list">
-                <div class="order-item" *ngFor="let item of selectedOrder.ord_items">
-                    <div class="item-main">
-                        <span class="item-name">{{ item.name }}</span>
-                        <span class="item-sku">Cod: {{ item.sku }}</span>
-                    </div>
-                    <div class="item-metrics">
-                        <span class="item-qty">{{ item.quantity }}x</span>
-                        <span class="item-subtotal">${{ (item.quantity * item.price) | number:'1.2-2' }}</span>
-                    </div>
-                </div>
+                <p style="color: gray;">Aún no se han implementado las líneas de detalle.</p>
             </div>
 
             <nz-divider></nz-divider>

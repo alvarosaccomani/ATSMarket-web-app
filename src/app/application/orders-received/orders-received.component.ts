@@ -12,28 +12,11 @@ import { NzMessageService } from 'ng-zorro-antd/message';
 import { NzCardModule } from 'ng-zorro-antd/card';
 import { NzAlertModule } from 'ng-zorro-antd/alert';
 
-// Tipado mock para los pedidos
-export interface OrderItem {
-  name: string;
-  sku: string;
-  quantity: number;
-  price: number;
-}
-
-export interface Order {
-  ord_uuid: string;
-  ord_number: string;
-  ord_date: Date;
-  cus_name: string;
-  cus_email: string;
-  cus_phone: string;
-  ord_total: number;
-  ord_status: 'PENDING' | 'PROCESSING' | 'SHIPPED' | 'CANCELLED';
-  ord_items: OrderItem[];
-  pay_method?: 'TRANSFERENCIA' | 'MERCADOPAGO';
-  pay_transaction_id?: string;
-  pay_status?: 'AWAITING_VERIFICATION' | 'VERIFIED' | 'REJECTED';
-}
+import { Subject } from 'rxjs';
+import { takeUntil } from 'rxjs/operators';
+import { OrdersService } from '../../core/services/orders.service';
+import { SessionService } from '../../core/services/session.service';
+import { OrderInterface } from '../../core/interfaces/order/order.interface';
 
 @Component({
   selector: 'app-orders-received',
@@ -57,22 +40,43 @@ export interface Order {
 export class OrdersReceivedComponent implements OnInit {
 
   // Mock de Base de Datos Temporal
-  public allOrders: Order[] = [];
+  public allOrders: OrderInterface[] = [];
 
   // Listas divididas para las pestañas
-  public pendingOrders: Order[] = [];
-  public processingOrders: Order[] = [];
-  public shippedOrders: Order[] = [];
+  public pendingOrders: OrderInterface[] = [];
+  public processingOrders: OrderInterface[] = [];
+  public shippedOrders: OrderInterface[] = [];
 
   // Control del Drawer Lateral (Vista de Detalles)
   public isDrawerVisible = false;
-  public selectedOrder: Order | null = null;
+  public selectedOrder: OrderInterface | null = null;
+  
+  private destroy$ = new Subject<void>();
 
-  constructor(private message: NzMessageService) { }
+  constructor(
+    private message: NzMessageService,
+    private _ordersService: OrdersService,
+    private _sessionService: SessionService
+  ) { }
 
   ngOnInit(): void {
-    this.generateMockOrders();
-    this.filterOrdersIntoTabs();
+    const company = this._sessionService.getCompany();
+    if (company && company.cmp_uuid) {
+      this._ordersService.getOrders(company.cmp_uuid).subscribe({
+        next: (res: any) => {
+          this.allOrders = res.data || [];
+          this.filterOrdersIntoTabs();
+        },
+        error: (err: any) => {
+          console.error('Error cargando ordenes:', err);
+        }
+      });
+    }
+  }
+
+  ngOnDestroy(): void {
+    this.destroy$.next();
+    this.destroy$.complete();
   }
 
   // --- LOGICA DE DATOS ---
@@ -105,42 +109,40 @@ export class OrdersReceivedComponent implements OnInit {
 
   // --- ACCIONES DE ESTADO (KANBAN) ---
 
-  public approvePayment(order: Order, event?: Event): void {
+  public approvePayment(order: OrderInterface, event?: Event): void {
     if (event) event.stopPropagation();
     const idx = this.allOrders.findIndex(o => o.ord_uuid === order.ord_uuid);
     if (idx !== -1) {
-      this.allOrders[idx].pay_status = 'VERIFIED';
       this.allOrders[idx].ord_status = 'PROCESSING';
       this.filterOrdersIntoTabs();
-      this.message.success(`Pago Aprobado. Pedido ${order.ord_number} pasó a Preparación.`);
+      this.message.success(`Pago Aprobado. Pedido ${order.ord_ordernumber} pasó a Preparación.`);
       this.isDrawerVisible = false;
     }
   }
 
-  public rejectPayment(order: Order): void {
+  public rejectPayment(order: OrderInterface): void {
     const idx = this.allOrders.findIndex(o => o.ord_uuid === order.ord_uuid);
     if (idx !== -1) {
-      this.allOrders[idx].pay_status = 'REJECTED';
       this.allOrders[idx].ord_status = 'CANCELLED';
       this.filterOrdersIntoTabs();
-      this.message.error(`Pago Rechazado. Pedido ${order.ord_number} fue cancelado.`);
+      this.message.error(`Pago Rechazado. Pedido ${order.ord_ordernumber} fue cancelado.`);
       this.isDrawerVisible = false;
     }
   }
 
-  public markAsShipped(order: Order, event: Event): void {
+  public markAsShipped(order: OrderInterface, event: Event): void {
     event.stopPropagation();
     const idx = this.allOrders.findIndex(o => o.ord_uuid === order.ord_uuid);
     if (idx !== -1) {
       this.allOrders[idx].ord_status = 'SHIPPED';
       this.filterOrdersIntoTabs();
-      this.message.success(`Pedido ${order.ord_number} marcado como Despachado.`);
+      this.message.success(`Pedido ${order.ord_ordernumber} marcado como Despachado.`);
     }
   }
 
   // --- CONTROL DEL DRAWER ---
 
-  public openOrderDetails(order: Order): void {
+  public openOrderDetails(order: OrderInterface): void {
     this.selectedOrder = order;
     this.isDrawerVisible = true;
   }
@@ -150,70 +152,5 @@ export class OrdersReceivedComponent implements OnInit {
     setTimeout(() => this.selectedOrder = null, 300); // Esperar la animación css
   }
 
-  // --- GENERACIÓN DE MOCKS ---
-
-  private generateMockOrders(): void {
-    this.allOrders = [
-      {
-        ord_uuid: 'uuid-1',
-        ord_number: '#PED-10025',
-        ord_date: new Date(),
-        cus_name: 'Santería La Milagrosa',
-        cus_email: 'ventas@lamilagrosa.com',
-        cus_phone: '+54 11 4455-6677',
-        ord_total: 125000,
-        ord_status: 'PENDING',
-        pay_method: 'TRANSFERENCIA',
-        pay_transaction_id: 'TRX-9982442',
-        pay_status: 'AWAITING_VERIFICATION',
-        ord_items: [
-          { name: 'Rosario Madera Olivo', sku: 'ROS-OLI', quantity: 100, price: 500 },
-          { name: 'Medalla San Benito', sku: 'MED-BEN', quantity: 150, price: 500 }
-        ]
-      },
-      {
-        ord_uuid: 'uuid-2',
-        ord_number: '#PED-10024',
-        ord_date: new Date(new Date().setDate(new Date().getDate() - 1)),
-        cus_name: 'María Carmen López',
-        cus_email: 'maricarmen@gmail.com',
-        cus_phone: '+54 223 555-1234',
-        ord_total: 45000,
-        ord_status: 'PENDING',
-        pay_method: 'MERCADOPAGO',
-        pay_transaction_id: 'MP-55112233',
-        pay_status: 'AWAITING_VERIFICATION',
-        ord_items: [
-          { name: 'Estatua Virgen de Luján 30cm', sku: 'EST-LUJ-30', quantity: 2, price: 22500 }
-        ]
-      },
-      {
-        ord_uuid: 'uuid-3',
-        ord_number: '#PED-10023',
-        ord_date: new Date(new Date().setDate(new Date().getDate() - 2)),
-        cus_name: 'Parroquia San Cayetano',
-        cus_email: 'admin@sancayetano.org',
-        cus_phone: '+54 11 2233-4455',
-        ord_total: 350000,
-        ord_status: 'PROCESSING',
-        ord_items: [
-          { name: 'Velas Blancas (Caja x50)', sku: 'VEL-BLA-50', quantity: 20, price: 5000 },
-          { name: 'Incienso Litúrgico 1kg', sku: 'INC-LIT-1K', quantity: 5, price: 50000 }
-        ]
-      },
-      {
-        ord_uuid: 'uuid-4',
-        ord_number: '#PED-10020',
-        ord_date: new Date(new Date().setDate(new Date().getDate() - 5)),
-        cus_name: 'Juan Pérez',
-        cus_email: 'jperez@hotmail.com',
-        cus_phone: '+54 11 9999-8888',
-        ord_total: 15500,
-        ord_status: 'SHIPPED',
-        ord_items: [
-          { name: 'Pulsera Decenario Plata', sku: 'PUL-DEC-PL', quantity: 1, price: 15500 }
-        ]
-      }
-    ];
-  }
+  // Se eliminó generateMockOrders
 }
