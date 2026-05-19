@@ -5,6 +5,7 @@ export interface SessionData {
   identity?: any;
   company?: any;
   token?: string;
+  customer?: any;
 }
 
 @Injectable({
@@ -38,6 +39,16 @@ export class SessionService {
     this.updateSession(updated);
   }
 
+  public setCustomer(customer: any | string): void {
+    const customerObj = typeof customer === 'string'
+      ? JSON.parse(customer)
+      : customer;
+
+    const current = this.getCurrentSession();
+    const updated = { ...current, customer: customerObj };
+    this.updateSession(updated);
+  }
+
   public setToken(token: string): void {
     const current = this.getCurrentSession();
     const updated = { ...current, token };
@@ -51,6 +62,10 @@ export class SessionService {
 
   public getCompany(): any | null {
     return this.getCurrentSession()?.company || null;
+  }
+
+  public getCustomer(): any | null {
+    return this.getCurrentSession()?.customer || null;
   }
 
   public getCurrentSession(): SessionData | null {
@@ -77,3 +92,4 @@ export class SessionService {
     }
   }
 }
+
