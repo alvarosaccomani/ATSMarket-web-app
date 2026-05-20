@@ -33,7 +33,6 @@ export class StoreContextService {
   private getStoredStore(): CompanyInterface | null {
     try {
       const stored = localStorage.getItem('ats_active_store');
-      debugger;
       return stored ? JSON.parse(stored) : null;
     } catch (e) {
       console.error('Error al recuperar active store de localStorage:', e);
