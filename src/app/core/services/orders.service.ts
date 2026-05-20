@@ -25,4 +25,14 @@ export class OrdersService {
 
     return this._http.get<OrderResults>(`${environment.apiUrl}orders/${cmp_uuid}`, { headers, params });
   }
+
+  /**
+   * Crea una nueva orden en el sistema.
+   * @param orderData Datos de la orden a insertar.
+   */
+  public saveOrder(orderData: any): Observable<any> {
+    const headers = new HttpHeaders().set('content-type', 'application/json');
+    return this._http.post(`${environment.apiUrl}order`, orderData, { headers });
+  }
 }
+
