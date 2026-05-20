@@ -10,6 +10,7 @@ import { OrdersService } from '../../core/services/orders.service';
 import { StoreContextService } from '../../core/services/store-context.service';
 import { SessionService } from '../../core/services/session.service';
 import { CustomersService } from '../../core/services/customers.service';
+import { MessageService } from '../../core/services/message.service';
 
 import { NzFormModule } from 'ng-zorro-antd/form';
 import { NzInputModule } from 'ng-zorro-antd/input';
@@ -92,7 +93,8 @@ export class CheckoutComponent implements OnInit, OnDestroy {
     private ordersService: OrdersService,
     public storeContext: StoreContextService,
     private _sessionService: SessionService,
-    private _customersService: CustomersService
+    private _customersService: CustomersService,
+    private _messageService: MessageService
   ) { }
 
   ngOnInit(): void {
@@ -128,7 +130,7 @@ export class CheckoutComponent implements OnInit, OnDestroy {
       ciudad: ['', [Validators.required]],
       provincia: ['', [Validators.required]],
       codigoPostal: ['', [Validators.required]],
-      telefono: ['', [Validators.required, Validators.pattern('^[+0-9\\s\\-()]*$')]]
+      telefono: [customer ? customer.cus_phone : '', [Validators.required, Validators.pattern('^[+0-9\\s\\-()]*$')]]
     });
 
     this.shippingForm.get('ciudad')?.valueChanges.subscribe(() => {
@@ -386,7 +388,7 @@ export class CheckoutComponent implements OnInit, OnDestroy {
               this.hasCustomer = true;
 
               // Proceder a guardar la dirección vinculada al cliente recién creado
-              this.proceedWithAddAddress(val, customerRes.data);
+              this.proceedWithAddAddress(val, customerRes.data, true);
             } else {
               this.message.error('No se pudo procesar la creación de tu perfil de cliente.');
             }
@@ -396,9 +398,26 @@ export class CheckoutComponent implements OnInit, OnDestroy {
             this.message.error('No se pudo registrar la información de cliente. Intentá nuevamente.');
           }
         });
+      } else if (customer) {
+        // El cliente ya existe
+        // Preguntar si desea guardar la dirección en su cuenta
+        this._messageService.confirm(
+          '¿Deseás guardar esta dirección?',
+          '¿Querés registrar esta dirección en tu cuenta para futuras compras?',
+          () => {
+            // Dijo que SÍ: Guardar la dirección vinculada a su cuenta usando su teléfono almacenado
+            this.proceedWithAddAddress(val, customer, true);
+          },
+          () => {
+            // Dijo que NO: Guardar de manera temporal sin vincular a su cuenta
+            this.proceedWithAddAddress(val, customer, false);
+          },
+          'Sí, guardar',
+          'No, usar solo esta vez'
+        );
       } else {
-        // El cliente ya existe o compra como invitado
-        this.proceedWithAddAddress(val, customer);
+        // Compra como invitado sin cliente cargado
+        this.proceedWithAddAddress(val, null, false);
       }
     } else {
       const invalidFields: string[] = [];
@@ -415,16 +434,17 @@ export class CheckoutComponent implements OnInit, OnDestroy {
     }
   }
 
-  private proceedWithAddAddress(val: any, customer: any): void {
+  private proceedWithAddAddress(val: any, customer: any, saveToProfile: boolean = true): void {
     const newAddressData: Partial<AddressInterface> = {
-      cus_uuid: customer ? customer.cus_uuid : 'guest-customer',
+      cus_uuid: (customer && saveToProfile) ? customer.cus_uuid : 'guest-customer',
       adr_alias: 'Mi Domicilio',
       adr_recipientname: customer ? customer.cus_fullname : `${val.nombre} ${val.apellido}`,
       adr_address: val.direccion,
       adr_city: val.ciudad,
       adr_province: val.provincia,
       adr_postalcode: val.codigoPostal,
-      adr_contactphone: val.telefono,
+      // Si se guarda en su perfil, tomamos el teléfono almacenado del cliente si existe, sino el del formulario
+      adr_contactphone: (customer && saveToProfile && customer.cus_phone) ? customer.cus_phone : val.telefono,
       adr_country: 'Argentina',
       adr_lat: this.detectedCoords ? this.detectedCoords.lat : undefined,
       adr_lng: this.detectedCoords ? this.detectedCoords.lng : undefined
@@ -434,12 +454,17 @@ export class CheckoutComponent implements OnInit, OnDestroy {
       next: (res) => {
         if (res && res.success && res.data) {
           this.selectedAddressId = res.data.adr_uuid;
+          
+          // Si no se guardó en el perfil, removemos de la lista local de la vista
+          if (customer && !saveToProfile) {
+            this.myAddresses = this.myAddresses.filter(a => a.adr_uuid !== res.data.adr_uuid);
+          }
         }
         this.currentStep = 2; // Avanzar a método de pago
       },
       error: (err) => {
         console.error('Error al guardar la dirección:', err);
-        this.message.error('No se pudo guardar la dirección. Por favor, intentá nuevamente.');
+        this.message.error('No se pudo procesar la dirección. Por favor, intentá nuevamente.');
       }
     });
   }
