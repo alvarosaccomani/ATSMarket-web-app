@@ -21,6 +21,7 @@ import { ProductsComponent } from './products/products.component';
 import { ProductComponent } from './product/product.component';
 import { ProductVariationComponent } from './product-variation/product-variation.component';
 import { OrdersReceivedComponent } from './orders-received/orders-received.component';
+import { MyPurchasesComponent } from './my-purchases/my-purchases.component';
 import { CustomersComponent } from './customers/customers.component';
 import { SuppliersComponent } from './suppliers/suppliers.component';
 import { SupplierComponent } from './supplier/supplier.component';
@@ -53,6 +54,7 @@ export const APPLICATION_ROUTES: Routes = [
             { path: 'product/:pro_uuid', component: ProductComponent },
             { path: 'product-variation/:pro_uuid/:prov_uuid', component: ProductVariationComponent },
             { path: 'orders-received', component: OrdersReceivedComponent },
+            { path: 'my-purchases', component: MyPurchasesComponent },
             { path: 'customers', component: CustomersComponent },
             { path: 'suppliers', component: SuppliersComponent },
             { path: 'supplier/:sup_uuid', component: SupplierComponent },
