@@ -182,6 +182,97 @@ export class CompanySettingsComponent implements OnInit {
         cmps_updatedat: new Date(),
         cmps_createdat: new Date()
       },
+      {
+        cmp_uuid: this.cmp_uuid,
+        cmps_uuid: 'shipping_1',
+        cmps_key: 'DELIVERY_LOCAL_RADIUS',
+        cmps_parameter: 'Radio de Envío Local (km)',
+        cmps_description: 'Radio máximo en kilómetros desde la ubicación de la tienda para ofrecer envíos rápidos por Motomensajería.',
+        cmps_datatype: 'number',
+        cmps_value: '25',
+        cmps_group: 'Ventas',
+        cmps_options: '',
+        cmps_updatedat: new Date(),
+        cmps_createdat: new Date()
+      },
+      {
+        cmp_uuid: this.cmp_uuid,
+        cmps_uuid: 'shipping_2',
+        cmps_key: 'DELIVERY_LOCAL_COST',
+        cmps_parameter: 'Costo de Envío Local ($)',
+        cmps_description: 'Precio de envío por Motomensajería dentro del radio de cobertura local.',
+        cmps_datatype: 'number',
+        cmps_value: '350',
+        cmps_group: 'Ventas',
+        cmps_options: '',
+        cmps_updatedat: new Date(),
+        cmps_createdat: new Date()
+      },
+      {
+        cmp_uuid: this.cmp_uuid,
+        cmps_uuid: 'shipping_3',
+        cmps_key: 'DELIVERY_NATIONAL_COST',
+        cmps_parameter: 'Costo de Envío Nacional ($)',
+        cmps_description: 'Precio fijo de envío estándar a todo el país vía Correo Postal.',
+        cmps_datatype: 'number',
+        cmps_value: '800',
+        cmps_group: 'Ventas',
+        cmps_options: '',
+        cmps_updatedat: new Date(),
+        cmps_createdat: new Date()
+      },
+      {
+        cmp_uuid: this.cmp_uuid,
+        cmps_uuid: 'shipping_enable_1',
+        cmps_key: 'SHIPPING_LOCAL_MOTO_ENABLE',
+        cmps_parameter: 'Ofrecer Motomensajería Local',
+        cmps_description: 'Habilitar la opción de envío rápido por Motomensajería dentro de la ciudad.',
+        cmps_datatype: 'boolean',
+        cmps_value: 'true',
+        cmps_group: 'Ventas',
+        cmps_options: '',
+        cmps_updatedat: new Date(),
+        cmps_createdat: new Date()
+      },
+      {
+        cmp_uuid: this.cmp_uuid,
+        cmps_uuid: 'shipping_enable_2',
+        cmps_key: 'SHIPPING_NATIONAL_CORREO_ENABLE',
+        cmps_parameter: 'Ofrecer Correo Postal Nacional',
+        cmps_description: 'Habilitar la opción de despacho estándar a todo el país vía Correo Postal.',
+        cmps_datatype: 'boolean',
+        cmps_value: 'true',
+        cmps_group: 'Ventas',
+        cmps_options: '',
+        cmps_updatedat: new Date(),
+        cmps_createdat: new Date()
+      },
+      {
+        cmp_uuid: this.cmp_uuid,
+        cmps_uuid: 'shipping_enable_3',
+        cmps_key: 'SHIPPING_RETIRO_LOCAL_ENABLE',
+        cmps_parameter: 'Ofrecer Retiro en Local',
+        cmps_description: 'Permitir a los compradores retirar el pedido en tu local físico o punto de entrega sin cargo.',
+        cmps_datatype: 'boolean',
+        cmps_value: 'true',
+        cmps_group: 'Ventas',
+        cmps_options: '',
+        cmps_updatedat: new Date(),
+        cmps_createdat: new Date()
+      },
+      {
+        cmp_uuid: this.cmp_uuid,
+        cmps_uuid: 'shipping_enable_4',
+        cmps_key: 'SHIPPING_ACORDAR_VENDEDOR_ENABLE',
+        cmps_parameter: 'Ofrecer Acordar con el Vendedor',
+        cmps_description: 'Habilitar la opción de coordinar la entrega y flete de forma personalizada con el cliente.',
+        cmps_datatype: 'boolean',
+        cmps_value: 'true',
+        cmps_group: 'Ventas',
+        cmps_options: '',
+        cmps_updatedat: new Date(),
+        cmps_createdat: new Date()
+      },
 
       // --- GRUPO: TIENDA - HOME ---
       {
