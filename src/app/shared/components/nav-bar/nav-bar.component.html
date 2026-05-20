@@ -38,6 +38,9 @@
 
         <nz-dropdown-menu #userMenu="nzDropdownMenu">
             <ul nz-menu>
+                <li nz-menu-item routerLink="/application/my-purchases" style="color: black;">
+                    <span nz-icon nzType="shopping" style="margin-right: 8px;"></span> Mis Compras
+                </li>
                 <li nz-menu-item routerLink="/application/my-companies" style="color: black;">
                     <span nz-icon nzType="shop" style="margin-right: 8px;"></span> Administrar Tiendas
                 </li>
@@ -78,6 +81,9 @@
             <li nz-submenu *ngIf="userIdentity"
                 [nzTitle]="'Cuenta: ' + (userIdentity.usr_name || userIdentity.usr_user)">
                 <ul>
+                    <li nz-menu-item routerLink="/application/my-purchases" (click)="closeDrawer()">
+                        <span nz-icon nzType="shopping" style="margin-right: 8px;"></span> Mis Compras
+                    </li>
                     <li nz-menu-item routerLink="/application/my-companies" (click)="closeDrawer()">
                         <span nz-icon nzType="shop" style="margin-right: 8px;"></span> Mis Tiendas (Administrar)
                     </li>
