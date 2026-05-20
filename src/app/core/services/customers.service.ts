@@ -1,5 +1,5 @@
 import { Injectable } from '@angular/core';
-import { HttpClient } from '@angular/common/http';
+import { HttpClient, HttpHeaders } from '@angular/common/http';
 import { Observable } from 'rxjs';
 import { environment } from '../../../environments/environment';
 import { CustomerResults } from '@interfaces/customer';
@@ -12,6 +12,14 @@ export class CustomersService {
   constructor(
     private _http: HttpClient
   ) { }
+
+  /**
+   * Crea un nuevo cliente.
+   */
+  public saveCustomer(customer: any): Observable<{ data: any }> {
+    const headers = new HttpHeaders().set('content-type', 'application/json');
+    return this._http.post<{ data: any }>(`${environment.apiUrl}customer`, customer, { headers });
+  }
 
   /**
    * Obtiene el cliente de un usuario.
