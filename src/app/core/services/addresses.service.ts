@@ -85,4 +85,16 @@ export class AddressesService {
       }
     });
   }
+
+  /**
+   * Obtiene las direcciones asociadas a un cliente específico sin sobreescribir la lista en memoria.
+   * @param cus_uuid UUID del cliente
+   */
+  public fetchAddressesByCustomer(cus_uuid: string): Observable<any> {
+    const headers = new HttpHeaders().set('content-type', 'application/json');
+    return this._http.get<{ success: boolean; message: string; data: AddressInterface[] }>(
+      `${environment.apiUrl}addresses-by-customer/${cus_uuid}`,
+      { headers }
+    );
+  }
 }
