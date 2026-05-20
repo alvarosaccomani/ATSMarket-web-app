@@ -10,7 +10,7 @@ import { CompanyInterface } from '@interfaces/company';
 })
 export class StoreContextService {
 
-  private _activeStore = new BehaviorSubject<CompanyInterface | null>(null);
+  private _activeStore = new BehaviorSubject<CompanyInterface | null>(this.getStoredStore());
   public activeStore$ = this._activeStore.asObservable();
 
   private _storeSettings = new BehaviorSubject<{ [key: string]: any }>({});
@@ -22,7 +22,24 @@ export class StoreContextService {
   constructor(
     private _companiesService: CompaniesService,
     private _settingsService: CompaniesSettingsService
-  ) { }
+  ) { 
+    // Si ya hay una tienda en el storage, cargar sus configuraciones iniciales
+    const store = this._activeStore.value;
+    if (store) {
+      this.loadSettingsForStore(store);
+    }
+  }
+
+  private getStoredStore(): CompanyInterface | null {
+    try {
+      const stored = localStorage.getItem('ats_active_store');
+      debugger;
+      return stored ? JSON.parse(stored) : null;
+    } catch (e) {
+      console.error('Error al recuperar active store de localStorage:', e);
+      return null;
+    }
+  }
 
   /**
    * Carga la empresa y sus configuraciones basadas en el slug de la URL.
@@ -37,53 +54,61 @@ export class StoreContextService {
           const company = Array.isArray(response.data) ? response.data[0] : (response.data as any);
           if (company) {
             this._activeStore.next(company);
+            localStorage.setItem('ats_active_store', JSON.stringify(company));
             return company;
           }
         }
         throw new Error('Store not found');
       }),
       tap(company => {
-        // Cargar settings una vez obtenida la empresa
-        this._settingsService.getCompaniesSettings(company.cmp_uuid).subscribe({
-          next: (res) => {
-            const settingsMap: { [key: string]: any } = {};
-            if (res && res.data) {
-              res.data.forEach((s: any) => {
-                let val = s.cmps_value;
-                // Conversión básica de tipos
-                if (val === 'true') val = true;
-                if (val === 'false') val = false;
-                if (!isNaN(val) && s.cmps_datatype === 'number') val = Number(val);
-                
-                settingsMap[s.cmps_key] = val;
-              });
-            }
-            this._storeSettings.next(settingsMap);
-            
-            // Aplicar tema dinámico (Configuración tiene prioridad, fallback a Compañía)
-            const primaryColor = settingsMap['THEME_PRIMARY_COLOR'] || company.cmp_primarycolor;
-            if (primaryColor) {
-              this.applyTheme(primaryColor);
-            }
-
-            // Aplicar color de Navbar
-            const navColor = settingsMap['THEME_NAVBAR_COLOR'] || '#001529';
-            document.documentElement.style.setProperty('--navbar-background-color', navColor);
-            
-            this._isLoading.next(false);
-          },
-          error: () => this._isLoading.next(false)
-        });
+        this.loadSettingsForStore(company);
       }),
       map(() => true),
       catchError(err => {
         console.error('Error setting store context:', err);
         this._activeStore.next(null);
+        localStorage.removeItem('ats_active_store');
         this._storeSettings.next({});
         this._isLoading.next(false);
         return of(false);
       })
     );
+  }
+
+  /**
+   * Carga las configuraciones y tema de una tienda.
+   */
+  public loadSettingsForStore(company: CompanyInterface): void {
+    this._settingsService.getCompaniesSettings(company.cmp_uuid).subscribe({
+      next: (res) => {
+        const settingsMap: { [key: string]: any } = {};
+        if (res && res.data) {
+          res.data.forEach((s: any) => {
+            let val = s.cmps_value;
+            // Conversión básica de tipos
+            if (val === 'true') val = true;
+            if (val === 'false') val = false;
+            if (!isNaN(val) && s.cmps_datatype === 'number') val = Number(val);
+            
+            settingsMap[s.cmps_key] = val;
+          });
+        }
+        this._storeSettings.next(settingsMap);
+        
+        // Aplicar tema dinámico (Configuración tiene prioridad, fallback a Compañía)
+        const primaryColor = settingsMap['THEME_PRIMARY_COLOR'] || company.cmp_primarycolor;
+        if (primaryColor) {
+          this.applyTheme(primaryColor);
+        }
+
+        // Aplicar color de Navbar
+        const navColor = settingsMap['THEME_NAVBAR_COLOR'] || '#001529';
+        document.documentElement.style.setProperty('--navbar-background-color', navColor);
+        
+        this._isLoading.next(false);
+      },
+      error: () => this._isLoading.next(false)
+    });
   }
 
   /**
@@ -149,6 +174,7 @@ export class StoreContextService {
   
   public clearStore(): void {
     this._activeStore.next(null);
+    localStorage.removeItem('ats_active_store');
     this._storeSettings.next({});
     // Resetear el color primario al valor por defecto al salir de una tienda
     document.documentElement.style.removeProperty('--ant-primary-color');
