@@ -1,12 +1,18 @@
 <div class="orders-dashboard-wrapper">
 
-    <div class="dashboard-header">
-        <h1 class="page-title">Gestión de Pedidos</h1>
-        <p class="page-subtitle">Administra, prepara y despacha las compras de tus clientes.</p>
+    <div class="dashboard-header" style="display: flex; justify-content: space-between; align-items: center; flex-wrap: wrap; gap: 16px;">
+        <div>
+            <h1 class="page-title">{{ isDeliveryMode ? 'Hoja de Ruta de Repartos' : 'Gestión de Pedidos' }}</h1>
+            <p class="page-subtitle">{{ isDeliveryMode ? 'Seguimiento y logística en tiempo real para el repartidor.' : 'Administra, prepara y despacha las compras de tus clientes.' }}</p>
+        </div>
+        <button nz-button [nzType]="isDeliveryMode ? 'primary' : 'default'" class="delivery-toggle-btn" (click)="toggleDeliveryMode()">
+            <span nz-icon [nzType]="isDeliveryMode ? 'shop' : 'car'"></span>
+            {{ isDeliveryMode ? 'Vista Administrador' : 'Modo Repartidor (Ruta)' }}
+        </button>
     </div>
 
     <!-- Pestañas para dividir el ciclo de vida del pedido -->
-    <nz-card class="premium-card">
+    <nz-card class="premium-card" *ngIf="!isDeliveryMode">
         <nz-tabset [nzSize]="'large'">
 
             <!-- TAB 1: NUEVOS (PENDIENTES) -->
@@ -20,26 +26,32 @@
                     <thead>
                         <tr>
                             <th nzWidth="15%">Pedido</th>
+                            <th nzWidth="15%">Entrega</th>
                             <th nzWidth="20%">Fecha</th>
-                            <th nzWidth="25%">Cliente</th>
+                            <th nzWidth="20%">Cliente</th>
                             <th nzWidth="15%">Total</th>
                             <th nzWidth="10%">Estado</th>
-                            <th nzWidth="15%">Acciones</th>
+                            <th nzWidth="10%">Acciones</th>
                         </tr>
                     </thead>
                     <tbody>
                         <tr *ngFor="let data of pendingTable.data" class="clickable-row"
                             (click)="openOrderDetails(data)">
                             <td class="order-number">#{{ data.ord_ordernumber }}</td>
+                            <td>
+                                <span *ngIf="getDeliveryType(data.ord_customernotes) as del" style="display: inline-flex; align-items: center; gap: 4px;">
+                                    <span nz-icon [nzType]="del.icon" nzTheme="outline" [style.color]="'var(--ant-primary-color)'" style="font-size: 16px;"></span>
+                                    <nz-tag [nzColor]="del.color">{{ del.label }}</nz-tag>
+                                </span>
+                            </td>
                             <td>{{ data.ord_date | date:'dd/MM/yyyy HH:mm' }}</td>
                             <td class="customer-name">{{ data.cus_uuid | slice:0:8 }}...</td>
                             <td class="order-total">${{ data.ord_total | number:'1.2-2' }}</td>
                             <td>
-                                <nz-tag [nzColor]="getStatusColor(data.ord_status)">{{ getStatusLabel(data.ord_status)
-                                    }}</nz-tag>
+                                <nz-tag [nzColor]="getStatusColor(data.ord_status)">{{ getStatusLabel(data.ord_status) }}</nz-tag>
                             </td>
                             <td>
-                                <button nz-button nzType="primary" nzSize="small" (click)="openOrderDetails(data)">
+                                <button nz-button nzType="primary" nzSize="small" style="border-radius: 4px;" (click)="openOrderDetails(data)">
                                     Validar Pago
                                 </button>
                             </td>
@@ -59,26 +71,32 @@
                     <thead>
                         <tr>
                             <th nzWidth="15%">Pedido</th>
+                            <th nzWidth="15%">Entrega</th>
                             <th nzWidth="20%">Fecha Inicio</th>
-                            <th nzWidth="25%">Cliente</th>
+                            <th nzWidth="20%">Cliente</th>
                             <th nzWidth="15%">Total</th>
                             <th nzWidth="10%">Estado</th>
-                            <th nzWidth="15%">Acciones</th>
+                            <th nzWidth="10%">Acciones</th>
                         </tr>
                     </thead>
                     <tbody>
                         <tr *ngFor="let data of processingTable.data" class="clickable-row"
                             (click)="openOrderDetails(data)">
                             <td class="order-number">#{{ data.ord_ordernumber }}</td>
+                            <td>
+                                <span *ngIf="getDeliveryType(data.ord_customernotes) as del" style="display: inline-flex; align-items: center; gap: 4px;">
+                                    <span nz-icon [nzType]="del.icon" nzTheme="outline" [style.color]="'var(--ant-primary-color)'" style="font-size: 16px;"></span>
+                                    <nz-tag [nzColor]="del.color">{{ del.label }}</nz-tag>
+                                </span>
+                            </td>
                             <td>{{ data.ord_date | date:'dd/MM/yyyy HH:mm' }}</td>
                             <td class="customer-name">{{ data.cus_uuid | slice:0:8 }}...</td>
                             <td class="order-total">${{ data.ord_total | number:'1.2-2' }}</td>
                             <td>
-                                <nz-tag [nzColor]="getStatusColor(data.ord_status)">{{ getStatusLabel(data.ord_status)
-                                    }}</nz-tag>
+                                <nz-tag [nzColor]="getStatusColor(data.ord_status)">{{ getStatusLabel(data.ord_status) }}</nz-tag>
                             </td>
                             <td>
-                                <button nz-button nzType="primary" nzSuccess nzSize="small"
+                                <button nz-button nzType="primary" nzSize="small" style="background: #fa8c16; border-color: #fa8c16; border-radius: 4px;"
                                     (click)="markAsShipped(data, $event)">
                                     Despachar
                                 </button>
@@ -88,11 +106,11 @@
                 </nz-table>
             </nz-tab>
 
-            <!-- TAB 3: DESPACHADOS / HISTÓRICO -->
+            <!-- TAB 3: EN VIAJE / DESPACHADOS -->
             <nz-tab [nzTitle]="titleShipped">
                 <ng-template #titleShipped>
-                    ✅ Despachados
-                    <nz-tag [nzColor]="'green'" style="margin-left: 8px;" *ngIf="shippedOrders.length > 0">{{
+                    🚚 En Viaje
+                    <nz-tag [nzColor]="'orange'" style="margin-left: 8px;" *ngIf="shippedOrders.length > 0">{{
                         shippedOrders.length }}</nz-tag>
                 </ng-template>
 
@@ -100,26 +118,77 @@
                     <thead>
                         <tr>
                             <th nzWidth="15%">Pedido</th>
+                            <th nzWidth="15%">Entrega</th>
                             <th nzWidth="20%">Fecha</th>
-                            <th nzWidth="25%">Cliente</th>
+                            <th nzWidth="20%">Cliente</th>
                             <th nzWidth="15%">Total</th>
                             <th nzWidth="10%">Estado</th>
-                            <th nzWidth="15%">Acciones</th>
+                            <th nzWidth="10%">Acciones</th>
                         </tr>
                     </thead>
                     <tbody>
                         <tr *ngFor="let data of shippedTable.data" class="clickable-row"
                             (click)="openOrderDetails(data)">
                             <td class="order-number">#{{ data.ord_ordernumber }}</td>
+                            <td>
+                                <span *ngIf="getDeliveryType(data.ord_customernotes) as del" style="display: inline-flex; align-items: center; gap: 4px;">
+                                    <span nz-icon [nzType]="del.icon" nzTheme="outline" [style.color]="'var(--ant-primary-color)'" style="font-size: 16px;"></span>
+                                    <nz-tag [nzColor]="del.color">{{ del.label }}</nz-tag>
+                                </span>
+                            </td>
                             <td>{{ data.ord_date | date:'dd/MM/yyyy' }}</td>
                             <td class="customer-name">{{ data.cus_uuid | slice:0:8 }}...</td>
                             <td class="order-total">${{ data.ord_total | number:'1.2-2' }}</td>
                             <td>
-                                <nz-tag [nzColor]="getStatusColor(data.ord_status)">{{ getStatusLabel(data.ord_status)
-                                    }}</nz-tag>
+                                <nz-tag [nzColor]="getStatusColor(data.ord_status)">{{ getStatusLabel(data.ord_status) }}</nz-tag>
                             </td>
                             <td>
-                                <button nz-button nzType="default" nzSize="small"
+                                <button nz-button nzType="primary" nzSize="small" style="background: #52c41a; border-color: #52c41a; border-radius: 4px;"
+                                    (click)="markAsDelivered(data, $event)">Entregar</button>
+                            </td>
+                        </tr>
+                    </tbody>
+                </nz-table>
+            </nz-tab>
+
+            <!-- TAB 4: ENTREGADOS -->
+            <nz-tab [nzTitle]="titleDelivered">
+                <ng-template #titleDelivered>
+                    🏁 Entregados
+                    <nz-tag [nzColor]="'green'" style="margin-left: 8px;" *ngIf="deliveredOrders.length > 0">{{
+                        deliveredOrders.length }}</nz-tag>
+                </ng-template>
+
+                <nz-table #deliveredTable [nzData]="deliveredOrders" nzSize="middle">
+                    <thead>
+                        <tr>
+                            <th nzWidth="15%">Pedido</th>
+                            <th nzWidth="15%">Entrega</th>
+                            <th nzWidth="20%">Fecha</th>
+                            <th nzWidth="20%">Cliente</th>
+                            <th nzWidth="15%">Total</th>
+                            <th nzWidth="10%">Estado</th>
+                            <th nzWidth="10%">Acciones</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        <tr *ngFor="let data of deliveredTable.data" class="clickable-row"
+                            (click)="openOrderDetails(data)">
+                            <td class="order-number">#{{ data.ord_ordernumber }}</td>
+                            <td>
+                                <span *ngIf="getDeliveryType(data.ord_customernotes) as del" style="display: inline-flex; align-items: center; gap: 4px;">
+                                    <span nz-icon [nzType]="del.icon" nzTheme="outline" [style.color]="'var(--ant-primary-color)'" style="font-size: 16px;"></span>
+                                    <nz-tag [nzColor]="del.color">{{ del.label }}</nz-tag>
+                                </span>
+                            </td>
+                            <td>{{ data.ord_date | date:'dd/MM/yyyy' }}</td>
+                            <td class="customer-name">{{ data.cus_uuid | slice:0:8 }}...</td>
+                            <td class="order-total">${{ data.ord_total | number:'1.2-2' }}</td>
+                            <td>
+                                <nz-tag [nzColor]="getStatusColor(data.ord_status)">{{ getStatusLabel(data.ord_status) }}</nz-tag>
+                            </td>
+                            <td>
+                                <button nz-button nzType="default" nzSize="small" style="border-radius: 4px;"
                                     (click)="openOrderDetails(data)">Ver</button>
                             </td>
                         </tr>
@@ -129,65 +198,461 @@
 
         </nz-tabset>
     </nz-card>
-</div>
+
+    <!-- VISTA REPARTIDOR: MOBILE FRIENDLY & OPTIMIZADO -->
+    <div class="delivery-mode-container" *ngIf="isDeliveryMode">
+        
+        <!-- Tarjeta de Rendimiento (Stats de Ruta) -->
+        <nz-card class="premium-card delivery-stats-card" style="margin-bottom: 24px; border: 1px solid #e8e8e8; background: #fff;">
+            <div class="stats-card-content" style="display: flex; justify-content: space-between; align-items: center; flex-wrap: wrap; gap: 16px; width: 100%;">
+                <div class="stats-info" style="flex: 1; min-width: 250px;">
+                    <span class="stats-subtitle" style="font-size: 11px; font-weight: 600; text-transform: uppercase; color: #8c8c8c; letter-spacing: 0.5px;">Hoja de Ruta del Día</span>
+                    <h2 class="stats-title" style="margin: 4px 0 0 0; font-size: 20px; font-weight: 700; color: #262626;">{{ companyName }}</h2>
+                    <div style="margin-top: 12px;" *ngIf="getTotalDeliveriesCount() > 0">
+                        <span style="font-size: 13px; color: #595959; font-weight: 500;">
+                            Progreso de Envíos: <strong>{{ getCompletedDeliveriesCount() }}</strong> de <strong>{{ getTotalDeliveriesCount() }}</strong> entregados
+                        </span>
+                        <nz-progress 
+                            [nzPercent]="(getCompletedDeliveriesCount() / getTotalDeliveriesCount() * 100) | number:'1.0-0'" 
+                            nzStatus="active" 
+                            [nzStrokeColor]="'#52c41a'"
+                            style="margin-top: 6px; width: 100%; display: block;">
+                        </nz-progress>
+                    </div>
+                    <div *ngIf="getTotalDeliveriesCount() === 0" style="margin-top: 8px;">
+                        <nz-alert nzType="info" nzMessage="No hay repartos pendientes o programados para hoy." nzShowIcon></nz-alert>
+                    </div>
+                </div>
+
+                <!-- Recaudación de Efectivo (Solo visible si hay dinero a cobrar) -->
+                <div class="stats-financial" *ngIf="getCashToCollectTotal() > 0" style="background: rgba(82, 196, 26, 0.06); padding: 14px 20px; border-radius: 8px; border: 1px solid rgba(82, 196, 26, 0.15); display: flex; flex-direction: column; align-items: flex-end; min-width: 180px;">
+                    <span class="financial-subtitle" style="font-size: 11px; color: #52c41a; font-weight: 600; text-transform: uppercase; letter-spacing: 0.5px;">Efectivo a Recaudar:</span>
+                    <span class="financial-value" style="font-size: 24px; font-weight: 800; color: #52c41a; margin-top: 4px;">${{ getCashToCollectTotal() | number:'1.2-2' }}</span>
+                </div>
+            </div>
+        </nz-card>
+
+        <!-- Lista de Repartos por Proximidad -->
+        <div class="delivery-cards-grid" *ngIf="getSortedRouteOrders().length > 0; else emptyRoute" style="display: flex; flex-direction: column; gap: 20px;">
+            
+            <div *ngFor="let order of getSortedRouteOrders(); let idx = index" 
+                 class="delivery-route-card" 
+                 [class.card-shipped]="order.ord_status === 'SHIPPED'"
+                 [class.card-processing]="order.ord_status === 'PROCESSING'"
+                 style="background: #fff; border-radius: 12px; border: 1px solid #f0f0f0; box-shadow: 0 4px 16px rgba(0,0,0,0.03); overflow: hidden; transition: all 0.3s ease;">
+                
+                <!-- Cabecera de la Tarjeta -->
+                <div class="card-route-header" style="background: #fafafa; padding: 12px 20px; border-bottom: 1px solid #f0f0f0; display: flex; align-items: center; justify-content: space-between; flex-wrap: wrap; gap: 8px;">
+                    <span class="stop-badge" style="background: #1890ff; color: #fff; padding: 3px 10px; border-radius: 50px; font-weight: 700; font-size: 12px;">Parada #{{ idx + 1 }}</span>
+                    <div style="display: flex; align-items: center; gap: 8px;">
+                        <span class="distance-badge" *ngIf="getDistanceToOrder(order) !== null" style="font-size: 12px; font-weight: 600; color: #fa8c16; background: rgba(250, 140, 22, 0.08); padding: 3px 8px; border-radius: 4px;">
+                            📍 A {{ getDistanceToOrder(order) | number:'1.1-1' }} km
+                        </span>
+                        <span *ngIf="getDeliveryType(order.ord_customernotes) as del" class="type-tag-wrapper">
+                            <nz-tag [nzColor]="del.color">{{ del.label }}</nz-tag>
+                        </span>
+                    </div>
+                </div>
+
+                <!-- Detalles de Compra -->
+                <div class="card-route-body" style="padding: 20px;">
+                    <div class="order-main-info" style="display: flex; align-items: center; justify-content: space-between; margin-bottom: 12px;">
+                        <h3 class="order-id" style="margin: 0; font-size: 18px; font-weight: 700; color: #262626;">Pedido #{{ order.ord_ordernumber }}</h3>
+                        <nz-tag [nzColor]="getStatusColor(order.ord_status)">{{ getStatusLabel(order.ord_status) }}</nz-tag>
+                    </div>
+
+                    <!-- Datos del Destinatario -->
+                    <div *ngIf="deliveryAddressesCache[order.adr_uuid] as addr; else loadingAddr" class="address-details-block">
+                        <h4 class="recipient-name" style="margin: 0 0 6px 0; font-size: 15px; font-weight: 600; color: #1f1f1f;">{{ addr.adr_recipientname }}</h4>
+                        <p class="address-text" style="margin: 0 0 2px 0; font-size: 14px; font-weight: 500; color: #434343;">{{ addr.adr_address }}</p>
+                        <p class="city-text" style="margin: 0 0 8px 0; font-size: 13px; color: #8c8c8c;">{{ addr.adr_city }}, {{ addr.adr_province }} (CP {{ addr.adr_postalcode }})</p>
+                        
+                        <div class="reference-box" *ngIf="addr.adr_reference" style="background: #fdfaf2; padding: 10px; border-radius: 6px; border: 1px dashed #fae3b4; margin-bottom: 12px; font-size: 13px; color: #c48a1d;">
+                            <strong>Indicaciones:</strong> {{ addr.adr_reference }}
+                        </div>
+
+                        <!-- Ítems del paquete -->
+                        <div class="driver-items-summary" style="background: #fafafa; padding: 12px 16px; border-radius: 8px; margin-bottom: 16px;">
+                            <span class="items-summary-title" style="display: block; font-size: 11px; font-weight: 600; text-transform: uppercase; color: #8c8c8c; margin-bottom: 6px; letter-spacing: 0.5px;">Bultos a Entregar:</span>
+                            <ul class="items-list-compact" style="margin: 0; padding-left: 18px; font-size: 13px; color: #595959; line-height: 1.6;">
+                                <li *ngFor="let item of getMockOrderItems(order.ord_uuid)">
+                                    <strong>{{ item.qty }}x</strong> {{ item.name }}
+                                </li>
+                            </ul>
+                        </div>
+
+                        <!-- Monto a Cobrar -->
+                        <div class="price-cash-banner" [style.background]="order.ord_customernotes.toLowerCase().includes('efectivo') ? 'rgba(82,196,26,0.04)' : 'rgba(24,144,255,0.03)'" style="padding: 12px 16px; border-radius: 8px; display: flex; align-items: center; justify-content: space-between; flex-wrap: wrap; gap: 8px; margin-bottom: 18px; border: 1px solid;" [style.border-color]="order.ord_customernotes.toLowerCase().includes('efectivo') ? 'rgba(82,196,26,0.15)' : 'rgba(24,144,255,0.1)'">
+                            <span style="font-size: 13px; color: #595959; font-weight: 500;">Monto a Rendir:</span>
+                            <div style="display: flex; align-items: center; gap: 8px;">
+                                <strong class="total-price-tag" style="font-size: 18px; font-weight: 800; color: #1f1f1f;">${{ order.ord_total | number:'1.2-2' }}</strong>
+                                <span class="cash-warning-tag" *ngIf="order.ord_customernotes.toLowerCase().includes('efectivo')" style="background: #52c41a; color: #fff; font-size: 10px; font-weight: 700; padding: 2px 6px; border-radius: 4px; text-transform: uppercase;">
+                                    💵 COBRAR EFECTIVO
+                                </span>
+                                <span class="paid-tag" *ngIf="!order.ord_customernotes.toLowerCase().includes('efectivo')" style="background: #1890ff; color: #fff; font-size: 10px; font-weight: 700; padding: 2px 6px; border-radius: 4px; text-transform: uppercase;">
+                                    💳 YA ABONADO
+                                </span>
+                            </div>
+                        </div>
+
+                        <!-- Botones Rápidos de Comunicación y GPS -->
+                        <div class="driver-tactile-buttons" style="display: flex; gap: 10px; flex-wrap: wrap;">
+                            <!-- GPS Google Maps -->
+                            <a nz-button nzType="default" nzSize="large" target="_blank"
+                               [href]="getGoogleMapsLink(addr)"
+                               class="tactile-btn maps-btn" style="flex: 2; min-width: 140px; border-color: #fa8c16; color: #fa8c16; background: rgba(250,140,22,0.01); display: inline-flex; align-items: center; justify-content: center; gap: 6px; font-weight: 600; border-radius: 8px; height: 44px;">
+                                <span nz-icon nzType="compass" nzTheme="outline" style="font-size: 16px;"></span>
+                                Navegar GPS
+                            </a>
+
+                            <!-- Llamar -->
+                            <a nz-button nzType="default" nzSize="large" [href]="'tel:' + addr.adr_contactphone"
+                               class="tactile-btn call-btn" style="flex: 1; border-color: #1890ff; color: #1890ff; display: inline-flex; align-items: center; justify-content: center; border-radius: 8px; height: 44px;">
+                                <span nz-icon nzType="phone" nzTheme="outline" style="font-size: 16px;"></span>
+                            </a>
+
+                            <!-- WhatsApp -->
+                            <a nz-button nzType="default" nzSize="large" target="_blank"
+                               [href]="'https://wa.me/' + addr.adr_contactphone.replace(' ', '').replace('+', '').replace('-', '')"
+                               class="tactile-btn wa-btn" style="flex: 1; border-color: #25d366; color: #25d366; display: inline-flex; align-items: center; justify-content: center; background: rgba(37,211,102,0.01); border-radius: 8px; height: 44px;">
+                                <span nz-icon nzType="whats-app" nzTheme="outline" style="font-size: 16px;"></span>
+                            </a>
+                        </div>
+                    </div>
+                    
+                    <ng-template #loadingAddr>
+                        <div style="padding: 24px 0; text-align: center; color: #8c8c8c;">
+                            <span nz-icon nzType="loading" style="font-size: 24px; margin-bottom: 8px; color: #1890ff;"></span>
+                            <p style="margin: 0; font-size: 13px;">Resolviendo coordenadas de entrega...</p>
+                        </div>
+                    </ng-template>
+                </div>
+
+                <!-- Botones de Flujo de Entrega (Táctiles) -->
+                <div class="card-route-footer" style="background: #fafafa; padding: 16px 20px; border-top: 1px solid #f0f0f0; display: flex; width: 100%;">
+                    <!-- Si está en Preparación (PROCESSING): Iniciar entrega -->
+                    <button nz-button nzType="primary" nzBlock nzSize="large" class="flow-action-btn start-delivery-btn"
+                            *ngIf="order.ord_status === 'PROCESSING'"
+                            (click)="startDeliveryWorkflow(order, $event)" style="border-radius: 8px; font-weight: 700; height: 48px; font-size: 15px; background: #fa8c16; border-color: #fa8c16; display: inline-flex; align-items: center; justify-content: center; gap: 8px;">
+                        <span nz-icon nzType="car" nzTheme="outline" style="font-size: 18px;"></span>
+                        Cargar Mochila e Iniciar Viaje
+                    </button>
+
+                    <!-- Si está En viaje (SHIPPED): Completar o Reportar Incidencia -->
+                    <div class="shipped-actions-wrapper" *ngIf="order.ord_status === 'SHIPPED'" style="display: flex; gap: 10px; width: 100%;">
+                        <button nz-button nzType="primary" nzSize="large" class="flow-action-btn complete-delivery-btn"
+                                (click)="markAsDelivered(order, $event)" style="flex: 2; border-radius: 8px; font-weight: 700; height: 48px; font-size: 15px; background: #52c41a; border-color: #52c41a; display: inline-flex; align-items: center; justify-content: center; gap: 6px;">
+                            <span nz-icon nzType="check-circle" nzTheme="outline" style="font-size: 18px;"></span>
+                            Entregado con éxito
+                        </button>
+                        <button nz-button nzType="default" nzDanger nzSize="large" class="flow-action-btn incident-delivery-btn"
+                                (click)="openIncidentWorkflow(order, $event)" style="flex: 1; border-radius: 8px; font-weight: 600; height: 48px; font-size: 13px; display: inline-flex; align-items: center; justify-content: center; gap: 4px;">
+                            <span nz-icon nzType="warning" nzTheme="outline"></span>
+                            Novedad
+                        </button>
+                    </div>
+                </div>
+
+            </div>
+
+        </div>
+
+        <ng-template #emptyRoute>
+            <nz-card class="premium-card" style="text-align: center; padding: 48px 24px; border-radius: 12px; border: 1px solid #f0f0f0;">
+                <span nz-icon nzType="check-circle" nzTheme="twotone" [nzTwotoneColor]="'#52c41a'" style="font-size: 56px; margin-bottom: 16px;"></span>
+                <h3 style="font-weight: 700; color: #262626; margin-bottom: 8px; font-size: 18px;">¡Hojas de Ruta al Día!</h3>
+                <p style="color: #8c8c8c; margin: 0; font-size: 14px;">No tienes despachos de motomensajería o correo pendientes de viaje para hoy.</p>
+            </nz-card>
+        </ng-template>
+
+    </div>
+
+    <!-- DRAWER MÓVIL: CONTROL DE CARGA (CHECKLIST) -->
+    <nz-drawer [nzVisible]="isChecklistVisible" nzPlacement="bottom" [nzTitle]="checklistTitle" [nzHeight]="'auto'"
+        [nzClosable]="true" (nzOnClose)="isChecklistVisible = false">
+        <ng-container *nzDrawerContent>
+            <div class="checklist-drawer-content" *ngIf="checklistOrder" style="padding: 8px 4px 16px 4px;">
+                <p class="checklist-desc" style="font-size: 14px; color: #595959; margin-bottom: 18px; line-height: 1.5;">
+                    Por favor, confirma que llevas los siguientes artículos dentro de tu mochila de repartos antes de salir del local comercial:
+                </p>
+
+                <!-- Listado de ítems con Checkboxes -->
+                <div class="checklist-items-group" style="display: flex; flex-direction: column; gap: 12px; margin-bottom: 20px;">
+                    <label *ngFor="let item of checklistItems" class="checklist-item-row" [style.background]="item.checked ? 'rgba(82, 196, 26, 0.04)' : '#fafafa'" [style.border-color]="item.checked ? 'rgba(82, 196, 26, 0.15)' : '#e8e8e8'" style="display: flex; align-items: center; gap: 12px; padding: 14px 18px; border-radius: 8px; border: 1px solid; cursor: pointer; transition: all 0.2s;">
+                        <input type="checkbox" [(ngModel)]="item.checked" class="driver-checkbox" style="width: 20px; height: 20px; accent-color: #52c41a; cursor: pointer;" />
+                        <span class="checklist-qty" style="font-size: 15px; font-weight: 700; color: #1890ff; min-width: 24px;">{{ item.qty }}x</span>
+                        <span class="checklist-name" style="font-size: 14px; color: #262626; font-weight: 500;" [style.text-decoration]="item.checked ? 'line-through' : 'none'" [style.color]="item.checked ? '#8c8c8c' : '#262626'">{{ item.name }}</span>
+                    </label>
+                </div>
+
+                <!-- Advertencia de Cobro si es Efectivo -->
+                <div class="checklist-cash-notice" *ngIf="checklistOrder.ord_customernotes.toLowerCase().includes('efectivo')" style="background: rgba(250, 140, 22, 0.06); padding: 12px 16px; border-radius: 8px; border: 1px dashed #fa8c16; margin-bottom: 20px; display: flex; gap: 10px; font-size: 13px; color: #c48a1d; line-height: 1.5;">
+                    <span nz-icon nzType="info-circle" nzTheme="fill" style="font-size: 16px; margin-top: 2px;"></span>
+                    <div>
+                        <strong>Cobro Contra Entrega Requerido:</strong> 
+                        Este flete requiere cobranza en domicilio. Asegúrate de llevar cambio suficiente para cobrar <strong>${{ checklistOrder.ord_total | number:'1.2-2' }}</strong>.
+                    </div>
+                </div>
+
+                <!-- Botón de Confirmación -->
+                <button nz-button nzType="primary" nzBlock nzSize="large" class="confirm-route-start-btn"
+                        [disabled]="!isChecklistComplete()"
+                        (click)="confirmLoadAndStartRoute()" style="border-radius: 8px; font-weight: 700; height: 48px; font-size: 15px; display: inline-flex; align-items: center; justify-content: center; gap: 8px;">
+                    <span nz-icon nzType="play-circle" nzTheme="outline" style="font-size: 18px;"></span>
+                    Carga Verificada - Iniciar Ruta
+                </button>
+            </div>
+        </ng-container>
+        <ng-template #checklistTitle>
+            📋 Control de Carga - Pedido #{{ checklistOrder?.ord_ordernumber }}
+        </ng-template>
+    </nz-drawer>
+
+    <!-- DRAWER MÓVIL: REPORTAR CONTRATIEMPO (INCIDENCIAS) -->
+    <nz-drawer [nzVisible]="isIncidentVisible" nzPlacement="bottom" [nzTitle]="incidentTitle" [nzHeight]="'auto'"
+        [nzClosable]="true" (nzOnClose)="isIncidentVisible = false">
+        <ng-container *nzDrawerContent>
+            <div class="incident-drawer-content" *ngIf="incidentOrder" style="padding: 8px 4px 16px 4px;">
+                <p class="incident-desc" style="font-size: 14px; color: #595959; margin-bottom: 18px; line-height: 1.5;">
+                    Registra qué contratiempo ocurrió con el pedido #{{ incidentOrder.ord_ordernumber }}. La compra se devolverá a base para su reprogramación.
+                </p>
+
+                <div class="incident-field">
+                    <label class="field-label" style="display: block; font-size: 12px; font-weight: 600; color: #8c8c8c; text-transform: uppercase; margin-bottom: 8px; letter-spacing: 0.5px;">Selecciona el motivo principal:</label>
+                    <div class="incident-reasons-grid" style="display: grid; grid-template-columns: 1fr 1fr; gap: 10px;">
+                        <button nz-button nzType="default" class="reason-button" 
+                                [class.reason-selected]="incidentReason === 'Cliente Ausente'"
+                                (click)="incidentReason = 'Cliente Ausente'" style="border-radius: 8px; height: 48px; font-size: 13px; font-weight: 500; text-align: center; white-space: normal; line-height: 1.2;">
+                            Cliente Ausente
+                        </button>
+                        <button nz-button nzType="default" class="reason-button" 
+                                [class.reason-selected]="incidentReason === 'Dirección Incorrecta'"
+                                (click)="incidentReason = 'Dirección Incorrecta'" style="border-radius: 8px; height: 48px; font-size: 13px; font-weight: 500; text-align: center; white-space: normal; line-height: 1.2;">
+                            Dirección Incorrecta
+                        </button>
+                        <button nz-button nzType="default" class="reason-button" 
+                                [class.reason-selected]="incidentReason === 'Pedido Rechazado'"
+                                (click)="incidentReason = 'Pedido Rechazado'" style="border-radius: 8px; height: 48px; font-size: 13px; font-weight: 500; text-align: center; white-space: normal; line-height: 1.2;">
+                            Cliente Rechazó
+                        </button>
+                        <button nz-button nzType="default" class="reason-button" 
+                                [class.reason-selected]="incidentReason === 'Fuerza Mayor'"
+                                (click)="incidentReason = 'Fuerza Mayor'" style="border-radius: 8px; height: 48px; font-size: 13px; font-weight: 500; text-align: center; white-space: normal; line-height: 1.2;">
+                            Tránsito / Clima
+                        </button>
+                    </div>
+                </div>
+
+                <div class="incident-field" style="margin-top: 18px;">
+                    <label class="field-label" style="display: block; font-size: 12px; font-weight: 600; color: #8c8c8c; text-transform: uppercase; margin-bottom: 6px; letter-spacing: 0.5px;">Comentarios de calle (opcional):</label>
+                    <textarea nz-input [nzAutosize]="{ minRows: 2, maxRows: 3 }" 
+                              placeholder="Ej: Toqué timbre 3 veces, llamé al celular y daba apagado."
+                              [(ngModel)]="incidentNotes"
+                              style="border-radius: 8px; font-size: 14px; padding: 10px;"></textarea>
+                </div>
+
+                <!-- Botón de Envío -->
+                <button nz-button nzType="primary" nzDanger nzBlock nzSize="large" 
+                        [disabled]="!incidentReason"
+                        (click)="submitIncident()"
+                        style="margin-top: 24px; border-radius: 8px; font-weight: 700; height: 48px; font-size: 15px; display: inline-flex; align-items: center; justify-content: center; gap: 8px;">
+                    <span nz-icon nzType="close-circle" nzTheme="outline" style="font-size: 18px;"></span>
+                    Devolver a Base con Novedad
+                </button>
+            </div>
+        </ng-container>
+        <ng-template #incidentTitle>
+            ⚠️ Registrar Novedad - Pedido #{{ incidentOrder?.ord_ordernumber }}
+        </ng-template>
+    </nz-drawer>
 
 <!-- DRAWER: VISTA DETALLADA DEL PEDIDO -->
-<nz-drawer [nzVisible]="isDrawerVisible" nzPlacement="right" [nzTitle]="drawerTitle" [nzWidth]="'450px'"
+<nz-drawer [nzVisible]="isDrawerVisible" nzPlacement="right" [nzTitle]="drawerTitle" [nzWidth]="'520px'"
     (nzOnClose)="closeDrawer()">
 
     <ng-container *nzDrawerContent>
         <div *ngIf="selectedOrder" class="drawer-content-wrapper">
 
-            <div class="drawer-header-status">
-                <h2 style="margin: 0;">#{{ selectedOrder.ord_ordernumber }}</h2>
-                <nz-tag [nzColor]="getStatusColor(selectedOrder.ord_status)" style="margin-left: auto;">
+            <div class="drawer-header-status" style="display: flex; align-items: center; justify-content: space-between; width: 100%;">
+                <h2 style="margin: 0; font-weight: 700; color: #262626;">Pedido #{{ selectedOrder.ord_ordernumber }}</h2>
+                <nz-tag [nzColor]="getStatusColor(selectedOrder.ord_status)" style="font-size: 13px; padding: 2px 10px; border-radius: 4px; font-weight: 500;">
                     {{ getStatusLabel(selectedOrder.ord_status) }}
                 </nz-tag>
             </div>
+            <p style="color: #8c8c8c; margin: 4px 0 0 0; font-size: 13px;">Registrado el: {{ selectedOrder.ord_date | date:'dd/MM/yyyy HH:mm' }}</p>
 
-            <nz-divider></nz-divider>
+            <nz-divider style="margin: 16px 0;"></nz-divider>
 
-            <!-- SECCIÓN: VERIFICACIÓN DE PAGO -->
+            <!-- SECCIÓN: VERIFICACIÓN DE PAGO (SOLO PENDIENTES) -->
             <div *ngIf="selectedOrder.ord_status === 'PENDING'" style="margin-bottom: 24px;">
-                <nz-alert nzType="warning" nzShowIcon nzMessage="Pago Pendiente de Supervisión"
-                    [nzDescription]="paymentDesc">
-                </nz-alert>
+                <nz-alert nzType="warning" nzShowIcon nzMessage="Supervisar Pago" [nzDescription]="paymentDesc"></nz-alert>
                 <ng-template #paymentDesc>
-                    El cliente ha realizado un pedido. Por favor, verificar y procesar.
-
-                    <div style="margin-top: 16px; display: flex; gap: 8px;">
-                        <button nz-button nzType="primary" nzSize="small"
-                            (click)="approvePayment(selectedOrder)">Aprobar y Preparar</button>
-                        <button nz-button nzType="default" nzDanger nzSize="small"
-                            (click)="rejectPayment(selectedOrder)">Rechazar</button>
+                    <div style="margin-top: 8px;" *ngIf="parseCustomerNotes(selectedOrder.ord_customernotes) as parsed">
+                        <p style="margin: 0 0 6px 0;"><strong>Método de Pago:</strong> {{ parsed.payment }}</p>
+                        <p style="margin: 0 0 12px 0;" *ngIf="parsed.voucher !== 'N/A'">
+                            <strong>N° Comprobante:</strong> 
+                            <nz-tag nzColor="blue" style="font-weight: 600; font-size: 13px; margin-left: 4px;">{{ parsed.voucher }}</nz-tag>
+                        </p>
+                        <div style="display: flex; gap: 8px;">
+                            <button nz-button nzType="primary" nzSize="small" style="border-radius: 4px; font-weight: 500;" (click)="approvePayment(selectedOrder)">
+                                <span nz-icon nzType="check"></span> Aprobar Pago
+                            </button>
+                            <button nz-button nzType="default" nzDanger nzSize="small" style="border-radius: 4px; font-weight: 500;" (click)="rejectPayment(selectedOrder)">
+                                Rechazar
+                            </button>
+                        </div>
                     </div>
                 </ng-template>
             </div>
 
-            <nz-descriptions nzTitle="Datos del Cliente" [nzColumn]="1" nzSize="small">
-                <nz-descriptions-item nzTitle="ID Cliente">{{ selectedOrder.cus_uuid }}</nz-descriptions-item>
-            </nz-descriptions>
+            <!-- SECCIÓN: INFORMACIÓN DE DESPACHO / MODALIDAD -->
+            <nz-card class="premium-card" style="margin-bottom: 24px; border: 1px solid #f0f0f0;" [nzBodyStyle]="{padding: '16px'}" *ngIf="parseCustomerNotes(selectedOrder.ord_customernotes) as parsed">
+                <div style="display: flex; flex-direction: column; width: 100%;">
+                    
+                    <div style="display: flex; align-items: center; gap: 8px; margin-bottom: 12px;" *ngIf="getDeliveryType(selectedOrder.ord_customernotes) as delivery">
+                        <span nz-icon [nzType]="delivery.icon" nzTheme="outline" style="font-size: 20px; padding: 6px; background: rgba(24, 144, 255, 0.1); border-radius: 6px; color: #1890ff;"></span>
+                        <div>
+                            <span style="font-size: 11px; color: #8c8c8c; text-transform: uppercase; font-weight: 600; letter-spacing: 0.5px;">Modalidad de Despacho</span>
+                            <h4 style="margin: 0; font-size: 15px; font-weight: 700; color: #262626;">{{ parsed.shipping }}</h4>
+                        </div>
+                    </div>
 
-            <nz-divider></nz-divider>
+                    <div style="background-color: #fafafa; padding: 14px; border-radius: 8px; border: 1px dashed #e8e8e8;">
+                        
+                        <!-- Retiro en local -->
+                        <div *ngIf="selectedOrder.ord_customernotes.includes('Retiro en el Local')">
+                            <p style="margin: 0; font-weight: 600; color: #52c41a; display: flex; align-items: center; gap: 6px; font-size: 14px;">
+                                <span nz-icon nzType="check-circle" nzTheme="fill"></span> Retiro en Local Comercial (Costo: $0)
+                            </p>
+                            <p style="margin: 6px 0 0 0; font-size: 13px; color: #8c8c8c;">El comprador retirará los artículos en la sucursal del comercio una vez que completes la preparación.</p>
+                        </div>
 
-            <h3 style="font-size: 16px; font-weight: 500; margin-bottom: 16px;">Contenido del Pedido</h3>
+                        <!-- Acordar con el vendedor -->
+                        <div *ngIf="selectedOrder.ord_customernotes.includes('Acordar con el Vendedor')">
+                            <p style="margin: 0; font-weight: 600; color: #fa8c16; display: flex; align-items: center; gap: 6px; font-size: 14px;">
+                                <span nz-icon nzType="info-circle" nzTheme="fill"></span> Flete y entrega a coordinar
+                            </p>
+                            <p style="margin: 6px 0 0 0; font-size: 13px; color: #8c8c8c;">Ponte en contacto con el comprador para definir y cobrar la tarifa del flete.</p>
+                        </div>
 
-            <div class="order-item-list">
-                <p style="color: gray;">Aún no se han implementado las líneas de detalle.</p>
+                        <!-- Moto o Correo con Domicilio -->
+                        <div *ngIf="!selectedOrder.ord_customernotes.includes('Retiro en el Local') && !selectedOrder.ord_customernotes.includes('Acordar con el Vendedor')">
+                            <div *ngIf="selectedOrderAddress as addr; else noAddr">
+                                <span style="font-size: 10px; color: #8c8c8c; font-weight: 600; text-transform: uppercase; letter-spacing: 0.5px;">Dirección de Entrega</span>
+                                <p style="margin: 4px 0 2px 0; font-size: 14px; font-weight: 600; color: #1f1f1f;">
+                                    {{ addr.adr_address }}
+                                </p>
+                                <p style="margin: 0; font-size: 13px; color: #595959;">
+                                    {{ addr.adr_city }}, {{ addr.adr_province }} (CP {{ addr.adr_postalcode }})
+                                </p>
+                                <p style="margin: 4px 0 0 0; font-size: 12px; color: #8c8c8c;" *ngIf="addr.adr_reference">
+                                    <strong>Referencia:</strong> {{ addr.adr_reference }}
+                                </p>
+
+                                <!-- Botón de mapas premium para el conductor / repartidor -->
+                                <div style="margin-top: 12px;">
+                                    <a nz-button nzType="default" nzBlock nzSize="large" target="_blank"
+                                       [href]="getGoogleMapsLink(addr)"
+                                       style="border-color: #52c41a; color: #52c41a; display: inline-flex; align-items: center; justify-content: center; gap: 6px; font-weight: 500; border-radius: 6px; background: rgba(82,196,26,0.02); font-size: 14px;">
+                                        <span nz-icon nzType="compass" nzTheme="outline" style="font-size: 16px;"></span>
+                                        Navegar GPS (Google Maps)
+                                    </a>
+                                </div>
+                            </div>
+                            <ng-template #noAddr>
+                                <p style="margin: 0; font-size: 13px; color: #8c8c8c;">Dirección no cargada en libreta. Ver detalles en formulario de compra.</p>
+                            </ng-template>
+                        </div>
+
+                    </div>
+                </div>
+            </nz-card>
+
+            <!-- SECCIÓN: DATOS DE CONTACTO -->
+            <nz-card class="premium-card" nzTitle="Datos del Destinatario" style="margin-bottom: 24px; border: 1px solid #f0f0f0;" [nzBodyStyle]="{padding: '16px'}">
+                <div *ngIf="selectedOrderAddress as addr; else basicCus">
+                    <nz-descriptions [nzColumn]="1" nzSize="small">
+                        <nz-descriptions-item nzTitle="Nombre Destinatario">{{ addr.adr_recipientname }}</nz-descriptions-item>
+                        <nz-descriptions-item nzTitle="Teléfono Contacto">
+                            <span style="font-weight: 600; color: #1890ff;">{{ addr.adr_contactphone }}</span>
+                        </nz-descriptions-item>
+                    </nz-descriptions>
+
+                    <!-- Botones Rápidos para Whatsapp y Llamadas del Repartidor -->
+                    <div style="margin-top: 12px; display: flex; gap: 10px;">
+                        <a nz-button nzType="default" style="flex: 1; border-color: #1890ff; color: #1890ff; display: inline-flex; align-items: center; justify-content: center; gap: 4px; border-radius: 6px; font-weight: 500; font-size: 13px;"
+                           [href]="'tel:' + addr.adr_contactphone">
+                            <span nz-icon nzType="phone" nzTheme="outline"></span> Llamar por Teléfono
+                        </a>
+                        <a nz-button nzType="default" style="flex: 1; border-color: #25d366; color: #25d366; display: inline-flex; align-items: center; justify-content: center; gap: 4px; border-radius: 6px; font-weight: 500; font-size: 13px; background: rgba(37,211,102,0.01);"
+                           target="_blank" [href]="'https://wa.me/' + addr.adr_contactphone.replace(' ', '').replace('+', '').replace('-', '')">
+                            <span nz-icon nzType="whats-app" nzTheme="outline"></span> Enviar WhatsApp
+                        </a>
+                    </div>
+                </div>
+                <ng-template #basicCus>
+                    <nz-descriptions [nzColumn]="1" nzSize="small">
+                        <nz-descriptions-item nzTitle="ID Cliente">{{ selectedOrder.cus_uuid }}</nz-descriptions-item>
+                        <nz-descriptions-item nzTitle="Detalles adicionales" *ngIf="parseCustomerNotes(selectedOrder.ord_customernotes) as parsed">
+                            {{ parsed.extraNotes || 'Ninguno' }}
+                        </nz-descriptions-item>
+                    </nz-descriptions>
+                </ng-template>
+            </nz-card>
+
+            <!-- SECCIÓN: ASIGNACIÓN DE GUÍA (CORREO NACIONAL) -->
+            <nz-card class="premium-card" style="margin-bottom: 24px; border: 1px solid #f0f0f0;" [nzBodyStyle]="{padding: '16px'}"
+                *ngIf="selectedOrder.ord_customernotes.includes('Correo Postal Nacional') && (selectedOrder.ord_status === 'PROCESSING' || selectedOrder.ord_status === 'SHIPPED')">
+                <h4 style="font-weight: 600; margin-bottom: 8px; display: flex; align-items: center; gap: 6px;">
+                    <span nz-icon nzType="barcode" nzTheme="outline" style="color: #1890ff;"></span> Código de Seguimiento (Tracking)
+                </h4>
+                <div style="display: flex; gap: 8px;">
+                    <input nz-input placeholder="Ej: AR994821034" [(ngModel)]="selectedOrder.ord_trackingnumber" style="border-radius: 6px;" />
+                    <button nz-button nzType="primary" style="border-radius: 6px;" (click)="saveTrackingNumber(selectedOrder, selectedOrder.ord_trackingnumber)">
+                        Guardar
+                    </button>
+                </div>
+                <p style="margin: 4px 0 0 0; font-size: 11px; color: #8c8c8c;">Guarda el código postal para que el cliente pueda rastrear su paquete en tiempo real.</p>
+            </nz-card>
+
+            <!-- SECCIÓN: CONTROL DEL FLUJO DE ENTREGA -->
+            <div style="margin-bottom: 24px; display: flex; flex-direction: column; gap: 10px;" *ngIf="selectedOrder.ord_status === 'PROCESSING' || selectedOrder.ord_status === 'SHIPPED'">
+                <span style="font-size: 12px; font-weight: 600; color: #8c8c8c; text-transform: uppercase; letter-spacing: 0.5px; margin-bottom: 2px;">Cambiar Estado de Entrega</span>
+                
+                <!-- De preparación a Despachado -->
+                <button nz-button nzType="primary" nzBlock nzSize="large" style="border-radius: 8px; font-weight: 600; height: 44px; font-size: 15px; background: #fa8c16; border-color: #fa8c16;" 
+                        *ngIf="selectedOrder.ord_status === 'PROCESSING'" (click)="markAsShipped(selectedOrder, $event)">
+                    🚚 Despachar / Enviar Pedido
+                </button>
+
+                <!-- De Despachado a Entregado -->
+                <button nz-button nzType="primary" nzBlock nzSize="large" style="border-radius: 8px; font-weight: 600; height: 44px; font-size: 15px; background: #52c41a; border-color: #52c41a;" 
+                        *ngIf="selectedOrder.ord_status === 'SHIPPED'" (click)="markAsDelivered(selectedOrder)">
+                    🏁 Marcar como Entregado con Éxito
+                </button>
             </div>
 
-            <nz-divider></nz-divider>
-
-            <div class="order-grand-total">
-                <span>Total Cobrado:</span>
-                <span class="g-total-price">ARS ${{ selectedOrder.ord_total | number:'1.2-2' }}</span>
+            <!-- SECCIÓN: MONTO A COBRAR -->
+            <div style="background-color: #f7f9fc; padding: 16px; border-radius: 8px; border: 1px solid #e8e8e8; margin-top: auto;">
+                <div style="display: flex; justify-content: space-between; font-size: 13px; color: #8c8c8c; margin-bottom: 6px;">
+                    <span>Monto de Compra:</span>
+                    <span>${{ selectedOrder.ord_subtotal | number:'1.2-2' }}</span>
+                </div>
+                <div style="display: flex; justify-content: space-between; font-size: 13px; color: #8c8c8c; margin-bottom: 12px;">
+                    <span>Cargo de Envío:</span>
+                    <span style="color: #1890ff; font-weight: 500;">${{ selectedOrder.ord_shippingcost | number:'1.2-2' }}</span>
+                </div>
+                <nz-divider style="margin: 8px 0;"></nz-divider>
+                <div class="order-grand-total" style="background-color: transparent; padding: 0; margin-top: 0;">
+                    <span style="font-weight: 600; color: #262626;">Total Facturado:</span>
+                    <span class="g-total-price" style="font-size: 20px; font-weight: 700; color: #1890ff;">${{ selectedOrder.ord_total | number:'1.2-2' }}</span>
+                </div>
             </div>
 
         </div>
     </ng-container>
 
-    <!-- Template for custom Drawer Title -->
     <ng-template #drawerTitle>
-        Detalle de Compra
+        Detalle de Despacho y Entrega
     </ng-template>
 </nz-drawer>

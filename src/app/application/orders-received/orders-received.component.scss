@@ -6,23 +6,53 @@
 
 .dashboard-header {
     margin-bottom: 24px;
+    display: flex;
+    justify-content: space-between;
+    align-items: flex-start;
+    flex-wrap: wrap;
+    gap: 16px;
+
+    .header-titles {
+        flex: 1;
+        min-width: 250px;
+    }
 
     .page-title {
         font-size: 28px;
-        font-weight: 600;
+        font-weight: 700;
         color: #1f1f1f;
         margin-bottom: 4px;
+        letter-spacing: -0.5px;
     }
 
     .page-subtitle {
         color: #8c8c8c;
         font-size: 15px;
+        margin: 0;
+    }
+
+    .delivery-toggle-btn {
+        height: 44px;
+        border-radius: 8px;
+        font-weight: 600;
+        display: flex;
+        align-items: center;
+        gap: 8px;
+        transition: all 0.3s cubic-bezier(0.165, 0.84, 0.44, 1);
+        box-shadow: 0 2px 8px rgba(24, 144, 255, 0.1);
+
+        &:hover {
+            transform: translateY(-1px);
+            box-shadow: 0 4px 12px rgba(24, 144, 255, 0.2);
+        }
     }
 }
 
 .premium-card {
     border-radius: 12px;
-    box-shadow: 0 4px 24px rgba(0, 0, 0, 0.04);
+    border: 1px solid #f0f0f0;
+    box-shadow: 0 4px 24px rgba(0, 0, 0, 0.03);
+    transition: all 0.3s ease;
 }
 
 .clickable-row {
@@ -134,3 +164,416 @@
         color: #1890ff;
     }
 }
+
+// ==========================================
+// MODO REPARTIDOR: DELIVERER MOBILE STYLES
+// ==========================================
+
+.delivery-mode-container {
+    max-width: 800px;
+    margin: 0 auto;
+    width: 100%;
+    animation: fadeIn 0.4s ease-out;
+
+    .delivery-stats-card {
+        border-radius: 16px;
+        overflow: hidden;
+        border: none !important;
+        box-shadow: 0 8px 32px rgba(0, 0, 0, 0.04) !important;
+        background: linear-gradient(135deg, #ffffff 0%, #fafbfc 100%) !important;
+
+        .stats-card-content {
+            padding: 4px;
+        }
+
+        .stats-financial {
+            transition: all 0.3s ease;
+            box-shadow: 0 4px 12px rgba(82, 196, 26, 0.05);
+
+            &:hover {
+                box-shadow: 0 6px 16px rgba(82, 196, 26, 0.1);
+                transform: translateY(-1px);
+            }
+        }
+    }
+
+    // Grid de Tarjetas
+    .delivery-cards-grid {
+        margin-top: 12px;
+    }
+
+    // Tarjeta de Ruta Individual
+    .delivery-route-card {
+        position: relative;
+        border-left: 6px solid #d9d9d9 !important;
+        border-color: #f0f0f0;
+        transition: all 0.3s cubic-bezier(0.165, 0.84, 0.44, 1) !important;
+        box-shadow: 0 4px 16px rgba(0, 0, 0, 0.02) !important;
+
+        &:hover {
+            transform: translateY(-3px);
+            box-shadow: 0 12px 30px rgba(0, 0, 0, 0.07) !important;
+        }
+
+        // Estado: En Preparación
+        &.card-processing {
+            border-left: 6px solid #1890ff !important;
+
+            .stop-badge {
+                background: #1890ff !important;
+            }
+        }
+
+        // Estado: En viaje / Despachado
+        &.card-shipped {
+            border-left: 6px solid #fa8c16 !important;
+            background: linear-gradient(180deg, #ffffff 0%, #fffcf8 100%) !important;
+
+            .stop-badge {
+                background: #fa8c16 !important;
+            }
+        }
+
+        .card-route-header {
+            border-bottom: 1px solid #f5f5f5 !important;
+        }
+
+        .card-route-body {
+            padding: 24px 20px !important;
+        }
+
+        .card-route-footer {
+            border-top: 1px solid #f5f5f5 !important;
+            background: #fafafa;
+        }
+    }
+
+    // Elementos de la Dirección
+    .address-details-block {
+        .recipient-name {
+            font-size: 16px;
+            color: #1a1a1a;
+        }
+
+        .address-text {
+            color: #2f2f2f;
+            line-height: 1.4;
+        }
+
+        .reference-box {
+            border: 1px dashed rgba(250, 140, 22, 0.35) !important;
+            background: rgba(250, 140, 22, 0.03) !important;
+            color: #d46b08 !important;
+            border-radius: 8px;
+            padding: 12px;
+            display: flex;
+            align-items: flex-start;
+            gap: 8px;
+
+            &::before {
+                content: "💡";
+                font-size: 14px;
+            }
+        }
+    }
+
+    // Caja Resumen de Bultos
+    .driver-items-summary {
+        background: #f8fafc !important;
+        border: 1px solid #eef2f6;
+        border-radius: 10px;
+        padding: 14px 18px !important;
+
+        .items-list-compact {
+            margin: 0;
+            padding-left: 16px;
+
+            li {
+                margin-bottom: 4px;
+                color: #4a5568;
+
+                strong {
+                    color: #1890ff;
+                }
+
+                &:last-child {
+                    margin-bottom: 0;
+                }
+            }
+        }
+    }
+
+    // Botones Tactiles de Acceso Rápido
+    .driver-tactile-buttons {
+        .tactile-btn {
+            height: 48px !important;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-weight: 600;
+            font-size: 14px;
+            border-radius: 10px;
+            transition: all 0.2s ease;
+            box-shadow: 0 2px 6px rgba(0, 0, 0, 0.02);
+
+            span {
+                font-size: 18px !important;
+            }
+
+            &:active {
+                transform: scale(0.97);
+            }
+
+            &.maps-btn {
+                background: rgba(250, 140, 22, 0.03) !important;
+                border-color: #fa8c16 !important;
+                color: #fa8c16 !important;
+
+                &:hover {
+                    background: #fa8c16 !important;
+                    color: #fff !important;
+                }
+            }
+
+            &.call-btn {
+                background: rgba(24, 144, 255, 0.03) !important;
+                border-color: #1890ff !important;
+                color: #1890ff !important;
+
+                &:hover {
+                    background: #1890ff !important;
+                    color: #fff !important;
+                }
+            }
+
+            &.wa-btn {
+                background: rgba(37, 211, 102, 0.03) !important;
+                border-color: #25d366 !important;
+                color: #25d366 !important;
+
+                &:hover {
+                    background: #25d366 !important;
+                    color: #fff !important;
+                }
+            }
+        }
+    }
+
+    // Botones de Acción de Flujo
+    .flow-action-btn {
+        height: 52px !important;
+        border-radius: 10px !important;
+        font-weight: 700 !important;
+        font-size: 15px !important;
+        letter-spacing: -0.1px;
+        transition: all 0.2s cubic-bezier(0.165, 0.84, 0.44, 1);
+        box-shadow: 0 4px 12px rgba(0, 0, 0, 0.05);
+
+        &:hover {
+            transform: translateY(-1px);
+        }
+
+        &:active {
+            transform: scale(0.98);
+        }
+
+        &.start-delivery-btn {
+            background: #fa8c16 !important;
+            border-color: #fa8c16 !important;
+
+            &:hover {
+                background: #e07810 !important;
+                border-color: #e07810 !important;
+                box-shadow: 0 6px 16px rgba(250, 140, 22, 0.25) !important;
+            }
+        }
+
+        &.complete-delivery-btn {
+            background: #52c41a !important;
+            border-color: #52c41a !important;
+
+            &:hover {
+                background: #46a614 !important;
+                border-color: #46a614 !important;
+                box-shadow: 0 6px 16px rgba(82, 196, 26, 0.25) !important;
+            }
+        }
+
+        &.incident-delivery-btn {
+            border-color: #ff4d4f !important;
+            color: #ff4d4f !important;
+            background: #fff;
+
+            &:hover {
+                background: rgba(255, 77, 79, 0.04) !important;
+                box-shadow: 0 6px 16px rgba(255, 77, 79, 0.1) !important;
+            }
+        }
+    }
+}
+
+// Drawers Bottom Táctiles (Checklist / Incidencia)
+::ng-deep {
+    .ant-drawer-bottom {
+        .ant-drawer-content {
+            border-top-left-radius: 20px !important;
+            border-top-right-radius: 20px !important;
+            overflow: hidden;
+            box-shadow: 0 -8px 32px rgba(0, 0, 0, 0.08) !important;
+        }
+
+        .ant-drawer-header {
+            border-bottom: 1px solid #f0f0f0 !important;
+            padding: 20px 24px !important;
+            background: #fafafa;
+            
+            .ant-drawer-title {
+                font-size: 18px !important;
+                font-weight: 700 !important;
+                color: #1f1f1f !important;
+            }
+        }
+
+        .ant-drawer-body {
+            padding: 20px 24px 32px 24px !important;
+        }
+    }
+}
+
+// Fila interactiva del Checklist
+.checklist-item-row {
+    display: flex;
+    align-items: center;
+    gap: 14px;
+    padding: 16px 20px !important;
+    border-radius: 10px;
+    border: 1px solid #e8e8e8;
+    background: #fff;
+    cursor: pointer;
+    user-select: none;
+    transition: all 0.25s cubic-bezier(0.165, 0.84, 0.44, 1) !important;
+
+    &:hover {
+        border-color: #b7eb8f;
+        background: rgba(82, 196, 26, 0.02) !important;
+    }
+
+    .driver-checkbox {
+        width: 22px;
+        height: 22px;
+        accent-color: #52c41a;
+        cursor: pointer;
+        border-radius: 4px;
+        border: 2px solid #d9d9d9;
+    }
+
+    .checklist-qty {
+        font-size: 16px;
+        font-weight: 700;
+        color: #1890ff;
+        min-width: 28px;
+    }
+
+    .checklist-name {
+        font-size: 15px;
+        font-weight: 500;
+        color: #262626;
+        transition: all 0.2s ease;
+    }
+}
+
+// Botones de Motivo de Incidencia (Grid)
+.incident-reasons-grid {
+    .reason-button {
+        border-radius: 10px !important;
+        font-size: 13.5px !important;
+        font-weight: 500 !important;
+        border: 1px solid #d9d9d9 !important;
+        color: #595959 !important;
+        background: #fff !important;
+        transition: all 0.2s cubic-bezier(0.165, 0.84, 0.44, 1) !important;
+
+        &:hover {
+            border-color: #ff7875 !important;
+            color: #ff7875 !important;
+        }
+
+        &.reason-selected {
+            background: #fff2f0 !important;
+            border-color: #ff4d4f !important;
+            color: #ff4d4f !important;
+            font-weight: 600 !important;
+            box-shadow: 0 2px 8px rgba(255, 77, 79, 0.08) !important;
+        }
+    }
+}
+
+// Botón de Confirmación del Checklist
+.confirm-route-start-btn {
+    height: 52px !important;
+    border-radius: 10px !important;
+    font-weight: 700 !important;
+    font-size: 15px !important;
+    background: #52c41a !important;
+    border-color: #52c41a !important;
+    box-shadow: 0 4px 12px rgba(82, 196, 26, 0.15);
+
+    &:hover:not([disabled]) {
+        background: #46a614 !important;
+        border-color: #46a614 !important;
+        box-shadow: 0 6px 16px rgba(82, 196, 26, 0.25) !important;
+    }
+
+    &[disabled] {
+        background: #f5f5f5 !important;
+        border-color: #d9d9d9 !important;
+        color: rgba(0, 0, 0, 0.25) !important;
+        box-shadow: none !important;
+    }
+}
+
+// Animación de entrada
+@keyframes fadeIn {
+    from {
+        opacity: 0;
+        transform: translateY(8px);
+    }
+    to {
+        opacity: 1;
+        transform: translateY(0);
+    }
+}
+
+// Responsividad Móvil
+@media (max-width: 576px) {
+    .orders-dashboard-wrapper {
+        padding: 16px 12px;
+    }
+
+    .dashboard-header {
+        margin-bottom: 16px;
+        gap: 12px;
+
+        .page-title {
+            font-size: 22px;
+        }
+    }
+
+    .delivery-mode-container {
+        .delivery-stats-card {
+            margin-bottom: 16px !important;
+        }
+
+        .delivery-route-card {
+            border-radius: 10px !important;
+
+            .card-route-body {
+                padding: 16px 14px !important;
+            }
+
+            .card-route-footer {
+                padding: 12px 14px !important;
+            }
+        }
+    }
+}
