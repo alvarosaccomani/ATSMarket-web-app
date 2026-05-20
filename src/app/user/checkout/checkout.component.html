@@ -34,7 +34,7 @@
 
                     <form nz-form [formGroup]="shippingForm" nzLayout="vertical" *ngIf="showNewAddressForm">
 
-                        <div nz-row [nzGutter]="[16, 0]">
+                        <div nz-row [nzGutter]="[16, 0]" *ngIf="!hasCustomer">
                             <div nz-col [nzXs]="24" [nzSm]="12">
                                 <nz-form-item>
                                     <nz-form-label nzRequired>Nombre</nz-form-label>
@@ -78,6 +78,25 @@
                                     <nz-form-control nzErrorTip="Ingrese un nro válido">
                                         <input nz-input formControlName="telefono" placeholder="Ej: 1122334455"
                                             nzSize="large" />
+                                    </nz-form-control>
+                                </nz-form-item>
+                            </div>
+                        </div>
+
+                        <div nz-row [nzGutter]="[16, 0]">
+                            <div nz-col [nzXs]="24" [nzSm]="12">
+                                <nz-form-item>
+                                    <nz-form-label nzRequired>Provincia</nz-form-label>
+                                    <nz-form-control nzErrorTip="Requerido">
+                                        <input nz-input formControlName="provincia" placeholder="Provincia" nzSize="large" />
+                                    </nz-form-control>
+                                </nz-form-item>
+                            </div>
+                            <div nz-col [nzXs]="24" [nzSm]="12">
+                                <nz-form-item>
+                                    <nz-form-label nzRequired>Código Postal</nz-form-label>
+                                    <nz-form-control nzErrorTip="Requerido">
+                                        <input nz-input formControlName="codigoPostal" placeholder="Ej: 1043" nzSize="large" />
                                     </nz-form-control>
                                 </nz-form-item>
                             </div>
