@@ -79,6 +79,10 @@ export class CheckoutComponent implements OnInit, OnDestroy {
   public isLocalDeliveryAvailable: boolean = false;
   public totalSubtotal: number = 0;
 
+  // Geolocalización y Autocompletado
+  public isDetectingLocation: boolean = false;
+  public detectedCoords: { lat: number, lng: number } | null = null;
+
   constructor(
     private fb: FormBuilder,
     private cartService: CartService,
@@ -161,6 +165,9 @@ export class CheckoutComponent implements OnInit, OnDestroy {
 
   public onAddressSelectionChange(value: string): void {
     this.showNewAddressForm = (value === 'new');
+    if (value !== 'new') {
+      this.detectedCoords = null;
+    }
     this.checkShippingEligibility();
   }
 
@@ -208,11 +215,20 @@ export class CheckoutComponent implements OnInit, OnDestroy {
         }
       }
     } else {
-      // Dirección Nueva: comparar el input del formulario
-      const formCity = (this.shippingForm.get('ciudad')?.value || '').toLowerCase().trim();
-      const compAddress = (this.currentCompany.cmp_address || '').toLowerCase();
-      if (formCity && compAddress.includes(formCity)) {
-        isLocal = true;
+      // Dirección Nueva: usar coordenadas si fueron detectadas
+      if (this.currentCompany.cmp_lat && this.currentCompany.cmp_lng && this.detectedCoords) {
+        const dist = this.calculateDistance(
+          this.currentCompany.cmp_lat, this.currentCompany.cmp_lng,
+          this.detectedCoords.lat, this.detectedCoords.lng
+        );
+        isLocal = dist <= localRadius;
+      } else {
+        // Fallback por coincidencia de ciudad
+        const formCity = (this.shippingForm.get('ciudad')?.value || '').toLowerCase().trim();
+        const compAddress = (this.currentCompany.cmp_address || '').toLowerCase();
+        if (formCity && compAddress.includes(formCity)) {
+          isLocal = true;
+        }
       }
     }
 
@@ -253,6 +269,69 @@ export class CheckoutComponent implements OnInit, OnDestroy {
     }
 
     this.updateShippingCost(localCost, nationalCost);
+  }
+
+  public detectCurrentLocation(): void {
+    if (!navigator.geolocation) {
+      this.message.error('La geolocalización no está soportada por tu navegador.');
+      return;
+    }
+
+    this.isDetectingLocation = true;
+    navigator.geolocation.getCurrentPosition(
+      (position) => {
+        const lat = position.coords.latitude;
+        const lng = position.coords.longitude;
+        this.detectedCoords = { lat, lng };
+
+        // Realizar geocodificación reversa
+        this.reverseGeocode(lat, lng);
+      },
+      (error) => {
+        this.isDetectingLocation = false;
+        this.message.error('No se pudo detectar tu ubicación. Por favor, ingresá los datos manualmente.');
+        console.error('Error de geolocalización:', error);
+      },
+      { enableHighAccuracy: true, timeout: 8000 }
+    );
+  }
+
+  private reverseGeocode(lat: number, lng: number): void {
+    fetch(`https://nominatim.openstreetmap.org/reverse?format=json&lat=${lat}&lon=${lng}&zoom=18&addressdetails=1`)
+      .then(res => res.json())
+      .then(data => {
+        this.isDetectingLocation = false;
+        if (data && data.address) {
+          const addr = data.address;
+          const road = addr.road || '';
+          const houseNumber = addr.house_number || '';
+          const city = addr.city || addr.town || addr.village || addr.suburb || '';
+          const state = addr.state || '';
+          const postcode = addr.postcode || '';
+
+          // Actualizar el formulario reactivo
+          this.shippingForm.patchValue({
+            direccion: `${road} ${houseNumber}`.trim(),
+            ciudad: city,
+            provincia: state,
+            codigoPostal: postcode
+          });
+
+          this.message.success('📍 Ubicación detectada y autocompletada.');
+          
+          // Re-calcular la elegibilidad de envío con las nuevas coordenadas y ciudad
+          this.checkShippingEligibility();
+        } else {
+          this.message.warning('Ubicación detectada, pero no pudimos autocompletar la dirección. Rellénala manualmente.');
+          this.checkShippingEligibility();
+        }
+      })
+      .catch(err => {
+        this.isDetectingLocation = false;
+        console.error('Error en geocodificación reversa:', err);
+        this.message.warning('Ubicación detectada, pero falló el servicio de traducción. Rellena los campos manualmente.');
+        this.checkShippingEligibility();
+      });
   }
 
   public updateShippingCost(localCost?: number, nationalCost?: number): void {
@@ -346,7 +425,9 @@ export class CheckoutComponent implements OnInit, OnDestroy {
       adr_province: val.provincia,
       adr_postalcode: val.codigoPostal,
       adr_contactphone: val.telefono,
-      adr_country: 'Argentina'
+      adr_country: 'Argentina',
+      adr_lat: this.detectedCoords ? this.detectedCoords.lat : undefined,
+      adr_lng: this.detectedCoords ? this.detectedCoords.lng : undefined
     };
 
     this.addressesService.saveAddress(newAddressData).subscribe({

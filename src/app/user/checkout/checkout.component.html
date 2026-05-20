@@ -34,6 +34,13 @@
 
                     <form nz-form [formGroup]="shippingForm" nzLayout="vertical" *ngIf="showNewAddressForm">
 
+                        <div style="margin-bottom: 24px;">
+                            <button nz-button nzType="default" nzSize="large" (click)="detectCurrentLocation()" [nzLoading]="isDetectingLocation" style="border-radius: 8px; font-weight: 500; border-color: #1890ff; color: #1890ff; display: inline-flex; align-items: center; gap: 8px; width: 100%; justify-content: center; background: rgba(24, 144, 255, 0.02);">
+                                <span nz-icon nzType="compass" nzTheme="outline" style="font-size: 18px;"></span>
+                                Usar mi ubicación actual (GPS)
+                            </button>
+                        </div>
+
                         <div nz-row [nzGutter]="[16, 0]" *ngIf="!hasCustomer">
                             <div nz-col [nzXs]="24" [nzSm]="12">
                                 <nz-form-item>
