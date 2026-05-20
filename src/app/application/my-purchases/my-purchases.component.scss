@@ -1,0 +1,583 @@
+.my-purchases-container {
+    max-width: 850px;
+    margin: 0 auto;
+    padding: 24px 16px;
+    animation: fadeIn 0.4s ease-out;
+}
+
+.purchases-header {
+    margin-bottom: 32px;
+
+    .page-title {
+        font-size: 32px;
+        font-weight: 800;
+        color: #1a1a1a;
+        margin-bottom: 6px;
+        letter-spacing: -0.8px;
+    }
+
+    .page-subtitle {
+        color: #718096;
+        font-size: 15px;
+        margin: 0;
+    }
+}
+
+.loading-state {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    padding: 80px 0;
+}
+
+// Tarjetas de Estados Vacíos / Placeholders
+.empty-identity-card, .empty-purchases-card {
+    margin-top: 16px;
+    
+    .premium-card {
+        border-radius: 16px;
+        border: 1px solid #eef2f6;
+        box-shadow: 0 10px 30px rgba(0, 0, 0, 0.03);
+        background: #fff;
+    }
+
+    .text-center {
+        text-align: center;
+    }
+
+    .placeholder-icon {
+        font-size: 64px;
+        margin-bottom: 20px;
+        display: block;
+        
+        &.warning {
+            color: #ff4d4f;
+        }
+    }
+
+    h3 {
+        font-size: 20px;
+        font-weight: 700;
+        color: #2d3748;
+        margin-bottom: 8px;
+    }
+
+    p {
+        color: #718096;
+        font-size: 15px;
+        max-width: 420px;
+        margin: 0 auto 12px auto;
+        line-height: 1.5;
+    }
+}
+
+// Historial: Contenedor y Tarjetas
+.purchases-list-wrapper {
+    display: flex;
+    flex-direction: column;
+    gap: 28px;
+}
+
+.purchase-card {
+    background: #fff;
+    border-radius: 16px;
+    border: 1px solid #eef2f6;
+    box-shadow: 0 6px 20px rgba(0, 0, 0, 0.02);
+    overflow: hidden;
+    transition: all 0.3s cubic-bezier(0.165, 0.84, 0.44, 1);
+    
+    &:hover {
+        transform: translateY(-3px);
+        box-shadow: 0 12px 32px rgba(0, 0, 0, 0.06);
+    }
+
+    &.cancelled-card {
+        border-left: 6px solid #ff4d4f !important;
+        opacity: 0.85;
+
+        .shop-avatar {
+            background: rgba(255, 77, 79, 0.08) !important;
+            color: #ff4d4f !important;
+        }
+    }
+}
+
+// Cabecera de la Tarjeta
+.purchase-card-header {
+    background: #fafbfc;
+    padding: 18px 24px;
+    border-bottom: 1px solid #f0f4f8;
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    flex-wrap: wrap;
+    gap: 16px;
+
+    .shop-main-info {
+        display: flex;
+        align-items: center;
+        gap: 14px;
+    }
+
+    .shop-avatar {
+        width: 44px;
+        height: 44px;
+        border-radius: 12px;
+        background: rgba(24, 144, 255, 0.08);
+        color: #1890ff;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        font-size: 20px;
+        box-shadow: inset 0 2px 4px rgba(24, 144, 255, 0.04);
+    }
+
+    .shop-name {
+        margin: 0 0 2px 0;
+        font-size: 18px;
+        font-weight: 700;
+        color: #1a202c;
+    }
+
+    .order-id {
+        font-size: 13px;
+        font-weight: 600;
+        color: #718096;
+        background: #edf2f7;
+        padding: 2px 8px;
+        border-radius: 6px;
+    }
+
+    .order-meta-info {
+        display: flex;
+        flex-direction: column;
+        align-items: flex-end;
+        gap: 4px;
+
+        .order-date {
+            font-size: 13px;
+            color: #a0aec0;
+            font-weight: 500;
+        }
+
+        .status-badge {
+            font-weight: 600;
+            padding: 3px 10px;
+            border-radius: 6px;
+            margin: 0;
+            font-size: 12px;
+        }
+    }
+}
+
+// Cuerpo de la Tarjeta
+.purchase-card-body {
+    padding: 24px;
+}
+
+// ==========================================
+// CUSTOM STEPPER: RESPONSIVO PREMIUM
+// ==========================================
+.tracking-stepper-wrapper {
+    margin: 20px 0 40px 0;
+}
+
+.custom-stepper {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    position: relative;
+    width: 100%;
+    padding: 0 20px;
+
+    .step-connector {
+        flex: 1;
+        height: 4px;
+        background: #e2e8f0;
+        margin: 0 -10px;
+        transform: translateY(-13px);
+        transition: background-color 0.4s ease;
+        border-radius: 2px;
+        z-index: 1;
+
+        &.completed {
+            background: #52c41a;
+        }
+    }
+
+    .step-node {
+        display: flex;
+        flex-direction: column;
+        align-items: center;
+        position: relative;
+        z-index: 2;
+        cursor: default;
+
+        .node-circle {
+            width: 38px;
+            height: 38px;
+            border-radius: 50%;
+            background: #fff;
+            border: 3px solid #cbd5e0;
+            color: #718096;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 16px;
+            box-shadow: 0 2px 6px rgba(0, 0, 0, 0.03);
+            transition: all 0.3s ease;
+        }
+
+        .node-label {
+            position: absolute;
+            top: 48px;
+            white-space: nowrap;
+            font-size: 12px;
+            font-weight: 600;
+            color: #718096;
+            transition: color 0.3s ease;
+        }
+
+        // Estado: Completado
+        &.completed {
+            .node-circle {
+                border-color: #52c41a;
+                background: #f6ffed;
+                color: #52c41a;
+            }
+
+            .node-label {
+                color: #52c41a;
+                font-weight: 700;
+            }
+        }
+
+        // Estado: Activo (Actual)
+        &.active {
+            .node-circle {
+                border-color: #1890ff;
+                background: #e6f7ff;
+                color: #1890ff;
+                transform: scale(1.15);
+                box-shadow: 0 4px 12px rgba(24, 144, 255, 0.18);
+            }
+
+            .node-label {
+                color: #1890ff;
+                font-weight: 800;
+            }
+        }
+    }
+}
+
+// BLOQUE DE INCIDENCIA
+.incident-alert-banner {
+    background: rgba(255, 77, 79, 0.05);
+    border: 1px solid rgba(255, 77, 79, 0.15);
+    border-radius: 12px;
+    padding: 16px 20px;
+    margin-bottom: 24px;
+    box-shadow: 0 4px 12px rgba(255, 77, 79, 0.02);
+
+    .incident-alert-header {
+        display: flex;
+        align-items: center;
+        gap: 10px;
+        color: #ff4d4f;
+        margin-bottom: 6px;
+
+        span {
+            font-size: 20px;
+        }
+
+        h4 {
+            margin: 0;
+            font-size: 15px;
+            font-weight: 700;
+            color: #cf1322;
+        }
+    }
+
+    .incident-alert-text {
+        margin: 0;
+        font-size: 13.5px;
+        color: #595959;
+        line-height: 1.5;
+
+        strong {
+            color: #ff4d4f;
+            background: rgba(255, 77, 79, 0.04);
+            padding: 1px 4px;
+            border-radius: 4px;
+        }
+    }
+}
+
+// Datos de envío
+.shipping-info-grid {
+    display: grid;
+    grid-template-columns: 1fr;
+    gap: 16px;
+    margin-bottom: 16px;
+
+    @media (min-width: 576px) {
+        grid-template-columns: 1fr 1fr;
+    }
+
+    .info-block {
+        background: #f8fafc;
+        border: 1px solid #edf2f7;
+        border-radius: 10px;
+        padding: 12px 16px;
+    }
+
+    .info-label {
+        display: block;
+        font-size: 11px;
+        font-weight: 600;
+        text-transform: uppercase;
+        color: #a0aec0;
+        margin-bottom: 4px;
+        letter-spacing: 0.5px;
+    }
+
+    .info-value-with-tag {
+        display: flex;
+        align-items: center;
+        font-size: 14px;
+        color: #2d3748;
+    }
+
+    .tracking-number-badge {
+        display: flex;
+        align-items: center;
+        flex-wrap: wrap;
+        font-size: 14px;
+        color: #2d3748;
+        
+        strong {
+            background: #e6f7ff;
+            color: #1890ff;
+            padding: 2px 8px;
+            border-radius: 4px;
+            font-family: monospace;
+            font-size: 13px;
+        }
+    }
+}
+
+// Acordeón de Ítems
+.items-collapse {
+    background: transparent !important;
+    margin-bottom: 16px;
+
+    ::ng-deep {
+        .ant-collapse-header {
+            padding: 8px 0 !important;
+            font-weight: 600;
+            color: #1890ff !important;
+            
+            .ant-collapse-arrow {
+                color: #1890ff !important;
+            }
+        }
+        
+        .ant-collapse-content-box {
+            padding: 12px 16px !important;
+            background: #f8fafc;
+            border-radius: 10px;
+            border: 1px solid #edf2f7;
+        }
+    }
+
+    .collapse-title-text {
+        font-size: 13.5px;
+    }
+}
+
+.purchased-items-list {
+    display: flex;
+    flex-direction: column;
+    gap: 8px;
+}
+
+.purchased-item-row {
+    display: flex;
+    align-items: center;
+    font-size: 13.5px;
+    color: #4a5568;
+
+    .item-qty {
+        font-weight: 700;
+        color: #1890ff;
+        margin-right: 8px;
+        min-width: 20px;
+    }
+
+    .item-name {
+        font-weight: 500;
+    }
+}
+
+// Caja de Desglose de Precios
+.prices-summary-box {
+    background: #fafbfc;
+    border-radius: 12px;
+    padding: 16px 20px;
+    border: 1px solid #f0f4f8;
+
+    .price-row {
+        display: flex;
+        justify-content: space-between;
+        font-size: 13.5px;
+        color: #718096;
+        margin-bottom: 6px;
+
+        &:last-child {
+            margin-bottom: 0;
+        }
+
+        .gratis {
+            color: #52c41a;
+            font-weight: 700;
+        }
+
+        &.grand-total {
+            font-size: 16px;
+            font-weight: 800;
+            color: #1a202c;
+            margin-bottom: 0;
+
+            .price-value {
+                color: #1890ff;
+                font-size: 18px;
+            }
+        }
+    }
+
+    .payment-method-footer {
+        margin-top: 10px;
+        font-size: 12px;
+        color: #a0aec0;
+        border-top: 1px dashed #e2e8f0;
+        padding-top: 8px;
+        display: flex;
+        justify-content: flex-start;
+        flex-wrap: wrap;
+        gap: 6px;
+    }
+}
+
+// Pie de Tarjeta (Botón de WhatsApp)
+.purchase-card-footer {
+    background: #fafbfc;
+    padding: 16px 24px;
+    border-top: 1px solid #f0f4f8;
+    display: flex;
+    justify-content: flex-end;
+    
+    .chat-whatsapp-btn {
+        background: #25d366 !important;
+        border-color: #25d366 !important;
+        color: #fff !important;
+        height: 46px;
+        border-radius: 8px;
+        font-weight: 700;
+        font-size: 14px;
+        display: inline-flex;
+        align-items: center;
+        justify-content: center;
+        gap: 8px;
+        box-shadow: 0 4px 12px rgba(37, 211, 102, 0.2);
+        transition: all 0.2s ease;
+        width: 100%;
+
+        @media (min-width: 576px) {
+            width: auto;
+            min-width: 220px;
+        }
+
+        &:hover {
+            background: #20ba56 !important;
+            border-color: #20ba56 !important;
+            transform: translateY(-1px);
+            box-shadow: 0 6px 16px rgba(37, 211, 102, 0.3) !important;
+        }
+
+        &:active {
+            transform: scale(0.98);
+        }
+    }
+}
+
+// Keyframes
+@keyframes fadeIn {
+    from {
+        opacity: 0;
+        transform: translateY(10px);
+    }
+    to {
+        opacity: 1;
+        transform: translateY(0);
+    }
+}
+
+// ==========================================
+// RESPONSIVO MÓVIL: STEPPER VERTICAL
+// ==========================================
+@media (max-width: 650px) {
+    .custom-stepper {
+        flex-direction: column;
+        align-items: flex-start;
+        gap: 28px;
+        padding-left: 28px;
+        margin: 10px 0;
+
+        .step-connector {
+            position: absolute;
+            left: 45px;
+            width: 4px;
+            height: calc(100% - 38px);
+            margin: 0;
+            transform: none;
+            z-index: 1;
+            top: 20px;
+
+            // Ocultar conectores genéricos ya que dibujamos una única barra de fondo vertical en mobile
+            display: none;
+        }
+
+        // Crear una única línea de fondo vertical en mobile
+        &::before {
+            content: "";
+            position: absolute;
+            left: 46px;
+            top: 20px;
+            bottom: 20px;
+            width: 4px;
+            background: #e2e8f0;
+            z-index: 1;
+        }
+
+        .step-node {
+            flex-direction: row;
+            gap: 16px;
+            align-items: center;
+            width: 100%;
+
+            .node-circle {
+                z-index: 2;
+                width: 36px;
+                height: 36px;
+                border-width: 3px;
+                background: #fff;
+            }
+
+            .node-label {
+                position: static;
+                transform: none;
+                font-size: 13.5px;
+            }
+        }
+    }
+}

@@ -1,1 +1,209 @@
-<p>my-purchases works!</p>
+<div class="my-purchases-container">
+    
+    <!-- Encabezado de la página -->
+    <div class="purchases-header">
+        <h1 class="page-title">Mis Compras</h1>
+        <p class="page-subtitle">Realiza el seguimiento y consulta el historial de todos tus pedidos en tiempo real.</p>
+    </div>
+
+    <!-- Spinner de carga -->
+    <div *ngIf="isLoading" class="loading-state">
+        <nz-spin nzSimple nzSize="large" nzTip="Recuperando tus pedidos..."></nz-spin>
+    </div>
+
+    <ng-container *ngIf="!isLoading">
+        
+        <!-- Caso A: Cliente no autenticado o sin perfil -->
+        <div *ngIf="!customer" class="empty-identity-card">
+            <nz-card class="premium-card text-center" style="padding: 40px 20px;">
+                <span nz-icon nzType="user-delete" nzTheme="outline" class="placeholder-icon warning"></span>
+                <h3>Sesión No Iniciada</h3>
+                <p>Para consultar tus compras, necesitas tener una sesión de cliente activa en el marketplace.</p>
+                <div style="margin-top: 24px;">
+                    <a nz-button nzType="primary" nzSize="large" href="/auth/login" style="border-radius: 8px;">
+                        <span nz-icon nzType="login"></span> Iniciar Sesión
+                    </a>
+                </div>
+            </nz-card>
+        </div>
+
+        <!-- Caso B: Sin compras registradas -->
+        <div *ngIf="customer && purchases.length === 0" class="empty-purchases-card">
+            <nz-card class="premium-card text-center" style="padding: 48px 24px;">
+                <span nz-icon nzType="shopping" nzTheme="twotone" [nzTwotoneColor]="'#1890ff'" class="placeholder-icon"></span>
+                <h3>¡Aún no realizaste compras!</h3>
+                <p>Explora la variedad de tiendas en ATSMarket y haz tu primer pedido hoy mismo.</p>
+                <div style="margin-top: 24px;">
+                    <a nz-button nzType="primary" nzSize="large" href="/" style="border-radius: 8px;">
+                        <span nz-icon nzType="search"></span> Buscar Comercios
+                    </a>
+                </div>
+            </nz-card>
+        </div>
+
+        <!-- Caso C: Listado de Compras -->
+        <div *ngIf="customer && purchases.length > 0" class="purchases-list-wrapper">
+            <div *ngFor="let order of purchases" class="purchase-card" [class.cancelled-card]="order.ord_status === 'CANCELLED'">
+                
+                <!-- Cabecera de la compra -->
+                <div class="purchase-card-header">
+                    <div class="shop-main-info">
+                        <div class="shop-avatar">
+                            <span nz-icon nzType="shop"></span>
+                        </div>
+                        <div class="shop-details">
+                            <h2 class="shop-name">{{ companyNamesCache[order.cmp_uuid] || 'Cargando comercio...' }}</h2>
+                            <span class="order-id">Pedido #PED-{{ order.ord_ordernumber }}</span>
+                        </div>
+                    </div>
+                    <div class="order-meta-info">
+                        <span class="order-date">{{ order.ord_date | date:'dd/MM/yyyy HH:mm' }}</span>
+                        <nz-tag [nzColor]="getStatusColor(order.ord_status)" class="status-badge">
+                            {{ getStatusLabel(order.ord_status) }}
+                        </nz-tag>
+                    </div>
+                </div>
+
+                <!-- Cuerpo de la compra -->
+                <div class="purchase-card-body">
+                    
+                    <!-- LÍNEA DE TIEMPO INTERACTIVA / STEPPER (Solo si no está cancelado) -->
+                    <div class="tracking-stepper-wrapper" *ngIf="order.ord_status !== 'CANCELLED'">
+                        <div class="custom-stepper">
+                            
+                            <!-- Paso 1: Pago Aprobado -->
+                            <div class="step-node" [class.completed]="getStatusStep(order.ord_status) >= 1" [class.active]="getStatusStep(order.ord_status) === 1">
+                                <div class="node-circle">
+                                    <span nz-icon nzType="credit-card"></span>
+                                </div>
+                                <span class="node-label">Pago Aprobado</span>
+                            </div>
+                            
+                            <div class="step-connector" [class.completed]="getStatusStep(order.ord_status) >= 2"></div>
+
+                            <!-- Paso 2: Preparando -->
+                            <div class="step-node" [class.completed]="getStatusStep(order.ord_status) >= 2" [class.active]="getStatusStep(order.ord_status) === 2">
+                                <div class="node-circle">
+                                    <span nz-icon nzType="box"></span>
+                                </div>
+                                <span class="node-label">Preparando</span>
+                            </div>
+
+                            <div class="step-connector" [class.completed]="getStatusStep(order.ord_status) >= 3"></div>
+
+                            <!-- Paso 3: En Camino -->
+                            <div class="step-node" [class.completed]="getStatusStep(order.ord_status) >= 3" [class.active]="getStatusStep(order.ord_status) === 3">
+                                <div class="node-circle">
+                                    <span nz-icon nzType="car"></span>
+                                </div>
+                                <span class="node-label">En Camino</span>
+                            </div>
+
+                            <div class="step-connector" [class.completed]="getStatusStep(order.ord_status) >= 4"></div>
+
+                            <!-- Paso 4: Entregado -->
+                            <div class="step-node" [class.completed]="getStatusStep(order.ord_status) >= 4" [class.active]="getStatusStep(order.ord_status) === 4">
+                                <div class="node-circle">
+                                    <span nz-icon nzType="home"></span>
+                                </div>
+                                <span class="node-label">Entregado</span>
+                            </div>
+
+                        </div>
+                    </div>
+
+                    <!-- BLOQUE DE ADVERTENCIA: INCIDENCIA / NOVEDAD EN CALLE -->
+                    <div *ngIf="getIncidentDetail(order.ord_customernotes) as incident" class="incident-alert-banner">
+                        <div class="incident-alert-header">
+                            <span nz-icon nzType="warning" nzTheme="fill"></span>
+                            <h4>Inconveniente con tu entrega</h4>
+                        </div>
+                        <p class="incident-alert-text">
+                            El repartidor reportó una novedad al intentar realizar la entrega: 
+                            <strong>"{{ incident }}"</strong>. 
+                            Tu pedido ha regresado a la base del local por seguridad. Por favor, ponte en contacto con la tienda para coordinar el reenvío.
+                        </p>
+                    </div>
+
+                    <!-- Datos del Despacho y Flete -->
+                    <div class="shipping-info-grid">
+                        <div class="info-block">
+                            <span class="info-label">Modalidad de Entrega</span>
+                            <div class="info-value-with-tag" *ngIf="getDeliveryType(order.ord_customernotes) as del">
+                                <span nz-icon [nzType]="del.icon" style="font-size: 16px; margin-right: 6px;"></span>
+                                <span style="font-weight: 600;">{{ del.label }}</span>
+                            </div>
+                        </div>
+
+                        <!-- Si hay código de seguimiento postal -->
+                        <div class="info-block" *ngIf="order.ord_trackingnumber">
+                            <span class="info-label">Código de Seguimiento Postal</span>
+                            <div class="tracking-number-badge">
+                                <span nz-icon nzType="global" style="margin-right: 6px;"></span>
+                                <strong>{{ order.ord_trackingnumber }}</strong>
+                                <a nz-button nzType="link" nzSize="small" target="_blank" 
+                                   [href]="'https://www.correoargentino.com.ar/formularios/ondepaquete/'" 
+                                   style="padding: 0 0 0 8px; font-weight: 600; display: inline-flex; align-items: center;">
+                                    Rastrear correo <span nz-icon nzType="arrow-right" style="font-size: 10px; margin-left: 2px;"></span>
+                                </a>
+                            </div>
+                        </div>
+                    </div>
+
+                    <nz-divider style="margin: 16px 0;"></nz-divider>
+
+                    <!-- Detalle de Ítems (Accordion/Collapse) -->
+                    <nz-collapse [nzBordered]="false" class="items-collapse">
+                        <nz-collapse-panel [nzHeader]="collapseHeader" [nzActive]="false">
+                            <ng-template #collapseHeader>
+                                <span class="collapse-title-text">🔎 Ver detalle de productos ({{ getMockOrderItems(order.ord_uuid).length }} bultos)</span>
+                            </ng-template>
+                            <div class="purchased-items-list">
+                                <div *ngFor="let item of getMockOrderItems(order.ord_uuid)" class="purchased-item-row">
+                                    <span class="item-qty">{{ item.qty }}x</span>
+                                    <span class="item-name">{{ item.name }}</span>
+                                    <span class="item-spacer"></span>
+                                </div>
+                            </div>
+                        </nz-collapse-panel>
+                    </nz-collapse>
+
+                    <!-- Desglose de precios en acordeón -->
+                    <div class="prices-summary-box">
+                        <div class="price-row">
+                            <span class="price-label">Subtotal Productos</span>
+                            <span class="price-value">${{ order.ord_subtotal | number:'1.2-2' }}</span>
+                        </div>
+                        <div class="price-row">
+                            <span class="price-label">Flete / Envío</span>
+                            <span class="price-value" *ngIf="order.ord_shippingcost > 0">+ ${{ order.ord_shippingcost | number:'1.2-2' }}</span>
+                            <span class="price-value gratis" *ngIf="order.ord_shippingcost === 0">Gratis</span>
+                        </div>
+                        <nz-divider style="margin: 8px 0;"></nz-divider>
+                        <div class="price-row grand-total">
+                            <span class="price-label">Total Abonado</span>
+                            <span class="price-value">${{ order.ord_total | number:'1.2-2' }}</span>
+                        </div>
+                        <!-- Mostrar método de pago parseado -->
+                        <div class="payment-method-footer" *ngIf="parseCustomerNotes(order.ord_customernotes) as parsed">
+                            <span>💳 <strong>Método de pago:</strong> {{ parsed.payment }}</span>
+                            <span *ngIf="parsed.voucher !== 'N/A'"> | <strong>Comprobante:</strong> #{{ parsed.voucher }}</span>
+                        </div>
+                    </div>
+
+                </div>
+
+                <!-- Botones de Acción / Pie de Tarjeta -->
+                <div class="purchase-card-footer">
+                    <a nz-button nzType="primary" class="chat-whatsapp-btn" target="_blank" [href]="getWhatsAppLink(order)">
+                        <span nz-icon nzType="whats-app" nzTheme="outline" style="font-size: 18px;"></span>
+                        Chatear con el comercio
+                    </a>
+                </div>
+
+            </div>
+        </div>
+
+    </ng-container>
+
+</div>
