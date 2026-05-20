@@ -77,7 +77,7 @@ export class AddressesComponent implements OnInit, OnDestroy {
   // --- MÉTODOS DE VISTA ---
 
   public removeAddress(uuid: string): void {
-    this.addressesService.removeAddress(uuid);
+    this.addressesService.deleteAddress(uuid);
     this.message.success('Domicilio eliminado de la libreta.');
   }
 
@@ -92,7 +92,7 @@ export class AddressesComponent implements OnInit, OnDestroy {
 
   public submitNewAddress(): void {
     if (this.addressForm.valid) {
-      this.addressesService.addAddress({
+      this.addressesService.saveAddress({
         adr_alias: this.addressForm.value.adr_alias,
         adr_recipientname: this.addressForm.value.adr_recipientname,
         adr_contactphone: this.addressForm.value.adr_contactphone,
