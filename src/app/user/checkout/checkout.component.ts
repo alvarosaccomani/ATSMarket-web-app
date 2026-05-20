@@ -71,6 +71,13 @@ export class CheckoutComponent implements OnInit, OnDestroy {
   public paymentMethod: 'transfer' | 'card' = 'transfer';
   public transactionId: string = '';
   public isProcessingPayment = false;
+  public generatedOrderNumber: number = 0;
+
+  // Envíos y Modalidades
+  public shippingMethod: 'moto' | 'correo' | 'retiro' | 'acordar' = 'correo';
+  public shippingCost: number = 0;
+  public isLocalDeliveryAvailable: boolean = false;
+  public totalSubtotal: number = 0;
 
   constructor(
     private fb: FormBuilder,
@@ -79,7 +86,7 @@ export class CheckoutComponent implements OnInit, OnDestroy {
     private message: NzMessageService,
     private router: Router,
     private ordersService: OrdersService,
-    private storeContext: StoreContextService,
+    public storeContext: StoreContextService,
     private _sessionService: SessionService,
     private _customersService: CustomersService
   ) { }
@@ -88,6 +95,7 @@ export class CheckoutComponent implements OnInit, OnDestroy {
     // 0. Cargar Tienda Actual
     this.storeSub = this.storeContext.activeStore$.subscribe(company => {
       this.currentCompany = company;
+      this.checkShippingEligibility();
     });
 
     // 0.3 Determinar si hay cliente cargado en sesión
@@ -104,6 +112,7 @@ export class CheckoutComponent implements OnInit, OnDestroy {
       if (this.myAddresses.length > 0) {
         this.selectedAddressId = this.myAddresses[0].adr_uuid;
         this.showNewAddressForm = false;
+        this.checkShippingEligibility();
       }
     });
 
@@ -118,11 +127,16 @@ export class CheckoutComponent implements OnInit, OnDestroy {
       telefono: ['', [Validators.required, Validators.pattern('^[+0-9\\s\\-()]*$')]]
     });
 
+    this.shippingForm.get('ciudad')?.valueChanges.subscribe(() => {
+      this.checkShippingEligibility();
+    });
+
     // 2. Traer Datos del Carrito
     this.cartSub = this.cartService.cartItems$.subscribe((cartItems: any[]) => {
       this.cartItemsList = cartItems;
       this.cartItemCount = cartItems.reduce((acc: number, item: any) => acc + item.quantity, 0);
-      this.totalFinal = cartItems.reduce((acc: number, item: any) => acc + item.subtotal, 0);
+      this.totalSubtotal = cartItems.reduce((acc: number, item: any) => acc + item.subtotal, 0);
+      this.updateShippingCost();
 
       if (this.cartItemCount === 0 && this.currentStep < 3) {
         this.message.warning('Tu carrito está vacío, serás redirigido al catálogo.');
@@ -147,6 +161,118 @@ export class CheckoutComponent implements OnInit, OnDestroy {
 
   public onAddressSelectionChange(value: string): void {
     this.showNewAddressForm = (value === 'new');
+    this.checkShippingEligibility();
+  }
+
+  // --- LÓGICA DE ENVÍO LOCAL VS NACIONAL ---
+
+  private calculateDistance(lat1: number, lon1: number, lat2: number, lon2: number): number {
+    const R = 6371; // Radio de la Tierra en km
+    const dLat = (lat2 - lat1) * Math.PI / 180;
+    const dLon = (lon2 - lon1) * Math.PI / 180;
+    const a = 
+      Math.sin(dLat / 2) * Math.sin(dLat / 2) +
+      Math.cos(lat1 * Math.PI / 180) * Math.cos(lat2 * Math.PI / 180) * 
+      Math.sin(dLon / 2) * Math.sin(dLon / 2);
+    const c = 2 * Math.atan2(Math.sqrt(a), Math.sqrt(1 - a));
+    return R * c;
+  }
+
+  public checkShippingEligibility(): void {
+    if (!this.currentCompany) return;
+
+    // Obtener parámetros de envío dinámicos configurados por la tienda
+    const localRadius = Number(this.storeContext.getSetting('DELIVERY_LOCAL_RADIUS', 25));
+    const localCost = Number(this.storeContext.getSetting('DELIVERY_LOCAL_COST', 350));
+    const nationalCost = Number(this.storeContext.getSetting('DELIVERY_NATIONAL_COST', 800));
+
+    let isLocal = false;
+
+    if (this.selectedAddressId !== 'new') {
+      const addr = this.myAddresses.find(a => a.adr_uuid === this.selectedAddressId);
+      if (addr) {
+        // 1. Intentar por coordenadas (Haversine)
+        if (this.currentCompany.cmp_lat && this.currentCompany.cmp_lng && addr.adr_lat && addr.adr_lng) {
+          const dist = this.calculateDistance(
+            this.currentCompany.cmp_lat, this.currentCompany.cmp_lng,
+            addr.adr_lat, addr.adr_lng
+          );
+          isLocal = dist <= localRadius;
+        } else {
+          // 2. Fallback por coincidencia de texto de ciudad
+          const compAddress = (this.currentCompany.cmp_address || '').toLowerCase();
+          const addrCity = (addr.adr_city || '').toLowerCase().trim();
+          if (addrCity && compAddress.includes(addrCity)) {
+            isLocal = true;
+          }
+        }
+      }
+    } else {
+      // Dirección Nueva: comparar el input del formulario
+      const formCity = (this.shippingForm.get('ciudad')?.value || '').toLowerCase().trim();
+      const compAddress = (this.currentCompany.cmp_address || '').toLowerCase();
+      if (formCity && compAddress.includes(formCity)) {
+        isLocal = true;
+      }
+    }
+
+    this.isLocalDeliveryAvailable = isLocal;
+    
+    const motoEnabled = this.storeContext.getSetting('SHIPPING_LOCAL_MOTO_ENABLE', 'true') === 'true';
+    const correoEnabled = this.storeContext.getSetting('SHIPPING_NATIONAL_CORREO_ENABLE', 'true') === 'true';
+    const retiroEnabled = this.storeContext.getSetting('SHIPPING_RETIRO_LOCAL_ENABLE', 'true') === 'true';
+    const acordarEnabled = this.storeContext.getSetting('SHIPPING_ACORDAR_VENDEDOR_ENABLE', 'true') === 'true';
+
+    // Verificar si el actual seleccionado sigue siendo válido
+    let currentValid = false;
+    if (this.shippingMethod === 'moto' && motoEnabled && this.isLocalDeliveryAvailable) currentValid = true;
+    if (this.shippingMethod === 'correo' && correoEnabled) currentValid = true;
+    if (this.shippingMethod === 'retiro' && retiroEnabled) currentValid = true;
+    if (this.shippingMethod === 'acordar' && acordarEnabled) currentValid = true;
+
+    if (!currentValid) {
+      // Intentar reasignar a una opción válida por prioridad
+      if (correoEnabled) {
+        this.shippingMethod = 'correo';
+      } else if (retiroEnabled) {
+        this.shippingMethod = 'retiro';
+      } else if (acordarEnabled) {
+        this.shippingMethod = 'acordar';
+      } else if (motoEnabled && this.isLocalDeliveryAvailable) {
+        this.shippingMethod = 'moto';
+      } else {
+        // Fallback final: si ninguno es elegible, asignamos el primero habilitado por el comercio
+        if (motoEnabled) {
+          this.shippingMethod = 'moto';
+        } else if (retiroEnabled) {
+          this.shippingMethod = 'retiro';
+        } else {
+          this.shippingMethod = 'acordar';
+        }
+      }
+    }
+
+    this.updateShippingCost(localCost, nationalCost);
+  }
+
+  public updateShippingCost(localCost?: number, nationalCost?: number): void {
+    const lCost = localCost !== undefined ? localCost : Number(this.storeContext.getSetting('DELIVERY_LOCAL_COST', 350));
+    const nCost = nationalCost !== undefined ? nationalCost : Number(this.storeContext.getSetting('DELIVERY_NATIONAL_COST', 800));
+
+    if (this.shippingMethod === 'moto') {
+      this.shippingCost = lCost;
+    } else if (this.shippingMethod === 'correo') {
+      this.shippingCost = nCost;
+    } else {
+      // 'retiro' o 'acordar'
+      this.shippingCost = 0;
+    }
+    this.totalFinal = this.totalSubtotal + this.shippingCost;
+  }
+
+  public setShippingMethod(method: 'moto' | 'correo' | 'retiro' | 'acordar'): void {
+    this.shippingMethod = method;
+    this.updateShippingCost();
   }
 
   // --- NAVEGACIÓN ENTRE PASOS ---
@@ -257,8 +383,19 @@ export class CheckoutComponent implements OnInit, OnDestroy {
 
     this.isProcessingPayment = true;
 
-    const notes = `Método de pago: ${this.paymentMethod === 'transfer' ? 'Transferencia Bancaria' : 'Tarjeta / Online'}. Comprobante: ${this.transactionId}`;
+    let methodText = '';
+    if (this.shippingMethod === 'moto') {
+      methodText = 'Motomensajería Local';
+    } else if (this.shippingMethod === 'correo') {
+      methodText = 'Correo Postal Nacional';
+    } else if (this.shippingMethod === 'retiro') {
+      methodText = 'Retiro en el Local (Gratis)';
+    } else {
+      methodText = 'Acordar con el Vendedor';
+    }
+    const notes = `[Envío: ${methodText} ($${this.shippingCost})] | Método de pago: ${this.paymentMethod === 'transfer' ? 'Transferencia Bancaria' : 'Tarjeta / Online'}. Comprobante: ${this.transactionId}`;
     const orderNumber = Math.floor(Math.random() * 90000) + 10000;
+    this.generatedOrderNumber = orderNumber;
 
     const customer = this._sessionService.getCustomer();
     const identity = this._sessionService.getIdentity();
@@ -271,8 +408,8 @@ export class CheckoutComponent implements OnInit, OnDestroy {
       ord_ordernumber: orderNumber,
       ord_status: 'PENDING',
       ord_date: new Date(),
-      ord_subtotal: this.totalFinal,
-      ord_shippingcost: 0,
+      ord_subtotal: this.totalSubtotal,
+      ord_shippingcost: this.shippingCost,
       ord_tax: 0,
       ord_total: this.totalFinal,
       ord_customernotes: notes,
