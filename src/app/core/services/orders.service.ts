@@ -27,6 +27,16 @@ export class OrdersService {
   }
 
   /**
+   * Obtiene todas las ordenes asociadas a un cliente específico.
+   * @param cus_uuid UUID del cliente.
+   * @returns Observable con los resultados de las ordenes.
+   */
+  public getOrdersByCustomer(cus_uuid: string): Observable<OrderResults> {
+    const headers = new HttpHeaders().set('content-type', 'application/json');
+    return this._http.get<OrderResults>(`${environment.apiUrl}orders-by-customer/${cus_uuid}`, { headers });
+  }
+
+  /**
    * Crea una nueva orden en el sistema.
    * @param orderData Datos de la orden a insertar.
    */
