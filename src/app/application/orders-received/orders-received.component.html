@@ -275,7 +275,7 @@
                         <div class="driver-items-summary" style="background: #fafafa; padding: 12px 16px; border-radius: 8px; margin-bottom: 16px;">
                             <span class="items-summary-title" style="display: block; font-size: 11px; font-weight: 600; text-transform: uppercase; color: #8c8c8c; margin-bottom: 6px; letter-spacing: 0.5px;">Bultos a Entregar:</span>
                             <ul class="items-list-compact" style="margin: 0; padding-left: 18px; font-size: 13px; color: #595959; line-height: 1.6;">
-                                <li *ngFor="let item of getMockOrderItems(order.ord_uuid)">
+                                <li *ngFor="let item of getOrderItems(order)">
                                     <strong>{{ item.qty }}x</strong> {{ item.name }}
                                 </li>
                             </ul>
@@ -630,6 +630,22 @@
                         *ngIf="selectedOrder.ord_status === 'SHIPPED'" (click)="markAsDelivered(selectedOrder)">
                     🏁 Marcar como Entregado con Éxito
                 </button>
+            </div>
+
+            <!-- SECCIÓN: PRODUCTOS DEL PEDIDO -->
+            <div style="margin-bottom: 24px;">
+                <span style="font-size: 12px; font-weight: 600; color: #8c8c8c; text-transform: uppercase; letter-spacing: 0.5px; margin-bottom: 8px; display: block;">Productos del Pedido</span>
+                <div style="background: #fafafa; border: 1px solid #f0f0f0; border-radius: 8px; padding: 12px; display: flex; flex-direction: column; gap: 10px;">
+                    <div *ngFor="let item of getOrderItems(selectedOrder)" style="display: flex; align-items: center; justify-content: space-between; font-size: 14px;">
+                        <div style="display: flex; align-items: center; gap: 8px; flex: 1;">
+                            <span style="font-weight: bold; color: #1890ff; background: #e6f7ff; padding: 2px 6px; border-radius: 4px; font-size: 12px;">{{ item.qty }}x</span>
+                            <span style="color: #262626; font-weight: 500; font-size: 13px; max-width: 220px; overflow: hidden; text-overflow: ellipsis; white-space: nowrap;" [title]="item.name">{{ item.name }}</span>
+                        </div>
+                        <span style="color: #8c8c8c; font-size: 13px;" *ngIf="item.unitPrice">
+                            ${{ item.unitPrice | number:'1.2-2' }}
+                        </span>
+                    </div>
+                </div>
             </div>
 
             <!-- SECCIÓN: MONTO A COBRAR -->
