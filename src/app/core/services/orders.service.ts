@@ -27,6 +27,14 @@ export class OrdersService {
   }
 
   /**
+   * Obtiene una orden por su UUID.
+   */
+  public getOrderById(cmp_uuid: string, ord_uuid: string): Observable<{ data: any }> {
+    const headers = new HttpHeaders().set('content-type', 'application/json');
+    return this._http.get<{ data: any }>(`${environment.apiUrl}order/${cmp_uuid}/${ord_uuid}`, { headers });
+  }
+
+  /**
    * Obtiene todas las ordenes asociadas a un cliente específico.
    * @param cus_uuid UUID del cliente.
    * @returns Observable con los resultados de las ordenes.
