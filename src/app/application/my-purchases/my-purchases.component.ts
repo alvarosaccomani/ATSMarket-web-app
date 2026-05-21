@@ -189,26 +189,34 @@ export class MyPurchasesComponent implements OnInit {
     };
   }
 
-  public getMockOrderItems(orderUuid: string): { name: string; qty: number }[] {
-    const seed = orderUuid.charCodeAt(0) % 4;
-    switch(seed) {
-      case 0: return [
-        { name: 'Difusor de Ambientes Vainilla Premium', qty: 1 },
-        { name: 'Vela Aromática Soja Jazmín en Frasco de Vidrio', qty: 2 }
-      ];
-      case 1: return [
-        { name: 'Sahumerios Ecológicos Naturales Sagrada Madre (Caja x8)', qty: 3 },
-        { name: 'Portasahumerio Artesanal Cerámica Rústica', qty: 1 }
-      ];
-      case 2: return [
-        { name: 'Esencia Concentrada Lavanda para Hornillo (20ml)', qty: 1 },
-        { name: 'Aceite Esencial Puro de Limón Orgánico', qty: 2 },
-        { name: 'Humidificador Ultrasónico LED con Madera', qty: 1 }
-      ];
-      default: return [
-        { name: 'Kit de Limpieza Energética (Hierbas, Carbones y Resina)', qty: 1 }
-      ];
+  private loadingOrders: { [key: string]: boolean } = {};
+
+  public getOrderItems(order: OrderInterface): { name: string; qty: number }[] {
+    if (order.orderDetails && order.orderDetails.length > 0) {
+      return order.orderDetails.map(detail => ({
+        name: detail.ordd_productname,
+        qty: detail.ordd_quantity
+      }));
     }
+
+    // Carga diferida automática desde la API si no está en proceso de carga
+    if (order.cmp_uuid && order.ord_uuid && !this.loadingOrders[order.ord_uuid]) {
+      this.loadingOrders[order.ord_uuid] = true;
+      this._ordersService.getOrderById(order.cmp_uuid, order.ord_uuid).subscribe({
+        next: (res: any) => {
+          if (res && res.data && res.data.orderDetails) {
+            order.orderDetails = res.data.orderDetails;
+          }
+          this.loadingOrders[order.ord_uuid] = false;
+        },
+        error: (err: any) => {
+          console.error('Error fetching order items:', err);
+          this.loadingOrders[order.ord_uuid] = false;
+        }
+      });
+    }
+
+    return [];
   }
 
   public getWhatsAppLink(order: OrderInterface): string {
@@ -216,5 +224,22 @@ export class MyPurchasesComponent implements OnInit {
     const msg = `Hola ${storeName}! Te escribo por mi compra #PED-${order.ord_ordernumber}. Quería realizar una consulta sobre el estado del envío.`;
     // Retorna link de chat
     return `https://wa.me/5491100000000?text=${encodeURIComponent(msg)}`; // Usar teléfono mock o genérico
+  }
+
+  public onCollapseExpand(isActive: boolean, order: OrderInterface): void {
+    if (isActive && (!order.orderDetails || order.orderDetails.length === 0)) {
+      if (order.cmp_uuid && order.ord_uuid) {
+        this._ordersService.getOrderById(order.cmp_uuid, order.ord_uuid).subscribe({
+          next: (res: any) => {
+            if (res && res.data && res.data.orderDetails) {
+              order.orderDetails = res.data.orderDetails;
+            }
+          },
+          error: (err: any) => {
+            console.error('Error fetching order details by ID:', err);
+          }
+        });
+      }
+    }
   }
 }

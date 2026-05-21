@@ -154,12 +154,12 @@
 
                     <!-- Detalle de Ítems (Accordion/Collapse) -->
                     <nz-collapse [nzBordered]="false" class="items-collapse">
-                        <nz-collapse-panel [nzHeader]="collapseHeader" [nzActive]="false">
+                        <nz-collapse-panel [nzHeader]="collapseHeader" (nzActiveChange)="onCollapseExpand($event, order)">
                             <ng-template #collapseHeader>
-                                <span class="collapse-title-text">🔎 Ver detalle de productos ({{ getMockOrderItems(order.ord_uuid).length }} bultos)</span>
+                                <span class="collapse-title-text">🔎 Ver detalle de productos ({{ getOrderItems(order).length }} bultos)</span>
                             </ng-template>
                             <div class="purchased-items-list">
-                                <div *ngFor="let item of getMockOrderItems(order.ord_uuid)" class="purchased-item-row">
+                                <div *ngFor="let item of getOrderItems(order)" class="purchased-item-row">
                                     <span class="item-qty">{{ item.qty }}x</span>
                                     <span class="item-name">{{ item.name }}</span>
                                     <span class="item-spacer"></span>
