@@ -1,3 +1,5 @@
+import { OrderDetailInterface } from "@interfaces/order-detail";
+
 export interface OrderInterface {
     cmp_uuid: string;
     ord_uuid: string;
@@ -15,4 +17,5 @@ export interface OrderInterface {
     ord_trackingnumber: string;
     ord_createdat: Date;
     ord_updatedat: Date;
+    orderDetails?: OrderDetailInterface[];
 }

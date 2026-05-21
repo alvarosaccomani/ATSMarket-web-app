@@ -5,6 +5,7 @@ import { CommonModule } from '@angular/common';
 import { CartService } from '../../core/services/cart.service';
 import { AddressesService } from '../../core/services/addresses.service';
 import { AddressInterface } from '../../core/interfaces/address/address.interface';
+import { OrderDetailInterface } from '../../core/interfaces/order-detail/order-detail.interface';
 import { Subscription } from 'rxjs';
 import { OrdersService } from '../../core/services/orders.service';
 import { StoreContextService } from '../../core/services/store-context.service';
@@ -506,6 +507,24 @@ export class CheckoutComponent implements OnInit, OnDestroy {
     const customer = this._sessionService.getCustomer();
     const identity = this._sessionService.getIdentity();
 
+    const orderDetails: OrderDetailInterface[] = this.cartItemsList.map(item => ({
+      cmp_uuid: item.cmp_uuid || this.currentCompany.cmp_uuid,
+      ord_uuid: '',
+      ordd_uuid: '',
+      pro_uuid: item.pro_uuid,
+      prov_uuid: item.prov_uuid,
+      ordd_productname: item.prov_name || 'Producto ATSMarket',
+      ordd_code: item.prov_code || '',
+      ordd_sku: item.prov_sku || '',
+      ordd_quantity: item.quantity,
+      ordd_unitprice: item.prov_suggestedminimumsellingprice || 0,
+      ordd_discount: 0,
+      ordd_subtotal: item.subtotal || (item.quantity * (item.prov_suggestedminimumsellingprice || 0)),
+      ordd_taxrate: 0,
+      ordd_tax: 0,
+      ordd_basecost: item.prov_suggestedminimumsellingprice || 0
+    }));
+
     const payload = {
       cmp_uuid: this.currentCompany.cmp_uuid,
       usr_uuid: identity ? identity.usr_uuid : 'guest',
@@ -519,7 +538,8 @@ export class CheckoutComponent implements OnInit, OnDestroy {
       ord_tax: 0,
       ord_total: this.totalFinal,
       ord_customernotes: notes,
-      ord_trackingnumber: ''
+      ord_trackingnumber: '',
+      orderDetails: orderDetails
     };
 
     this.ordersService.saveOrder(payload).subscribe({
