@@ -1,5 +1,5 @@
 import { Injectable } from '@angular/core';
-import { HttpClient, HttpHeaders } from '@angular/common/http';
+import { HttpClient, HttpHeaders, HttpParams } from '@angular/common/http';
 import { Observable } from 'rxjs';
 import { environment } from '../../../environments/environment';
 import { CustomerResults } from '@interfaces/customer';
@@ -12,6 +12,16 @@ export class CustomersService {
   constructor(
     private _http: HttpClient
   ) { }
+
+  /**
+   * Obtiene todas las monedas.
+   * @returns Observable de un array de monedas.
+   */
+  public getCustomers(): Observable<CustomerResults> {
+    const headers = new HttpHeaders().set('content-type', 'application/json');
+    let params = new HttpParams();
+    return this._http.get<CustomerResults>(`${environment.apiUrl}customers`, { headers, params });
+  }
 
   /**
    * Crea un nuevo cliente.
