@@ -1,72 +1,74 @@
 <div class="customers-dashboard-wrapper">
-
-    <div class="dashboard-header">
-        <div class="header-titles">
-            <h1 class="page-title">Directorio de Clientes</h1>
-            <p class="page-subtitle">Gestiona tu cartera de compradores y analiza su historial.</p>
-        </div>
-
-        <div class="header-actions">
-            <nz-input-group [nzPrefix]="prefixIconSearch" nzSize="large" style="width: 300px;">
-                <input type="text" nz-input placeholder="Buscar por nombre, email o tel..." [(ngModel)]="searchTerm"
-                    (ngModelChange)="applyFilters()" />
-            </nz-input-group>
-            <ng-template #prefixIconSearch>
-                <span nz-icon nzType="search"></span>
-            </ng-template>
-        </div>
-    </div>
-
-    <!-- MAIN DIRECTORY TABLE -->
-    <nz-card class="premium-card" [nzBordered]="false">
-        <nz-table #customersTable [nzData]="filteredCustomers" nzSize="middle" [nzPageSize]="10">
-            <thead>
-                <tr>
-                    <th nzWidth="30%">Cliente</th>
-                    <th nzWidth="20%">Contacto</th>
-                    <th nzWidth="15%">Segmento</th>
-                    <th nzWidth="15%">Ingresos Generados</th>
-                    <th nzWidth="10%">Pedidos</th>
-                    <th nzWidth="10%">Acciones</th>
-                </tr>
-            </thead>
-            <tbody>
-                <tr *ngFor="let data of customersTable.data" class="clickable-row" (click)="openCustomerProfile(data)">
-                    <td>
-                        <div class="customer-cell">
-                            <nz-avatar nzIcon="user"
-                                [nzSrc]="'https://api.dicebear.com/7.x/initials/svg?seed=' + data.cus_name"
-                                style="background-color: #f56a00;"></nz-avatar>
-                            <div class="customer-info">
-                                <span class="customer-name">{{ data.cus_name }}</span>
-                                <span class="customer-document">Doc: {{ data.cus_document }}</span>
-                            </div>
-                        </div>
-                    </td>
-                    <td>
-                        <div class="contact-cell">
-                            <span class="contact-email">{{ data.cus_email }}</span>
-                            <span class="contact-phone">{{ data.cus_phone }}</span>
-                        </div>
-                    </td>
-                    <td>
-                        <nz-tag [nzColor]="getSegmentColor(data.cus_type)">{{ getSegmentLabel(data.cus_type) }}</nz-tag>
-                    </td>
-                    <td>
-                        <span class="lifetime-value">${{ data.total_spent | number:'1.2-2' }}</span>
-                    </td>
-                    <td>
-                        <span class="orders-count">{{ data.total_orders }}</span>
-                    </td>
-                    <td>
-                        <button nz-button nzType="default" nzSize="small"
-                            (click)="openCustomerProfile(data)">Perfil</button>
-                    </td>
-                </tr>
-            </tbody>
-        </nz-table>
-    </nz-card>
-</div>
+ 
+     <div class="dashboard-header">
+         <div class="header-titles">
+             <h1 class="page-title">Directorio de Clientes</h1>
+             <p class="page-subtitle">Gestiona tu cartera de compradores y analiza su historial en {{ companyName || 'tu tienda' }}.</p>
+         </div>
+ 
+         <div class="header-actions">
+             <nz-input-group [nzPrefix]="prefixIconSearch" nzSize="large" style="width: 300px;">
+                 <input type="text" nz-input placeholder="Buscar por nombre, email o tel..." [(ngModel)]="searchTerm"
+                     (ngModelChange)="applyFilters()" [disabled]="isLoading" />
+             </nz-input-group>
+             <ng-template #prefixIconSearch>
+                 <span nz-icon nzType="search"></span>
+             </ng-template>
+         </div>
+     </div>
+ 
+     <!-- MAIN DIRECTORY TABLE -->
+     <nz-card class="premium-card" [nzBordered]="false">
+         <nz-spin [nzSpinning]="isLoading">
+             <nz-table #customersTable [nzData]="filteredCustomers" nzSize="middle" [nzPageSize]="10">
+                 <thead>
+                     <tr>
+                         <th nzWidth="30%">Cliente</th>
+                         <th nzWidth="20%">Contacto</th>
+                         <th nzWidth="15%">Segmento</th>
+                         <th nzWidth="15%">Ingresos Generados</th>
+                         <th nzWidth="10%">Pedidos</th>
+                         <th nzWidth="10%">Acciones</th>
+                     </tr>
+                 </thead>
+                 <tbody>
+                     <tr *ngFor="let data of customersTable.data" class="clickable-row" (click)="openCustomerProfile(data)">
+                         <td>
+                             <div class="customer-cell">
+                                 <nz-avatar nzIcon="user"
+                                     [nzSrc]="'https://api.dicebear.com/7.x/initials/svg?seed=' + data.cus_name"
+                                     style="background-color: #f56a00;"></nz-avatar>
+                                 <div class="customer-info">
+                                     <span class="customer-name">{{ data.cus_name }}</span>
+                                     <span class="customer-document">Doc: {{ data.cus_document }}</span>
+                                 </div>
+                             </div>
+                         </td>
+                         <td>
+                             <div class="contact-cell">
+                                 <span class="contact-email">{{ data.cus_email }}</span>
+                                 <span class="contact-phone">{{ data.cus_phone }}</span>
+                             </div>
+                         </td>
+                         <td>
+                             <nz-tag [nzColor]="getSegmentColor(data.cus_type)">{{ getSegmentLabel(data.cus_type) }}</nz-tag>
+                         </td>
+                         <td>
+                             <span class="lifetime-value">${{ data.total_spent | number:'1.2-2' }}</span>
+                         </td>
+                         <td>
+                             <span class="orders-count">{{ data.total_orders }}</span>
+                         </td>
+                         <td>
+                             <button nz-button nzType="default" nzSize="small"
+                                 (click)="openCustomerProfile(data)">Perfil</button>
+                         </td>
+                     </tr>
+                 </tbody>
+             </nz-table>
+         </nz-spin>
+     </nz-card>
+ </div>
 
 <!-- DRAWER: PERFIL DEL CLIENTE -->
 <nz-drawer [nzVisible]="isDrawerVisible" nzPlacement="right" [nzTitle]="drawerTitle" [nzWidth]="'500px'"

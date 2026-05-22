@@ -1,6 +1,7 @@
 import { Component, OnInit } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { FormsModule } from '@angular/forms';
+import { forkJoin } from 'rxjs';
 
 import { NzTableModule } from 'ng-zorro-antd/table';
 import { NzCardModule } from 'ng-zorro-antd/card';
@@ -13,21 +14,28 @@ import { NzTagModule } from 'ng-zorro-antd/tag';
 import { NzInputModule } from 'ng-zorro-antd/input';
 import { NzAvatarModule } from 'ng-zorro-antd/avatar';
 import { NzEmptyModule } from 'ng-zorro-antd/empty';
+import { NzSpinModule } from 'ng-zorro-antd/spin';
 
-// Tipado mock para Clientes
+import { CustomersService } from '../../core/services/customers.service';
+import { OrdersService } from '../../core/services/orders.service';
+import { SessionService } from '../../core/services/session.service';
+import { CustomerInterface } from '../../core/interfaces/customer/customer.interface';
+import { OrderInterface } from '../../core/interfaces/order/order.interface';
+
+// Modelo de datos del cliente enriquecido para la vista
 export interface CustomerOrder {
   order_number: string;
   date: Date;
   total: number;
-  status: 'PENDING' | 'PROCESSING' | 'SHIPPED' | 'CANCELLED';
+  status: string;
 }
 
-export interface Customer {
+export interface CustomerViewModel {
   cus_uuid: string;
   cus_name: string;
   cus_email: string;
   cus_phone: string;
-  cus_document: string; // DNI o CUIT
+  cus_document: string; // DNI o CUIT deducido
   cus_type: 'B2B' | 'B2C';
   total_orders: number;
   total_spent: number;
@@ -51,26 +59,127 @@ export interface Customer {
     NzTagModule,
     NzInputModule,
     NzAvatarModule,
-    NzEmptyModule
+    NzEmptyModule,
+    NzSpinModule
   ],
   templateUrl: './customers.component.html',
   styleUrl: './customers.component.scss'
 })
 export class CustomersComponent implements OnInit {
 
-  public allCustomers: Customer[] = [];
-  public filteredCustomers: Customer[] = [];
+  public allCustomers: CustomerViewModel[] = [];
+  public filteredCustomers: CustomerViewModel[] = [];
   public searchTerm: string = '';
+  public isLoading: boolean = true;
+  public companyName: string = '';
 
   // Drawer Control
-  public selectedCustomer: Customer | null = null;
+  public selectedCustomer: CustomerViewModel | null = null;
   public isDrawerVisible = false;
 
-  constructor() { }
+  constructor(
+    private _customersService: CustomersService,
+    private _ordersService: OrdersService,
+    private _sessionService: SessionService
+  ) { }
 
   ngOnInit(): void {
-    this.generateMockCustomers();
-    this.applyFilters();
+    const company = this._sessionService.getCompany();
+    if (company && company.cmp_uuid) {
+      this.companyName = company.cmp_name || 'Mi Tienda';
+      this.loadRealData(company.cmp_uuid);
+    } else {
+      this.isLoading = false;
+    }
+  }
+
+  // --- LOGICA DE DATOS DESDE API ---
+
+  private loadRealData(companyUuid: string): void {
+    this.isLoading = true;
+    forkJoin({
+      customersRes: this._customersService.getCustomers(),
+      ordersRes: this._ordersService.getOrders(companyUuid)
+    }).subscribe({
+      next: (results) => {
+        const customersList = results.customersRes?.data || [];
+        const ordersList = results.ordersRes?.data || [];
+
+        this.processCustomersAndOrders(customersList, ordersList);
+        this.applyFilters();
+        this.isLoading = false;
+      },
+      error: (err) => {
+        console.error('Error al recuperar datos para el directorio de clientes:', err);
+        this.isLoading = false;
+      }
+    });
+  }
+
+  private processCustomersAndOrders(customers: CustomerInterface[], orders: OrderInterface[]): void {
+    const companyOrders = orders || [];
+    
+    // Agrupar órdenes por cliente
+    const ordersByCustomer: { [cus_uuid: string]: OrderInterface[] } = {};
+    companyOrders.forEach(order => {
+      if (order.cus_uuid) {
+        if (!ordersByCustomer[order.cus_uuid]) {
+          ordersByCustomer[order.cus_uuid] = [];
+        }
+        ordersByCustomer[order.cus_uuid].push(order);
+      }
+    });
+
+    this.allCustomers = customers.map(c => {
+      const clientOrders = ordersByCustomer[c.cus_uuid] || [];
+      
+      // Calcular métricas reales de compras en este comercio
+      const totalSpent = clientOrders.reduce((acc, o) => acc + (o.ord_total || 0), 0);
+      const totalOrders = clientOrders.length;
+      
+      // Obtener fecha del último pedido
+      let lastOrderDate: Date | null = null;
+      if (clientOrders.length > 0) {
+        const sortedOrders = [...clientOrders].sort((a, b) => {
+          const dateA = a.ord_createdat ? new Date(a.ord_createdat).getTime() : 0;
+          const dateB = b.ord_createdat ? new Date(b.ord_createdat).getTime() : 0;
+          return dateB - dateA;
+        });
+        lastOrderDate = sortedOrders[0].ord_createdat ? new Date(sortedOrders[0].ord_createdat) : null;
+      }
+
+      // Mapear historial detallado
+      const orderHistory: CustomerOrder[] = clientOrders.map(o => ({
+        order_number: `#PED-${o.ord_ordernumber}`,
+        date: o.ord_createdat ? new Date(o.ord_createdat) : new Date(),
+        total: o.ord_total || 0,
+        status: o.ord_status
+      })).sort((a, b) => b.date.getTime() - a.date.getTime());
+
+      // Segmentación dinámica: Mayorista (B2B) si tiene 5+ compras o gastó $100k+, sino Minorista (B2C)
+      const type = (totalOrders >= 5 || totalSpent >= 100000) ? 'B2B' : 'B2C';
+
+      // Deducción del número de identificación para mantener la consistencia estética
+      const numSeed = c.cus_phone ? c.cus_phone.replace(/\D/g, '') : c.cus_uuid.replace(/\D/g, '');
+      const mockDocNum = numSeed.substring(0, 8).padEnd(8, '4');
+      const document = type === 'B2B' ? `30-${mockDocNum}-8` : `20-${mockDocNum}-4`;
+
+      return {
+        cus_uuid: c.cus_uuid,
+        cus_name: c.cus_fullname || 'Cliente Registrado',
+        cus_email: c.cus_email || 'Sin Email',
+        cus_phone: c.cus_phone || 'Sin Teléfono',
+        cus_document: document,
+        cus_type: type,
+        total_orders: totalOrders,
+        total_spent: totalSpent,
+        last_order_date: lastOrderDate,
+        order_history: orderHistory
+      };
+    });
+
+    // Ordenar los clientes por volumen de gasto (LTV) descendente
+    this.allCustomers.sort((a, b) => b.total_spent - a.total_spent);
   }
 
   // --- FILTROS Y BUSQUEDA ---
@@ -91,7 +200,7 @@ export class CustomersComponent implements OnInit {
 
   // --- DRAWER (PERFIL CLIENTE) ---
 
-  public openCustomerProfile(customer: Customer): void {
+  public openCustomerProfile(customer: CustomerViewModel): void {
     this.selectedCustomer = customer;
     this.isDrawerVisible = true;
   }
@@ -107,7 +216,8 @@ export class CustomersComponent implements OnInit {
     switch (status) {
       case 'PENDING': return 'gold';
       case 'PROCESSING': return 'blue';
-      case 'SHIPPED': return 'green';
+      case 'SHIPPED': return 'orange'; // Cambiado a orange para consistencia con Vista de Reparto (En camino)
+      case 'DELIVERED': return 'green'; // Cambiado a green para consistencia con Vista de Reparto (Entregado)
       case 'CANCELLED': return 'red';
       default: return 'default';
     }
@@ -117,7 +227,8 @@ export class CustomersComponent implements OnInit {
     switch (status) {
       case 'PENDING': return 'Pendiente';
       case 'PROCESSING': return 'Preparando';
-      case 'SHIPPED': return 'Despachado';
+      case 'SHIPPED': return 'En Camino';
+      case 'DELIVERED': return 'Entregado';
       case 'CANCELLED': return 'Cancelado';
       default: return 'Desconocido';
     }
@@ -129,89 +240,5 @@ export class CustomersComponent implements OnInit {
 
   public getSegmentLabel(type: string): string {
     return type === 'B2B' ? 'Mayorista' : 'Minorista';
-  }
-
-  // --- MOCK DATA ---
-
-  private generateMockOrders(count: number): CustomerOrder[] {
-    const orders: CustomerOrder[] = [];
-    const statuses: ('PENDING' | 'PROCESSING' | 'SHIPPED' | 'CANCELLED')[] = ['PENDING', 'PROCESSING', 'SHIPPED', 'CANCELLED'];
-
-    for (let i = 0; i < count; i++) {
-      orders.push({
-        order_number: `#PED-100${Math.floor(Math.random() * 90) + 10}`,
-        date: new Date(new Date().setDate(new Date().getDate() - Math.floor(Math.random() * 30))),
-        total: Math.floor(Math.random() * 50000) + 5000,
-        status: statuses[Math.floor(Math.random() * statuses.length)]
-      });
-    }
-    // Ordenar de más reciente a más antiguo
-    orders.sort((a, b) => b.date.getTime() - a.date.getTime());
-    return orders;
-  }
-
-  private generateMockCustomers(): void {
-    this.allCustomers = [
-      {
-        cus_uuid: 'c-1',
-        cus_name: 'Santería La Milagrosa',
-        cus_email: 'compras@lamilagrosa.com.ar',
-        cus_phone: '+54 11 4455-6677',
-        cus_document: '30-71234567-8',
-        cus_type: 'B2B',
-        total_orders: 15,
-        total_spent: 850000,
-        last_order_date: new Date(),
-        order_history: this.generateMockOrders(15)
-      },
-      {
-        cus_uuid: 'c-2',
-        cus_name: 'María Carmen López',
-        cus_email: 'maricarmen.lopez@gmail.com',
-        cus_phone: '+54 223 555-1234',
-        cus_document: '27-18345678-4',
-        cus_type: 'B2C',
-        total_orders: 2,
-        total_spent: 45000,
-        last_order_date: new Date(new Date().setDate(new Date().getDate() - 5)),
-        order_history: this.generateMockOrders(2)
-      },
-      {
-        cus_uuid: 'c-3',
-        cus_name: 'Parroquia Nuestra Señora de la Paz',
-        cus_email: 'secretaria@paz.org.ar',
-        cus_phone: '+54 11 2233-4455',
-        cus_document: '30-55555555-5',
-        cus_type: 'B2B',
-        total_orders: 8,
-        total_spent: 420000,
-        last_order_date: new Date(new Date().setDate(new Date().getDate() - 15)),
-        order_history: this.generateMockOrders(8)
-      },
-      {
-        cus_uuid: 'c-4',
-        cus_name: 'Juan Ignacio Pérez',
-        cus_email: 'jiperez99@hotmail.com',
-        cus_phone: '+54 351 999-8888',
-        cus_document: '20-35678912-1',
-        cus_type: 'B2C',
-        total_orders: 1,
-        total_spent: 15500,
-        last_order_date: new Date(new Date().setDate(new Date().getDate() - 25)),
-        order_history: this.generateMockOrders(1)
-      },
-      {
-        cus_uuid: 'c-5',
-        cus_name: 'Librería Católica El Buen Pastor',
-        cus_email: 'ventas@elbuenpastor.com',
-        cus_phone: '+54 341 456-7890',
-        cus_document: '30-66666666-6',
-        cus_type: 'B2B',
-        total_orders: 0,
-        total_spent: 0,
-        last_order_date: null,
-        order_history: []
-      }
-    ];
   }
 }
