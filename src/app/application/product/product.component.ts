@@ -19,6 +19,8 @@ import { NzSelectModule } from 'ng-zorro-antd/select';
 import { NzSpaceModule } from 'ng-zorro-antd/space';
 import { MessageService } from '@services/message.service';
 import { ProductsService } from '@services/products.service';
+import { StockMovementsService } from '@services/stock-movements.service';
+import { forkJoin } from 'rxjs';
 
 @Component({
   selector: 'app-product',
@@ -57,7 +59,8 @@ export class ProductComponent {
     private _itemsService: ItemsService,
     private _categoriesService: CategoriesService,
     private _productsService: ProductsService,
-    private _messageService: MessageService
+    private _messageService: MessageService,
+    private _stockMovementsService: StockMovementsService
   ) { }
 
   ngOnInit(): void {
@@ -185,7 +188,7 @@ export class ProductComponent {
               prov_description: [variation.prov_description || ''],
               prov_color: [variation.prov_color || ''],
               prov_size: [variation.prov_size || ''],
-              prov_stock: [variation.prov_stock || 0, [Validators.required, Validators.min(0)]],
+              prov_stock: [{ value: variation.prov_stock || 0, disabled: true }, [Validators.required, Validators.min(0)]],
               prov_suggestedminimumsellingprice: [
                 variation.prov_suggestedminimumsellingprice || 0,
                 [Validators.required, Validators.min(0)]
@@ -242,17 +245,67 @@ export class ProductComponent {
     this.isLoading = true;
     this._productsService.saveProduct(product).subscribe(
       (response: any) => {
-        this.isLoading = false;
         if (response.success) {
-          this._messageService.success(
-            "Informacion",
-            "El Producto fue guardado correctamente.",
-            () => {
-              this._router.navigate(['application/products']);
-            }
-          );
+          const savedProduct = response.data;
+          const variations = savedProduct?.productVariations || [];
+          
+          // Registrar carga inicial de inventario (IN) para variantes con stock > 0
+          const movementRequests = variations
+            .filter((v: any) => v.prov_stock > 0)
+            .map((v: any) => {
+              const movementPayload = {
+                cmp_uuid: savedProduct.cmp_uuid,
+                pro_uuid: savedProduct.pro_uuid,
+                prov_uuid: v.prov_uuid,
+                ord_uuid: null,
+                usr_uuid: null,
+                tsmo_uuid: 'IN',
+                smo_quantity: v.prov_stock,
+                smo_previousstock: 0,
+                smo_currentstock: v.prov_stock,
+                smo_reason: 'Carga inicial de inventario',
+                smo_createdat: new Date()
+              };
+              return this._stockMovementsService.saveStockMovement(movementPayload);
+            });
+
+          if (movementRequests.length > 0) {
+            forkJoin(movementRequests).subscribe({
+              next: () => {
+                console.info('Movimientos de carga inicial (IN) registrados exitosamente para nuevas variantes.');
+                this.isLoading = false;
+                this._messageService.success(
+                  "Informacion",
+                  "El Producto fue guardado correctamente.",
+                  () => {
+                    this._router.navigate(['application/products']);
+                  }
+                );
+              },
+              error: (err) => {
+                console.error('Error al registrar movimientos de carga inicial:', err);
+                this.isLoading = false;
+                this._messageService.success(
+                  "Informacion",
+                  "El Producto fue guardado correctamente.",
+                  () => {
+                    this._router.navigate(['application/products']);
+                  }
+                );
+              }
+            });
+          } else {
+            this.isLoading = false;
+            this._messageService.success(
+              "Informacion",
+              "El Producto fue guardado correctamente.",
+              () => {
+                this._router.navigate(['application/products']);
+              }
+            );
+          }
         } else {
-          //this.status = 'error'
+          this.isLoading = false;
         }
       },
       (error: any) => {
@@ -268,20 +321,77 @@ export class ProductComponent {
   }
 
   private updateProduct(product: any): void {
+    // Identificar las variaciones que no tenían UUID antes de mandar la petición (son nuevas)
+    const newVariationsInForm = (product.productVariations || [])
+      .filter((v: any) => !v.prov_uuid || v.prov_uuid === '' || v.prov_uuid === 'new');
+
     this.isLoading = true;
     this._productsService.updateProduct(product).subscribe(
       (response: any) => {
-        this.isLoading = false;
         if (response.success) {
-          this._messageService.success(
-            "Informacion",
-            "El Producto fue actualizado correctamente.",
-            () => {
-              this._router.navigate(['application/products']);
-            }
+          const savedProduct = response.data;
+          const savedVariations = savedProduct?.productVariations || [];
+          
+          // Filtrar aquellas variaciones guardadas que coinciden con las nuevas del formulario
+          // y que tengan stock inicial mayor a 0
+          const newSavedVariations = savedVariations.filter((sv: any) => 
+            newVariationsInForm.some((nv: any) => nv.prov_sku === sv.prov_sku && sv.prov_stock > 0)
           );
+
+          const movementRequests = newSavedVariations.map((v: any) => {
+            const movementPayload = {
+              cmp_uuid: savedProduct.cmp_uuid,
+              pro_uuid: savedProduct.pro_uuid,
+              prov_uuid: v.prov_uuid,
+              ord_uuid: null,
+              usr_uuid: null,
+              tsmo_uuid: 'IN',
+              smo_quantity: v.prov_stock,
+              smo_previousstock: 0,
+              smo_currentstock: v.prov_stock,
+              smo_reason: 'Carga inicial de inventario',
+              smo_createdat: new Date()
+            };
+            return this._stockMovementsService.saveStockMovement(movementPayload);
+          });
+
+          if (movementRequests.length > 0) {
+            forkJoin(movementRequests).subscribe({
+              next: () => {
+                console.info('Movimientos de carga inicial (IN) registrados exitosamente para nuevas variantes agregadas.');
+                this.isLoading = false;
+                this._messageService.success(
+                  "Informacion",
+                  "El Producto fue actualizado correctamente.",
+                  () => {
+                    this._router.navigate(['application/products']);
+                  }
+                );
+              },
+              error: (err) => {
+                console.error('Error al registrar movimientos de carga inicial para nuevas variantes:', err);
+                this.isLoading = false;
+                this._messageService.success(
+                  "Informacion",
+                  "El Producto fue actualizado correctamente.",
+                  () => {
+                    this._router.navigate(['application/products']);
+                  }
+                );
+              }
+            });
+          } else {
+            this.isLoading = false;
+            this._messageService.success(
+              "Informacion",
+              "El Producto fue actualizado correctamente.",
+              () => {
+                this._router.navigate(['application/products']);
+              }
+            );
+          }
         } else {
-          //this.status = 'error'
+          this.isLoading = false;
         }
       },
       (error: any) => {
@@ -298,13 +408,14 @@ export class ProductComponent {
 
   public onSave(): void {
     if (this.productForm.valid) {
-      if (this.productForm.value.pro_uuid && this.productForm.value.pro_uuid != 'new') {
-        this.updateProduct(this.productForm.value);
+      const rawProduct = this.productForm.getRawValue();
+      if (rawProduct.pro_uuid && rawProduct.pro_uuid != 'new') {
+        this.updateProduct(rawProduct);
       } else {
-        this.insertProduct(this.productForm.value);
+        this.insertProduct(rawProduct);
       }
     } else {
-      console.warn('Formulario inválido:', this.productForm.value);
+      console.warn('Formulario inválido:', this.productForm.getRawValue());
       Object.keys(this.productForm.controls).forEach(key => {
         const controlErrors = this.productForm.get(key)?.errors;
         if (controlErrors != null) {
