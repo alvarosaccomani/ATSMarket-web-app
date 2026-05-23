@@ -1,1 +1,261 @@
-<p>inventory-audit works!</p>
+<div class="inventory-audit-wrapper">
+
+    <!-- HEADER -->
+    <div class="dashboard-header">
+        <div class="header-titles">
+            <h1 class="page-title">Auditoría de Inventario</h1>
+            <p class="page-subtitle">Historial de movimientos de stock, auditoría logística y valoración de mercadería en <strong>{{ activeCmpName }}</strong>.</p>
+        </div>
+
+        <div class="header-actions">
+            <button nz-button nzType="primary" nzSize="large" class="adjust-stock-btn" (click)="openAdjustmentModal()">
+                <span nz-icon nzType="plus"></span> Ajustar Stock Manual
+            </button>
+        </div>
+    </div>
+
+    <!-- KPIS GRID -->
+    <div class="kpis-grid" *ngIf="!isLoading">
+        
+        <!-- KPI 1: VALOR DEL INVENTARIO -->
+        <nz-card class="kpi-card valuation" [nzBordered]="false">
+            <div class="kpi-card-content">
+                <div class="kpi-info">
+                    <span class="kpi-label">Valoración Total Inventario</span>
+                    <span class="kpi-value">${{ totalStockValue | number:'1.2-2' }}</span>
+                </div>
+                <div class="kpi-icon-wrapper blue-icon">
+                    <span nz-icon nzType="bank" nzTheme="outline"></span>
+                </div>
+            </div>
+        </nz-card>
+
+        <!-- KPI 2: INGRESOS -->
+        <nz-card class="kpi-card in-flow" [nzBordered]="false">
+            <div class="kpi-card-content">
+                <div class="kpi-info">
+                    <span class="kpi-label">Unidades Ingresadas (IN)</span>
+                    <span class="kpi-value">{{ totalInUnits | number:'1.0-0' }} <small>uds</small></span>
+                </div>
+                <div class="kpi-icon-wrapper green-icon">
+                    <span nz-icon nzType="arrow-down" nzTheme="outline"></span>
+                </div>
+            </div>
+        </nz-card>
+
+        <!-- KPI 3: EGRESOS -->
+        <nz-card class="kpi-card out-flow" [nzBordered]="false">
+            <div class="kpi-card-content">
+                <div class="kpi-info">
+                    <span class="kpi-label">Unidades Vendidas (OUT)</span>
+                    <span class="kpi-value">{{ totalOutUnits | number:'1.0-0' }} <small>uds</small></span>
+                </div>
+                <div class="kpi-icon-wrapper red-icon">
+                    <span nz-icon nzType="shopping-cart" nzTheme="outline"></span>
+                </div>
+            </div>
+        </nz-card>
+
+        <!-- KPI 4: AJUSTES -->
+        <nz-card class="kpi-card adjustments" [nzBordered]="false">
+            <div class="kpi-card-content">
+                <div class="kpi-info">
+                    <span class="kpi-label">Ajustes Registrados</span>
+                    <span class="kpi-value">{{ totalAdjustmentsCount }} <small>incidentes</small></span>
+                </div>
+                <div class="kpi-icon-wrapper orange-icon">
+                    <span nz-icon nzType="safety-certificate" nzTheme="outline"></span>
+                </div>
+            </div>
+        </nz-card>
+
+    </div>
+
+    <!-- FILTER BAR -->
+    <div class="filters-card-wrapper" *ngIf="!isLoading">
+        <nz-card class="premium-card filters-card" [nzBordered]="false">
+            <div class="filters-container">
+                
+                <!-- Búsqueda -->
+                <div class="filter-item search-box">
+                    <nz-input-group [nzPrefix]="prefixIconSearch" nzSize="large">
+                        <input type="text" nz-input placeholder="Buscar por producto, variación o SKU..." 
+                            [(ngModel)]="searchTerm" (ngModelChange)="applyFilters()" />
+                    </nz-input-group>
+                    <ng-template #prefixIconSearch>
+                        <span nz-icon nzType="search"></span>
+                    </ng-template>
+                </div>
+
+                <!-- Selector Tipo de Movimiento -->
+                <div class="filter-item type-select">
+                    <nz-select [(ngModel)]="selectedTypeFilter" (ngModelChange)="applyFilters()" nzSize="large" style="width: 100%;">
+                        <nz-option nzValue="ALL" nzLabel="Todos los movimientos"></nz-option>
+                        <nz-option nzValue="IN" nzLabel="🟢 Ingresos (IN)"></nz-option>
+                        <nz-option nzValue="OUT" nzLabel="🔴 Egresos / Ventas (OUT)"></nz-option>
+                        <nz-option nzValue="ADJUSTMENT" nzLabel="🟡 Ajustes Manuales (ADJUSTMENT)"></nz-option>
+                    </nz-select>
+                </div>
+
+            </div>
+        </nz-card>
+    </div>
+
+    <!-- MAIN MOVEMENTS TABLE -->
+    <nz-card class="premium-card table-card" [nzBordered]="false">
+        <nz-spin [nzSpinning]="isLoading">
+            
+            <!-- EMPTY STATE -->
+            <div class="empty-state" *ngIf="filteredMovements.length === 0 && !isLoading">
+                <nz-empty nzNotFoundImage="https://gw.alipayobjects.com/zos/antfincdn/ZHrcdLPrvN/empty.svg"
+                    nzNotFoundContent="No se registran movimientos de stock que coincidan con la búsqueda.">
+                    <div nz-empty-footer>
+                        <button nz-button nzType="primary" (click)="openAdjustmentModal()">Registrar Ajuste Manual</button>
+                    </div>
+                </nz-empty>
+            </div>
+
+            <!-- TABLE -->
+            <nz-table 
+                #movementsTable 
+                [nzData]="filteredMovements" 
+                nzSize="middle" 
+                [nzPageSize]="20"
+                [nzScroll]="{ y: 'calc(100vh - 430px)' }"
+                *ngIf="filteredMovements.length > 0 || isLoading">
+                <thead>
+                    <tr>
+                        <th nzWidth="30%">Producto / Variación</th>
+                        <th nzWidth="12%">Tipo</th>
+                        <th nzWidth="20%">Flujo de Stock</th>
+                        <th nzWidth="20%">Motivo / Referencia</th>
+                        <th nzWidth="18%">Operador & Fecha</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    <tr *ngFor="let m of movementsTable.data" class="movement-row">
+                        <td>
+                            <div class="product-cell">
+                                <nz-avatar nzIcon="picture"
+                                    [nzSrc]="getProductAvatar(m.prov_uuid)"
+                                    style="background-color: #fafafa; border: 1px solid #e8e8e8;"></nz-avatar>
+                                <div class="product-info">
+                                    <span class="product-name">{{ getProductName(m.prov_uuid) }}</span>
+                                    <span class="variation-meta">
+                                        {{ getVariationName(m.prov_uuid) }} | <small class="sku">SKU: {{ getVariationSku(m.prov_uuid) }}</small>
+                                    </span>
+                                </div>
+                            </div>
+                        </td>
+                        <td>
+                            <nz-tag [nzColor]="getMovementTypeColor(m.tsmo_uuid)">
+                                <span nz-icon [nzType]="getMovementIcon(m.tsmo_uuid)" style="margin-right: 4px;"></span>
+                                {{ getMovementTypeLabel(m.tsmo_uuid) }}
+                            </nz-tag>
+                        </td>
+                        <td>
+                            <div class="stock-flow-cell">
+                                <span class="prev-stock">{{ m.smo_previousstock }}</span>
+                                <span nz-icon nzType="arrow-right" class="arrow-icon"></span>
+                                <span class="curr-stock"><strong>{{ m.smo_currentstock }}</strong></span>
+                                <span class="qty-badge" [ngClass]="m.tsmo_uuid === 'OUT' ? 'neg' : 'pos'">
+                                    ({{ m.tsmo_uuid === 'OUT' ? '-' : m.tsmo_uuid === 'IN' ? '+' : m.smo_previousstock > m.smo_currentstock ? '' : '+' }}{{ m.smo_previousstock > m.smo_currentstock ? m.smo_currentstock - m.smo_previousstock : m.smo_currentstock - m.smo_previousstock }})
+                                </span>
+                            </div>
+                        </td>
+                        <td>
+                            <div class="reason-cell">
+                                <span class="reason-text">{{ m.smo_reason }}</span>
+                                <span *ngIf="m.ord_uuid" class="order-link-wrapper" style="display: block; margin-top: 2px;">
+                                    <nz-tag nzColor="blue" style="cursor: pointer;">
+                                        <span nz-icon nzType="link" style="margin-right: 4px;"></span> Ver Orden
+                                    </nz-tag>
+                                </span>
+                            </div>
+                        </td>
+                        <td>
+                            <div class="operator-cell">
+                                <span class="operator-name">{{ m.usr_uuid ? 'Administrador' : 'Sistema (Venta)' }}</span>
+                                <span class="date-time">{{ m.smo_createdat | date:'dd/MM/yyyy HH:mm' }}</span>
+                            </div>
+                        </td>
+                    </tr>
+                </tbody>
+            </nz-table>
+
+        </nz-spin>
+    </nz-card>
+
+</div>
+
+<!-- ADJUSTMENT MODAL -->
+<nz-modal 
+    [(nzVisible)]="isAdjustmentModalVisible" 
+    nzTitle="Registrar Ajuste Manual de Stock" 
+    (nzOnCancel)="closeAdjustmentModal()" 
+    (nzOnOk)="onSaveAdjustment()" 
+    [nzOkLoading]="isSavingAdjustment"
+    [nzOkText]="'Guardar Ajuste'"
+    [nzCancelText]="'Cancelar'"
+    nzWidth="550px">
+    
+    <ng-container *nzModalContent>
+        <form nz-form [formGroup]="adjustmentForm" [nzLayout]="'vertical'" class="adjustment-modal-form">
+            
+            <!-- PRODUCTO SELECT -->
+            <nz-form-item>
+                <nz-form-label nzRequired nzFor="pro_uuid">Producto Maestro</nz-form-label>
+                <nz-form-control nzErrorTip="Selecciona el producto maestro">
+                    <nz-select formControlName="pro_uuid" nzShowSearch nzPlaceHolder="Buscar y seleccionar producto...">
+                        <nz-option *ngFor="let p of productsList" [nzValue]="p.pro_uuid" [nzLabel]="p.pro_name + ' (REF: ' + p.pro_code + ')'"></nz-option>
+                    </nz-select>
+                </nz-form-control>
+            </nz-form-item>
+
+            <!-- VARIACION SELECT -->
+            <nz-form-item>
+                <nz-form-label nzRequired nzFor="prov_uuid">Variación / Unidad de Stock</nz-form-label>
+                <nz-form-control nzErrorTip="Selecciona la variación del producto">
+                    <nz-select formControlName="prov_uuid" nzShowSearch nzPlaceHolder="Seleccionar variación..." [disabled]="selectedProductVariations.length === 0" [nzLoading]="isLoadingVariations">
+                        <nz-option *ngFor="let v of selectedProductVariations" [nzValue]="v.prov_uuid" [nzLabel]="v.prov_name + ' (SKU: ' + v.prov_sku + ' | Stock actual: ' + v.prov_stock + ')'"></nz-option>
+                    </nz-select>
+                </nz-form-control>
+            </nz-form-item>
+
+            <div nz-row [nzGutter]="16">
+                <!-- TIPO DE MOVIMIENTO -->
+                <div nz-col [nzSpan]="12">
+                    <nz-form-item>
+                        <nz-form-label nzRequired nzFor="tsmo_uuid">Tipo de Ajuste</nz-form-label>
+                        <nz-form-control nzErrorTip="Selecciona el tipo de movimiento">
+                            <nz-select formControlName="tsmo_uuid" style="width: 100%;">
+                                <nz-option nzValue="IN" nzLabel="🟢 Ingreso de Stock (IN)"></nz-option>
+                                <nz-option nzValue="OUT" nzLabel="🔴 Egreso de Stock (OUT)"></nz-option>
+                                <nz-option nzValue="ADJUSTMENT" nzLabel="🟡 Ajuste Técnico (ADJUSTMENT)"></nz-option>
+                            </nz-select>
+                        </nz-form-control>
+                    </nz-form-item>
+                </div>
+
+                <!-- CANTIDAD -->
+                <div nz-col [nzSpan]="12">
+                    <nz-form-item>
+                        <nz-form-label nzRequired nzFor="smo_quantity">Cantidad</nz-form-label>
+                        <nz-form-control nzErrorTip="Indica una cantidad válida mayor o igual a 1">
+                            <nz-input-number formControlName="smo_quantity" [nzMin]="1" [nzStep]="1" style="width: 100%;" nzSize="large"></nz-input-number>
+                        </nz-form-control>
+                    </nz-form-item>
+                </div>
+            </div>
+
+            <!-- MOTIVO / RAZON -->
+            <nz-form-item>
+                <nz-form-label nzRequired nzFor="smo_reason">Motivo del Ajuste</nz-form-label>
+                <nz-form-control nzErrorTip="Explica el motivo (máx 150 caracteres)">
+                    <textarea nz-input formControlName="smo_reason" placeholder="Escribe el motivo detallado, ej. 'Ajuste de inventario físico mensual', 'Rotura en transporte', 'Recepción de mercadería de proveedor'..." [nzAutosize]="{ minRows: 3, maxRows: 5 }"></textarea>
+                </nz-form-control>
+            </nz-form-item>
+
+        </form>
+    </ng-container>
+</nz-modal>
