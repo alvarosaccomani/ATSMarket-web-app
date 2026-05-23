@@ -6,12 +6,13 @@ import { CartService } from '../../core/services/cart.service';
 import { AddressesService } from '../../core/services/addresses.service';
 import { AddressInterface } from '../../core/interfaces/address/address.interface';
 import { OrderDetailInterface } from '../../core/interfaces/order-detail/order-detail.interface';
-import { Subscription } from 'rxjs';
+import { Subscription, forkJoin } from 'rxjs';
 import { OrdersService } from '../../core/services/orders.service';
 import { StoreContextService } from '../../core/services/store-context.service';
 import { SessionService } from '../../core/services/session.service';
 import { CustomersService } from '../../core/services/customers.service';
 import { MessageService } from '../../core/services/message.service';
+import { StockMovementsService } from '../../core/services/stock-movements.service';
 
 import { NzFormModule } from 'ng-zorro-antd/form';
 import { NzInputModule } from 'ng-zorro-antd/input';
@@ -95,7 +96,8 @@ export class CheckoutComponent implements OnInit, OnDestroy {
     public storeContext: StoreContextService,
     private _sessionService: SessionService,
     private _customersService: CustomersService,
-    private _messageService: MessageService
+    private _messageService: MessageService,
+    private _stockMovementsService: StockMovementsService
   ) { }
 
   ngOnInit(): void {
@@ -544,6 +546,34 @@ export class CheckoutComponent implements OnInit, OnDestroy {
 
     this.ordersService.saveOrder(payload).subscribe({
       next: (res: any) => {
+        const orderUuid = res?.data?.ord_uuid || '';
+        
+        // Registrar movimientos de salida (OUT) por cada producto comprado en el checkout
+        const movementRequests = orderDetails.map(item => {
+          const movementPayload = {
+            cmp_uuid: payload.cmp_uuid,
+            pro_uuid: item.pro_uuid,
+            prov_uuid: item.prov_uuid,
+            ord_uuid: orderUuid || null,
+            usr_uuid: identity ? identity.usr_uuid : null,
+            tsmo_uuid: 'OUT',
+            smo_quantity: item.ordd_quantity,
+            smo_previousstock: 0, // Se computa en backend, mandamos 0 de fallback
+            smo_currentstock: 0,  // Se computa en backend, mandamos 0 de fallback
+            smo_reason: `Venta - Pedido #PED-${orderNumber}`,
+            smo_createdat: new Date()
+          };
+          return this._stockMovementsService.saveStockMovement(movementPayload);
+        });
+
+        // Ejecutar las peticiones en paralelo
+        if (movementRequests.length > 0) {
+          forkJoin(movementRequests).subscribe({
+            next: () => console.log('Movimientos de stock registrados exitosamente desde Checkout.'),
+            error: (err) => console.error('Error al registrar movimientos de stock desde Checkout:', err)
+          });
+        }
+
         this.isProcessingPayment = false;
         this.currentStep = 3; // Mostrar pantalla de éxito
         this.cartService.clearCart();
