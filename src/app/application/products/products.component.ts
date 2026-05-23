@@ -18,11 +18,17 @@ import { NzAvatarModule } from 'ng-zorro-antd/avatar';
 import { NzDrawerModule } from 'ng-zorro-antd/drawer';
 import { NzDividerModule } from 'ng-zorro-antd/divider';
 import { NzDescriptionsModule } from 'ng-zorro-antd/descriptions';
+import { NzTabsModule } from 'ng-zorro-antd/tabs';
+import { NzTimelineModule } from 'ng-zorro-antd/timeline';
+import { NzSpinModule } from 'ng-zorro-antd/spin';
+import { NzSelectModule } from 'ng-zorro-antd/select';
 
 import { ProductInterface } from '@interfaces/product';
 import { SessionService } from '@services/session.service';
 import { ProductsService } from '@services/products.service';
 import { MessageService } from '@services/message.service';
+import { StockMovementsService } from '@services/stock-movements.service';
+import { StockMovementInterface } from '@interfaces/stock-movement/stock-movement.interface';
 
 @Component({
   selector: 'app-products',
@@ -43,7 +49,11 @@ import { MessageService } from '@services/message.service';
     NzAvatarModule,
     NzDrawerModule,
     NzDividerModule,
-    NzDescriptionsModule
+    NzDescriptionsModule,
+    NzTabsModule,
+    NzTimelineModule,
+    NzSpinModule,
+    NzSelectModule
   ],
   templateUrl: './products.component.html',
   styleUrl: './products.component.scss'
@@ -60,12 +70,20 @@ export class ProductsComponent implements OnInit {
   public selectedProduct: ProductInterface | null = null;
   public isDrawerVisible = false;
 
+  // Stock Movements State
+  public isLoadingMovements: boolean = false;
+  public allMovements: StockMovementInterface[] = [];
+  public filteredMovements: StockMovementInterface[] = [];
+  public selectedVariationFilter: string = 'ALL';
+  public activeTab: number = 0;
+
   constructor(
     private _router: Router,
     private modal: NzModalService,
     private _sessionService: SessionService,
     private _productService: ProductsService,
-    private _messageService: MessageService
+    private _messageService: MessageService,
+    private _stockMovementsService: StockMovementsService
   ) { }
 
   ngOnInit(): void {
@@ -110,6 +128,8 @@ export class ProductsComponent implements OnInit {
   public openQuickDetail(product: ProductInterface): void {
     this.selectedProduct = product;
     this.isDrawerVisible = true;
+    this.activeTab = 0; // Resetear siempre a pestaña de información
+    this.loadStockMovements(product.pro_uuid);
   }
 
   public closeDrawer(): void {
@@ -135,5 +155,73 @@ export class ProductsComponent implements OnInit {
         this._messageService.info('Módulo en desarrollo', 'La eliminación de productos maestros se habilitará próximamente.');
       }
     );
+  }
+
+  // --- INVENTARIO / HISTORIAL DE STOCK ---
+
+  public loadStockMovements(pro_uuid: string): void {
+    const company = this._sessionService.getCompany();
+    if (!company || !company.cmp_uuid) return;
+
+    this.isLoadingMovements = true;
+    this.selectedVariationFilter = 'ALL';
+    this.allMovements = [];
+    this.filteredMovements = [];
+
+    this._stockMovementsService.getStockMovements(company.cmp_uuid).subscribe({
+      next: (res) => {
+        // Filtrar solo los movimientos asociados al producto actual
+        this.allMovements = (res.data || []).filter(m => m.pro_uuid === pro_uuid);
+        this.applyVariationFilter();
+        this.isLoadingMovements = false;
+      },
+      error: (err) => {
+        console.error('Error fetching stock movements', err);
+        this.isLoadingMovements = false;
+      }
+    });
+  }
+
+  public applyVariationFilter(): void {
+    if (this.selectedVariationFilter === 'ALL') {
+      this.filteredMovements = [...this.allMovements];
+    } else {
+      this.filteredMovements = this.allMovements.filter(
+        m => m.prov_uuid === this.selectedVariationFilter
+      );
+    }
+  }
+
+  public getVariationName(prov_uuid: string): string {
+    if (!this.selectedProduct || !this.selectedProduct.productVariations) return 'Variación';
+    const v = this.selectedProduct.productVariations.find(item => item.prov_uuid === prov_uuid);
+    return v ? v.prov_name : 'Variación';
+  }
+
+  public getMovementTypeColor(type: string): string {
+    switch (type) {
+      case 'IN': return 'green';
+      case 'OUT': return 'red';
+      case 'ADJUSTMENT': return 'orange';
+      default: return 'gray';
+    }
+  }
+
+  public getMovementTypeLabel(type: string): string {
+    switch (type) {
+      case 'IN': return 'Ingreso';
+      case 'OUT': return 'Venta';
+      case 'ADJUSTMENT': return 'Ajuste';
+      default: return 'Otro';
+    }
+  }
+
+  public getMovementIcon(type: string): string {
+    switch (type) {
+      case 'IN': return 'arrow-down';
+      case 'OUT': return 'shopping-cart';
+      case 'ADJUSTMENT': return 'tool';
+      default: return 'question';
+    }
   }
 }

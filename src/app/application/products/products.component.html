@@ -110,39 +110,107 @@
                 </div>
             </div>
 
-            <nz-divider></nz-divider>
+            <nz-divider style="margin: 16px 0;"></nz-divider>
 
-            <nz-descriptions nzTitle="Información del Producto" [nzColumn]="1" nzSize="small">
-                <nz-descriptions-item nzTitle="Nombre">{{ selectedProduct.pro_name }}</nz-descriptions-item>
-                <nz-descriptions-item nzTitle="Código Maestro">{{ selectedProduct.pro_code }}</nz-descriptions-item>
-                <nz-descriptions-item nzTitle="Descripción">
-                    {{ selectedProduct.pro_description || 'Sin descripción detallada.' }}
-                </nz-descriptions-item>
-            </nz-descriptions>
+            <nz-tabset [(nzSelectedIndex)]="activeTab" nzType="line" style="margin-top: -8px;">
+                <!-- TAB 1: DETALLE -->
+                <nz-tab nzTitle="Detalle del Producto">
+                    <div class="tab-scroll-container" style="padding-top: 16px;">
+                        <nz-descriptions [nzColumn]="1" nzSize="small">
+                            <nz-descriptions-item nzTitle="Nombre">{{ selectedProduct.pro_name }}</nz-descriptions-item>
+                            <nz-descriptions-item nzTitle="Código Maestro">{{ selectedProduct.pro_code }}</nz-descriptions-item>
+                            <nz-descriptions-item nzTitle="Descripción">
+                                {{ selectedProduct.pro_description || 'Sin descripción detallada.' }}
+                            </nz-descriptions-item>
+                        </nz-descriptions>
 
-            <nz-divider></nz-divider>
+                        <nz-divider style="margin: 16px 0;"></nz-divider>
 
-            <h3 class="section-title">Variaciones Detectadas ({{ selectedProduct.productVariations?.length || 0 }})</h3>
-            <div class="variations-mini-list">
-                <div *ngFor="let v of selectedProduct.productVariations || []" class="variation-item">
-                    <div class="v-info">
-                        <strong>{{ v.prov_name }}</strong>
-                        <span>SKU: {{ v.prov_sku }}</span>
+                        <h3 class="section-title">Variaciones Detectadas ({{ selectedProduct.productVariations?.length || 0 }})</h3>
+                        <div class="variations-mini-list">
+                            <div *ngFor="let v of selectedProduct.productVariations || []" class="variation-item">
+                                <div class="v-info">
+                                    <strong>{{ v.prov_name }}</strong>
+                                    <span>SKU: {{ v.prov_sku }} | Stock: <nz-tag [nzColor]="v.prov_stock > 0 ? 'green' : 'red'">{{ v.prov_stock }}</nz-tag></span>
+                                </div>
+                                <div class="v-price">
+                                    ${{ v.prov_suggestedminimumsellingprice | number:'1.2-2' }}
+                                </div>
+                            </div>
+                            <div *ngIf="!selectedProduct.productVariations?.length" class="no-variations">
+                                Este producto no posee variaciones configuradas.
+                            </div>
+                        </div>
+
+                        <div style="margin-top: 32px;">
+                            <button nz-button nzType="primary" nzBlock (click)="editProduct(selectedProduct)">
+                                Gestionar Variaciones y Precios
+                            </button>
+                        </div>
                     </div>
-                    <div class="v-price">
-                        ${{ v.prov_suggestedminimumsellingprice | number:'1.2-2' }}
-                    </div>
-                </div>
-                <div *ngIf="!selectedProduct.productVariations?.length" class="no-variations">
-                    Este producto no posee variaciones configuradas.
-                </div>
-            </div>
+                </nz-tab>
 
-            <div style="margin-top: 32px;">
-                <button nz-button nzType="primary" nzBlock (click)="editProduct(selectedProduct)">
-                    Gestionar Variaciones y Precios
-                </button>
-            </div>
+                <!-- TAB 2: HISTORIAL DE STOCK -->
+                <nz-tab nzTitle="Historial de Stock">
+                    <div class="tab-scroll-container" style="padding-top: 16px;">
+                        
+                        <!-- FILTRO VARIACIONES -->
+                        <div class="filter-section" style="margin-bottom: 20px;">
+                            <span style="display: block; margin-bottom: 6px; font-weight: 500; color: #595959;">Filtrar por Variación:</span>
+                            <nz-select [(ngModel)]="selectedVariationFilter" (ngModelChange)="applyVariationFilter()" style="width: 100%;" nzPlaceHolder="Seleccionar variación">
+                                <nz-option nzValue="ALL" nzLabel="Todas las variaciones"></nz-option>
+                                <nz-option *ngFor="let v of selectedProduct.productVariations || []" [nzValue]="v.prov_uuid" [nzLabel]="v.prov_name + ' (SKU: ' + v.prov_sku + ')'"></nz-option>
+                            </nz-select>
+                        </div>
+
+                        <!-- CONTENEDOR AUDITORIA -->
+                        <nz-spin [nzSpinning]="isLoadingMovements">
+                            
+                            <!-- EMPTY HISTORIAL -->
+                            <div class="empty-state-mini" *ngIf="filteredMovements.length === 0 && !isLoadingMovements" style="text-align: center; padding: 32px 0;">
+                                <nz-empty nzNotFoundImage="simple" nzNotFoundContent="No se registran movimientos de stock para esta variación."></nz-empty>
+                            </div>
+
+                            <!-- TIMELINE -->
+                            <div class="movement-timeline-wrapper" *ngIf="filteredMovements.length > 0 && !isLoadingMovements">
+                                <nz-timeline nzMode="left">
+                                    <nz-timeline-item 
+                                        *ngFor="let m of filteredMovements" 
+                                        [nzColor]="getMovementTypeColor(m.tsmo_uuid)">
+                                        
+                                        <div class="timeline-item-content">
+                                            <div class="timeline-item-header">
+                                                <span class="timeline-item-title">{{ m.smo_reason }}</span>
+                                                <span class="timeline-item-date">{{ m.smo_createdat | date:'dd MMM yyyy HH:mm' }}</span>
+                                            </div>
+
+                                            <div class="timeline-item-meta">
+                                                <span class="v-label">Variación:</span> 
+                                                <strong>{{ getVariationName(m.prov_uuid) }}</strong>
+                                            </div>
+
+                                            <div class="timeline-stock-flow">
+                                                <span class="stock-label">Inventario:</span>
+                                                <span class="stock-values">
+                                                    {{ m.smo_previousstock }} 
+                                                    <span nz-icon nzType="arrow-right" style="font-size: 10px; margin: 0 4px; color: #8c8c8c;"></span> 
+                                                    <strong>{{ m.smo_currentstock }}</strong>
+                                                </span>
+                                                <nz-tag [nzColor]="getMovementTypeColor(m.tsmo_uuid)" style="margin-left: 8px; font-weight: 500;">
+                                                    {{ m.tsmo_uuid === 'OUT' ? '-' : m.tsmo_uuid === 'IN' ? '+' : m.smo_quantity >= 0 ? '+' : '' }}{{ m.smo_quantity }}
+                                                </nz-tag>
+                                            </div>
+                                        </div>
+
+                                    </nz-timeline-item>
+                                </nz-timeline>
+                            </div>
+
+                        </nz-spin>
+
+                    </div>
+                </nz-tab>
+            </nz-tabset>
 
         </div>
     </ng-container>
