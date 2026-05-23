@@ -49,4 +49,16 @@ export class ProductVariationsService {
 
     return this._http.put(`${environment.apiUrl}product-variation/${productVariation.cmp_uuid}/${productVariation.pro_uuid}/${productVariation.prov_uuid}`, params, { headers: headers });
   }
+
+  /**
+     * Obtiene el stock de una variacion de producto.
+     * @returns Observable de un array de any.
+     */
+  public checkStock(cmp_uuid: string, pro_uuid: string, prov_uuid: string): Observable<any> {
+    const headers = new HttpHeaders().set('content-type', 'application/json');
+
+    let params = new HttpParams();
+
+    return this._http.get<any>(`${environment.apiUrl}check-stock/${cmp_uuid}/${pro_uuid}/${prov_uuid}`, { headers, params });
+  }
 }
