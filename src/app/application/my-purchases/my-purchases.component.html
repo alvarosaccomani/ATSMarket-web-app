@@ -43,7 +43,7 @@
 
         <!-- Caso C: Listado de Compras -->
         <div *ngIf="customer && purchases.length > 0" class="purchases-list-wrapper">
-            <div *ngFor="let order of purchases" class="purchase-card" [class.cancelled-card]="order.ord_status === 'CANCELLED'">
+            <div *ngFor="let order of purchases" class="purchase-card" [class.cancelled-card]="order.ords_uuid === 'CANCELLED'">
                 
                 <!-- Cabecera de la compra -->
                 <div class="purchase-card-header">
@@ -58,8 +58,8 @@
                     </div>
                     <div class="order-meta-info">
                         <span class="order-date">{{ order.ord_date | date:'dd/MM/yyyy HH:mm' }}</span>
-                        <nz-tag [nzColor]="getStatusColor(order.ord_status)" class="status-badge">
-                            {{ getStatusLabel(order.ord_status) }}
+                        <nz-tag [nzColor]="getStatusColor(order.ords_uuid)" class="status-badge">
+                            {{ getStatusLabel(order.ords_uuid) }}
                         </nz-tag>
                     </div>
                 </div>
@@ -68,41 +68,41 @@
                 <div class="purchase-card-body">
                     
                     <!-- LÍNEA DE TIEMPO INTERACTIVA / STEPPER (Solo si no está cancelado) -->
-                    <div class="tracking-stepper-wrapper" *ngIf="order.ord_status !== 'CANCELLED'">
+                    <div class="tracking-stepper-wrapper" *ngIf="order.ords_uuid !== 'CANCELLED'">
                         <div class="custom-stepper">
                             
                             <!-- Paso 1: Pago Aprobado -->
-                            <div class="step-node" [class.completed]="getStatusStep(order.ord_status) >= 1" [class.active]="getStatusStep(order.ord_status) === 1">
+                            <div class="step-node" [class.completed]="getStatusStep(order.ords_uuid) >= 1" [class.active]="getStatusStep(order.ords_uuid) === 1">
                                 <div class="node-circle">
                                     <span nz-icon nzType="credit-card"></span>
                                 </div>
                                 <span class="node-label">Pago Aprobado</span>
                             </div>
                             
-                            <div class="step-connector" [class.completed]="getStatusStep(order.ord_status) >= 2"></div>
+                            <div class="step-connector" [class.completed]="getStatusStep(order.ords_uuid) >= 2"></div>
 
                             <!-- Paso 2: Preparando -->
-                            <div class="step-node" [class.completed]="getStatusStep(order.ord_status) >= 2" [class.active]="getStatusStep(order.ord_status) === 2">
+                            <div class="step-node" [class.completed]="getStatusStep(order.ords_uuid) >= 2" [class.active]="getStatusStep(order.ords_uuid) === 2">
                                 <div class="node-circle">
                                     <span nz-icon nzType="box"></span>
                                 </div>
                                 <span class="node-label">Preparando</span>
                             </div>
 
-                            <div class="step-connector" [class.completed]="getStatusStep(order.ord_status) >= 3"></div>
+                            <div class="step-connector" [class.completed]="getStatusStep(order.ords_uuid) >= 3"></div>
 
                             <!-- Paso 3: En Camino -->
-                            <div class="step-node" [class.completed]="getStatusStep(order.ord_status) >= 3" [class.active]="getStatusStep(order.ord_status) === 3">
+                            <div class="step-node" [class.completed]="getStatusStep(order.ords_uuid) >= 3" [class.active]="getStatusStep(order.ords_uuid) === 3">
                                 <div class="node-circle">
                                     <span nz-icon nzType="car"></span>
                                 </div>
                                 <span class="node-label">En Camino</span>
                             </div>
 
-                            <div class="step-connector" [class.completed]="getStatusStep(order.ord_status) >= 4"></div>
+                            <div class="step-connector" [class.completed]="getStatusStep(order.ords_uuid) >= 4"></div>
 
                             <!-- Paso 4: Entregado -->
-                            <div class="step-node" [class.completed]="getStatusStep(order.ord_status) >= 4" [class.active]="getStatusStep(order.ord_status) === 4">
+                            <div class="step-node" [class.completed]="getStatusStep(order.ords_uuid) >= 4" [class.active]="getStatusStep(order.ords_uuid) === 4">
                                 <div class="node-circle">
                                     <span nz-icon nzType="home"></span>
                                 </div>
@@ -110,6 +110,17 @@
                             </div>
 
                         </div>
+                    </div>
+
+                    <!-- MAPA INTERACTIVO DE SEGUIMIENTO EN TIEMPO REAL (Solo si está En Camino) -->
+                    <div *ngIf="order.ords_uuid === 'SHIPPED'" class="map-tracking-wrapper">
+                        <div class="map-header">
+                            <span class="map-header-title">📍 Seguimiento GPS en tiempo real (Repartidor en viaje)</span>
+                            <span class="eta-badge" *ngIf="simulatedETA[order.ord_uuid]">
+                                <span class="radar-dot"></span> Llega en: <strong>{{ simulatedETA[order.ord_uuid] }} min</strong>
+                            </span>
+                        </div>
+                        <div [id]="'map-' + order.ord_uuid" class="leaflet-tracking-map"></div>
                     </div>
 
                     <!-- BLOQUE DE ADVERTENCIA: INCIDENCIA / NOVEDAD EN CALLE -->

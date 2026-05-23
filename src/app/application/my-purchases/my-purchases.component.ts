@@ -1,4 +1,4 @@
-import { Component, OnInit } from '@angular/core';
+import { Component, OnInit, OnDestroy } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { FormsModule } from '@angular/forms';
 import { NzCardModule } from 'ng-zorro-antd/card';
@@ -14,6 +14,8 @@ import { OrdersService } from '../../core/services/orders.service';
 import { SessionService } from '../../core/services/session.service';
 import { CompaniesService } from '../../core/services/companies.service';
 import { OrderInterface } from '../../core/interfaces/order/order.interface';
+
+declare const L: any;
 
 @Component({
   selector: 'app-my-purchases',
@@ -33,12 +35,17 @@ import { OrderInterface } from '../../core/interfaces/order/order.interface';
   templateUrl: './my-purchases.component.html',
   styleUrl: './my-purchases.component.scss'
 })
-export class MyPurchasesComponent implements OnInit {
+export class MyPurchasesComponent implements OnInit, OnDestroy {
 
   public isLoading = true;
   public customer: any = null;
   public purchases: OrderInterface[] = [];
   public companyNamesCache: { [cmp_uuid: string]: string } = {};
+
+  // Estructuras de rastreo GPS e interactividad
+  public activeMaps: { [orderUuid: string]: any } = {};
+  public activeIntervals: { [orderUuid: string]: any } = {};
+  public simulatedETA: { [orderUuid: string]: number } = {};
 
   constructor(
     private _ordersService: OrdersService,
@@ -227,6 +234,7 @@ export class MyPurchasesComponent implements OnInit {
   }
 
   public onCollapseExpand(isActive: boolean, order: OrderInterface): void {
+    // 1. Cargar detalles del pedido de forma diferida si se expande
     if (isActive && (!order.orderDetails || order.orderDetails.length === 0)) {
       if (order.cmp_uuid && order.ord_uuid) {
         this._ordersService.getOrderById(order.cmp_uuid, order.ord_uuid).subscribe({
@@ -241,5 +249,166 @@ export class MyPurchasesComponent implements OnInit {
         });
       }
     }
+
+    // 2. Inicializar mapa de seguimiento interactivo si la orden está EN CAMINO (SHIPPED)
+    if (order.ords_uuid === 'SHIPPED') {
+      if (isActive) {
+        // Delay ligero para permitir a Angular dibujar el div con [id] en el DOM
+        setTimeout(() => {
+          this.initializeTrackingMap(order);
+        }, 300);
+      } else {
+        // Si se colapsa, limpiamos los intervalos y mapas activos para ahorrar recursos
+        this.cleanupMap(order.ord_uuid);
+      }
+    }
+  }
+
+  private initializeTrackingMap(order: OrderInterface): void {
+    if (typeof L === 'undefined') {
+      console.warn('Leaflet no está disponible en este momento.');
+      return;
+    }
+
+    const mapId = 'map-' + order.ord_uuid;
+    const container = document.getElementById(mapId);
+    if (!container) {
+      console.warn('Contenedor de mapa no encontrado en el DOM:', mapId);
+      return;
+    }
+
+    // Limpiar mapas previos de esta misma orden si existiesen
+    this.cleanupMap(order.ord_uuid);
+
+    // Semilla numérica en base al UUID del pedido para generar coordenadas realistas y únicas por comercio/cliente
+    const seed = order.ord_uuid ? order.ord_uuid.charCodeAt(0) : 10;
+    
+    // Coordenadas base (Buenos Aires Centro de referencia para coherencia visual)
+    const originLat = -34.6037 + ((seed % 7) * 0.005) - 0.01;
+    const originLng = -58.3816 + ((seed % 5) * 0.005) - 0.01;
+    const origin: [number, number] = [originLat, originLng];
+
+    // Destino (Cliente) perturbed de 3 a 7 km
+    const destLat = originLat + 0.015 + ((seed % 3) * 0.004);
+    const destLng = originLng + 0.015 + ((seed % 4) * 0.004);
+    const destination: [number, number] = [destLat, destLng];
+
+    // Punto intermedio en calle (para curvar la simulación de ruta)
+    const midLat = originLat + (destLat - originLat) * 0.5 + 0.003;
+    const midLng = originLng + (destLng - originLng) * 0.5 - 0.002;
+
+    // 1. Inicializar mapa Leaflet
+    const map = L.map(mapId, {
+      zoomControl: true,
+      attributionControl: false
+    }).setView(origin, 14);
+
+    // Mosaico claro de OpenStreetMap
+    L.tileLayer('https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png').addTo(map);
+
+    // 2. Iconos personalizados premium estilizados con HTML/CSS
+    const shopIcon = L.divIcon({
+      className: 'leaflet-custom-marker',
+      html: '<div style="background: #1890ff; color: white; width: 32px; height: 32px; border-radius: 50%; display: flex; align-items: center; justify-content: center; font-size: 16px; border: 2px solid white; box-shadow: 0 3px 8px rgba(0,0,0,0.25)">🏪</div>',
+      iconSize: [32, 32],
+      iconAnchor: [16, 16]
+    });
+
+    const homeIcon = L.divIcon({
+      className: 'leaflet-custom-marker',
+      html: '<div style="background: #52c41a; color: white; width: 32px; height: 32px; border-radius: 50%; display: flex; align-items: center; justify-content: center; font-size: 16px; border: 2px solid white; box-shadow: 0 3px 8px rgba(0,0,0,0.25)">🏠</div>',
+      iconSize: [32, 32],
+      iconAnchor: [16, 16]
+    });
+
+    const courierIcon = L.divIcon({
+      className: 'leaflet-custom-marker',
+      html: '<div style="background: #ff9c6e; color: white; width: 36px; height: 36px; border-radius: 50%; display: flex; align-items: center; justify-content: center; font-size: 18px; border: 2px solid white; box-shadow: 0 0 12px rgba(255,156,110,0.8)">🛵</div>',
+      iconSize: [36, 36],
+      iconAnchor: [18, 18]
+    });
+
+    // 3. Agregar Marcadores Estáticos
+    L.marker(origin, { icon: shopIcon }).addTo(map).bindPopup('<b>Tienda Comercial</b><br>Despacho del pedido');
+    L.marker(destination, { icon: homeIcon }).addTo(map).bindPopup('<b>Tu Domicilio</b><br>Destino del envío');
+
+    // 4. Dibujar Ruta (Polyline con guiones)
+    const polyline = L.polyline([origin, [midLat, midLng], destination], {
+      color: '#1890ff',
+      weight: 4,
+      opacity: 0.6,
+      dashArray: '5, 10'
+    }).addTo(map);
+
+    // Ajustar vista para abarcar toda la ruta despachada
+    map.fitBounds(polyline.getBounds(), { padding: [40, 40] });
+
+    // 5. Marcador Móvil del Repartidor (Simulador GPS)
+    const courierMarker = L.marker(origin, { icon: courierIcon }).addTo(map);
+    courierMarker.bindPopup('<b>Repartidor Express</b><br>En tránsito a tu hogar');
+
+    // 6. Iniciar simulación de trayecto dinámico
+    this.simulatedETA[order.ord_uuid] = 15; // ETA inicial: 15 minutos
+    let currentStep = 0;
+    const totalSteps = 100; // Cuadros de animación
+
+    const interval = setInterval(() => {
+      currentStep++;
+      if (currentStep >= totalSteps) {
+        clearInterval(interval);
+        this.simulatedETA[order.ord_uuid] = 0;
+        courierMarker.setLatLng(destination);
+        courierMarker.bindPopup('<b>Repartidor en destino</b><br>¡Llegó a tu domicilio!').openPopup();
+        return;
+      }
+
+      // Interpolación suave paso a paso a través de los waypoints
+      const t = currentStep / totalSteps;
+      let currentLat, currentLng;
+
+      if (t < 0.5) {
+        // Tramo 1: Origen al punto intermedio
+        const localT = t * 2;
+        currentLat = origin[0] + (midLat - origin[0]) * localT;
+        currentLng = origin[1] + (midLng - origin[1]) * localT;
+      } else {
+        // Tramo 2: Punto intermedio al destino
+        const localT = (t - 0.5) * 2;
+        currentLat = midLat + (destination[0] - midLat) * localT;
+        currentLng = midLng + (destination[1] - midLng) * localT;
+      }
+
+      const currentPos: [number, number] = [currentLat, currentLng];
+      courierMarker.setLatLng(currentPos);
+
+      // Decrementar la estimación de tiempo proporcionalmente
+      const remainingEta = Math.max(1, Math.round(15 * (1 - t)));
+      this.simulatedETA[order.ord_uuid] = remainingEta;
+    }, 2000); // Avanzar cuadro cada 2 segundos
+
+    // Almacenar referencias para poder destruirlas adecuadamente
+    this.activeMaps[order.ord_uuid] = map;
+    this.activeIntervals[order.ord_uuid] = interval;
+  }
+
+  private cleanupMap(orderUuid: string): void {
+    if (this.activeIntervals[orderUuid]) {
+      clearInterval(this.activeIntervals[orderUuid]);
+      delete this.activeIntervals[orderUuid];
+    }
+    if (this.activeMaps[orderUuid]) {
+      this.activeMaps[orderUuid].remove();
+      delete this.activeMaps[orderUuid];
+    }
+  }
+
+  ngOnDestroy(): void {
+    // Limpiar todos los recursos activos para evitar fugas de memoria (memory leaks)
+    Object.keys(this.activeIntervals).forEach(uuid => clearInterval(this.activeIntervals[uuid]));
+    Object.keys(this.activeMaps).forEach(uuid => {
+      if (this.activeMaps[uuid]) {
+        this.activeMaps[uuid].remove();
+      }
+    });
   }
 }
