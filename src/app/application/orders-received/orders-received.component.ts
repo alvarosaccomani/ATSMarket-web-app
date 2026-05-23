@@ -1,4 +1,4 @@
-import { Component, OnInit } from '@angular/core';
+import { Component, OnInit, OnDestroy } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { NzTabsModule } from 'ng-zorro-antd/tabs';
 import { NzTableModule } from 'ng-zorro-antd/table';
@@ -23,6 +23,8 @@ import { OrderInterface } from '../../core/interfaces/order/order.interface';
 import { AddressesService } from '../../core/services/addresses.service';
 import { AddressInterface } from '../../core/interfaces/address/address.interface';
 
+declare const L: any;
+
 @Component({
   selector: 'app-orders-received',
   standalone: true,
@@ -45,7 +47,7 @@ import { AddressInterface } from '../../core/interfaces/address/address.interfac
   templateUrl: './orders-received.component.html',
   styleUrl: './orders-received.component.scss'
 })
-export class OrdersReceivedComponent implements OnInit {
+export class OrdersReceivedComponent implements OnInit, OnDestroy {
 
   // Lógica de Modo Repartidor
   public isDeliveryMode = false;
@@ -77,6 +79,10 @@ export class OrdersReceivedComponent implements OnInit {
   public isDrawerVisible = false;
   public selectedOrder: OrderInterface | null = null;
   public selectedOrderAddress: AddressInterface | null = null;
+  // Estructuras de rastreo GPS del Repartidor
+  public activeRiderMaps: { [orderUuid: string]: any } = {};
+  public activeGpsWatchId: any = null;
+  public riderCoords: { lat: number; lng: number } | null = null;
   private loadingOrders: { [key: string]: boolean } = {};
   
   private destroy$ = new Subject<void>();
@@ -112,15 +118,22 @@ export class OrdersReceivedComponent implements OnInit {
   ngOnDestroy(): void {
     this.destroy$.next();
     this.destroy$.complete();
+    this.stopActiveGpsTracking();
+    Object.keys(this.activeRiderMaps).forEach(uuid => {
+      if (this.activeRiderMaps[uuid]) {
+        this.activeRiderMaps[uuid].remove();
+      }
+    });
+    this.activeRiderMaps = {};
   }
 
   // --- LOGICA DE DATOS ---
 
   private filterOrdersIntoTabs(): void {
-    this.pendingOrders = this.allOrders.filter(o => o.ord_status === 'PENDING');
-    this.processingOrders = this.allOrders.filter(o => o.ord_status === 'PROCESSING');
-    this.shippedOrders = this.allOrders.filter(o => o.ord_status === 'SHIPPED');
-    this.deliveredOrders = this.allOrders.filter(o => o.ord_status === 'DELIVERED');
+    this.pendingOrders = this.allOrders.filter(o => o.ords_uuid === 'PENDING');
+    this.processingOrders = this.allOrders.filter(o => o.ords_uuid === 'PROCESSING');
+    this.shippedOrders = this.allOrders.filter(o => o.ords_uuid === 'SHIPPED');
+    this.deliveredOrders = this.allOrders.filter(o => o.ords_uuid === 'DELIVERED');
   }
 
   public getStatusColor(status: string): string {
@@ -151,7 +164,7 @@ export class OrdersReceivedComponent implements OnInit {
     if (event) event.stopPropagation();
     const idx = this.allOrders.findIndex(o => o.ord_uuid === order.ord_uuid);
     if (idx !== -1) {
-      this.allOrders[idx].ord_status = 'PROCESSING';
+      this.allOrders[idx].ords_uuid = 'PROCESSING';
       this.filterOrdersIntoTabs();
       this.message.success(`Pago Aprobado. Pedido ${order.ord_ordernumber} pasó a Preparación.`);
       this.isDrawerVisible = false;
@@ -161,7 +174,7 @@ export class OrdersReceivedComponent implements OnInit {
   public rejectPayment(order: OrderInterface): void {
     const idx = this.allOrders.findIndex(o => o.ord_uuid === order.ord_uuid);
     if (idx !== -1) {
-      this.allOrders[idx].ord_status = 'CANCELLED';
+      this.allOrders[idx].ords_uuid = 'CANCELLED';
       this.filterOrdersIntoTabs();
       this.message.error(`Pago Rechazado. Pedido ${order.ord_ordernumber} fue cancelado.`);
       this.isDrawerVisible = false;
@@ -172,7 +185,7 @@ export class OrdersReceivedComponent implements OnInit {
     event.stopPropagation();
     const idx = this.allOrders.findIndex(o => o.ord_uuid === order.ord_uuid);
     if (idx !== -1) {
-      this.allOrders[idx].ord_status = 'SHIPPED';
+      this.allOrders[idx].ords_uuid = 'SHIPPED';
       this.filterOrdersIntoTabs();
       this.message.success(`Pedido ${order.ord_ordernumber} marcado como Despachado.`);
     }
@@ -182,7 +195,7 @@ export class OrdersReceivedComponent implements OnInit {
     if (event) event.stopPropagation();
     const idx = this.allOrders.findIndex(o => o.ord_uuid === order.ord_uuid);
     if (idx !== -1) {
-      this.allOrders[idx].ord_status = 'DELIVERED';
+      this.allOrders[idx].ords_uuid = 'DELIVERED';
       this.filterOrdersIntoTabs();
       this.message.success(`Pedido ${order.ord_ordernumber} marcado como Entregado con éxito.`);
       this.isDrawerVisible = false;
@@ -317,9 +330,30 @@ export class OrdersReceivedComponent implements OnInit {
       
       // Cargar direcciones de todos los pedidos activos (PROCESSING, SHIPPED)
       const activeOrders = this.allOrders.filter(
-        o => o.ord_status === 'PROCESSING' || o.ord_status === 'SHIPPED'
+        o => o.ords_uuid === 'PROCESSING' || o.ords_uuid === 'SHIPPED'
       );
       this.loadAddressesForDeliveries(activeOrders);
+
+      // Inicializar mapas para los pedidos ya despachados ("SHIPPED")
+      setTimeout(() => {
+        this.getSortedRouteOrders().forEach(order => {
+          if (order.ords_uuid === 'SHIPPED') {
+            this.initializeRiderMap(order);
+          }
+        });
+      }, 800);
+
+      // Iniciar geolocalización activa watchPosition
+      this.startActiveGpsTracking();
+    } else {
+      this.stopActiveGpsTracking();
+      // Destruir mapas activos
+      Object.keys(this.activeRiderMaps).forEach(uuid => {
+        if (this.activeRiderMaps[uuid]) {
+          this.activeRiderMaps[uuid].remove();
+        }
+      });
+      this.activeRiderMaps = {};
     }
   }
 
@@ -365,7 +399,7 @@ export class OrdersReceivedComponent implements OnInit {
 
   public getSortedRouteOrders(): OrderInterface[] {
     const deliveryOrders = this.allOrders.filter(o => {
-      const isDeliveryStatus = o.ord_status === 'PROCESSING' || o.ord_status === 'SHIPPED';
+      const isDeliveryStatus = o.ords_uuid === 'PROCESSING' || o.ords_uuid === 'SHIPPED';
       const isDeliveryType = o.ord_customernotes && (
         o.ord_customernotes.includes('Motomensajería Local') || 
         o.ord_customernotes.includes('Correo Postal Nacional')
@@ -382,7 +416,7 @@ export class OrdersReceivedComponent implements OnInit {
 
   public getCompletedDeliveriesCount(): number {
     return this.allOrders.filter(o => 
-      o.ord_status === 'DELIVERED' && 
+      o.ords_uuid === 'DELIVERED' && 
       o.ord_customernotes && (
         o.ord_customernotes.includes('Motomensajería Local') || 
         o.ord_customernotes.includes('Correo Postal Nacional')
@@ -392,7 +426,7 @@ export class OrdersReceivedComponent implements OnInit {
 
   public getTotalDeliveriesCount(): number {
     return this.allOrders.filter(o => 
-      (o.ord_status === 'PROCESSING' || o.ord_status === 'SHIPPED' || o.ord_status === 'DELIVERED') &&
+      (o.ords_uuid === 'PROCESSING' || o.ords_uuid === 'SHIPPED' || o.ords_uuid === 'DELIVERED') &&
       o.ord_customernotes && (
         o.ord_customernotes.includes('Motomensajería Local') || 
         o.ord_customernotes.includes('Correo Postal Nacional')
@@ -402,7 +436,7 @@ export class OrdersReceivedComponent implements OnInit {
 
   public getCashToCollectTotal(): number {
     return this.getSortedRouteOrders()
-      .filter(o => o.ord_status === 'SHIPPED' && o.ord_customernotes.toLowerCase().includes('efectivo'))
+      .filter(o => o.ords_uuid === 'SHIPPED' && o.ord_customernotes.toLowerCase().includes('efectivo'))
       .reduce((acc, o) => acc + o.ord_total, 0);
   }
 
@@ -430,9 +464,15 @@ export class OrdersReceivedComponent implements OnInit {
 
     const idx = this.allOrders.findIndex(o => o.ord_uuid === this.checklistOrder!.ord_uuid);
     if (idx !== -1) {
-      this.allOrders[idx].ord_status = 'SHIPPED';
+      this.allOrders[idx].ords_uuid = 'SHIPPED';
       this.filterOrdersIntoTabs();
       this.message.success(`¡Carga verificada! Pedido #${this.checklistOrder.ord_ordernumber} en viaje.`);
+      
+      const orderCopy = this.checklistOrder;
+      setTimeout(() => {
+        this.initializeRiderMap(orderCopy);
+      }, 500);
+
       this.isChecklistVisible = false;
       this.checklistOrder = null;
     }
@@ -460,7 +500,7 @@ export class OrdersReceivedComponent implements OnInit {
       this.allOrders[idx].ord_customernotes = `[⚠️ INCIDENCIA: ${reasonText}] | ${oldNotes}`;
       
       // Devuelve el pedido a preparación
-      this.allOrders[idx].ord_status = 'PROCESSING';
+      this.allOrders[idx].ords_uuid = 'PROCESSING';
       
       this.filterOrdersIntoTabs();
       this.message.warning(`Incidencia registrada. Pedido #${this.incidentOrder.ord_ordernumber} regresó a preparación.`);
@@ -503,5 +543,114 @@ export class OrdersReceivedComponent implements OnInit {
     }
 
     return [];
+  }
+
+  // --- COMPLEMENTOS DE GPS RASTREO RUTA DEL CHOFER ---
+
+  public initializeRiderMap(order: OrderInterface): void {
+    if (typeof L === 'undefined') return;
+
+    const mapId = 'rider-map-' + order.ord_uuid;
+    // Retraso para esperar que el div exista
+    setTimeout(() => {
+      const container = document.getElementById(mapId);
+      if (!container) return;
+
+      if (this.activeRiderMaps[order.ord_uuid]) {
+        this.activeRiderMaps[order.ord_uuid].remove();
+        delete this.activeRiderMaps[order.ord_uuid];
+      }
+
+      const addr = this.deliveryAddressesCache[order.adr_uuid];
+      
+      // Tienda (Origen)
+      const originLat = this.companyCoords ? this.companyCoords.lat : -34.6037;
+      const originLng = this.companyCoords ? this.companyCoords.lng : -58.3816;
+      const origin: [number, number] = [originLat, originLng];
+
+      // Cliente (Destino)
+      const destLat = addr && addr.adr_lat ? Number(addr.adr_lat) : originLat + 0.015;
+      const destLng = addr && addr.adr_lng ? Number(addr.adr_lng) : originLng + 0.015;
+      const destination: [number, number] = [destLat, destLng];
+
+      const map = L.map(mapId, {
+        zoomControl: false,
+        attributionControl: false
+      }).setView(origin, 14);
+
+      L.tileLayer('https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png').addTo(map);
+
+      const shopIcon = L.divIcon({
+        className: 'leaflet-custom-marker',
+        html: '<div style="background: #1890ff; color: white; width: 28px; height: 28px; border-radius: 50%; display: flex; align-items: center; justify-content: center; font-size: 14px; border: 2px solid white; box-shadow: 0 2px 6px rgba(0,0,0,0.2)">🏪</div>',
+        iconSize: [28, 28],
+        iconAnchor: [14, 14]
+      });
+
+      const homeIcon = L.divIcon({
+        className: 'leaflet-custom-marker',
+        html: '<div style="background: #52c41a; color: white; width: 28px; height: 28px; border-radius: 50%; display: flex; align-items: center; justify-content: center; font-size: 14px; border: 2px solid white; box-shadow: 0 2px 6px rgba(0,0,0,0.2)">🏠</div>',
+        iconSize: [28, 28],
+        iconAnchor: [14, 14]
+      });
+
+      const courierIcon = L.divIcon({
+        className: 'leaflet-custom-marker',
+        html: '<div style="background: #fa8c16; color: white; width: 32px; height: 32px; border-radius: 50%; display: flex; align-items: center; justify-content: center; font-size: 16px; border: 2px solid white; box-shadow: 0 0 10px rgba(250,140,22,0.8)">🛵</div>',
+        iconSize: [32, 32],
+        iconAnchor: [16, 16]
+      });
+
+      L.marker(origin, { icon: shopIcon }).addTo(map);
+      L.marker(destination, { icon: homeIcon }).addTo(map);
+
+      const routePoly = L.polyline([origin, destination], {
+        color: '#fa8c16',
+        weight: 4,
+        opacity: 0.7,
+        dashArray: '4, 8'
+      }).addTo(map);
+
+      map.fitBounds(routePoly.getBounds(), { padding: [30, 30] });
+
+      // Moto del repartidor
+      const startPos: [number, number] = this.riderCoords ? [this.riderCoords.lat, this.riderCoords.lng] : origin;
+      const courierMarker = L.marker(startPos, { icon: courierIcon }).addTo(map);
+      
+      // Adjuntar referencia del marcador móvil al objeto del mapa
+      (map as any).courierMarker = courierMarker;
+      this.activeRiderMaps[order.ord_uuid] = map;
+    }, 400);
+  }
+
+  public startActiveGpsTracking(): void {
+    if (typeof navigator !== 'undefined' && navigator.geolocation) {
+      this.activeGpsWatchId = navigator.geolocation.watchPosition(
+        (position) => {
+          this.riderCoords = {
+            lat: position.coords.latitude,
+            lng: position.coords.longitude
+          };
+          console.info('GPS de Repartidor actualizado:', this.riderCoords);
+          
+          // Mover dinámicamente el marcador en los mapas activos de paradas
+          Object.keys(this.activeRiderMaps).forEach(uuid => {
+            const mapObj = this.activeRiderMaps[uuid];
+            if (mapObj && mapObj.courierMarker) {
+              mapObj.courierMarker.setLatLng([this.riderCoords!.lat, this.riderCoords!.lng]);
+            }
+          });
+        },
+        (err) => console.warn('Error leyendo GPS nativo del chofer:', err),
+        { enableHighAccuracy: true, maximumAge: 10000 }
+      );
+    }
+  }
+
+  public stopActiveGpsTracking(): void {
+    if (this.activeGpsWatchId !== null && typeof navigator !== 'undefined') {
+      navigator.geolocation.clearWatch(this.activeGpsWatchId);
+      this.activeGpsWatchId = null;
+    }
   }
 }

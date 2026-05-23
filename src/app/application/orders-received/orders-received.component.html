@@ -48,7 +48,7 @@
                             <td class="customer-name">{{ data.cus_uuid | slice:0:8 }}...</td>
                             <td class="order-total">${{ data.ord_total | number:'1.2-2' }}</td>
                             <td>
-                                <nz-tag [nzColor]="getStatusColor(data.ord_status)">{{ getStatusLabel(data.ord_status) }}</nz-tag>
+                                <nz-tag [nzColor]="getStatusColor(data.ords_uuid)">{{ getStatusLabel(data.ords_uuid) }}</nz-tag>
                             </td>
                             <td>
                                 <button nz-button nzType="primary" nzSize="small" style="border-radius: 4px;" (click)="openOrderDetails(data)">
@@ -93,7 +93,7 @@
                             <td class="customer-name">{{ data.cus_uuid | slice:0:8 }}...</td>
                             <td class="order-total">${{ data.ord_total | number:'1.2-2' }}</td>
                             <td>
-                                <nz-tag [nzColor]="getStatusColor(data.ord_status)">{{ getStatusLabel(data.ord_status) }}</nz-tag>
+                                <nz-tag [nzColor]="getStatusColor(data.ords_uuid)">{{ getStatusLabel(data.ords_uuid) }}</nz-tag>
                             </td>
                             <td>
                                 <button nz-button nzType="primary" nzSize="small" style="background: #fa8c16; border-color: #fa8c16; border-radius: 4px;"
@@ -140,7 +140,7 @@
                             <td class="customer-name">{{ data.cus_uuid | slice:0:8 }}...</td>
                             <td class="order-total">${{ data.ord_total | number:'1.2-2' }}</td>
                             <td>
-                                <nz-tag [nzColor]="getStatusColor(data.ord_status)">{{ getStatusLabel(data.ord_status) }}</nz-tag>
+                                <nz-tag [nzColor]="getStatusColor(data.ords_uuid)">{{ getStatusLabel(data.ords_uuid) }}</nz-tag>
                             </td>
                             <td>
                                 <button nz-button nzType="primary" nzSize="small" style="background: #52c41a; border-color: #52c41a; border-radius: 4px;"
@@ -185,7 +185,7 @@
                             <td class="customer-name">{{ data.cus_uuid | slice:0:8 }}...</td>
                             <td class="order-total">${{ data.ord_total | number:'1.2-2' }}</td>
                             <td>
-                                <nz-tag [nzColor]="getStatusColor(data.ord_status)">{{ getStatusLabel(data.ord_status) }}</nz-tag>
+                                <nz-tag [nzColor]="getStatusColor(data.ords_uuid)">{{ getStatusLabel(data.ords_uuid) }}</nz-tag>
                             </td>
                             <td>
                                 <button nz-button nzType="default" nzSize="small" style="border-radius: 4px;"
@@ -237,8 +237,8 @@
             
             <div *ngFor="let order of getSortedRouteOrders(); let idx = index" 
                  class="delivery-route-card" 
-                 [class.card-shipped]="order.ord_status === 'SHIPPED'"
-                 [class.card-processing]="order.ord_status === 'PROCESSING'"
+                 [class.card-shipped]="order.ords_uuid === 'SHIPPED'"
+                 [class.card-processing]="order.ords_uuid === 'PROCESSING'"
                  style="background: #fff; border-radius: 12px; border: 1px solid #f0f0f0; box-shadow: 0 4px 16px rgba(0,0,0,0.03); overflow: hidden; transition: all 0.3s ease;">
                 
                 <!-- Cabecera de la Tarjeta -->
@@ -258,7 +258,7 @@
                 <div class="card-route-body" style="padding: 20px;">
                     <div class="order-main-info" style="display: flex; align-items: center; justify-content: space-between; margin-bottom: 12px;">
                         <h3 class="order-id" style="margin: 0; font-size: 18px; font-weight: 700; color: #262626;">Pedido #{{ order.ord_ordernumber }}</h3>
-                        <nz-tag [nzColor]="getStatusColor(order.ord_status)">{{ getStatusLabel(order.ord_status) }}</nz-tag>
+                        <nz-tag [nzColor]="getStatusColor(order.ords_uuid)">{{ getStatusLabel(order.ords_uuid) }}</nz-tag>
                     </div>
 
                     <!-- Datos del Destinatario -->
@@ -293,6 +293,15 @@
                                     💳 YA ABONADO
                                 </span>
                             </div>
+                        </div>
+
+                        <!-- MAPA INTERACTIVO DE NAVEGACIÓN EN VIAJE (Solo para paradas en tránsito) -->
+                        <div *ngIf="order.ords_uuid === 'SHIPPED'" class="driver-route-map-wrapper" style="margin-bottom: 16px; background: #fafafa; border: 1px solid #fa8c16; border-radius: 8px; padding: 12px;">
+                            <div style="font-size: 11px; font-weight: 700; color: #fa8c16; margin-bottom: 6px; display: flex; align-items: center; justify-content: space-between; text-transform: uppercase; letter-spacing: 0.5px;">
+                                <span>🗺️ Mapa de Entrega activo</span>
+                                <span class="active-gps-indicator" style="background: #fa8c16; color: white; font-size: 9px; padding: 1px 4px; border-radius: 3px; font-weight: 800;">GPS ACTIVO</span>
+                            </div>
+                            <div [id]="'rider-map-' + order.ord_uuid" style="height: 180px; border-radius: 6px; border: 1px solid #edf2f7; z-index: 5;"></div>
                         </div>
 
                         <!-- Botones Rápidos de Comunicación y GPS -->
@@ -332,14 +341,14 @@
                 <div class="card-route-footer" style="background: #fafafa; padding: 16px 20px; border-top: 1px solid #f0f0f0; display: flex; width: 100%;">
                     <!-- Si está en Preparación (PROCESSING): Iniciar entrega -->
                     <button nz-button nzType="primary" nzBlock nzSize="large" class="flow-action-btn start-delivery-btn"
-                            *ngIf="order.ord_status === 'PROCESSING'"
+                            *ngIf="order.ords_uuid === 'PROCESSING'"
                             (click)="startDeliveryWorkflow(order, $event)" style="border-radius: 8px; font-weight: 700; height: 48px; font-size: 15px; background: #fa8c16; border-color: #fa8c16; display: inline-flex; align-items: center; justify-content: center; gap: 8px;">
                         <span nz-icon nzType="car" nzTheme="outline" style="font-size: 18px;"></span>
                         Cargar Mochila e Iniciar Viaje
                     </button>
 
                     <!-- Si está En viaje (SHIPPED): Completar o Reportar Incidencia -->
-                    <div class="shipped-actions-wrapper" *ngIf="order.ord_status === 'SHIPPED'" style="display: flex; gap: 10px; width: 100%;">
+                    <div class="shipped-actions-wrapper" *ngIf="order.ords_uuid === 'SHIPPED'" style="display: flex; gap: 10px; width: 100%;">
                         <button nz-button nzType="primary" nzSize="large" class="flow-action-btn complete-delivery-btn"
                                 (click)="markAsDelivered(order, $event)" style="flex: 2; border-radius: 8px; font-weight: 700; height: 48px; font-size: 15px; background: #52c41a; border-color: #52c41a; display: inline-flex; align-items: center; justify-content: center; gap: 6px;">
                             <span nz-icon nzType="check-circle" nzTheme="outline" style="font-size: 18px;"></span>
@@ -475,8 +484,8 @@
 
             <div class="drawer-header-status" style="display: flex; align-items: center; justify-content: space-between; width: 100%;">
                 <h2 style="margin: 0; font-weight: 700; color: #262626;">Pedido #{{ selectedOrder.ord_ordernumber }}</h2>
-                <nz-tag [nzColor]="getStatusColor(selectedOrder.ord_status)" style="font-size: 13px; padding: 2px 10px; border-radius: 4px; font-weight: 500;">
-                    {{ getStatusLabel(selectedOrder.ord_status) }}
+                <nz-tag [nzColor]="getStatusColor(selectedOrder.ords_uuid)" style="font-size: 13px; padding: 2px 10px; border-radius: 4px; font-weight: 500;">
+                    {{ getStatusLabel(selectedOrder.ords_uuid) }}
                 </nz-tag>
             </div>
             <p style="color: #8c8c8c; margin: 4px 0 0 0; font-size: 13px;">Registrado el: {{ selectedOrder.ord_date | date:'dd/MM/yyyy HH:mm' }}</p>
@@ -484,7 +493,7 @@
             <nz-divider style="margin: 16px 0;"></nz-divider>
 
             <!-- SECCIÓN: VERIFICACIÓN DE PAGO (SOLO PENDIENTES) -->
-            <div *ngIf="selectedOrder.ord_status === 'PENDING'" style="margin-bottom: 24px;">
+            <div *ngIf="selectedOrder.ords_uuid === 'PENDING'" style="margin-bottom: 24px;">
                 <nz-alert nzType="warning" nzShowIcon nzMessage="Supervisar Pago" [nzDescription]="paymentDesc"></nz-alert>
                 <ng-template #paymentDesc>
                     <div style="margin-top: 8px;" *ngIf="parseCustomerNotes(selectedOrder.ord_customernotes) as parsed">
@@ -602,7 +611,7 @@
 
             <!-- SECCIÓN: ASIGNACIÓN DE GUÍA (CORREO NACIONAL) -->
             <nz-card class="premium-card" style="margin-bottom: 24px; border: 1px solid #f0f0f0;" [nzBodyStyle]="{padding: '16px'}"
-                *ngIf="selectedOrder.ord_customernotes.includes('Correo Postal Nacional') && (selectedOrder.ord_status === 'PROCESSING' || selectedOrder.ord_status === 'SHIPPED')">
+                *ngIf="selectedOrder.ord_customernotes.includes('Correo Postal Nacional') && (selectedOrder.ords_uuid === 'PROCESSING' || selectedOrder.ords_uuid === 'SHIPPED')">
                 <h4 style="font-weight: 600; margin-bottom: 8px; display: flex; align-items: center; gap: 6px;">
                     <span nz-icon nzType="barcode" nzTheme="outline" style="color: #1890ff;"></span> Código de Seguimiento (Tracking)
                 </h4>
@@ -616,18 +625,18 @@
             </nz-card>
 
             <!-- SECCIÓN: CONTROL DEL FLUJO DE ENTREGA -->
-            <div style="margin-bottom: 24px; display: flex; flex-direction: column; gap: 10px;" *ngIf="selectedOrder.ord_status === 'PROCESSING' || selectedOrder.ord_status === 'SHIPPED'">
+            <div style="margin-bottom: 24px; display: flex; flex-direction: column; gap: 10px;" *ngIf="selectedOrder.ords_uuid === 'PROCESSING' || selectedOrder.ords_uuid === 'SHIPPED'">
                 <span style="font-size: 12px; font-weight: 600; color: #8c8c8c; text-transform: uppercase; letter-spacing: 0.5px; margin-bottom: 2px;">Cambiar Estado de Entrega</span>
                 
                 <!-- De preparación a Despachado -->
                 <button nz-button nzType="primary" nzBlock nzSize="large" style="border-radius: 8px; font-weight: 600; height: 44px; font-size: 15px; background: #fa8c16; border-color: #fa8c16;" 
-                        *ngIf="selectedOrder.ord_status === 'PROCESSING'" (click)="markAsShipped(selectedOrder, $event)">
+                        *ngIf="selectedOrder.ords_uuid === 'PROCESSING'" (click)="markAsShipped(selectedOrder, $event)">
                     🚚 Despachar / Enviar Pedido
                 </button>
 
                 <!-- De Despachado a Entregado -->
                 <button nz-button nzType="primary" nzBlock nzSize="large" style="border-radius: 8px; font-weight: 600; height: 44px; font-size: 15px; background: #52c41a; border-color: #52c41a;" 
-                        *ngIf="selectedOrder.ord_status === 'SHIPPED'" (click)="markAsDelivered(selectedOrder)">
+                        *ngIf="selectedOrder.ords_uuid === 'SHIPPED'" (click)="markAsDelivered(selectedOrder)">
                     🏁 Marcar como Entregado con Éxito
                 </button>
             </div>
