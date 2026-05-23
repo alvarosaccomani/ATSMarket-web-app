@@ -7,12 +7,14 @@ import { AddressesService } from '../../core/services/addresses.service';
 import { AddressInterface } from '../../core/interfaces/address/address.interface';
 import { OrderDetailInterface } from '../../core/interfaces/order-detail/order-detail.interface';
 import { Subscription, forkJoin } from 'rxjs';
+import { map } from 'rxjs/operators';
 import { OrdersService } from '../../core/services/orders.service';
 import { StoreContextService } from '../../core/services/store-context.service';
 import { SessionService } from '../../core/services/session.service';
 import { CustomersService } from '../../core/services/customers.service';
 import { MessageService } from '../../core/services/message.service';
 import { StockMovementsService } from '../../core/services/stock-movements.service';
+import { ProductVariationsService } from '../../core/services/product-variations.service';
 
 import { NzFormModule } from 'ng-zorro-antd/form';
 import { NzInputModule } from 'ng-zorro-antd/input';
@@ -97,7 +99,8 @@ export class CheckoutComponent implements OnInit, OnDestroy {
     private _sessionService: SessionService,
     private _customersService: CustomersService,
     private _messageService: MessageService,
-    private _stockMovementsService: StockMovementsService
+    private _stockMovementsService: StockMovementsService,
+    private _productVariationsService: ProductVariationsService
   ) { }
 
   ngOnInit(): void {
@@ -544,6 +547,66 @@ export class CheckoutComponent implements OnInit, OnDestroy {
       orderDetails: orderDetails
     };
 
+    // --- CHECK STOCK EN CALIENTE ANTES DE PAGAR ---
+    const stockChecks = this.cartItemsList.map(item => {
+      const cmpUuid = item.cmp_uuid || this.currentCompany.cmp_uuid;
+      const proUuid = item.pro_uuid;
+      const provUuid = item.prov_uuid;
+
+      return this._productVariationsService.checkStock(cmpUuid, proUuid, provUuid).pipe(
+        map((res: any) => {
+          let availableStock = 0;
+          if (res && res.success && res.data !== undefined) {
+            if (res.data && res.data.prov_stock !== undefined) {
+              availableStock = Number(res.data.prov_stock);
+            } else if (typeof res.data === 'number') {
+              availableStock = res.data;
+            }
+          } else if (res && res.prov_stock !== undefined) {
+            availableStock = Number(res.prov_stock);
+          } else if (typeof res === 'number') {
+            availableStock = res;
+          }
+          
+          return {
+            item,
+            availableStock,
+            hasStock: availableStock >= item.quantity
+          };
+        })
+      );
+    });
+
+    if (stockChecks.length > 0) {
+      forkJoin(stockChecks).subscribe({
+        next: (results) => {
+          const outOfStockItems = results.filter(r => !r.hasStock);
+          
+          if (outOfStockItems.length > 0) {
+            this.isProcessingPayment = false;
+            const names = outOfStockItems.map(r => 
+              `"${r.item.prov_name}" (Solicitado: ${r.item.quantity}, Disponible: ${r.availableStock})`
+            ).join(', ');
+            
+            this._messageService.error(
+              "Stock Insuficiente",
+              `Lo sentimos, no hay stock suficiente para completar tu pedido: ${names}. Por favor, reduce la cantidad antes de intentar pagar.`
+            );
+          } else {
+            this.saveOrderAfterStockCheck(payload, orderNumber, notes, identity, orderDetails);
+          }
+        },
+        error: (err) => {
+          console.warn('Fallo en checkStock preventivo, procediendo con guardado ordinario (fallback):', err);
+          this.saveOrderAfterStockCheck(payload, orderNumber, notes, identity, orderDetails);
+        }
+      });
+    } else {
+      this.saveOrderAfterStockCheck(payload, orderNumber, notes, identity, orderDetails);
+    }
+  }
+
+  private saveOrderAfterStockCheck(payload: any, orderNumber: number, notes: string, identity: any, orderDetails: any[]): void {
     this.ordersService.saveOrder(payload).subscribe({
       next: (res: any) => {
         const orderUuid = res?.data?.ord_uuid || '';
