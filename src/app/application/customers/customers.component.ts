@@ -153,7 +153,7 @@ export class CustomersComponent implements OnInit {
         order_number: `#PED-${o.ord_ordernumber}`,
         date: o.ord_createdat ? new Date(o.ord_createdat) : new Date(),
         total: o.ord_total || 0,
-        status: o.ord_status
+        status: o.ords_uuid
       })).sort((a, b) => b.date.getTime() - a.date.getTime());
 
       // Segmentación dinámica: Mayorista (B2B) si tiene 5+ compras o gastó $100k+, sino Minorista (B2C)

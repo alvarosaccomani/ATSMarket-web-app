@@ -7,7 +7,7 @@ export interface OrderInterface {
     cus_uuid: string;
     adr_uuid: string;
     ord_ordernumber: number;
-    ord_status: string;
+    ords_uuid: string;
     ord_date: Date;
     ord_subtotal: number;
     ord_shippingcost: number;

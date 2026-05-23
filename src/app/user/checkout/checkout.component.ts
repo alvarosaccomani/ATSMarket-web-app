@@ -536,7 +536,7 @@ export class CheckoutComponent implements OnInit, OnDestroy {
       cus_uuid: customer ? customer.cus_uuid : 'guest-customer',
       adr_uuid: this.selectedAddressId,
       ord_ordernumber: orderNumber,
-      ord_status: 'PENDING',
+      ords_uuid: 'PENDING',
       ord_date: new Date(),
       ord_subtotal: this.totalSubtotal,
       ord_shippingcost: this.shippingCost,
