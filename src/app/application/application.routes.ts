@@ -20,6 +20,7 @@ import { MaterialComponent } from './material/material.component';
 import { ProductsComponent } from './products/products.component';
 import { ProductComponent } from './product/product.component';
 import { ProductVariationComponent } from './product-variation/product-variation.component';
+import { InventoryAuditComponent } from './inventory-audit/inventory-audit.component';
 import { OrdersReceivedComponent } from './orders-received/orders-received.component';
 import { MyPurchasesComponent } from './my-purchases/my-purchases.component';
 import { CustomersComponent } from './customers/customers.component';
@@ -53,6 +54,7 @@ export const APPLICATION_ROUTES: Routes = [
             { path: 'products', component: ProductsComponent },
             { path: 'product/:pro_uuid', component: ProductComponent },
             { path: 'product-variation/:pro_uuid/:prov_uuid', component: ProductVariationComponent },
+            { path: 'inventory-audit', component: InventoryAuditComponent },
             { path: 'orders-received', component: OrdersReceivedComponent },
             { path: 'my-purchases', component: MyPurchasesComponent },
             { path: 'customers', component: CustomersComponent },
