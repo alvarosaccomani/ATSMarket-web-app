@@ -1,1 +1,271 @@
-<p>warehouses works!</p>
+<div class="warehouses-layout">
+  
+  <!-- CABECERA DEL MÓDULO -->
+  <div class="module-header animate__animated animate__fadeIn">
+    <div class="header-info">
+      <h1>📦 Depósitos y Ubicaciones Físicas</h1>
+      <p class="subtitle">Estructura tus depósitos en Pasillos, Racks y Estantes para optimizar la preparación de pedidos (WMS)</p>
+    </div>
+    <div class="header-actions">
+      <button nz-button nzType="primary" nzSize="large" (click)="openCreateWarehouseModal()" class="btn-create-warehouse">
+        <span nz-icon nzType="plus"></span>
+        Nuevo Depósito
+      </button>
+    </div>
+  </div>
+
+  <!-- SPINNER GLOBAL -->
+  <div class="loader-container" *ngIf="isLoadingWarehouses">
+    <nz-spin nzSimple nzSize="large"></nz-spin>
+    <p>Cargando depósitos de la tienda...</p>
+  </div>
+
+  <!-- VISTA ESTADO VACÍO -->
+  <div class="empty-state animate__animated animate__fadeIn" *ngIf="!isLoadingWarehouses && warehouses.length === 0">
+    <nz-empty nzNotFoundImage="simple" nzNotFoundContent="Aún no tienes depósitos registrados. ¡Crea el primero para organizar tu inventario!"></nz-empty>
+    <button nz-button nzType="primary" nzSize="large" (click)="openCreateWarehouseModal()" style="margin-top: 16px;">
+      Crear Primer Depósito
+    </button>
+  </div>
+
+  <!-- GRILLA PRINCIPAL DE DEPÓSITOS (CARDS VISUALES) -->
+  <div class="warehouses-grid" *ngIf="!isLoadingWarehouses && warehouses.length > 0">
+    <div class="warehouse-card animate__animated animate__fadeInUp" *ngFor="let wh of warehouses">
+      <div class="card-status-indicator" [class.active]="wh.war_active"></div>
+      
+      <div class="card-header">
+        <div class="card-title-block">
+          <h3>{{ wh.war_name }}</h3>
+          <span class="status-tag" [class.active]="wh.war_active">
+            {{ wh.war_active ? 'Activo' : 'Inactivo' }}
+          </span>
+        </div>
+        <button nz-button nzType="text" nzShape="circle" (click)="openEditWarehouseModal(wh)" class="btn-edit-card" nzTooltipTitle="Editar depósito" nz-tooltip>
+          <span nz-icon nzType="edit"></span>
+        </button>
+      </div>
+
+      <div class="card-body">
+        <div class="info-row">
+          <span nz-icon nzType="environment" class="info-icon"></span>
+          <span class="info-text">{{ wh.war_address || 'Dirección no especificada' }}</span>
+        </div>
+        <div class="info-row">
+          <span nz-icon nzType="database" class="info-icon"></span>
+          <span class="info-text">Módulo WMS: Activado</span>
+        </div>
+      </div>
+
+      <div class="card-footer">
+        <button nz-button nzType="primary" nzBlock (click)="openLocationsDrawer(wh)" class="btn-manage-locations">
+          <span nz-icon nzType="apartment"></span>
+          Gestionar Ubicaciones Físicas
+        </button>
+      </div>
+    </div>
+  </div>
+
+  <!-- MODAL: CREACIÓN / EDICIÓN DE DEPÓSITO -->
+  <nz-modal
+    [(nzVisible)]="isWarehouseModalVisible"
+    [nzTitle]="isEditingWarehouse ? '📝 Editar Depósito' : '📦 Nuevo Depósito'"
+    [nzOkText]="isEditingWarehouse ? 'Actualizar' : 'Crear'"
+    [nzCancelText]="'Cancelar'"
+    (nzOnCancel)="handleWarehouseModalCancel()"
+    (nzOnOk)="submitWarehouse()"
+    [nzOkLoading]="isSavingWarehouse"
+    [nzWidth]="500"
+    nzCentered
+  >
+    <div *nzModalContent class="modal-form-container">
+      <form nz-form [formGroup]="warehouseForm" nzLayout="vertical">
+        
+        <nz-form-item>
+          <nz-form-label nzRequired>Nombre del Depósito</nz-form-label>
+          <nz-form-control nzErrorTip="Por favor, escribe un nombre descriptivo de al menos 3 caracteres.">
+            <input nz-input formControlName="war_name" placeholder="Ej: Depósito Central, Sector Logístico A" />
+          </nz-form-control>
+        </nz-form-item>
+
+        <nz-form-item>
+          <nz-form-label nzRequired>Dirección Física</nz-form-label>
+          <nz-form-control nzErrorTip="La dirección física es obligatoria.">
+            <input nz-input formControlName="war_address" placeholder="Ej: Av. Rivadavia 2500, CABA" />
+          </nz-form-control>
+        </nz-form-item>
+
+        <nz-form-item class="form-switch-row">
+          <nz-form-label>Estado de Operación</nz-form-label>
+          <nz-form-control>
+            <nz-switch formControlName="war_active"></nz-switch>
+            <span class="switch-label-text">{{ warehouseForm.get('war_active')?.value ? 'Depósito Operativo (Activo)' : 'Fuera de Servicio (Inactivo)' }}</span>
+          </nz-form-control>
+        </nz-form-item>
+
+      </form>
+    </div>
+  </nz-modal>
+
+  <!-- DRAWER: GESTIÓN DE UBICACIONES FÍSICAS (WMS DRAWER) -->
+  <nz-drawer
+    [nzVisible]="isLocationsDrawerVisible"
+    [nzPlacement]="'right'"
+    [nzWidth]="850"
+    [nzTitle]="drawerTitle"
+    [nzExtra]="drawerExtra"
+    (nzOnClose)="closeLocationsDrawer()"
+  >
+    <ng-template #drawerTitle>
+      <div class="drawer-header-title">
+        <span class="title-icon">🗺️</span>
+        <div class="title-text-group">
+          <h2>Ubicaciones: {{ activeWarehouse?.war_name }}</h2>
+          <p>Define pasillos, estanterías y niveles para ubicar las variantes de tus productos.</p>
+        </div>
+      </div>
+    </ng-template>
+
+    <ng-template #drawerExtra>
+      <button nz-button nzType="default" (click)="closeLocationsDrawer()">Cerrar</button>
+    </ng-template>
+
+    <div *nzDrawerContent class="drawer-wms-content">
+      
+      <!-- CARGADOR DE UBICACIONES -->
+      <div class="drawer-loader" *ngIf="isLoadingLocations">
+        <nz-spin nzSimple></nz-spin>
+        <p>Actualizando mapa de ubicaciones...</p>
+      </div>
+
+      <div *ngIf="!isLoadingLocations">
+        
+        <!-- SECCIÓN A: GENERADOR POR LOTES (BATCH CREATOR) -->
+        <div class="wms-tool-card">
+          <div class="tool-header" (click)="toggleBatchGenerator()">
+            <div class="tool-title">
+              <span nz-icon nzType="thunderbolt" class="icon-bolt"></span>
+              <h3>Generador de Ubicaciones por Lotes (Masivo)</h3>
+            </div>
+            <span nz-icon [nzType]="isBatchGeneratorOpen ? 'up' : 'down'"></span>
+          </div>
+
+          <div class="tool-body" [class.open]="isBatchGeneratorOpen">
+            <p class="tool-description">Ingresa múltiples códigos separados por comas para auto-generar la grilla física del depósito en un segundo.</p>
+            
+            <div nz-row [nzGutter]="16" class="batch-inputs">
+              <div nz-col [nzXs]="24" [nzSm]="12" [nzMd]="6">
+                <label>Pasillos (Aisle)</label>
+                <input nz-input [(ngModel)]="batchAisles" placeholder="Ej: A, B, C" />
+              </div>
+              <div nz-col [nzXs]="24" [nzSm]="12" [nzMd]="6">
+                <label>Estanterías (Racks)</label>
+                <input nz-input [(ngModel)]="batchRacks" placeholder="Ej: 01, 02, 03" />
+              </div>
+              <div nz-col [nzXs]="24" [nzSm]="12" [nzMd]="6">
+                <label>Niveles (Estantes)</label>
+                <input nz-input [(ngModel)]="batchShelves" placeholder="Ej: 1, 2, 3" />
+              </div>
+              <div nz-col [nzXs]="24" [nzSm]="12" [nzMd]="6">
+                <label>Sector (Filtro)</label>
+                <input nz-input [(ngModel)]="batchSector" placeholder="Ej: Refrigerados, General" />
+              </div>
+            </div>
+
+            <div class="batch-actions">
+              <button nz-button nzType="default" (click)="clearBatchGenerator()">Limpiar</button>
+              <button nz-button nzType="dashed" (click)="previewBatchLocations()">Previsualizar Combinaciones</button>
+            </div>
+
+            <!-- PREVISUALIZADOR DE BINS -->
+            <div class="batch-preview-container animate__animated animate__fadeIn" *ngIf="previewLocations.length > 0">
+              <h4>📋 Vista Previa de Códigos Generados ({{ previewLocations.length }} posiciones)</h4>
+              <div class="bins-preview-grid">
+                <span class="preview-bin-badge" *ngFor="let pLoc of previewLocations">
+                  {{ pLoc.warl_bincode }}
+                </span>
+              </div>
+              <div class="save-batch-block">
+                <button nz-button nzType="primary" [nzLoading]="isSavingLocations" (click)="saveBatchLocations()">
+                  <span nz-icon nzType="save"></span>
+                  Confirmar y Guardar Lote Completo
+                </button>
+              </div>
+            </div>
+          </div>
+        </div>
+
+        <!-- SECCIÓN B: CARGA INDIVIDUAL RÁPIDA -->
+        <div class="wms-tool-card inline-tool" *ngIf="!isBatchGeneratorOpen">
+          <h3>📌 Crear Ubicación Individual</h3>
+          <div class="inline-inputs-row">
+            <input nz-input [(ngModel)]="singleLocationAisle" placeholder="Pasillo (ej: A)" style="width: 110px;" />
+            <input nz-input [(ngModel)]="singleLocationRack" placeholder="Estantería (ej: 12)" style="width: 130px;" />
+            <input nz-input [(ngModel)]="singleLocationShelf" placeholder="Estante/Nivel (ej: 4)" style="width: 130px;" />
+            <input nz-input [(ngModel)]="singleLocationSector" placeholder="Sector (ej: Norte)" style="width: 150px;" />
+            <button nz-button nzType="primary" [nzLoading]="isSavingLocations" (click)="saveSingleLocation()">
+              <span nz-icon nzType="plus"></span> Añadir
+            </button>
+          </div>
+        </div>
+
+        <!-- SECCIÓN C: FILTRO DE BÚSQUEDA Y GRILLA DE UBICACIONES -->
+        <div class="locations-table-container">
+          <div class="table-search-row">
+            <h3>🗂️ Listado de Ubicaciones Existentes ({{ locations.length }})</h3>
+            <nz-input-group [nzSuffix]="suffixIconSearch" class="search-input-wms">
+              <input type="text" nz-input [(ngModel)]="locationSearchQuery" (ngModelChange)="applyLocationFilters()" placeholder="Buscar por código, pasillo o rack..." />
+            </nz-input-group>
+            <ng-template #suffixIconSearch>
+              <span nz-icon nzType="search"></span>
+            </ng-template>
+          </div>
+
+          <!-- TABLA DE COORDENADAS FÍSICAS -->
+          <nz-table #locTable [nzData]="filteredLocations" nzSize="middle" [nzPageSize]="8" class="wms-table">
+            <thead>
+              <tr>
+                <th>Pasillo (Aisle)</th>
+                <th>Sector</th>
+                <th>Estantería (Rack)</th>
+                <th>Estante (Nivel)</th>
+                <th>Código Ubicación (Bin)</th>
+                <th nzWidth="100px" nzAlign="center">Acción</th>
+              </tr>
+            </thead>
+            <tbody>
+              <tr *ngFor="let data of locTable.data" class="animate__animated animate__fadeIn">
+                <td>
+                  <span class="wms-meta-tag aisle">{{ data.warl_aisle || 'N/A' }}</span>
+                </td>
+                <td>{{ data.warl_sector || 'General' }}</td>
+                <td>{{ data.warl_rack || 'N/A' }}</td>
+                <td>{{ data.warl_shelf || 'N/A' }}</td>
+                <td>
+                  <span class="bin-code-badge">{{ data.warl_bincode }}</span>
+                </td>
+                <td nzAlign="center">
+                  <button
+                    nz-button
+                    nzType="text"
+                    nzDanger
+                    nz-popconfirm
+                    nzPopconfirmTitle="¿Seguro que deseas eliminar esta ubicación física?"
+                    nzPopconfirmPlacement="topRight"
+                    nzOkText="Sí, Eliminar"
+                    nzCancelText="Cancelar"
+                    (nzOnConfirm)="deleteLocation(data)"
+                    class="btn-delete-location"
+                  >
+                    <span nz-icon nzType="delete"></span>
+                  </button>
+                </td>
+              </tr>
+            </tbody>
+          </nz-table>
+        </div>
+
+      </div>
+    </div>
+  </nz-drawer>
+
+</div>
