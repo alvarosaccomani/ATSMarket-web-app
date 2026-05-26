@@ -1,4 +1,4 @@
-import { Component, OnInit } from '@angular/core';
+import { Component, OnInit, ViewEncapsulation } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { ReactiveFormsModule, FormBuilder, FormGroup, Validators, FormsModule } from '@angular/forms';
 
@@ -19,7 +19,9 @@ import { NzPopconfirmModule } from 'ng-zorro-antd/popconfirm';
 import { NzEmptyModule } from 'ng-zorro-antd/empty';
 
 import { WarehousesService } from '@services/warehouses.service';
+import { WarehousesLocationsService } from '@services/warehouses-locations.service';
 import { SessionService } from '@services/session.service';
+import { MessageService } from '@services/message.service';
 import { WarehouseInterface } from '@interfaces/warehouse';
 import { WarehouseLocationInterface } from '@interfaces/warehouse-location';
 
@@ -46,7 +48,8 @@ import { WarehouseLocationInterface } from '@interfaces/warehouse-location';
     NzEmptyModule
   ],
   templateUrl: './warehouses.component.html',
-  styleUrl: './warehouses.component.scss'
+  styleUrl: './warehouses.component.scss',
+  encapsulation: ViewEncapsulation.None
 })
 export class WarehousesComponent implements OnInit {
 
@@ -92,7 +95,9 @@ export class WarehousesComponent implements OnInit {
   constructor(
     private fb: FormBuilder,
     private message: NzMessageService,
+    private _messageService: MessageService,
     private _warehousesService: WarehousesService,
+    private _warehousesLocationsService: WarehousesLocationsService,
     private _sessionService: SessionService
   ) { }
 
@@ -224,7 +229,7 @@ export class WarehousesComponent implements OnInit {
   public loadLocations(): void {
     if (!this.activeWarehouse) return;
     this.isLoadingLocations = true;
-    this._warehousesService.getLocations(this.activeWarehouse.war_uuid).subscribe({
+    this._warehousesLocationsService.getLocations(this.companyUuid!, this.activeWarehouse.war_uuid).subscribe({
       next: (res) => {
         this.locations = res.data || [];
         this.applyLocationFilters();
@@ -257,15 +262,22 @@ export class WarehousesComponent implements OnInit {
 
   public deleteLocation(location: WarehouseLocationInterface): void {
     if (!this.activeWarehouse) return;
-    this._warehousesService.deleteLocation(this.activeWarehouse.war_uuid, location.warl_uuid).subscribe({
-      next: () => {
-        this.message.success(`Ubicación ${location.warl_bincode} eliminada.`);
-        this.loadLocations();
-      },
-      error: (err) => {
-        this.message.error('No se pudo eliminar la ubicación.');
+    
+    this._messageService.confirm(
+      '¿Seguro que deseas eliminar esta ubicación física?',
+      `Ubicación: ${location.warl_bincode}`,
+      () => {
+        this._warehousesLocationsService.deleteLocation(this.companyUuid!, this.activeWarehouse!.war_uuid, location.warl_uuid).subscribe({
+          next: () => {
+            this.message.success(`Ubicación ${location.warl_bincode} eliminada.`);
+            this.loadLocations();
+          },
+          error: (err) => {
+            this.message.error('No se pudo eliminar la ubicación.');
+          }
+        });
       }
-    });
+    );
   }
 
   // --- GENERADOR POR LOTES (BATCH GENERATOR) ---
@@ -345,7 +357,7 @@ export class WarehousesComponent implements OnInit {
     if (!this.activeWarehouse || this.previewLocations.length === 0) return;
 
     this.isSavingLocations = true;
-    this._warehousesService.saveLocationsBatch(this.activeWarehouse.war_uuid, this.previewLocations).subscribe({
+    this._warehousesLocationsService.saveLocationsBatch(this.companyUuid!, this.activeWarehouse.war_uuid, this.previewLocations).subscribe({
       next: (res) => {
         this.message.success(`¡Éxito! Se generaron y guardaron ${res.count || this.previewLocations.length} ubicaciones.`);
         this.loadLocations();
@@ -410,7 +422,7 @@ export class WarehousesComponent implements OnInit {
     };
 
     this.isSavingLocations = true;
-    this._warehousesService.saveLocation(payload).subscribe({
+    this._warehousesLocationsService.saveLocation(payload).subscribe({
       next: () => {
         this.message.success(`Ubicación ${binCode} creada con éxito.`);
         this.loadLocations();

@@ -248,13 +248,10 @@
                     nz-button
                     nzType="text"
                     nzDanger
-                    nz-popconfirm
-                    nzPopconfirmTitle="¿Seguro que deseas eliminar esta ubicación física?"
-                    nzPopconfirmPlacement="topRight"
-                    nzOkText="Sí, Eliminar"
-                    nzCancelText="Cancelar"
-                    (nzOnConfirm)="deleteLocation(data)"
+                    (click)="deleteLocation(data)"
                     class="btn-delete-location"
+                    nzTooltipTitle="Eliminar ubicación"
+                    nz-tooltip
                   >
                     <span nz-icon nzType="delete"></span>
                   </button>
