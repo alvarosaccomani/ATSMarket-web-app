@@ -6,8 +6,8 @@ import { CartService } from '../../core/services/cart.service';
 import { AddressesService } from '../../core/services/addresses.service';
 import { AddressInterface } from '../../core/interfaces/address/address.interface';
 import { OrderDetailInterface } from '../../core/interfaces/order-detail/order-detail.interface';
-import { Subscription, forkJoin } from 'rxjs';
-import { map } from 'rxjs/operators';
+import { Subscription, forkJoin, of } from 'rxjs';
+import { map, catchError } from 'rxjs/operators';
 import { OrdersService } from '../../core/services/orders.service';
 import { StoreContextService } from '../../core/services/store-context.service';
 import { SessionService } from '../../core/services/session.service';
@@ -15,6 +15,7 @@ import { CustomersService } from '../../core/services/customers.service';
 import { MessageService } from '../../core/services/message.service';
 import { StockMovementsService } from '../../core/services/stock-movements.service';
 import { ProductVariationsService } from '../../core/services/product-variations.service';
+import { InventoryStocksService } from '../../core/services/inventory-stocks.service';
 
 import { NzFormModule } from 'ng-zorro-antd/form';
 import { NzInputModule } from 'ng-zorro-antd/input';
@@ -100,7 +101,8 @@ export class CheckoutComponent implements OnInit, OnDestroy {
     private _customersService: CustomersService,
     private _messageService: MessageService,
     private _stockMovementsService: StockMovementsService,
-    private _productVariationsService: ProductVariationsService
+    private _productVariationsService: ProductVariationsService,
+    private _inventoryStocksService: InventoryStocksService
   ) { }
 
   ngOnInit(): void {
@@ -547,32 +549,50 @@ export class CheckoutComponent implements OnInit, OnDestroy {
       orderDetails: orderDetails
     };
 
-    // --- CHECK STOCK EN CALIENTE ANTES DE PAGAR ---
+    // --- CHECK STOCK EN CALIENTE ANTES DE PAGAR (CONSIDERANDO STOCK MULTI-DEPÓSITO) ---
     const stockChecks = this.cartItemsList.map(item => {
       const cmpUuid = item.cmp_uuid || this.currentCompany.cmp_uuid;
       const proUuid = item.pro_uuid;
       const provUuid = item.prov_uuid;
 
-      return this._productVariationsService.checkStock(cmpUuid, proUuid, provUuid).pipe(
+      // Consultamos el stock distribuido en tiempo real en todos los depósitos
+      return this._inventoryStocksService.getStocksByVariation(cmpUuid, proUuid, provUuid).pipe(
         map((res: any) => {
-          let availableStock = 0;
-          if (res && res.success && res.data !== undefined) {
-            if (res.data && res.data.prov_stock !== undefined) {
-              availableStock = Number(res.data.prov_stock);
-            } else if (typeof res.data === 'number') {
-              availableStock = res.data;
-            }
-          } else if (res && res.prov_stock !== undefined) {
-            availableStock = Number(res.prov_stock);
-          } else if (typeof res === 'number') {
-            availableStock = res;
+          if (res && res.success && Array.isArray(res.data) && res.data.length > 0) {
+            // Calculamos stock disponible real restando cantidades reservadas
+            const availableStock = res.data.reduce((sum: any, stock: any) => sum + (stock.ist_quanty - (stock.ist_quantyreserved || 0)), 0);
+            return {
+              item,
+              availableStock,
+              hasStock: availableStock >= item.quantity
+            };
           }
-          
-          return {
-            item,
-            availableStock,
-            hasStock: availableStock >= item.quantity
-          };
+          throw new Error('Sin stock detallado por depósito, usando fallback de variación');
+        }),
+        catchError(() => {
+          // Fallback ordinario de consulta de variación si falla o no hay depósitos configurados
+          return this._productVariationsService.checkStock(cmpUuid, proUuid, provUuid).pipe(
+            map((res: any) => {
+              let availableStock = 0;
+              if (res && res.success && res.data !== undefined) {
+                if (res.data && res.data.prov_stock !== undefined) {
+                  availableStock = Number(res.data.prov_stock);
+                } else if (typeof res.data === 'number') {
+                  availableStock = res.data;
+                }
+              } else if (res && res.prov_stock !== undefined) {
+                availableStock = Number(res.prov_stock);
+              } else if (typeof res === 'number') {
+                availableStock = res;
+              }
+              
+              return {
+                item,
+                availableStock,
+                hasStock: availableStock >= item.quantity
+              };
+            })
+          );
         })
       );
     });
