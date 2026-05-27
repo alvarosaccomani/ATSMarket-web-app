@@ -194,16 +194,20 @@
           </div>
         </div>
 
-        <!-- SECCIÓN B: CARGA INDIVIDUAL RÁPIDA -->
-        <div class="wms-tool-card inline-tool" *ngIf="!isBatchGeneratorOpen">
-          <h3>📌 Crear Ubicación Individual</h3>
+        <!-- SECCIÓN B: CARGA INDIVIDUAL RÁPIDA / EDICIÓN -->
+        <div class="wms-tool-card inline-tool" *ngIf="!isBatchGeneratorOpen" [class.editing-mode]="isEditingLocation">
+          <h3 *ngIf="!isEditingLocation">📌 Crear Ubicación Individual</h3>
+          <h3 *ngIf="isEditingLocation">📝 Editar Ubicación: <span class="editing-code">{{ editingLocation?.warl_bincode }}</span></h3>
           <div class="inline-inputs-row">
             <input nz-input [(ngModel)]="singleLocationAisle" placeholder="Pasillo (ej: A)" style="width: 110px;" />
             <input nz-input [(ngModel)]="singleLocationRack" placeholder="Estantería (ej: 12)" style="width: 130px;" />
             <input nz-input [(ngModel)]="singleLocationShelf" placeholder="Estante/Nivel (ej: 4)" style="width: 130px;" />
             <input nz-input [(ngModel)]="singleLocationSector" placeholder="Sector (ej: Norte)" style="width: 150px;" />
-            <button nz-button nzType="primary" [nzLoading]="isSavingLocations" (click)="saveSingleLocation()">
-              <span nz-icon nzType="plus"></span> Añadir
+            <button nz-button [nzType]="isEditingLocation ? 'default' : 'primary'" [nzLoading]="isSavingLocations" (click)="saveSingleLocation()" [class.btn-update-wms]="isEditingLocation">
+              <span nz-icon [nzType]="isEditingLocation ? 'save' : 'plus'"></span> {{ isEditingLocation ? 'Actualizar' : 'Añadir' }}
+            </button>
+            <button nz-button nzType="default" nzDanger (click)="cancelEditLocation()" *ngIf="isEditingLocation" class="btn-cancel-edit">
+              Cancelar
             </button>
           </div>
         </div>
@@ -243,7 +247,17 @@
                 <td>
                   <span class="bin-code-badge">{{ data.warl_bincode }}</span>
                 </td>
-                <td nzAlign="center">
+                <td nzAlign="center" class="actions-cell-wms">
+                  <button
+                    nz-button
+                    nzType="text"
+                    (click)="editLocation(data)"
+                    class="btn-edit-location"
+                    nzTooltipTitle="Editar ubicación"
+                    nz-tooltip
+                  >
+                    <span nz-icon nzType="edit"></span>
+                  </button>
                   <button
                     nz-button
                     nzType="text"

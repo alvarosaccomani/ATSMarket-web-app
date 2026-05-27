@@ -74,6 +74,8 @@ export class WarehousesComponent implements OnInit {
   public isWarehouseModalVisible = false;
   public isLocationsDrawerVisible = false;
   public isEditingWarehouse = false;
+  public isEditingLocation = false;
+  public editingLocation: WarehouseLocationInterface | null = null;
 
   // Formularios Reactivos
   public warehouseForm!: FormGroup;
@@ -224,6 +226,7 @@ export class WarehousesComponent implements OnInit {
     this.activeWarehouse = null;
     this.locations = [];
     this.filteredLocations = [];
+    this.cancelEditLocation();
   }
 
   public loadLocations(): void {
@@ -373,7 +376,25 @@ export class WarehousesComponent implements OnInit {
     });
   }
 
-  // --- CARGA DE UBICACIÓN ÚNICA ---
+  // --- CARGA DE UBICACIÓN ÚNICA / EDICIÓN ---
+
+  public editLocation(location: WarehouseLocationInterface): void {
+    this.isEditingLocation = true;
+    this.editingLocation = location;
+    this.isBatchGeneratorOpen = false; // Cerrar generador al editar
+
+    // Rellenar campos individuales
+    this.singleLocationAisle = location.warl_aisle || '';
+    this.singleLocationSector = location.warl_sector || '';
+    this.singleLocationRack = location.warl_rack || '';
+    this.singleLocationShelf = location.warl_shelf || '';
+  }
+
+  public cancelEditLocation(): void {
+    this.isEditingLocation = false;
+    this.editingLocation = null;
+    this.clearSingleLocationForm();
+  }
 
   public clearSingleLocationForm(): void {
     this.singleLocationAisle = '';
@@ -401,38 +422,70 @@ export class WarehousesComponent implements OnInit {
 
     const binCode = parts.join('-');
 
-    // Evitar códigos repetidos en vivo
-    if (this.locations.some(l => l.warl_bincode.toLowerCase() === binCode.toLowerCase())) {
+    // Evitar códigos repetidos (excepto si estamos editando la misma ubicación)
+    const isDuplicate = this.locations.some(l => 
+      l.warl_bincode.toLowerCase() === binCode.toLowerCase() && 
+      (!this.isEditingLocation || l.warl_uuid !== this.editingLocation?.warl_uuid)
+    );
+
+    if (isDuplicate) {
       this.message.error(`La ubicación con código ${binCode} ya existe en este depósito.`);
       return;
     }
 
-    const payload: WarehouseLocationInterface = {
-      warl_uuid: '',
-      war_uuid: this.activeWarehouse.war_uuid,
-      cmp_uuid: this.companyUuid || '',
-      warl_aisle: aisle || undefined,
-      warl_sector: this.singleLocationSector.trim() || undefined,
-      warl_rack: rack || undefined,
-      warl_shelf: shelf || undefined,
-      warl_bincode: binCode,
-      warl_active: true,
-      warl_createdat: new Date(),
-      warl_updatedat: new Date()
-    };
-
     this.isSavingLocations = true;
-    this._warehousesLocationsService.saveLocation(payload).subscribe({
-      next: () => {
-        this.message.success(`Ubicación ${binCode} creada con éxito.`);
-        this.loadLocations();
-        this.clearSingleLocationForm();
-        this.isSavingLocations = false;
-      },
-      error: (err) => {
-        this.message.error('No se pudo crear la ubicación.');
-        this.isSavingLocations = false;
-      }
-    });
+
+    if (this.isEditingLocation && this.editingLocation) {
+      const payload: WarehouseLocationInterface = {
+        ...this.editingLocation,
+        warl_aisle: aisle || undefined,
+        warl_sector: this.singleLocationSector.trim() || undefined,
+        warl_rack: rack || undefined,
+        warl_shelf: shelf || undefined,
+        warl_bincode: binCode,
+        warl_updatedat: new Date()
+      };
+
+      this._warehousesLocationsService.updateLocation(payload).subscribe({
+        next: () => {
+          this.message.success(`Ubicación ${binCode} actualizada con éxito.`);
+          this.loadLocations();
+          this.cancelEditLocation();
+          this.isSavingLocations = false;
+        },
+        error: (err) => {
+          console.error('Error al actualizar ubicación:', err);
+          this.message.error('No se pudo actualizar la ubicación.');
+          this.isSavingLocations = false;
+        }
+      });
+    } else {
+      const payload: WarehouseLocationInterface = {
+        warl_uuid: '',
+        war_uuid: this.activeWarehouse.war_uuid,
+        cmp_uuid: this.companyUuid || '',
+        warl_aisle: aisle || undefined,
+        warl_sector: this.singleLocationSector.trim() || undefined,
+        warl_rack: rack || undefined,
+        warl_shelf: shelf || undefined,
+        warl_bincode: binCode,
+        warl_active: true,
+        warl_createdat: new Date(),
+        warl_updatedat: new Date()
+      };
+
+      this._warehousesLocationsService.saveLocation(payload).subscribe({
+        next: () => {
+          this.message.success(`Ubicación ${binCode} creada con éxito.`);
+          this.loadLocations();
+          this.clearSingleLocationForm();
+          this.isSavingLocations = false;
+        },
+        error: (err) => {
+          this.message.error('No se pudo crear la ubicación.');
+          this.isSavingLocations = false;
+        }
+      });
+    }
   }
 }
