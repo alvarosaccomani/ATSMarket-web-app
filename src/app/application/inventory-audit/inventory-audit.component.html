@@ -222,6 +222,26 @@
                 </nz-form-control>
             </nz-form-item>
 
+            <!-- DEPOSITO SELECT -->
+            <nz-form-item>
+                <nz-form-label nzRequired nzFor="war_uuid">Depósito de Almacenamiento</nz-form-label>
+                <nz-form-control nzErrorTip="Selecciona el depósito afectado">
+                    <nz-select formControlName="war_uuid" nzShowSearch nzPlaceHolder="Seleccionar depósito...">
+                        <nz-option *ngFor="let w of warehousesList" [nzValue]="w.war_uuid" [nzLabel]="w.war_name"></nz-option>
+                    </nz-select>
+                </nz-form-control>
+            </nz-form-item>
+
+            <!-- UBICACION FISICA (BIN) SELECT -->
+            <nz-form-item>
+                <nz-form-label nzRequired nzFor="warl_uuid">Coordenada Física (Casillero/Bin)</nz-form-label>
+                <nz-form-control nzErrorTip="Selecciona el casillero físico de destino">
+                    <nz-select formControlName="warl_uuid" nzShowSearch nzPlaceHolder="Seleccionar casillero físico..." [disabled]="selectedWarehouseLocations.length === 0" [nzLoading]="isLoadingLocations">
+                        <nz-option *ngFor="let loc of selectedWarehouseLocations" [nzValue]="loc.warl_uuid" [nzLabel]="loc.warl_bincode + ' (Sector: ' + (loc.warl_sector || 'General') + ')'"></nz-option>
+                    </nz-select>
+                </nz-form-control>
+            </nz-form-item>
+
             <div nz-row [nzGutter]="16">
                 <!-- TIPO DE MOVIMIENTO -->
                 <div nz-col [nzSpan]="12">

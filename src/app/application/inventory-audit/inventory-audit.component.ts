@@ -21,11 +21,16 @@ import { NzToolTipModule } from 'ng-zorro-antd/tooltip';
 import { StockMovementInterface } from '@interfaces/stock-movement/stock-movement.interface';
 import { ProductInterface } from '@interfaces/product';
 import { ProductVariationInterface } from '@interfaces/product-variation';
+import { WarehouseInterface } from '@interfaces/warehouse';
+import { WarehouseLocationInterface } from '@interfaces/warehouse-location';
 import { SessionService } from '@services/session.service';
 import { StockMovementsService } from '@services/stock-movements.service';
 import { ProductsService } from '@services/products.service';
 import { MessageService } from '@services/message.service';
 import { ProductVariationsService } from '@services/product-variations.service';
+import { WarehousesService } from '@services/warehouses.service';
+import { WarehousesLocationsService } from '@services/warehouses-locations.service';
+import { InventoryStocksService } from '@services/inventory-stocks.service';
 import { forkJoin, of } from 'rxjs';
 import { catchError } from 'rxjs/operators';
 
@@ -84,6 +89,9 @@ export class InventoryAuditComponent implements OnInit {
   public isLoadingVariations: boolean = false;
   public adjustmentForm!: FormGroup;
   public selectedProductVariations: ProductVariationInterface[] = [];
+  public warehousesList: WarehouseInterface[] = [];
+  public selectedWarehouseLocations: WarehouseLocationInterface[] = [];
+  public isLoadingLocations: boolean = false;
 
   constructor(
     private fb: FormBuilder,
@@ -91,7 +99,10 @@ export class InventoryAuditComponent implements OnInit {
     private _stockMovementsService: StockMovementsService,
     private _productsService: ProductsService,
     private _messageService: MessageService,
-    private _productVariationsService: ProductVariationsService
+    private _productVariationsService: ProductVariationsService,
+    private _warehousesService: WarehousesService,
+    private _warehousesLocationsService: WarehousesLocationsService,
+    private _inventoryStocksService: InventoryStocksService
   ) { }
 
   ngOnInit(): void {
@@ -102,15 +113,29 @@ export class InventoryAuditComponent implements OnInit {
       
       this.initForm();
       this.loadData();
+      this.loadWarehouses();
     } else {
       this.isLoading = false;
     }
+  }
+
+  private loadWarehouses(): void {
+    this._warehousesService.getWarehouses(this.activeCmpUuid).subscribe({
+      next: (res) => {
+        this.warehousesList = res.data || [];
+      },
+      error: (err) => {
+        console.error('Error al cargar depósitos para auditoría:', err);
+      }
+    });
   }
 
   private initForm(): void {
     this.adjustmentForm = this.fb.group({
       pro_uuid: ['', Validators.required],
       prov_uuid: ['', Validators.required],
+      war_uuid: ['', Validators.required],
+      warl_uuid: ['', Validators.required],
       tsmo_uuid: ['ADJUSTMENT', Validators.required],
       smo_quantity: [1, [Validators.required, Validators.min(1)]],
       smo_reason: ['', [Validators.required, Validators.maxLength(150)]]
@@ -125,6 +150,15 @@ export class InventoryAuditComponent implements OnInit {
           next: (res) => {
             const list = res.data || [];
             this.selectedProductVariations = list.filter(v => v.pro_uuid === proUuid);
+            
+            // Asegurar que las variaciones cargadas en el modal estén mapeadas en allVariationsMap
+            const parentProduct = this.productsList.find(p => p.pro_uuid === proUuid);
+            if (parentProduct) {
+              this.selectedProductVariations.forEach(v => {
+                this.allVariationsMap[v.prov_uuid] = { prov: v, pro: parentProduct };
+              });
+            }
+            
             this.isLoadingVariations = false;
           },
           error: (err) => {
@@ -135,6 +169,27 @@ export class InventoryAuditComponent implements OnInit {
         });
       } else {
         this.selectedProductVariations = [];
+      }
+    });
+
+    // Escuchar cambios en el depósito seleccionado en el modal para cargar ubicaciones
+    this.adjustmentForm.get('war_uuid')?.valueChanges.subscribe(warUuid => {
+      this.adjustmentForm.patchValue({ warl_uuid: '' });
+      if (warUuid) {
+        this.isLoadingLocations = true;
+        this._warehousesLocationsService.getLocations(this.activeCmpUuid, warUuid).subscribe({
+          next: (res) => {
+            this.selectedWarehouseLocations = res.data || [];
+            this.isLoadingLocations = false;
+          },
+          error: (err) => {
+            console.error('Error al cargar ubicaciones físicas del depósito:', err);
+            this.selectedWarehouseLocations = [];
+            this.isLoadingLocations = false;
+          }
+        });
+      } else {
+        this.selectedWarehouseLocations = [];
       }
     });
   }
@@ -264,7 +319,7 @@ export class InventoryAuditComponent implements OnInit {
     this.isSavingAdjustment = true;
     const formVal = this.adjustmentForm.value;
 
-    // Obtener la variación para calcular el stock previo y resultante
+    // Obtener la variación para calcular el stock global previo y resultante
     const variationItem = this.allVariationsMap[formVal.prov_uuid];
     if (!variationItem) {
       this._messageService.error('Error', 'No se encontró la variación seleccionada.');
@@ -272,43 +327,78 @@ export class InventoryAuditComponent implements OnInit {
       return;
     }
 
-    const previousStock = variationItem.prov.prov_stock || 0;
-    
-    // Determinar cantidad con signo relativo
-    let delta = formVal.smo_quantity;
-    if (formVal.tsmo_uuid === 'OUT' || (formVal.tsmo_uuid === 'ADJUSTMENT' && formVal.smo_reason.toLowerCase().includes('rotura') || formVal.smo_reason.toLowerCase().includes('daño') || formVal.smo_reason.toLowerCase().includes('perdida'))) {
-      delta = -Math.abs(formVal.smo_quantity);
-    }
-    const currentStock = previousStock + delta;
+    // Consultar la distribución de stock de esta variante para saber el stock previo en el depósito seleccionado
+    this._inventoryStocksService.getStocksByVariation(this.activeCmpUuid, formVal.pro_uuid, formVal.prov_uuid).subscribe({
+      next: (stockRes) => {
+        const stocks = stockRes.data || [];
+        const matchingStock = stocks.find(s => s.war_uuid === formVal.war_uuid);
 
-    const payload: Partial<StockMovementInterface> = {
-      cmp_uuid: this.activeCmpUuid,
-      pro_uuid: formVal.pro_uuid,
-      prov_uuid: formVal.prov_uuid,
-      usr_uuid: this._sessionService.getIdentity()?.usr_uuid || null,
-      ord_uuid: null,
-      tsmo_uuid: formVal.tsmo_uuid,
-      smo_quantity: formVal.smo_quantity,
-      smo_previousstock: previousStock,
-      smo_currentstock: currentStock,
-      smo_reason: formVal.smo_reason
-    };
+        // Si no hay stock guardado para ese depósito, el stock previo es 0
+        const previousStock = matchingStock ? (matchingStock.ist_quanty || 0) : 0;
+        
+        // Determinar cantidad con signo relativo
+        let delta = formVal.smo_quantity;
+        if (formVal.tsmo_uuid === 'OUT' || (formVal.tsmo_uuid === 'ADJUSTMENT' && (formVal.smo_reason.toLowerCase().includes('rotura') || formVal.smo_reason.toLowerCase().includes('daño') || formVal.smo_reason.toLowerCase().includes('perdida')))) {
+          delta = -Math.abs(formVal.smo_quantity);
+        }
+        const currentStock = previousStock + delta;
 
-    this._stockMovementsService.saveStockMovement(payload).subscribe({
-      next: (res) => {
-        this.isSavingAdjustment = false;
-        this.isAdjustmentModalVisible = false;
+        const payload: Partial<StockMovementInterface> & { war_uuid?: string; warl_uuid?: string } = {
+          cmp_uuid: this.activeCmpUuid,
+          pro_uuid: formVal.pro_uuid,
+          prov_uuid: formVal.prov_uuid,
+          war_uuid: formVal.war_uuid,
+          warl_uuid: formVal.warl_uuid,
+          usr_uuid: this._sessionService.getIdentity()?.usr_uuid || null,
+          ord_uuid: null,
+          tsmo_uuid: formVal.tsmo_uuid,
+          smo_quantity: formVal.smo_quantity,
+          smo_previousstock: previousStock,
+          smo_currentstock: currentStock,
+          smo_reason: formVal.smo_reason
+        };
 
-        // Modificar stock en local de forma simulada para actualizar la vista de forma reactiva e instantánea
-        variationItem.prov.prov_stock = currentStock;
+        this._stockMovementsService.saveStockMovement(payload).subscribe({
+          next: (res) => {
+            // Sincronizar el stock del depósito físico mediante InventoryStocksService
+            this._inventoryStocksService.updateWarehouseStock(
+              this.activeCmpUuid,
+              formVal.pro_uuid,
+              formVal.prov_uuid,
+              formVal.war_uuid,
+              formVal.warl_uuid,
+              currentStock
+            ).subscribe({
+              next: () => {
+                console.log('Stock del depósito físico sincronizado con éxito.');
+              },
+              error: (err) => {
+                console.warn('Fallo al actualizar stock del depósito físico:', err);
+              }
+            });
 
-        this._messageService.success('Ajuste Registrado', 'El movimiento de inventario fue guardado y el stock actualizado.');
-        this.loadData(); // Recargar bitácora y recalcular KPIs
+            this.isSavingAdjustment = false;
+            this.isAdjustmentModalVisible = false;
+
+            // Modificar stock en local de forma simulada para actualizar la vista
+            // El stock global es el stock actual acumulado de la variación
+            let newGlobalStock = (variationItem.prov.prov_stock || 0) + delta;
+            variationItem.prov.prov_stock = newGlobalStock;
+
+            this._messageService.success('Ajuste Registrado', 'El movimiento de inventario fue guardado y el stock del depósito actualizado.');
+            this.loadData(); // Recargar bitácora y recalcular KPIs
+          },
+          error: (err) => {
+            console.error('Error al guardar movimiento de stock:', err);
+            this.isSavingAdjustment = false;
+            this._messageService.error('Error', 'Ocurrió un inconveniente al guardar el movimiento en el servidor.');
+          }
+        });
       },
       error: (err) => {
-        console.error('Error al guardar movimiento de stock:', err);
+        console.error('Error al obtener distribución de stock:', err);
         this.isSavingAdjustment = false;
-        this._messageService.error('Error', 'Ocurrió un inconveniente al guardar el movimiento en el servidor.');
+        this._messageService.error('Error', 'No se pudo consultar el stock actual del depósito.');
       }
     });
   }
