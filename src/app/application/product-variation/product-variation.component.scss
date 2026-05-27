@@ -197,6 +197,60 @@
         }
     }
 
+    /* STOCKS WMS TABLE & BADGES */
+    .stocks-wms-table {
+        ::ng-deep .ant-table-thead>tr>th {
+            background-color: #f8fafc;
+            color: #475569;
+            font-weight: 600;
+            font-size: 14px;
+            border-bottom: 2px solid #e2e8f0;
+        }
+
+        ::ng-deep .ant-table-tbody>tr:hover>td {
+            background-color: #f1f5f9;
+        }
+
+        ::ng-deep .ant-table-tbody>tr>td {
+            padding: 16px 12px;
+            vertical-align: middle;
+        }
+
+        .wms-meta-tag {
+            background: rgba(148, 163, 184, 0.12);
+            color: #64748b;
+            font-weight: 700;
+            padding: 6px 12px;
+            border-radius: 20px;
+            font-size: 13px;
+            display: inline-block;
+            transition: all 0.3s ease;
+
+            &:hover {
+                background: rgba(148, 163, 184, 0.2);
+                color: #475569;
+            }
+        }
+
+        .bin-code-badge {
+            font-size: 13px;
+            font-family: 'Outfit', 'Inter', monospace;
+            font-weight: 800;
+            background: linear-gradient(135deg, #1e293b 0%, #0f172a 100%);
+            color: #ffffff;
+            padding: 6px 14px;
+            border-radius: 8px;
+            display: inline-block;
+            box-shadow: 0 2px 4px rgba(15, 23, 42, 0.15);
+            transition: transform 0.2s ease, box-shadow 0.2s ease;
+
+            &:hover {
+                transform: translateY(-1px);
+                box-shadow: 0 4px 6px rgba(15, 23, 42, 0.2);
+            }
+        }
+    }
+
     /* STICKY FOOTER */
     .sticky-footer {
         padding: 16px 24px;

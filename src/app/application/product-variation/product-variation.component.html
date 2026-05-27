@@ -224,6 +224,65 @@
                     </div>
                 </div>
             </nz-tab>
+
+            <nz-tab [nzTitle]="titleInventory">
+                <ng-template #titleInventory><span nz-icon nzType="database"></span> Inventario / Stock por Depósito</ng-template>
+
+                <nz-card nzTitle="Distribución de Stock Físico (WMS)" class="info-card" [nzBordered]="false">
+                    <p class="tab-description" style="color: #64748b; margin-bottom: 20px; font-weight: 500;">
+                        Asigna la coordenada física exacta (Bin) de esta variante dentro de cada depósito y ajusta la cantidad de stock físico disponible.
+                    </p>
+
+                    <div class="loader-container" *ngIf="isLoadingStocks" style="display: flex; flex-direction: column; align-items: center; padding: 40px 0;">
+                        <nz-spin Simple></nz-spin>
+                        <p style="margin-top: 12px; font-weight: 600; color: #64748b;">Cargando inventarios por depósitos...</p>
+                    </div>
+
+                    <div class="empty-state" *ngIf="!isLoadingStocks && warehouseStocksList.length === 0" style="padding: 40px; text-align: center;">
+                        <nz-empty nzNotFoundContent="No se encontraron depósitos operativos configurados."></nz-empty>
+                    </div>
+
+                    <nz-table #stockTable [nzData]="warehouseStocksList" nzSize="middle" [nzShowPagination]="false" [nzBordered]="true" class="stocks-wms-table" *ngIf="!isLoadingStocks && warehouseStocksList.length > 0">
+                        <thead>
+                            <tr>
+                                <th nzWidth="30%">Depósito / Dirección</th>
+                                <th nzWidth="25%">Coordenada Física (Casillero/Bin)</th>
+                                <th nzWidth="15%">Stock Físico (Cant.)</th>
+                                <th nzWidth="15%">Stock Reservado</th>
+                                <th nzWidth="15%">Stock Disponible</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            <tr *ngFor="let item of warehouseStocksList">
+                                <td>
+                                    <div style="font-weight: 750; color: #1e293b;">{{ item.war_name }}</div>
+                                    <div style="font-size: 11.5px; color: #64748b; font-weight: 500; margin-top: 2px;">
+                                        <span nz-icon nzType="environment" style="margin-right: 4px;"></span>{{ item.war_address }}
+                                    </div>
+                                </td>
+                                <td>
+                                    <nz-select [(ngModel)]="item.warl_uuid" [ngModelOptions]="{standalone: true}" nzShowSearch nzAllowClear nzPlaceHolder="Ninguna (Sin Asignar)" style="width: 100%;">
+                                        <nz-option *ngFor="let loc of item.availableBins" [nzValue]="loc.warl_uuid" [nzLabel]="loc.warl_bincode + ' (Sector: ' + (loc.warl_sector || 'General') + ')'"></nz-option>
+                                    </nz-select>
+                                </td>
+                                <td>
+                                    <nz-input-number [(ngModel)]="item.ist_quanty" [ngModelOptions]="{standalone: true}" [nzMin]="0" [nzStep]="1" style="width: 100%;"></nz-input-number>
+                                </td>
+                                <td>
+                                    <span class="wms-meta-tag" style="background: rgba(148, 163, 184, 0.12); color: #64748b; font-weight: 700; padding: 4px 10px; border-radius: 20px; font-size: 12px; display: inline-block;">
+                                        {{ item.ist_quantyreserved }}
+                                    </span>
+                                </td>
+                                <td>
+                                    <span class="bin-code-badge" style="font-size: 12px; font-family: monospace; font-weight: 800; background: #0f172a; color: #ffffff; padding: 4px 12px; border-radius: 6px; display: inline-block;">
+                                        {{ item.ist_quanty - item.ist_quantyreserved }}
+                                    </span>
+                                </td>
+                            </tr>
+                        </tbody>
+                    </nz-table>
+                </nz-card>
+            </nz-tab>
         </nz-tabset>
     </div>
 

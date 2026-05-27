@@ -1,7 +1,7 @@
 import { Component, OnInit } from '@angular/core';
 import { ActivatedRoute } from '@angular/router';
 import { CommonModule, Location } from '@angular/common';
-import { FormBuilder, FormGroup, Validators, ReactiveFormsModule, FormArray } from '@angular/forms';
+import { FormBuilder, FormGroup, Validators, ReactiveFormsModule, FormArray, FormsModule } from '@angular/forms';
 import { NzDividerModule } from 'ng-zorro-antd/divider';
 import { NzUploadFile, NzUploadModule } from 'ng-zorro-antd/upload';
 import { NzTabsModule } from 'ng-zorro-antd/tabs';
@@ -16,6 +16,9 @@ import { NzButtonModule } from 'ng-zorro-antd/button';
 import { NzToolTipModule } from 'ng-zorro-antd/tooltip';
 import { NzSpaceModule } from 'ng-zorro-antd/space';
 import { NzDatePickerModule } from 'ng-zorro-antd/date-picker';
+import { NzEmptyModule } from 'ng-zorro-antd/empty';
+import { NzSpinModule } from 'ng-zorro-antd/spin';
+import { NzIconModule } from 'ng-zorro-antd/icon';
 import { ProductVariationsService } from '@services/product-variations.service';
 import { SessionService } from '@services/session.service';
 import { SuppliersService } from '@services/suppliers.service';
@@ -23,12 +26,17 @@ import { MessageService } from '@services/message.service';
 import { SupplierInterface } from '@interfaces/supplier';
 import { CurrencyInterface } from '@interfaces/currency';
 import { CurrenciesService } from '@services/currencies.service';
+import { WarehousesService } from '@services/warehouses.service';
+import { WarehousesLocationsService } from '@services/warehouses-locations.service';
+import { InventoryStocksService } from '@services/inventory-stocks.service';
+import { forkJoin } from 'rxjs';
 
 @Component({
   selector: 'app-product-variation',
   imports: [
     CommonModule,
     ReactiveFormsModule,
+    FormsModule,
     NzDividerModule,
     NzUploadModule,
     NzTabsModule,
@@ -42,7 +50,10 @@ import { CurrenciesService } from '@services/currencies.service';
     NzButtonModule,
     NzSpaceModule,
     NzToolTipModule,
-    NzDatePickerModule
+    NzDatePickerModule,
+    NzEmptyModule,
+    NzSpinModule,
+    NzIconModule
   ],
   templateUrl: './product-variation.component.html',
   styleUrl: './product-variation.component.scss'
@@ -60,6 +71,9 @@ export class ProductVariationComponent implements OnInit {
   public currentCostValue: number = 0;
   public currentCostSelected: boolean = false;
 
+  public warehouseStocksList: any[] = [];
+  public isLoadingStocks: boolean = false;
+
   constructor(
     private fb: FormBuilder,
     private location: Location,
@@ -68,7 +82,10 @@ export class ProductVariationComponent implements OnInit {
     private _suppliersService: SuppliersService,
     private _productVariationsService: ProductVariationsService,
     private _currenciesService: CurrenciesService,
-    private _messageService: MessageService
+    private _messageService: MessageService,
+    private _warehousesService: WarehousesService,
+    private _warehousesLocationsService: WarehousesLocationsService,
+    private _inventoryStocksService: InventoryStocksService
   ) { }
 
   ngOnInit(): void {
@@ -106,9 +123,69 @@ export class ProductVariationComponent implements OnInit {
           pro_uuid: params['pro_uuid'],
           prov_uuid: params['prov_uuid']
         });
-        this.getProductVariationById(this.productVariationForm.value.cmp_uuid!, this.productVariationForm.value.pro_uuid!, this.productVariationForm.value.prov_uuid!);
+        const proUuid = params['pro_uuid'];
+        const provUuid = params['prov_uuid'];
+        this.getProductVariationById(this.productVariationForm.value.cmp_uuid!, this.productVariationForm.value.pro_uuid!, provUuid);
+        this.loadWarehouseStocks(proUuid, provUuid);
       } else {
 
+      }
+    });
+  }
+
+  private loadWarehouseStocks(proUuid: string, provUuid: string): void {
+    this.isLoadingStocks = true;
+    this._warehousesService.getWarehouses(this.currentCmpUuid).subscribe({
+      next: (res) => {
+        const warehouses = res.data || [];
+        if (warehouses.length === 0) {
+          this.isLoadingStocks = false;
+          return;
+        }
+
+        // Cargar stock de esta variante en todos los depósitos
+        this._inventoryStocksService.getStocksByVariation(this.currentCmpUuid, proUuid, provUuid).subscribe({
+          next: (stockRes) => {
+            const stocks = stockRes.data || [];
+
+            // Cargar coordenadas de cada depósito para el dropdown
+            const locationRequests = warehouses.map((w: any) => 
+              this._warehousesLocationsService.getLocations(this.currentCmpUuid, w.war_uuid)
+            );
+
+            forkJoin(locationRequests).subscribe({
+              next: (locResults: any[]) => {
+                this.warehouseStocksList = warehouses.map((w: any, idx: number) => {
+                  const matchingStock = stocks.find(s => s.war_uuid === w.war_uuid);
+                  const allBins = locResults[idx].data || [];
+
+                  return {
+                    war_uuid: w.war_uuid,
+                    war_name: w.war_name,
+                    war_address: w.war_address,
+                    ist_quanty: matchingStock?.ist_quanty || 0,
+                    ist_quantyreserved: matchingStock?.ist_quantyreserved || 0,
+                    warl_uuid: matchingStock?.warl_uuid || '',
+                    availableBins: allBins
+                  };
+                });
+                this.isLoadingStocks = false;
+              },
+              error: (err) => {
+                console.error('Error al cargar coordenadas para stock:', err);
+                this.isLoadingStocks = false;
+              }
+            });
+          },
+          error: (err) => {
+            console.error('Error al cargar stock de la variante:', err);
+            this.isLoadingStocks = false;
+          }
+        });
+      },
+      error: (err) => {
+        console.error('Error al cargar depósitos:', err);
+        this.isLoadingStocks = false;
       }
     });
   }
@@ -257,27 +334,39 @@ export class ProductVariationComponent implements OnInit {
       this.isLoading = true;
       const formData = this.productVariationForm.getRawValue(); // Incluye campos deshabilitados como SKU
 
-      this._productVariationsService.updateProductVariation(formData).subscribe(
-        (response: any) => {
-          this.isLoading = false;
-          if (response.success) {
-            this._messageService.success(
-              "Éxito",
-              "La variante ha sido actualizada correctamente.",
-              () => {
-                this.location.back();
-              }
-            );
-          } else {
-            this._messageService.error("Error", "No se pudo actualizar la variante.");
-          }
-        },
-        (error: any) => {
-          this.isLoading = false;
-          console.error(error);
-          this._messageService.error("Error", "Ocurrió un error al intentar guardar los cambios.");
-        }
+      // Guardar también la distribución de stock y casilleros por depósito en paralelo
+      const stockSaveRequests = this.warehouseStocksList.map(item => 
+        this._inventoryStocksService.updateWarehouseStock(
+          this.currentCmpUuid,
+          formData.pro_uuid,
+          formData.prov_uuid,
+          item.war_uuid,
+          item.warl_uuid,
+          item.ist_quanty,
+          item.ist_quantyreserved
+        )
       );
+
+      forkJoin([
+        this._productVariationsService.updateProductVariation(formData),
+        ...stockSaveRequests
+      ]).subscribe({
+        next: (responses: any[]) => {
+          this.isLoading = false;
+          this._messageService.success(
+            "Éxito",
+            "La variante y su distribución de stock en depósitos han sido actualizadas correctamente.",
+            () => {
+              this.location.back();
+            }
+          );
+        },
+        error: (err) => {
+          this.isLoading = false;
+          console.error(err);
+          this._messageService.error("Error", "Ocurrió un error al intentar guardar los cambios de la variante o su inventario.");
+        }
+      });
     } else {
       this._messageService.warning("Formulario Inválido", "Por favor completa todos los campos requeridos.");
     }
