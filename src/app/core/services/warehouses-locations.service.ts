@@ -41,6 +41,15 @@ export class WarehousesLocationsService {
   }
 
   /**
+   * Actualiza una ubicación física existente.
+   */
+  public updateLocation(location: WarehouseLocationInterface): Observable<any> {
+    const headers = new HttpHeaders().set('content-type', 'application/json');
+    const params = JSON.stringify(location);
+    return this._http.put<any>(`${environment.apiUrl}warehouse-location/${location.cmp_uuid}/${location.war_uuid}/${location.warl_uuid}`, params, { headers });
+  }
+
+  /**
    * Elimina una ubicación física del depósito.
    */
   public deleteLocation(cmp_uuid: string, war_uuid: string, warl_uuid: string): Observable<any> {
