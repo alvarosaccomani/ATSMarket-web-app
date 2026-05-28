@@ -331,7 +331,7 @@ export class InventoryAuditComponent implements OnInit {
     this._inventoryStocksService.getStocksByVariation(this.activeCmpUuid, formVal.pro_uuid, formVal.prov_uuid).subscribe({
       next: (stockRes) => {
         const stocks = stockRes.data || [];
-        const matchingStock = stocks.find(s => s.war_uuid === formVal.war_uuid);
+        const matchingStock = stocks.find(s => (s.war_uuid === formVal.war_uuid) && (s.warl_uuid === formVal.warl_uuid));
 
         // Si no hay stock guardado para ese depósito, el stock previo es 0
         const previousStock = matchingStock ? (matchingStock.ist_quanty || 0) : 0;
@@ -360,33 +360,47 @@ export class InventoryAuditComponent implements OnInit {
 
         this._stockMovementsService.saveStockMovement(payload).subscribe({
           next: (res) => {
-            // Sincronizar el stock del depósito físico mediante InventoryStocksService
-            this._inventoryStocksService.updateWarehouseStock(
-              this.activeCmpUuid,
-              formVal.pro_uuid,
-              formVal.prov_uuid,
-              formVal.war_uuid,
-              formVal.warl_uuid,
-              currentStock
-            ).subscribe({
+            // Sincronizar el stock del depósito físico mediante InventoryStocksService (POST si es nuevo, PUT si ya existía)
+            const syncObservable = matchingStock 
+              ? this._inventoryStocksService.updateWarehouseStock(
+                  this.activeCmpUuid,
+                  formVal.pro_uuid,
+                  formVal.prov_uuid,
+                  formVal.war_uuid,
+                  formVal.warl_uuid,
+                  currentStock
+                )
+              : this._inventoryStocksService.saveWarehouseStock({
+                  cmp_uuid: this.activeCmpUuid,
+                  pro_uuid: formVal.pro_uuid,
+                  prov_uuid: formVal.prov_uuid,
+                  war_uuid: formVal.war_uuid,
+                  warl_uuid: formVal.warl_uuid,
+                  ist_quanty: currentStock,
+                  ist_quantyreserved: 0
+                });
+
+            syncObservable.subscribe({
               next: () => {
                 console.log('Stock del depósito físico sincronizado con éxito.');
+                
+                this.isSavingAdjustment = false;
+                this.isAdjustmentModalVisible = false;
+
+                // Modificar stock en local de forma simulada para actualizar la vista
+                // El stock global es el stock actual acumulado de la variación
+                let newGlobalStock = (variationItem.prov.prov_stock || 0) + delta;
+                variationItem.prov.prov_stock = newGlobalStock;
+
+                this._messageService.success('Ajuste Registrado', 'El movimiento de inventario fue guardado y el stock del depósito actualizado.');
+                this.loadData(); // Recargar bitácora y recalcular KPIs una vez que impactó el stock
               },
               error: (err) => {
                 console.warn('Fallo al actualizar stock del depósito físico:', err);
+                this.isSavingAdjustment = false;
+                this._messageService.error('Error', 'Ocurrió un inconveniente al sincronizar el stock del depósito físico.');
               }
             });
-
-            this.isSavingAdjustment = false;
-            this.isAdjustmentModalVisible = false;
-
-            // Modificar stock en local de forma simulada para actualizar la vista
-            // El stock global es el stock actual acumulado de la variación
-            let newGlobalStock = (variationItem.prov.prov_stock || 0) + delta;
-            variationItem.prov.prov_stock = newGlobalStock;
-
-            this._messageService.success('Ajuste Registrado', 'El movimiento de inventario fue guardado y el stock del depósito actualizado.');
-            this.loadData(); // Recargar bitácora y recalcular KPIs
           },
           error: (err) => {
             console.error('Error al guardar movimiento de stock:', err);
