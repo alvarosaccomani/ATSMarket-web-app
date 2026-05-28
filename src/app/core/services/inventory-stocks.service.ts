@@ -40,6 +40,15 @@ export class InventoryStocksService {
   }
 
   /**
+   * Registra inicialmente un registro de stock físico para una variante en un depósito específico (POST).
+   */
+  public saveWarehouseStock(stock: Partial<InventoryStockInterface>): Observable<any> {
+    const headers = new HttpHeaders().set('content-type', 'application/json');
+    const params = JSON.stringify(stock);
+    return this._http.post<any>(`${environment.apiUrl}inventory-stock`, params, { headers });
+  }
+
+  /**
    * Actualiza el stock físico disponible y reservado de una variante dentro de un depósito específico, asociándola a un casillero.
    */
   public updateWarehouseStock(cmp_uuid: string, pro_uuid: string, prov_uuid: string, war_uuid: string, warl_uuid: string, quantity: number, reservedQuantity: number = 0): Observable<any> {
