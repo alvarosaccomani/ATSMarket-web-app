@@ -1,6 +1,6 @@
 import { Component, OnInit } from '@angular/core';
 import { CommonModule } from '@angular/common';
-import { Router } from '@angular/router';
+import { Router, ActivatedRoute } from '@angular/router';
 import { FormBuilder, FormGroup, ReactiveFormsModule, Validators } from '@angular/forms';
 
 // Imports de Ng-Zorro (necesarios para standalone)
@@ -31,7 +31,7 @@ import { UsersService } from '@services/users.service';
   templateUrl: './login.component.html',
   styleUrl: './login.component.scss'
 })
-export class LoginComponent {
+export class LoginComponent implements OnInit {
   validateForm!: FormGroup;
   isSubmitting = false;
   public identity: any = null;
@@ -41,6 +41,7 @@ export class LoginComponent {
     private fb: FormBuilder,
     private message: NzMessageService,
     private _router: Router,
+    private _route: ActivatedRoute,
     private _sessionService: SessionService,
     private _usersService: UsersService
   ) { }
@@ -97,7 +98,9 @@ export class LoginComponent {
         } else {
           //persist user token
           this._sessionService.setToken(this.token);
-          this._router.navigate(['/application/my-companies']);
+          // Redirigir dinámicamente si existe un returnUrl query parameter
+          const returnUrl = this._route.snapshot.queryParams['returnUrl'] || '/application/my-companies';
+          this._router.navigateByUrl(returnUrl);
         }
       },
       error => {
