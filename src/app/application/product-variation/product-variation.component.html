@@ -228,60 +228,99 @@
             <nz-tab [nzTitle]="titleInventory">
                 <ng-template #titleInventory><span nz-icon nzType="database"></span> Inventario / Stock por Depósito</ng-template>
 
-                <nz-card nzTitle="Distribución de Stock Físico (WMS)" class="info-card" [nzBordered]="false">
-                    <p class="tab-description" style="color: #64748b; margin-bottom: 20px; font-weight: 500;">
-                        Asigna la coordenada física exacta (Bin) de esta variante dentro de cada depósito y ajusta la cantidad de stock físico disponible.
+                <!-- Restricción visual de producto nuevo ("SOLO si ya está cargado") -->
+                <div *ngIf="!productVariationForm.get('prov_uuid')?.value; else loadedWmsTemplate" class="not-loaded-alert">
+                    <span nz-icon nzType="warning" style="font-size: 38px; color: #f59e0b; margin-bottom: 16px; display: block;"></span>
+                    <h4 style="font-size: 18px; font-weight: 700; color: #78350f; margin: 0 0 8px;">Asignación Logística Restringida</h4>
+                    <p style="color: #92400e; font-weight: 500; font-size: 14px; margin: 0; max-width: 600px; margin: 0 auto; line-height: 1.5;">
+                        Para configurar la distribución de stock y casilleros WMS en depósitos, primero debes guardar la **Identidad Principal** de la variante. Una vez registrada en el servidor, esta pestaña se habilitará automáticamente para administrar inventarios.
                     </p>
+                </div>
 
-                    <div class="loader-container" *ngIf="isLoadingStocks" style="display: flex; flex-direction: column; align-items: center; padding: 40px 0;">
-                        <nz-spin Simple></nz-spin>
-                        <p style="margin-top: 12px; font-weight: 600; color: #64748b;">Cargando inventarios por depósitos...</p>
-                    </div>
+                <ng-template #loadedWmsTemplate>
+                    <nz-card [nzTitle]="cardTitleTemplate" class="info-card" [nzBordered]="false">
+                        <ng-template #cardTitleTemplate>
+                            <div style="display: flex; justify-content: space-between; align-items: center; width: 100%;">
+                                <span style="font-weight: 600;">Distribución de Stock Físico (WMS)</span>
+                                <button nz-button nzType="primary" (click)="addWarehouseStockRow()">
+                                    <span nz-icon nzType="plus"></span> Asignar Depósito
+                                </button>
+                            </div>
+                        </ng-template>
 
-                    <div class="empty-state" *ngIf="!isLoadingStocks && warehouseStocksList.length === 0" style="padding: 40px; text-align: center;">
-                        <nz-empty nzNotFoundContent="No se encontraron depósitos operativos configurados."></nz-empty>
-                    </div>
+                        <p class="tab-description" style="color: #64748b; margin-bottom: 20px; font-weight: 500;">
+                            Asigna la coordenada física exacta (Bin) de esta variante dentro de cada depósito y ajusta la cantidad de stock físico disponible.
+                        </p>
 
-                    <nz-table #stockTable [nzData]="warehouseStocksList" nzSize="middle" [nzShowPagination]="false" [nzBordered]="true" class="stocks-wms-table" *ngIf="!isLoadingStocks && warehouseStocksList.length > 0">
-                        <thead>
-                            <tr>
-                                <th nzWidth="30%">Depósito / Dirección</th>
-                                <th nzWidth="25%">Coordenada Física (Casillero/Bin)</th>
-                                <th nzWidth="15%">Stock Físico (Cant.)</th>
-                                <th nzWidth="15%">Stock Reservado</th>
-                                <th nzWidth="15%">Stock Disponible</th>
-                            </tr>
-                        </thead>
-                        <tbody>
-                            <tr *ngFor="let item of warehouseStocksList">
-                                <td>
-                                    <div style="font-weight: 750; color: #1e293b;">{{ item.war_name }}</div>
-                                    <div style="font-size: 11.5px; color: #64748b; font-weight: 500; margin-top: 2px;">
-                                        <span nz-icon nzType="environment" style="margin-right: 4px;"></span>{{ item.war_address }}
-                                    </div>
-                                </td>
-                                <td>
-                                    <nz-select [(ngModel)]="item.warl_uuid" [ngModelOptions]="{standalone: true}" nzShowSearch nzAllowClear nzPlaceHolder="Ninguna (Sin Asignar)" style="width: 100%;">
-                                        <nz-option *ngFor="let loc of item.availableBins" [nzValue]="loc.warl_uuid" [nzLabel]="loc.warl_bincode + ' (Sector: ' + (loc.warl_sector || 'General') + ')'"></nz-option>
-                                    </nz-select>
-                                </td>
-                                <td>
-                                    <nz-input-number [(ngModel)]="item.ist_quanty" [ngModelOptions]="{standalone: true}" [nzMin]="0" [nzStep]="1" style="width: 100%;"></nz-input-number>
-                                </td>
-                                <td>
-                                    <span class="wms-meta-tag" style="background: rgba(148, 163, 184, 0.12); color: #64748b; font-weight: 700; padding: 4px 10px; border-radius: 20px; font-size: 12px; display: inline-block;">
-                                        {{ item.ist_quantyreserved }}
-                                    </span>
-                                </td>
-                                <td>
-                                    <span class="bin-code-badge" style="font-size: 12px; font-family: monospace; font-weight: 800; background: #0f172a; color: #ffffff; padding: 4px 12px; border-radius: 6px; display: inline-block;">
-                                        {{ item.ist_quanty - item.ist_quantyreserved }}
-                                    </span>
-                                </td>
-                            </tr>
-                        </tbody>
-                    </nz-table>
-                </nz-card>
+                        <div class="loader-container" *ngIf="isLoadingStocks" style="display: flex; flex-direction: column; align-items: center; padding: 40px 0;">
+                            <nz-spin Simple></nz-spin>
+                            <p style="margin-top: 12px; font-weight: 600; color: #64748b;">Cargando inventarios por depósitos...</p>
+                        </div>
+
+                        <!-- Estado vacío con instrucción clara de agregar asignación -->
+                        <div class="empty-state" *ngIf="!isLoadingStocks && warehouseStocksList.length === 0" style="padding: 48px; text-align: center; background: #fafafa; border-radius: 8px; border: 1px dashed #e2e8f0; margin-bottom: 20px;">
+                            <nz-empty nzNotFoundContent="No hay depósitos asignados a esta variante. Presiona 'Asignar Depósito' para agregar uno."></nz-empty>
+                        </div>
+
+                        <nz-table #stockTable [nzData]="warehouseStocksList" nzSize="middle" [nzShowPagination]="false" [nzBordered]="true" class="stocks-wms-table" *ngIf="!isLoadingStocks && warehouseStocksList.length > 0">
+                            <thead>
+                                <tr>
+                                    <th nzWidth="30%">Depósito / Dirección</th>
+                                    <th nzWidth="25%">Coordenada Física (Casillero/Bin)</th>
+                                    <th nzWidth="15%">Stock Físico (Cant.)</th>
+                                    <th nzWidth="15%">Stock Reservado</th>
+                                    <th nzWidth="15%">Stock Disponible</th>
+                                    <th nzWidth="60px" nzAlign="center">Acción</th>
+                                </tr>
+                            </thead>
+                            <tbody>
+                                <tr *ngFor="let item of warehouseStocksList; let i = index">
+                                    <td>
+                                        <!-- Fila existente: texto plano -->
+                                        <div *ngIf="!item.isNewRow">
+                                            <div style="font-weight: 750; color: #1e293b;">{{ item.war_name }}</div>
+                                            <div style="font-size: 11.5px; color: #64748b; font-weight: 500; margin-top: 2px;">
+                                                <span nz-icon nzType="environment" style="margin-right: 4px;"></span>{{ item.war_address }}
+                                            </div>
+                                        </div>
+                                        <!-- Nueva fila: selector buscador de depósitos disponibles -->
+                                        <div *ngIf="item.isNewRow">
+                                            <nz-select [(ngModel)]="item.war_uuid" [ngModelOptions]="{standalone: true}" (ngModelChange)="onWarehouseSelectChange(item, $event)" nzShowSearch nzPlaceHolder="Seleccionar depósito..." style="width: 100%;">
+                                                <nz-option *ngFor="let w of getAvailableWarehousesForSelect(item.war_uuid)" [nzValue]="w.war_uuid" [nzLabel]="w.war_name"></nz-option>
+                                            </nz-select>
+                                            <div *ngIf="item.war_address" style="font-size: 11px; color: #64748b; margin-top: 4px; font-weight: 500;">
+                                                <span nz-icon nzType="environment" style="margin-right: 4px;"></span>{{ item.war_address }}
+                                            </div>
+                                        </div>
+                                    </td>
+                                    <td>
+                                        <nz-select [(ngModel)]="item.warl_uuid" [ngModelOptions]="{standalone: true}" nzShowSearch nzAllowClear nzPlaceHolder="Ninguna (Sin Asignar)" style="width: 100%;" [nzDisabled]="!item.war_uuid">
+                                            <nz-option *ngFor="let loc of item.availableBins" [nzValue]="loc.warl_uuid" [nzLabel]="loc.warl_bincode + ' (Sector: ' + (loc.warl_sector || 'General') + ')'"></nz-option>
+                                        </nz-select>
+                                    </td>
+                                    <td>
+                                        <nz-input-number [(ngModel)]="item.ist_quanty" [ngModelOptions]="{standalone: true}" [nzMin]="0" [nzStep]="1" style="width: 100%;" [nzDisabled]="!item.war_uuid"></nz-input-number>
+                                    </td>
+                                    <td>
+                                        <span class="wms-meta-tag">
+                                            {{ item.ist_quantyreserved }}
+                                        </span>
+                                    </td>
+                                    <td>
+                                        <span class="bin-code-badge">
+                                            {{ item.ist_quanty - item.ist_quantyreserved }}
+                                        </span>
+                                    </td>
+                                    <td nzAlign="center">
+                                        <button nz-button nzType="text" nzDanger nzShape="circle" (click)="removeWarehouseStockRow(i)" nzTooltipTitle="Quitar depósito" nz-tooltip>
+                                            <span nz-icon nzType="delete"></span>
+                                        </button>
+                                    </td>
+                                </tr>
+                            </tbody>
+                        </nz-table>
+                    </nz-card>
+                </ng-template>
             </nz-tab>
         </nz-tabset>
     </div>

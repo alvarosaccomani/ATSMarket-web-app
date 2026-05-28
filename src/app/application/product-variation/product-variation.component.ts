@@ -72,6 +72,8 @@ export class ProductVariationComponent implements OnInit {
   public currentCostSelected: boolean = false;
 
   public warehouseStocksList: any[] = [];
+  public allCompanyWarehouses: any[] = [];
+  public originalWarehouseStocks: any[] = [];
   public isLoadingStocks: boolean = false;
 
   constructor(
@@ -126,68 +128,134 @@ export class ProductVariationComponent implements OnInit {
         const proUuid = params['pro_uuid'];
         const provUuid = params['prov_uuid'];
         this.getProductVariationById(this.productVariationForm.value.cmp_uuid!, this.productVariationForm.value.pro_uuid!, provUuid);
-        this.loadWarehouseStocks(proUuid, provUuid);
       } else {
 
       }
     });
   }
 
-  private loadWarehouseStocks(proUuid: string, provUuid: string): void {
+  private loadWarehouseStocks(proUuid: string, provUuid: string, preloadedStocks?: any[]): void {
     this.isLoadingStocks = true;
     this._warehousesService.getWarehouses(this.currentCmpUuid).subscribe({
       next: (res) => {
-        const warehouses = res.data || [];
-        if (warehouses.length === 0) {
+        this.allCompanyWarehouses = res.data || [];
+        if (this.allCompanyWarehouses.length === 0) {
           this.isLoadingStocks = false;
           return;
         }
 
-        // Cargar stock de esta variante en todos los depósitos
-        this._inventoryStocksService.getStocksByVariation(this.currentCmpUuid, proUuid, provUuid).subscribe({
-          next: (stockRes) => {
-            const stocks = stockRes.data || [];
+        const handleStocksList = (stocks: any[]) => {
+          this.originalWarehouseStocks = stocks; // Guardar estado original de la base de datos para sumas condicionales
+          
+          if (stocks && stocks.length > 0) {
+            // Filtrar depósitos únicos para cargar sus coordenadas
+            const uniqueWarUuids = Array.from(new Set(stocks.map(s => s.war_uuid).filter(Boolean))) as string[];
+            
+            if (uniqueWarUuids.length > 0) {
+              const locationRequests = uniqueWarUuids.map((warUuid: string) => 
+                this._warehousesLocationsService.getLocations(this.currentCmpUuid, warUuid)
+              );
 
-            // Cargar coordenadas de cada depósito para el dropdown
-            const locationRequests = warehouses.map((w: any) => 
-              this._warehousesLocationsService.getLocations(this.currentCmpUuid, w.war_uuid)
-            );
+              forkJoin(locationRequests).subscribe({
+                next: (locResults: any[]) => {
+                  const locationsMap: { [warUuid: string]: any[] } = {};
+                  uniqueWarUuids.forEach((warUuid, idx) => {
+                    locationsMap[warUuid] = locResults[idx].data || [];
+                  });
 
-            forkJoin(locationRequests).subscribe({
-              next: (locResults: any[]) => {
-                this.warehouseStocksList = warehouses.map((w: any, idx: number) => {
-                  const matchingStock = stocks.find(s => s.war_uuid === w.war_uuid);
-                  const allBins = locResults[idx].data || [];
-
-                  return {
-                    war_uuid: w.war_uuid,
-                    war_name: w.war_name,
-                    war_address: w.war_address,
-                    ist_quanty: matchingStock?.ist_quanty || 0,
-                    ist_quantyreserved: matchingStock?.ist_quantyreserved || 0,
-                    warl_uuid: matchingStock?.warl_uuid || '',
-                    availableBins: allBins
-                  };
-                });
-                this.isLoadingStocks = false;
-              },
-              error: (err) => {
-                console.error('Error al cargar coordenadas para stock:', err);
-                this.isLoadingStocks = false;
-              }
-            });
-          },
-          error: (err) => {
-            console.error('Error al cargar stock de la variante:', err);
+                  this.warehouseStocksList = stocks.map((s: any) => {
+                    const w = this.allCompanyWarehouses.find(x => x.war_uuid === s.war_uuid) || {};
+                    return {
+                      war_uuid: s.war_uuid,
+                      war_name: w.war_name || '',
+                      war_address: w.war_address || '',
+                      ist_quanty: s.ist_quanty || 0,
+                      ist_quantyreserved: s.ist_quantyreserved || 0,
+                      warl_uuid: s.warl_uuid || '',
+                      availableBins: locationsMap[s.war_uuid] || [],
+                      isNewRow: false
+                    };
+                  });
+                  this.isLoadingStocks = false;
+                },
+                error: (err) => {
+                  console.error('Error al cargar coordenadas para stock:', err);
+                  this.isLoadingStocks = false;
+                }
+              });
+            } else {
+              this.warehouseStocksList = [];
+              this.isLoadingStocks = false;
+            }
+          } else {
+            this.warehouseStocksList = [];
             this.isLoadingStocks = false;
           }
-        });
+        };
+
+        if (preloadedStocks) {
+          handleStocksList(preloadedStocks);
+        } else {
+          // Fallback en caso de que no venga precargado (ej: si se invoca desde otro flujo)
+          this._inventoryStocksService.getStocksByVariation(this.currentCmpUuid, proUuid, provUuid).subscribe({
+            next: (stockRes) => {
+              handleStocksList(stockRes.data || []);
+            },
+            error: (err) => {
+              console.error('Error al cargar stock de la variante:', err);
+              this.isLoadingStocks = false;
+            }
+          });
+        }
       },
       error: (err) => {
         console.error('Error al cargar depósitos:', err);
         this.isLoadingStocks = false;
       }
     });
+  }
+
+  public addWarehouseStockRow(): void {
+    this.warehouseStocksList = [
+      ...this.warehouseStocksList,
+      {
+        war_uuid: '',
+        war_name: '',
+        war_address: '',
+        ist_quanty: 0,
+        ist_quantyreserved: 0,
+        warl_uuid: '',
+        availableBins: [],
+        isNewRow: true
+      }
+    ];
+  }
+
+  public removeWarehouseStockRow(index: number): void {
+    this.warehouseStocksList.splice(index, 1);
+  }
+
+  public getAvailableWarehousesForSelect(currentRowUuid: string): any[] {
+    return this.allCompanyWarehouses;
+  }
+
+  public onWarehouseSelectChange(item: any, warUuid: string): void {
+    const selected = this.allCompanyWarehouses.find(w => w.war_uuid === warUuid);
+    if (selected) {
+      item.war_name = selected.war_name;
+      item.war_address = selected.war_address;
+      item.warl_uuid = '';
+      item.availableBins = [];
+
+      this._warehousesLocationsService.getLocations(this.currentCmpUuid, warUuid).subscribe({
+        next: (res) => {
+          item.availableBins = res.data || [];
+        },
+        error: (err) => {
+          console.error('Error al cargar coordenadas del depósito seleccionado:', err);
+        }
+      });
+    }
   }
 
   private loadSuppliers(cmp_uuid: string): void {
@@ -254,6 +322,9 @@ export class ProductVariationComponent implements OnInit {
           });
 
           this.calculateProfitability();
+
+          // Cargar la distribución de stock WMS a partir del array inventoryStock precargado en response
+          this.loadWarehouseStocks(productVariationData.pro_uuid, productVariationData.prov_uuid, productVariationData.inventoryStock);
 
         } else {
           //this.status = 'error'
@@ -334,18 +405,64 @@ export class ProductVariationComponent implements OnInit {
       this.isLoading = true;
       const formData = this.productVariationForm.getRawValue(); // Incluye campos deshabilitados como SKU
 
-      // Guardar también la distribución de stock y casilleros por depósito en paralelo
-      const stockSaveRequests = this.warehouseStocksList.map(item => 
-        this._inventoryStocksService.updateWarehouseStock(
-          this.currentCmpUuid,
-          formData.pro_uuid,
-          formData.prov_uuid,
-          item.war_uuid,
-          item.warl_uuid,
-          item.ist_quanty,
-          item.ist_quantyreserved
-        )
-      );
+      // Guardar también la distribución de stock y casilleros por depósito en paralelo (solo válidos con depósito y casillero asignado)
+      const validStocksList = this.warehouseStocksList.filter(item => item.war_uuid && item.warl_uuid);
+
+      // Verificar si hay combinaciones duplicadas de depósito y casillero (WMS coords)
+      const seenCombinations = new Set<string>();
+      for (const item of validStocksList) {
+        const comboKey = `${item.war_uuid}_${item.warl_uuid}`;
+        if (seenCombinations.has(comboKey)) {
+          this.isLoading = false;
+          const warehouseName = item.war_name || 'Seleccionado';
+          const binObj = item.availableBins?.find((b: any) => b.warl_uuid === item.warl_uuid);
+          const binName = binObj ? (binObj.warl_bincode || binObj.warl_code || item.warl_uuid) : item.warl_uuid;
+          
+          this._messageService.warning(
+            "Combinación Duplicada",
+            `El depósito "${warehouseName}" ya tiene una asignación de stock para el casillero "${binName}".`
+          );
+          return;
+        }
+        seenCombinations.add(comboKey);
+      }
+
+      const stockSaveRequests = validStocksList.map(item => {
+        // Buscar si ya existía un registro de stock para este depósito y casillero originalmente en la base de datos
+        const preExistingStock = this.originalWarehouseStocks.find(
+          x => x.war_uuid === item.war_uuid && x.warl_uuid === item.warl_uuid
+        );
+
+        if (item.isNewRow && !preExistingStock) {
+          // Si es un renglón totalmente nuevo en la base de datos, registramos inicialmente con POST
+          return this._inventoryStocksService.saveWarehouseStock({
+            cmp_uuid: this.currentCmpUuid,
+            pro_uuid: formData.pro_uuid,
+            prov_uuid: formData.prov_uuid,
+            war_uuid: item.war_uuid,
+            warl_uuid: item.warl_uuid,
+            ist_quanty: item.ist_quanty,
+            ist_quantyreserved: item.ist_quantyreserved
+          });
+        } else {
+          // Si ya existía registro en la base de datos, actualizamos el saldo mediante PUT.
+          // Si es una fila nueva agregada (por ejemplo, tras haber sido eliminada de la lista o como adición),
+          // sumamos la nueva cantidad al stock base que ya existía en la base de datos.
+          // Si se editó sobre la fila cargada originalmente, respetamos el valor absoluto ingresado.
+          const baseQuantity = preExistingStock ? (preExistingStock.ist_quanty || 0) : 0;
+          const finalQuantity = item.isNewRow ? (baseQuantity + item.ist_quanty) : item.ist_quanty;
+
+          return this._inventoryStocksService.updateWarehouseStock(
+            this.currentCmpUuid,
+            formData.pro_uuid,
+            formData.prov_uuid,
+            item.war_uuid,
+            item.warl_uuid,
+            finalQuantity,
+            item.ist_quantyreserved
+          );
+        }
+      });
 
       forkJoin([
         this._productVariationsService.updateProductVariation(formData),
