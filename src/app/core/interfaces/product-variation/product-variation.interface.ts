@@ -1,3 +1,5 @@
+import { InventoryStockInterface } from '@interfaces/inventory-stock'
+
 export interface ProductVariationInterface {
     cmp_uuid: string;
     pro_uuid: string;
@@ -11,6 +13,7 @@ export interface ProductVariationInterface {
     prov_size: string;
     prov_stock: number;
     prov_suggestedminimumsellingprice: number;
+    inventoryStock?: InventoryStockInterface[];
     prov_createdat: Date;
     prov_updatedat: Date;
 }
