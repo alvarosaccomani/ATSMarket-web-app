@@ -36,7 +36,7 @@ export class InventoryStocksService {
    */
   public getStocksByVariation(cmp_uuid: string, pro_uuid: string, prov_uuid: string): Observable<{ success: boolean, data: InventoryStockInterface[] }> {
     const headers = new HttpHeaders().set('content-type', 'application/json');
-    return this._http.get<{ success: boolean, data: InventoryStockInterface[] }>(`${environment.apiUrl}inventory-stocks/${cmp_uuid}/${pro_uuid}/${prov_uuid}`, { headers });
+    return this._http.get<{ success: boolean, data: InventoryStockInterface[] }>(`${environment.apiUrl}inventory-by-variation/${cmp_uuid}/${pro_uuid}/${prov_uuid}`, { headers });
   }
 
   /**
