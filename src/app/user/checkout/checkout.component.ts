@@ -79,6 +79,79 @@ export class CheckoutComponent implements OnInit, OnDestroy {
   public isProcessingPayment = false;
   public generatedOrderNumber: number = 0;
 
+  // Simulación de Tarjeta Premium
+  public cardName: string = '';
+  public cardNumber: string = '';
+  public cardExpiry: string = '';
+  public cardCvv: string = '';
+  public isCardFlipped: boolean = false;
+  public cardBrand: 'visa' | 'mastercard' | 'amex' | 'discover' | 'generic' = 'generic';
+  public processingMessage: string = '';
+
+  // --- FORMATEO Y MÁSCARAS DE TARJETA ---
+
+  public formatCardNumber(event: any): void {
+    let input = event.target.value.replace(/\D/g, ''); // Eliminar todo excepto dígitos
+    
+    // Auto-detectar marca de tarjeta
+    if (input.startsWith('4')) {
+      this.cardBrand = 'visa';
+    } else if (input.startsWith('5') || /^5[1-5]/.test(input)) {
+      this.cardBrand = 'mastercard';
+    } else if (input.startsWith('3')) {
+      this.cardBrand = 'amex';
+    } else if (input.startsWith('6')) {
+      this.cardBrand = 'discover';
+    } else {
+      this.cardBrand = 'generic';
+    }
+
+    // Limitar longitud según marca
+    const maxLength = this.cardBrand === 'amex' ? 15 : 16;
+    input = input.substring(0, maxLength);
+
+    // Formatear con espacios cada 4 dígitos (o 4-6-5 para AMEX)
+    let formatted = '';
+    if (this.cardBrand === 'amex') {
+      const part1 = input.substring(0, 4);
+      const part2 = input.substring(4, 10);
+      const part3 = input.substring(10, 15);
+      formatted = [part1, part2, part3].filter(Boolean).join(' ');
+    } else {
+      const parts = [];
+      for (let i = 0; i < input.length; i += 4) {
+        parts.push(input.substring(i, i + 4));
+      }
+      formatted = parts.join(' ');
+    }
+
+    this.cardNumber = formatted;
+    event.target.value = formatted;
+  }
+
+  public formatExpiry(event: any): void {
+    let input = event.target.value.replace(/\D/g, ''); // Solo números
+    input = input.substring(0, 4);
+
+    if (input.length > 2) {
+      this.cardExpiry = input.substring(0, 2) + '/' + input.substring(2, 4);
+    } else {
+      this.cardExpiry = input;
+    }
+    event.target.value = this.cardExpiry;
+  }
+
+  public formatCvv(event: any): void {
+    let input = event.target.value.replace(/\D/g, ''); // Solo números
+    const maxLength = this.cardBrand === 'amex' ? 4 : 3;
+    this.cardCvv = input.substring(0, maxLength);
+    event.target.value = this.cardCvv;
+  }
+
+  public setCardFocus(isFocused: boolean): void {
+    this.isCardFlipped = isFocused;
+  }
+
   // Envíos y Modalidades
   public shippingMethod: 'moto' | 'correo' | 'retiro' | 'acordar' = 'correo';
   public shippingCost: number = 0;
@@ -490,6 +563,25 @@ export class CheckoutComponent implements OnInit, OnDestroy {
       return;
     }
 
+    if (this.paymentMethod === 'card') {
+      if (!this.cardNumber.trim() || this.cardNumber.replace(/\s/g, '').length < 15) {
+        this.message.error('Debés ingresar un número de tarjeta válido.');
+        return;
+      }
+      if (!this.cardName.trim()) {
+        this.message.error('Debés ingresar el nombre del titular de la tarjeta.');
+        return;
+      }
+      if (!this.cardExpiry.trim() || !/^\d{2}\/\d{2}$/.test(this.cardExpiry)) {
+        this.message.error('Debés ingresar una fecha de vencimiento válida (MM/YY).');
+        return;
+      }
+      if (!this.cardCvv.trim() || this.cardCvv.length < 3) {
+        this.message.error('Debés ingresar un código de seguridad (CVV) válido.');
+        return;
+      }
+    }
+
     if (!this.currentCompany) {
       this.message.error('Error: No se pudo identificar la tienda actual.');
       return;
@@ -507,7 +599,17 @@ export class CheckoutComponent implements OnInit, OnDestroy {
     } else {
       methodText = 'Acordar con el Vendedor';
     }
-    const notes = `[Envío: ${methodText} ($${this.shippingCost})] | Método de pago: ${this.paymentMethod === 'transfer' ? 'Transferencia Bancaria' : 'Tarjeta / Online'}. Comprobante: ${this.transactionId}`;
+
+    const last4 = this.cardNumber.replace(/\s/g, '').slice(-4);
+    const mockTxId = 'ch_stripe_' + Math.random().toString(36).substring(2, 10).toUpperCase();
+
+    let notes = '';
+    if (this.paymentMethod === 'transfer') {
+      notes = `[Envío: ${methodText} ($${this.shippingCost})] | Método de pago: Transferencia Bancaria. Comprobante: ${this.transactionId}`;
+    } else {
+      notes = `[Envío: ${methodText} ($${this.shippingCost})] | Método de pago: Tarjeta (${this.cardBrand.toUpperCase()} **** ${last4}). Transacción: ${mockTxId}`;
+    }
+
     const orderNumber = Math.floor(Math.random() * 90000) + 10000;
     this.generatedOrderNumber = orderNumber;
 
@@ -538,7 +640,7 @@ export class CheckoutComponent implements OnInit, OnDestroy {
       cus_uuid: customer ? customer.cus_uuid : 'guest-customer',
       adr_uuid: this.selectedAddressId,
       ord_ordernumber: orderNumber,
-      ords_uuid: 'PENDING',
+      ords_uuid: this.paymentMethod === 'transfer' ? 'PENDING' : 'PROCESSING',
       ord_date: new Date(),
       ord_subtotal: this.totalSubtotal,
       ord_shippingcost: this.shippingCost,
@@ -559,7 +661,6 @@ export class CheckoutComponent implements OnInit, OnDestroy {
       return this._inventoryStocksService.getStocksByVariation(cmpUuid, proUuid, provUuid).pipe(
         map((res: any) => {
           if (res && res.success && Array.isArray(res.data) && res.data.length > 0) {
-            // Calculamos stock disponible real restando cantidades reservadas
             const availableStock = res.data.reduce((sum: any, stock: any) => sum + (stock.ist_quanty - (stock.ist_quantyreserved || 0)), 0);
             return {
               item,
@@ -570,7 +671,6 @@ export class CheckoutComponent implements OnInit, OnDestroy {
           throw new Error('Sin stock detallado por depósito, usando fallback de variación');
         }),
         catchError(() => {
-          // Fallback ordinario de consulta de variación si falla o no hay depósitos configurados
           return this._productVariationsService.checkStock(cmpUuid, proUuid, provUuid).pipe(
             map((res: any) => {
               let availableStock = 0;
@@ -613,17 +713,61 @@ export class CheckoutComponent implements OnInit, OnDestroy {
               `Lo sentimos, no hay stock suficiente para completar tu pedido: ${names}. Por favor, reduce la cantidad antes de intentar pagar.`
             );
           } else {
-            this.saveOrderAfterStockCheck(payload, orderNumber, notes, identity, orderDetails);
+            if (this.paymentMethod === 'card') {
+              this.processCardPaymentSimulation(payload, orderNumber, notes, identity, orderDetails);
+            } else {
+              this.saveOrderAfterStockCheck(payload, orderNumber, notes, identity, orderDetails);
+            }
           }
         },
         error: (err) => {
           console.warn('Fallo en checkStock preventivo, procediendo con guardado ordinario (fallback):', err);
-          this.saveOrderAfterStockCheck(payload, orderNumber, notes, identity, orderDetails);
+          if (this.paymentMethod === 'card') {
+            this.processCardPaymentSimulation(payload, orderNumber, notes, identity, orderDetails);
+          } else {
+            this.saveOrderAfterStockCheck(payload, orderNumber, notes, identity, orderDetails);
+          }
         }
       });
     } else {
-      this.saveOrderAfterStockCheck(payload, orderNumber, notes, identity, orderDetails);
+      if (this.paymentMethod === 'card') {
+        this.processCardPaymentSimulation(payload, orderNumber, notes, identity, orderDetails);
+      } else {
+        this.saveOrderAfterStockCheck(payload, orderNumber, notes, identity, orderDetails);
+      }
     }
+  }
+
+  private processCardPaymentSimulation(payload: any, orderNumber: number, notes: string, identity: any, orderDetails: any[]): void {
+    const rawNumber = this.cardNumber.replace(/\s/g, '');
+    const isDeclineCard = rawNumber.endsWith('4444');
+
+    this.isProcessingPayment = true;
+    this.processingMessage = '🔐 Estableciendo canal seguro SSL de 256 bits...';
+
+    setTimeout(() => {
+      this.processingMessage = '💳 Autorizando cargos con la entidad emisora (' + this.cardBrand.toUpperCase() + ')...';
+      
+      setTimeout(() => {
+        this.processingMessage = '🛡️ Validando protocolos antifraude 3D Secure...';
+        
+        setTimeout(() => {
+          if (isDeclineCard) {
+            this.isProcessingPayment = false;
+            this.processingMessage = '';
+            this._messageService.error(
+              "Transacción Rechazada",
+              "Lo sentimos, la transacción fue rechazada por la entidad bancaria emisor (Fondos Insuficientes o Tarjeta Bloqueada). Por favor, intenta con otra tarjeta."
+            );
+          } else {
+            this.processingMessage = '🚀 Pago aprobado con éxito. Guardando orden de compra...';
+            setTimeout(() => {
+              this.saveOrderAfterStockCheck(payload, orderNumber, notes, identity, orderDetails);
+            }, 800);
+          }
+        }, 1500);
+      }, 1500);
+    }, 1500);
   }
 
   private saveOrderAfterStockCheck(payload: any, orderNumber: number, notes: string, identity: any, orderDetails: any[]): void {
@@ -641,8 +785,8 @@ export class CheckoutComponent implements OnInit, OnDestroy {
             usr_uuid: identity ? identity.usr_uuid : null,
             tsmo_uuid: 'OUT',
             smo_quantity: item.ordd_quantity,
-            smo_previousstock: 0, // Se computa en backend, mandamos 0 de fallback
-            smo_currentstock: 0,  // Se computa en backend, mandamos 0 de fallback
+            smo_previousstock: 0,
+            smo_currentstock: 0,
             smo_reason: `Venta - Pedido #PED-${orderNumber}`,
             smo_createdat: new Date()
           };

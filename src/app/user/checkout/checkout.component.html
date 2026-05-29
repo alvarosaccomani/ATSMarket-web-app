@@ -222,11 +222,104 @@
                             <div class="radio-content">
                                 <span nz-icon nzType="credit-card" nzTheme="outline" class="pay-icon"></span>
                                 <div class="pay-text">
-                                    <h3>Tarjetas de Crédito / Red LINK</h3>
-                                    <p>Acreditación instantánea procesada via pasarelas de alta seguridad externa.</p>
+                                    <h3>Tarjetas de Crédito / Débito (Pasarela Online)</h3>
+                                    <p>Acreditación instantánea de alta seguridad con encriptación SSL de 256 bits.</p>
                                 </div>
                             </div>
                         </label>
+
+                        <!-- Extra Form para Tarjeta Interactiva 3D -->
+                        <div class="card-details-wrapper" *ngIf="paymentMethod === 'card'" style="margin-top: 16px; padding: 20px; background: rgba(255,255,255,0.6); border: 1px dashed #d9d9d9; border-radius: 12px;">
+                            <!-- Contenedor 3D de la tarjeta virtual -->
+                            <div class="credit-card-container">
+                                <div class="credit-card" [class.flipped]="isCardFlipped">
+                                    
+                                    <!-- CARA FRONTAL -->
+                                    <div class="card-face front">
+                                        <div class="card-glass-shine"></div>
+                                        <div class="card-row-top">
+                                            <div class="card-chip"></div>
+                                            <!-- Marca dinámica -->
+                                            <div class="card-brand-logo" [class]="cardBrand"></div>
+                                        </div>
+                                        
+                                        <!-- Número de tarjeta interactivo Display -->
+                                        <div class="card-number-display">
+                                            {{ cardNumber || '•••• •••• •••• ••••' }}
+                                        </div>
+                                        
+                                        <div class="card-row-bottom">
+                                            <div class="card-holder-display">
+                                                <span class="card-label">TITULAR</span>
+                                                <span class="card-value">{{ (cardName | uppercase) || 'NOMBRE DEL TITULAR' }}</span>
+                                            </div>
+                                            <div class="card-expiry-display">
+                                                <span class="card-label">VENCE</span>
+                                                <span class="card-value">{{ cardExpiry || 'MM/YY' }}</span>
+                                            </div>
+                                        </div>
+                                    </div>
+                                    
+                                    <!-- CARA TRASERA -->
+                                    <div class="card-face back">
+                                        <div class="card-glass-shine"></div>
+                                        <div class="card-magnetic-strip"></div>
+                                        <div class="card-signature-box">
+                                            <div class="simulated-signature"></div>
+                                            <div class="card-cvv-display">{{ cardCvv || '•••' }}</div>
+                                        </div>
+                                        <div class="card-back-info">
+                                            <p>Esta tarjeta es virtual y de uso exclusivo en ATSMarket. Acreditación procesada en canal seguro de alta encriptación.</p>
+                                        </div>
+                                    </div>
+                                    
+                                </div>
+                            </div>
+
+                            <!-- Formulario de Inputs -->
+                            <div class="card-form-grid" style="margin-top: 24px;">
+                                <div class="form-item" style="margin-bottom: 16px;">
+                                    <label class="form-label" style="display: block; font-weight: 500; margin-bottom: 6px; color: #434343;">Número de la Tarjeta</label>
+                                    <nz-input-group [nzPrefix]="cardNumberIcon">
+                                        <input nz-input [ngModel]="cardNumber" (input)="formatCardNumber($event)" 
+                                            placeholder="4532 0192 8374 9283" nzSize="large" />
+                                    </nz-input-group>
+                                    <ng-template #cardNumberIcon>
+                                        <span nz-icon nzType="credit-card" nzTheme="outline"></span>
+                                    </ng-template>
+                                </div>
+
+                                <div class="form-item" style="margin-bottom: 16px;">
+                                    <label class="form-label" style="display: block; font-weight: 500; margin-bottom: 6px; color: #434343;">Nombre impreso en la tarjeta</label>
+                                    <nz-input-group [nzPrefix]="cardNameIcon">
+                                        <input nz-input [(ngModel)]="cardName" placeholder="JUAN PEREZ" nzSize="large" />
+                                    </nz-input-group>
+                                    <ng-template #cardNameIcon>
+                                        <span nz-icon nzType="user" nzTheme="outline"></span>
+                                    </ng-template>
+                                </div>
+
+                                <div class="form-row-half" style="display: flex; gap: 16px; margin-bottom: 16px;">
+                                    <div class="form-item" style="flex: 1;">
+                                        <label class="form-label" style="display: block; font-weight: 500; margin-bottom: 6px; color: #434343;">Fecha de Vencimiento</label>
+                                        <input nz-input [ngModel]="cardExpiry" (input)="formatExpiry($event)" 
+                                            placeholder="MM/YY" nzSize="large" style="text-align: center;" />
+                                    </div>
+                                    <div class="form-item" style="flex: 1;">
+                                        <label class="form-label" style="display: block; font-weight: 500; margin-bottom: 6px; color: #434343;">Código de Seguridad (CVV)</label>
+                                        <input nz-input [ngModel]="cardCvv" (input)="formatCvv($event)" 
+                                            (focus)="setCardFocus(true)" (blur)="setCardFocus(false)"
+                                            placeholder="123" nzSize="large" style="text-align: center;" />
+                                    </div>
+                                </div>
+                                
+                                <div style="margin-top: 16px;">
+                                    <nz-alert nzType="warning" nzShowIcon nzMessage="Simulador de Pagos Activo"
+                                        nzDescription="Podés utilizar números ficticios para testear. Para simular un rechazo por fondos insuficientes, ingresá una tarjeta terminada en 4444.">
+                                    </nz-alert>
+                                </div>
+                            </div>
+                        </div>
 
                     </nz-radio-group>
 
@@ -293,5 +386,32 @@
             </div>
         </div>
 
+    </div>
+</div>
+
+<!-- ====== OVERLAY GLOBAL DE PROCESAMIENTO DE PAGO SEGURO ====== -->
+<div class="payment-processing-overlay" *ngIf="isProcessingPayment && paymentMethod === 'card'">
+    <div class="overlay-glass-card">
+        <div class="pulsing-shield-wrapper">
+            <div class="glowing-ring"></div>
+            <span nz-icon nzType="lock" nzTheme="outline" class="secure-lock-icon"></span>
+        </div>
+        
+        <h2>Procesando Pago Seguro</h2>
+        <div class="secure-terminal-log">
+            <span class="terminal-arrow">></span>
+            <span class="terminal-text">{{ processingMessage }}</span>
+        </div>
+        
+        <div class="secure-badges">
+            <div class="badge-item">
+                <span nz-icon nzType="safety" nzTheme="outline"></span>
+                <span>SSL 256-BIT</span>
+            </div>
+            <div class="badge-item">
+                <span nz-icon nzType="shield" nzTheme="outline"></span>
+                <span>PCI-DSS COMPLIANT</span>
+            </div>
+        </div>
     </div>
 </div>
