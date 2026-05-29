@@ -103,7 +103,7 @@
                     <nz-card [nzHoverable]="true" class="premium-product-card" [nzCover]="coverTemplate"
                         [nzBodyStyle]="{ padding: '16px' }">
                         <ng-template #coverTemplate>
-                            <div class="card-image-wrapper">
+                            <div class="card-image-wrapper" (click)="openProductDetail(producto)" style="cursor: pointer;">
                                 <img [alt]="producto.prov_name"
                                     [src]="producto.prov_image ? producto.prov_image : 'https://placehold.co/400x400/eeeeee/8c8c8c?text=Sin+Foto'"
                                     class="product-card-image" />
@@ -111,18 +111,31 @@
                         </ng-template>
 
                         <nz-card-meta [nzTitle]="producto.prov_name"
-                            [nzDescription]="'Ref: ' + (producto.prov_sku || 'N/A')">
+                            [nzDescription]="'Ref: ' + (producto.prov_sku || 'N/A')" (click)="openProductDetail(producto)" style="cursor: pointer;">
                         </nz-card-meta>
 
-                        <div class="product-pricing">
-                            <span class="price-tag">{{ getSetting('CURRENCY', '$') }} {{ producto.prov_suggestedminimumsellingprice }}</span>
+                        <div class="product-pricing" style="margin-top: 12px; display: flex; align-items: center; justify-content: space-between;">
+                            <span class="price-tag">{{ getSetting('CURRENCY', '$') }} {{ producto.prov_suggestedminimumsellingprice | number:'1.2-2' }}</span>
+                            
+                            <!-- Mini Stars indicator on card -->
+                            <span *ngIf="getProductReviewsCount(producto.prov_uuid) > 0" style="font-size: 12px; font-weight: 600; color: #fa8c16; display: flex; align-items: center; gap: 4px;">
+                                <span nz-icon nzType="star" nzTheme="fill"></span> 
+                                {{ getProductAverageRating(producto.prov_uuid) }} 
+                                <span style="color: #8c8c8c; font-weight: 500; font-size: 11px;">({{ getProductReviewsCount(producto.prov_uuid) }})</span>
+                            </span>
+                            <span *ngIf="getProductReviewsCount(producto.prov_uuid) === 0" style="font-size: 11px; font-weight: 600; color: #8c8c8c; background: #f5f5f5; padding: 2px 6px; border-radius: 4px;">
+                                Nuevo
+                            </span>
                         </div>
 
-                        <div class="product-actions" style="margin-top: 16px;">
-                            <button nz-button nzType="primary" nzBlock nzSize="large"
+                        <div class="product-actions" style="margin-top: 16px; display: flex; gap: 8px;">
+                            <button nz-button nzType="default" (click)="openProductDetail(producto)" style="flex: 1;">
+                                Detalles
+                            </button>
+                            <button nz-button nzType="primary"
                                 [disabled]="!getSetting('ALLOW_BACKORDERS', true) && producto.prov_stock <= 0"
-                                (click)="agregarAlCarrito(producto)">
-                                Añadir al Carrito <span nz-icon nzType="shopping-cart"></span>
+                                (click)="agregarAlCarrito(producto)" style="flex: 1;">
+                                Comprar <span nz-icon nzType="shopping-cart"></span>
                             </button>
                         </div>
                     </nz-card>
@@ -193,7 +206,6 @@
 
 <ng-template #notFound>
     <div class="store-not-found-container">
-        <!-- Reemplazo del empty nativo en caso de error de ruta -->
         <nz-empty nzNotFoundImage="https://gw.alipayobjects.com/zos/antfincdn/ZHrcdLPrvN/empty.svg"
             nzNotFoundContent="Tienda No Disponible: Parece que la URL es incorrecta o la tienda ya no está activa.">
             <button nz-button nzType="primary" routerLink="/">Volver al Catálogo Principal</button>
