@@ -1,1 +1,268 @@
-<p>super-admin works!</p>
+<div class="super-admin-wrapper">
+    <div class="header-container">
+        <h1 class="page-title">
+            <span nz-icon nzType="dashboard" nzTheme="outline" style="color: #1890ff; margin-right: 12px;"></span>
+            Consola Global de SuperAdministrador
+        </h1>
+        <p class="page-subtitle">Monitoreo SaaS multi-tenant, auditoría de comercios, control de facturación y categorías globales.</p>
+    </div>
+
+    <!-- ====== KPI CARDS DE LA PLATAFORMA ====== -->
+    <div nz-row [nzGutter]="24" class="kpi-grid">
+        <!-- Tarjeta 1: Total Tiendas -->
+        <div nz-col [nzXs]="24" [nzSm]="12" [nzLg]="6" style="margin-bottom: 24px;">
+            <nz-card class="kpi-card text-center" [nzBordered]="false">
+                <div class="kpi-icon-wrapper blue-glow">
+                    <span nz-icon nzType="shop" nzTheme="outline"></span>
+                </div>
+                <div class="kpi-val">{{ totalCompaniesCount }}</div>
+                <div class="kpi-label">Tiendas Totales</div>
+            </nz-card>
+        </div>
+
+        <!-- Tarjeta 2: Tiendas Activas -->
+        <div nz-col [nzXs]="24" [nzSm]="12" [nzLg]="6" style="margin-bottom: 24px;">
+            <nz-card class="kpi-card text-center" [nzBordered]="false">
+                <div class="kpi-icon-wrapper green-glow">
+                    <span nz-icon nzType="check-circle" nzTheme="outline"></span>
+                </div>
+                <div class="kpi-val">{{ activeCompaniesCount }}</div>
+                <div class="kpi-label">Tiendas Activas</div>
+            </nz-card>
+        </div>
+
+        <!-- Tarjeta 3: Volumen de Ventas -->
+        <div nz-col [nzXs]="24" [nzSm]="12" [nzLg]="6" style="margin-bottom: 24px;">
+            <nz-card class="kpi-card text-center" [nzBordered]="false">
+                <div class="kpi-icon-wrapper orange-glow">
+                    <span nz-icon nzType="line-chart" nzTheme="outline"></span>
+                </div>
+                <div class="kpi-val">${{ totalSalesVolume | number:'1.2-2' }}</div>
+                <div class="kpi-label">Volumen Facturado (SaaS)</div>
+            </nz-card>
+        </div>
+
+        <!-- Tarjeta 4: Comisiones Acumuladas -->
+        <div nz-col [nzXs]="24" [nzSm]="12" [nzLg]="6" style="margin-bottom: 24px;">
+            <nz-card class="kpi-card text-center commission-highlight" [nzBordered]="false">
+                <div class="kpi-icon-wrapper gold-glow">
+                    <span nz-icon nzType="wallet" nzTheme="fill"></span>
+                </div>
+                <div class="kpi-val neon-gold">${{ totalPlatformCommission | number:'1.2-2' }}</div>
+                <div class="kpi-label">Comisiones Retenidas ({{ commissionRate }}%)</div>
+            </nz-card>
+        </div>
+    </div>
+
+    <!-- ====== PANELES DE CONTROL EN PESTAÑAS ====== -->
+    <nz-card class="table-card" [nzBordered]="false">
+        <nz-spin [nzSpinning]="isLoading" nzTip="Cargando consola global de administración...">
+            <nz-tabset nzSize="large">
+                
+                <!-- ====== PESTAÑA 1: AUDITORÍA DE TIENDAS ====== -->
+                <nz-tab nzTitle="🏢 Moderación de Tiendas">
+                    <div style="margin-bottom: 20px;">
+                        <nz-alert nzType="info" nzShowIcon nzMessage="Auditoría de Tenants"
+                            nzDescription="Pausá comercios que incumplan los términos del contrato comercial o aprobá nuevas tiendas registradas.">
+                        </nz-alert>
+                    </div>
+
+                    <nz-table #companiesTable [nzData]="companies" [nzPageSize]="8" class="premium-table">
+                        <thead>
+                            <tr>
+                                <th>Logo</th>
+                                <th>Nombre Comercial</th>
+                                <th>Slug / Enlace</th>
+                                <th>Contacto / Dirección</th>
+                                <th>Estado</th>
+                                <th style="text-align: center;">Acciones de Moderación</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            <tr *ngFor="let data of companiesTable.data">
+                                <td>
+                                    <div class="company-logo-avatar">
+                                        <img *ngIf="data.cmp_logo" [src]="data.cmp_logo" alt="Logo" />
+                                        <span *ngIf="!data.cmp_logo" nz-icon nzType="picture" nzTheme="outline"></span>
+                                    </div>
+                                </td>
+                                <td>
+                                    <strong>{{ data.cmp_name }}</strong>
+                                    <div style="font-size: 11px; color: #8c8c8c;">Moneda: {{ data.cmp_currency || 'ARS' }}</div>
+                                </td>
+                                <td>
+                                    <code class="slug-badge">/store/{{ data.cmp_slug }}</code>
+                                </td>
+                                <td>
+                                    <div style="font-size: 12px;">📞 {{ data.cmp_phone }}</div>
+                                    <div style="font-size: 11px; color: #8c8c8c;">📍 {{ data.cmp_address }}</div>
+                                </td>
+                                <td>
+                                    <nz-tag [nzColor]="getStatusColor(data.cmp_status)">
+                                        {{ getStatusLabel(data.cmp_status) }}
+                                    </nz-tag>
+                                </td>
+                                <td style="text-align: center;">
+                                    <div style="display: flex; gap: 8px; justify-content: center;">
+                                        <!-- Habilitar -->
+                                        <button *ngIf="data.cmp_status !== 'active'" nz-button nzType="primary" nzDanger="false"
+                                            (click)="updateCompanyStatus(data, 'active')" style="background-color: #52c41a; border-color: #52c41a;">
+                                            <span nz-icon nzType="play-circle" nzTheme="outline"></span> Habilitar
+                                        </button>
+                                        <!-- Pausar -->
+                                        <button *ngIf="data.cmp_status === 'active'" nz-button nzType="primary" nzDanger
+                                            (click)="updateCompanyStatus(data, 'inactive')">
+                                            <span nz-icon nzType="pause-circle" nzTheme="outline"></span> Suspender
+                                        </button>
+                                        <!-- Marcar Pendiente -->
+                                        <button *ngIf="data.cmp_status !== 'pending'" nz-button nzType="default"
+                                            (click)="updateCompanyStatus(data, 'pending')">
+                                            <span nz-icon nzType="audit" nzTheme="outline"></span> Auditar
+                                        </button>
+                                    </div>
+                                </td>
+                            </tr>
+                        </tbody>
+                    </nz-table>
+                </nz-tab>
+
+                <!-- ====== PESTAÑA 2: MOTOR DE COMISIONES ====== -->
+                <nz-tab nzTitle="🪙 Ledger de Comisiones (SaaS Billing)">
+                    <div style="margin-bottom: 20px; display: flex; justify-content: space-between; align-items: center;">
+                        <nz-alert nzType="success" nzShowIcon nzMessage="Facturación de la Plataforma"
+                            nzDescription="Ledger de transacciones reales que calcula la tasa del 5% retenida por cada venta aprobada."
+                            style="flex: 1; margin-right: 24px;">
+                        </nz-alert>
+                        <div class="commission-config-panel">
+                            <span class="label">Tasa: </span>
+                            <span class="value">{{ commissionRate }}% Fijo</span>
+                        </div>
+                    </div>
+
+                    <nz-table #ordersTable [nzData]="allOrders" [nzPageSize]="10" class="premium-table">
+                        <thead>
+                            <tr>
+                                <th>Tienda</th>
+                                <th>Pedido</th>
+                                <th>Fecha</th>
+                                <th>Estado</th>
+                                <th>Total Venta</th>
+                                <th style="color: #d4b106;">Comisión Retenida (5%)</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            <tr *ngFor="let data of ordersTable.data" [class.cancelled-row]="data.ords_uuid === 'CANCELLED'">
+                                <td>
+                                    <strong>{{ data.companyName }}</strong>
+                                </td>
+                                <td>
+                                    <code style="font-weight: 600;">#PED-{{ data.ord_ordernumber }}</code>
+                                </td>
+                                <td>
+                                    {{ data.ord_date | date:'mediumDate' }}
+                                </td>
+                                <td>
+                                    <nz-tag [nzColor]="getOrderStatusColor(data.ords_uuid)">
+                                        {{ getOrderStatusLabel(data.ords_uuid) }}
+                                    </nz-tag>
+                                </td>
+                                <td>
+                                    <strong>${{ data.ord_total | number:'1.2-2' }}</strong>
+                                </td>
+                                <td style="font-weight: 700; color: #d4b106;">
+                                    <span *ngIf="data.ords_uuid !== 'CANCELLED'">+${{ data.platformCommission | number:'1.2-2' }}</span>
+                                    <span *ngIf="data.ords_uuid === 'CANCELLED'" style="text-decoration: line-through; color: #8c8c8c;">$0.00</span>
+                                </td>
+                            </tr>
+                        </tbody>
+                    </nz-table>
+                </nz-tab>
+
+                <!-- ====== PESTAÑA 3: CATEGORÍAS GLOBALES ====== -->
+                <nz-tab nzTitle="🏷️ Categorías Globales">
+                    <div style="margin-bottom: 20px; display: flex; justify-content: space-between; align-items: center;">
+                        <nz-alert nzType="info" nzShowIcon nzMessage="Rubros y Categorías Maestras"
+                            nzDescription="Administra los rubros globales del marketplace que asocian los productos en el catálogo público."
+                            style="flex: 1; margin-right: 24px;">
+                        </nz-alert>
+                        <button nz-button nzType="primary" (click)="openCategoryModal()">
+                            <span nz-icon nzType="plus-circle" nzTheme="outline"></span> Nueva Categoría Global
+                        </button>
+                    </div>
+
+                    <nz-table #categoriesTable [nzData]="globalCategories" [nzPageSize]="8" class="premium-table">
+                        <thead>
+                            <tr>
+                                <th>Rubro Principal</th>
+                                <th>Nombre de Categoría</th>
+                                <th>Descripción Técnica</th>
+                                <th style="text-align: center; width: 120px;">Acción</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            <tr *ngFor="let data of categoriesTable.data">
+                                <td>
+                                    <nz-tag nzColor="geekblue">
+                                        {{ getGlobalItemName(data.gitm_uuid) }}
+                                    </nz-tag>
+                                </td>
+                                <td>
+                                    <strong>{{ data.gcat_name }}</strong>
+                                </td>
+                                <td>
+                                    {{ data.gcat_description }}
+                                </td>
+                                <td style="text-align: center;">
+                                    <button nz-button nzType="text" nzDanger (click)="deleteGlobalCategory(data)" nz-tooltip nzTooltipTitle="Eliminar Categoría Global">
+                                        <span nz-icon nzType="delete" nzTheme="fill"></span>
+                                    </button>
+                                </td>
+                            </tr>
+                        </tbody>
+                    </nz-table>
+                </nz-tab>
+
+            </nz-tabset>
+        </nz-spin>
+    </nz-card>
+</div>
+
+<!-- ====== MODAL CREACIÓN CATEGORÍA GLOBAL ====== -->
+<nz-modal [(nzVisible)]="isCategoryModalVisible" nzTitle="Crear Nueva Categoría Global" [nzFooter]="modalFooter" (nzOnCancel)="handleCategoryCancel()">
+    <ng-container *nzModalContent>
+        <form nz-form [formGroup]="categoryForm" (ngSubmit)="submitCategory()" nzLayout="vertical">
+            <!-- Rubro Padre -->
+            <nz-form-item>
+                <nz-form-label nzRequired>Asociar a Rubro Principal</nz-form-label>
+                <nz-form-control nzErrorTip="Selecciona un rubro principal para colgar la categoría.">
+                    <nz-select formControlName="gitm_uuid" placeholder="Seleccioná el rubro principal (ej. Moda, Alimentos)" nzSize="large">
+                        <nz-option *ngFor="let item of globalItems" [nzValue]="item.gitm_uuid" [nzLabel]="item.gitm_name"></nz-option>
+                    </nz-select>
+                </nz-form-control>
+            </nz-form-item>
+
+            <!-- Nombre -->
+            <nz-form-item>
+                <nz-form-label nzRequired>Nombre de la Categoría</nz-form-label>
+                <nz-form-control nzErrorTip="Por favor, ingresá el nombre de la categoría global.">
+                    <input nz-input formControlName="gcat_name" placeholder="Ej: Arte Sacro, Tazas, Remeras" />
+                </nz-form-control>
+            </nz-form-item>
+
+            <!-- Descripción -->
+            <nz-form-item>
+                <nz-form-label nzRequired>Descripción</nz-form-label>
+                <nz-form-control nzErrorTip="Por favor, proveé una breve descripción.">
+                    <textarea nz-input formControlName="gcat_description" [nzAutosize]="{ minRows: 3, maxRows: 5 }" placeholder="Describí los artículos que asocia..."></textarea>
+                </nz-form-control>
+            </nz-form-item>
+        </form>
+    </ng-container>
+
+    <ng-template #modalFooter>
+        <button nz-button nzType="default" (click)="handleCategoryCancel()">Cancelar</button>
+        <button nz-button nzType="primary" [nzLoading]="isSubmittingCategory" (click)="submitCategory()">
+            💾 Crear Categoría
+        </button>
+    </ng-template>
+</nz-modal>
