@@ -15,6 +15,7 @@ import { GlobalCategoriesComponent } from './global-categories/global-categories
 import { GlobalCategoryComponent } from './global-category/global-category.component';
 import { GlobalMaterialsComponent } from './global-materials/global-materials.component';
 import { GlobalMaterialComponent } from './global-material/global-material.component';
+import { SuperAdminComponent } from './super-admin/super-admin.component';
 import { MaterialsComponent } from './materials/materials.component';
 import { MaterialComponent } from './material/material.component';
 import { WarehousesComponent } from './warehouses/warehouses.component';
@@ -54,6 +55,7 @@ export const APPLICATION_ROUTES: Routes = [
             { path: 'global-category/:gitm_uuid/:gcat_uuid', component: GlobalCategoryComponent, canActivate: [merchantGuard] },
             { path: 'global-materials', component: GlobalMaterialsComponent, canActivate: [merchantGuard] },
             { path: 'global-material/:gmat_uuid', component: GlobalMaterialComponent, canActivate: [merchantGuard] },
+            { path: 'super-admin', component: SuperAdminComponent },
             { path: 'materials', component: MaterialsComponent, canActivate: [merchantGuard] },
             { path: 'material/:mat_uuid', component: MaterialComponent, canActivate: [merchantGuard] },
             { path: 'warehouses', component: WarehousesComponent, canActivate: [merchantGuard] },
