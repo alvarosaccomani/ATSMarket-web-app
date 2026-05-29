@@ -28,6 +28,7 @@ import { NzDividerModule } from 'ng-zorro-antd/divider';
 import { NzMessageService } from 'ng-zorro-antd/message';
 import { NzAlertModule } from 'ng-zorro-antd/alert';
 import { NzSelectModule } from 'ng-zorro-antd/select';
+import { NzSpinModule } from 'ng-zorro-antd/spin';
 
 @Component({
   selector: 'app-checkout',
@@ -46,7 +47,8 @@ import { NzSelectModule } from 'ng-zorro-antd/select';
     NzRadioModule,
     NzDividerModule,
     NzAlertModule,
-    NzSelectModule
+    NzSelectModule,
+    NzSpinModule
   ],
   templateUrl: './checkout.component.html',
   styleUrl: './checkout.component.scss'
@@ -87,6 +89,11 @@ export class CheckoutComponent implements OnInit, OnDestroy {
   public isCardFlipped: boolean = false;
   public cardBrand: 'visa' | 'mastercard' | 'amex' | 'discover' | 'generic' = 'generic';
   public processingMessage: string = '';
+
+  // Logística Postal Dinámica
+  public isCalculatingShipping: boolean = false;
+  public postalOptions: any[] = [];
+  public selectedPostalOptionId: 'correo_std' | 'correo_exp' | 'correo_priority' = 'correo_std';
 
   // --- FORMATEO Y MÁSCARAS DE TARJETA ---
 
@@ -218,12 +225,18 @@ export class CheckoutComponent implements OnInit, OnDestroy {
       this.checkShippingEligibility();
     });
 
+    this.shippingForm.get('codigoPostal')?.valueChanges.subscribe(() => {
+      this.checkShippingEligibility();
+      this.calculatePostalShippingRates();
+    });
+
     // 2. Traer Datos del Carrito
     this.cartSub = this.cartService.cartItems$.subscribe((cartItems: any[]) => {
       this.cartItemsList = cartItems;
       this.cartItemCount = cartItems.reduce((acc: number, item: any) => acc + item.quantity, 0);
       this.totalSubtotal = cartItems.reduce((acc: number, item: any) => acc + item.subtotal, 0);
       this.updateShippingCost();
+      this.calculatePostalShippingRates();
 
       if (this.cartItemCount === 0 && this.currentStep < 3) {
         this.message.warning('Tu carrito está vacío, serás redirigido al catálogo.');
@@ -252,6 +265,7 @@ export class CheckoutComponent implements OnInit, OnDestroy {
       this.detectedCoords = null;
     }
     this.checkShippingEligibility();
+    this.calculatePostalShippingRates();
   }
 
   // --- LÓGICA DE ENVÍO LOCAL VS NACIONAL ---
@@ -424,9 +438,13 @@ export class CheckoutComponent implements OnInit, OnDestroy {
     if (this.shippingMethod === 'moto') {
       this.shippingCost = lCost;
     } else if (this.shippingMethod === 'correo') {
-      this.shippingCost = nCost;
+      if (this.postalOptions.length > 0) {
+        const option = this.postalOptions.find(o => o.id === this.selectedPostalOptionId) || this.postalOptions[0];
+        this.shippingCost = option.cost;
+      } else {
+        this.shippingCost = nCost;
+      }
     } else {
-      // 'retiro' o 'acordar'
       this.shippingCost = 0;
     }
     this.totalFinal = this.totalSubtotal + this.shippingCost;
@@ -434,6 +452,88 @@ export class CheckoutComponent implements OnInit, OnDestroy {
 
   public setShippingMethod(method: 'moto' | 'correo' | 'retiro' | 'acordar'): void {
     this.shippingMethod = method;
+    if (method === 'correo') {
+      this.calculatePostalShippingRates();
+    } else {
+      this.updateShippingCost();
+    }
+  }
+
+  public calculatePostalShippingRates(): void {
+    const postcode = this.selectedAddressId !== 'new'
+      ? this.myAddresses.find(a => a.adr_uuid === this.selectedAddressId)?.adr_postalcode || ''
+      : this.shippingForm.get('codigoPostal')?.value || '';
+
+    if (this.cartItemsList.length === 0 || !postcode.trim()) {
+      this.postalOptions = [];
+      return;
+    }
+
+    this.isCalculatingShipping = true;
+
+    // Calcular peso y volumen simulados
+    const totalWeight = this.cartItemsList.reduce((sum, item) => sum + (item.quantity * 0.45), 0); // 0.45 kg promedio
+    const totalVolume = this.cartItemsList.reduce((sum, item) => sum + (item.quantity * 1200), 0); // 1200 cm3 promedio
+
+    // Calcular factor de zona según código postal (primer dígito)
+    const firstDigit = postcode.trim().replace(/\D/g, '').substring(0, 1);
+    let zoneMultiplier = 1.3;
+    if (['1', '2'].includes(firstDigit)) {
+      zoneMultiplier = 1.0; // Centro / Buenos Aires / CABA
+    } else if (['3', '4'].includes(firstDigit)) {
+      zoneMultiplier = 1.25; // Centro-Oeste / Litoral
+    } else if (['5', '6'].includes(firstDigit)) {
+      zoneMultiplier = 1.55; // Norte / Cuyo
+    } else if (['7', '8', '9'].includes(firstDigit)) {
+      zoneMultiplier = 1.95; // Patagonia profunda / Sur
+    }
+
+    // Simular llamada de 850ms al cotizador postal
+    setTimeout(() => {
+      const costStd = Math.round((600 + (totalWeight * 140) + (totalVolume * 0.04)) * zoneMultiplier);
+      const costExp = Math.round((950 + (totalWeight * 200) + (totalVolume * 0.07)) * zoneMultiplier);
+      const costPriority = Math.round((1450 + (totalWeight * 310) + (totalVolume * 0.11)) * zoneMultiplier);
+
+      this.postalOptions = [
+        {
+          id: 'correo_std',
+          providerName: 'Correo Argentino Standard',
+          description: 'Despacho ordinario y económico directo a domicilio o sucursal.',
+          cost: costStd,
+          estimatedDays: '3 a 5 días hábiles',
+          icon: 'global'
+        },
+        {
+          id: 'correo_exp',
+          providerName: 'Andreani Express',
+          description: 'Envío prioritario con seguimiento activo en tiempo real.',
+          cost: costExp,
+          estimatedDays: '1 a 2 días hábiles',
+          icon: 'rocket'
+        },
+        {
+          id: 'correo_priority',
+          providerName: 'DHL Priority (Express 24h)',
+          description: 'Entrega urgente garantizada al siguiente día hábil antes de las 14:00.',
+          cost: costPriority,
+          estimatedDays: '24 horas hábiles',
+          icon: 'thunderbolt'
+        }
+      ];
+
+      this.isCalculatingShipping = false;
+
+      // Asegurar que la opción seleccionada exista
+      const currentOption = this.postalOptions.find(o => o.id === this.selectedPostalOptionId) || this.postalOptions[0];
+      this.selectedPostalOptionId = currentOption.id;
+
+      // Actualizar costos de envío en el checkout
+      this.updateShippingCost();
+    }, 850);
+  }
+
+  public selectPostalOption(optionId: 'correo_std' | 'correo_exp' | 'correo_priority'): void {
+    this.selectedPostalOptionId = optionId;
     this.updateShippingCost();
   }
 
@@ -593,7 +693,8 @@ export class CheckoutComponent implements OnInit, OnDestroy {
     if (this.shippingMethod === 'moto') {
       methodText = 'Motomensajería Local';
     } else if (this.shippingMethod === 'correo') {
-      methodText = 'Correo Postal Nacional';
+      const option = this.postalOptions.find(o => o.id === this.selectedPostalOptionId);
+      methodText = option ? `Envío Postal (${option.providerName})` : 'Correo Postal Nacional';
     } else if (this.shippingMethod === 'retiro') {
       methodText = 'Retiro en el Local (Gratis)';
     } else {
@@ -608,6 +709,12 @@ export class CheckoutComponent implements OnInit, OnDestroy {
       notes = `[Envío: ${methodText} ($${this.shippingCost})] | Método de pago: Transferencia Bancaria. Comprobante: ${this.transactionId}`;
     } else {
       notes = `[Envío: ${methodText} ($${this.shippingCost})] | Método de pago: Tarjeta (${this.cardBrand.toUpperCase()} **** ${last4}). Transacción: ${mockTxId}`;
+    }
+
+    let trackingNumber = '';
+    if (this.shippingMethod === 'correo') {
+      const code = this.selectedPostalOptionId === 'correo_std' ? 'AR' : this.selectedPostalOptionId === 'correo_exp' ? 'AN' : 'DH';
+      trackingNumber = `${code}-${Math.floor(Math.random() * 900000) + 100000}-GPS`;
     }
 
     const orderNumber = Math.floor(Math.random() * 90000) + 10000;
@@ -647,7 +754,7 @@ export class CheckoutComponent implements OnInit, OnDestroy {
       ord_tax: 0,
       ord_total: this.totalFinal,
       ord_customernotes: notes,
-      ord_trackingnumber: '',
+      ord_trackingnumber: trackingNumber,
       orderDetails: orderDetails
     };
 

@@ -653,3 +653,23 @@
         transform: scale(1);
     }
 }
+
+// TARJETAS DE SELECCIÓN POSTAL
+.postal-card {
+    &:hover {
+        border-color: #1890ff !important;
+        box-shadow: 0 4px 12px rgba(24, 144, 255, 0.05);
+        background-color: #fafafa;
+    }
+
+    &.selected-postal-card {
+        border-color: #1890ff !important;
+        background-color: #e6f7ff !important;
+        box-shadow: 0 4px 12px rgba(24, 144, 255, 0.08);
+
+        span[nz-icon] {
+            background-color: #1890ff !important;
+            color: white !important;
+        }
+    }
+}
