@@ -1,1 +1,164 @@
-<p>product-detail works!</p>
+<div class="product-detail-page-container">
+  
+  <!-- Barra de Navegación Superior / Migas de Pan de Retorno -->
+  <div class="product-detail-nav-bar">
+    <button nz-button nzType="default" (click)="volverAlCatalogo()" class="back-btn" nzSize="large">
+      <span nz-icon nzType="arrow-left" nzTheme="outline"></span> Volver al Catálogo
+    </button>
+  </div>
+
+  <!-- Estado de Carga -->
+  <div *ngIf="isLoading" class="loading-state-container">
+    <nz-spin nzSimple nzSize="large" [nzTip]="'Cargando detalles del artículo...'"></nz-spin>
+  </div>
+
+  <!-- Estado Vacío o Error -->
+  <div *ngIf="!isLoading && !producto" class="empty-state-wrapper">
+    <nz-empty 
+        nzNotFoundContent="Lo sentimos, no pudimos encontrar el artículo solicitado en la base de datos."
+        class="empty-state">
+    </nz-empty>
+  </div>
+
+  <!-- Contenedor del Detalle de Producto -->
+  <div *ngIf="!isLoading && producto" class="product-detail-main-card">
+    <div class="detail-modal-layout">
+        <div nz-row [nzGutter]="[24, 24]">
+            
+            <!-- Columna Izquierda: Imagen y Ficha -->
+            <div nz-col [nzXs]="24" [nzMd]="10" class="detail-left-col">
+                <div class="detail-image-card">
+                    <img [src]="producto.prov_image ? producto.prov_image : 'https://placehold.co/400x400/eeeeee/8c8c8c?text=Sin+Foto'" 
+                        [alt]="producto.prov_name" class="detail-main-img" />
+                </div>
+                <div class="product-metadata-box">
+                    <div style="display: flex; justify-content: space-between; margin-bottom: 8px; font-size: 13px;">
+                        <span class="meta-label">Código SKU:</span>
+                        <span class="meta-value">{{ producto.prov_sku || 'N/A' }}</span>
+                    </div>
+                    <div style="display: flex; justify-content: space-between; font-size: 13px; align-items: center;">
+                        <span class="meta-label">Disponibilidad:</span>
+                        <nz-tag [nzColor]="producto.prov_stock > 0 ? 'success' : 'error'" style="margin: 0; font-weight: 600;">
+                            {{ producto.prov_stock > 0 ? producto.prov_stock + ' unidades' : 'Sin Stock' }}
+                        </nz-tag>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Columna Derecha: Detalles del Producto -->
+            <div nz-col [nzXs]="24" [nzMd]="14" class="detail-right-col">
+                <h2 class="detail-product-name">{{ producto.prov_name }}</h2>
+                
+                <!-- Rating Resumen Corto -->
+                <div class="rating-short-summary">
+                    <nz-rate [ngModel]="averageRating" nzDisabled style="font-size: 16px;"></nz-rate>
+                    <span class="rating-number">{{ averageRating }}</span>
+                    <span class="rating-count">({{ reviews.length }} opiniones)</span>
+                </div>
+
+                <div class="detail-price-box">
+                    <span class="detail-price-label">Precio Especial</span>
+                    <span class="detail-price-val">
+                        {{ getSetting('CURRENCY', '$') }} {{ producto.prov_suggestedminimumsellingprice | number:'1.2-2' }}
+                    </span>
+                </div>
+
+                <div class="detail-description-box">
+                    <h4>Descripción del Producto</h4>
+                    <p>{{ producto.prov_description || 'No hay descripción disponible para este artículo structural. Elaborado artesanalmente bajo estándares premium de la marca.' }}</p>
+                </div>
+
+                <button nz-button nzType="primary" nzSize="large" nzBlock (click)="agregarAlCarrito()" style="margin-top: 20px; height: 50px; font-weight: 700; font-size: 15px; border-radius: 8px;">
+                    Añadir al Carrito de Compras <span nz-icon nzType="shopping-cart"></span>
+                </button>
+            </div>
+        </div>
+
+        <nz-divider style="margin: 32px 0;"></nz-divider>
+
+        <!-- ====== SECCIÓN OPINIONES Y FEEDBACK ====== -->
+        <div class="reviews-section">
+            <h3>
+                <span nz-icon nzType="star" nzTheme="outline" style="color: #fa8c16;"></span> Reseñas de Clientes
+            </h3>
+
+            <div nz-row [nzGutter]="[24, 24]" class="reviews-summary-row">
+                
+                <!-- Resumen de Estrellas -->
+                <div nz-col [nzXs]="24" [nzMd]="8" class="stars-card">
+                    <div style="font-size: 52px; font-weight: 900; color: #1f1f1f; line-height: 1;">{{ averageRating }}</div>
+                    <nz-rate [ngModel]="averageRating" nzDisabled style="margin-top: 8px; font-size: 16px;"></nz-rate>
+                    <div style="color: #8c8c8c; font-size: 12px; margin-top: 8px; font-weight: 500;">Promedio de {{ reviews.length }} valoraciones</div>
+                </div>
+
+                <!-- Distribución de Barras de Progreso -->
+                <div nz-col [nzXs]="24" [nzMd]="16" class="bars-card">
+                    <div *ngFor="let stars of [5, 4, 3, 2, 1]" style="display: flex; align-items: center; gap: 12px; margin-bottom: 8px;">
+                        <span style="width: 70px; font-size: 12.5px; font-weight: 600; color: #595959; text-align: right;">{{ stars }} estrella{{ stars > 1 ? 's' : '' }}</span>
+                        <div style="flex: 1; display: flex; align-items: center;">
+                            <nz-progress [nzPercent]="getRatingPercentage(stars)" nzStatus="normal" [nzShowInfo]="false" [nzStrokeColor]="'#fa8c16'"></nz-progress>
+                        </div>
+                        <span style="width: 40px; font-size: 12px; color: #8c8c8c; font-weight: 600; text-align: left;">{{ getRatingPercentage(stars) }}%</span>
+                    </div>
+                </div>
+            </div>
+
+            <nz-divider style="margin: 32px 0;"></nz-divider>
+
+            <!-- Formulario Dejar Reseña -->
+            <div class="new-review-form">
+                <h4>Escribir Reseña del Producto</h4>
+                
+                <div style="display: flex; align-items: center; gap: 16px; margin-bottom: 14px; flex-wrap: wrap;">
+                    <span style="font-weight: 600; font-size: 13px; color: #595959;">Tu puntuación:</span>
+                    <nz-rate [(ngModel)]="userRating" style="font-size: 20px;"></nz-rate>
+                    
+                    <!-- Badge de Compra Verificada Condicional -->
+                    <nz-tag *ngIf="isVerifiedBuyer" nzColor="gold" style="margin-left: auto; font-weight: 600; border-radius: 4px; padding: 2px 8px;">
+                        <span nz-icon nzType="check-circle" nzTheme="fill"></span> Compra Verificada
+                    </nz-tag>
+                </div>
+
+                <nz-input-group style="margin-bottom: 12px;">
+                    <textarea nz-input [(ngModel)]="userComment" placeholder="Contanos qué te pareció el artículo. ¿La terminación, calidad o diseño cumplieron tus expectativas?..." [nzAutosize]="{ minRows: 2, maxRows: 4 }" style="border-radius: 6px; font-size: 13.5px;"></textarea>
+                </nz-input-group>
+
+                <div style="display: flex; justify-content: flex-end;">
+                    <button nz-button nzType="primary" [nzLoading]="isSubmittingReview" (click)="submitReview()" style="height: 38px; border-radius: 6px; font-weight: 600; padding: 0 20px;">
+                        🚀 Publicar mi Opinión
+                    </button>
+                </div>
+            </div>
+
+            <!-- Listado de Reseñas -->
+            <div class="reviews-list">
+                <div *ngFor="let r of reviews" class="review-item">
+                    <div style="display: flex; gap: 14px; align-items: flex-start;">
+                        <nz-avatar [nzText]="r.avatar" style="background-color: #1890ff; font-weight: 700; vertical-align: middle; box-shadow: 0 2px 6px rgba(24,144,255,0.2);"></nz-avatar>
+                        <div style="flex: 1;">
+                            <div style="display: flex; align-items: center; gap: 8px; flex-wrap: wrap;">
+                                <span style="font-weight: 700; color: #262626; font-size: 14px;">{{ r.author }}</span>
+                                
+                                <!-- Badge Dorado de Compra Verificada -->
+                                <nz-tag *ngIf="r.verified" nzColor="gold" style="font-size: 11px; font-weight: 600; border-radius: 3px; padding: 0 6px;">
+                                    <span nz-icon nzType="check-circle" nzTheme="fill"></span> Compra Verificada
+                                </nz-tag>
+                                
+                                <span style="margin-left: auto; font-size: 12px; color: #8c8c8c;">{{ r.date | date:'mediumDate' }}</span>
+                            </div>
+                            <div style="margin-top: 4px;">
+                                <nz-rate [ngModel]="r.rating" nzDisabled style="font-size: 13px;"></nz-rate>
+                            </div>
+                            <p style="margin-top: 8px; color: #595959; font-size: 13.5px; line-height: 1.5; white-space: pre-line; margin-bottom: 0;">
+                                {{ r.comment }}
+                            </p>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+    </div>
+  </div>
+
+</div>
