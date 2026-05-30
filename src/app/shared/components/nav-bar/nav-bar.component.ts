@@ -13,11 +13,14 @@ import { NzInputModule } from 'ng-zorro-antd/input';
 import { NzAvatarModule } from 'ng-zorro-antd/avatar';
 import { NzDropDownModule } from 'ng-zorro-antd/dropdown';
 import { NzButtonModule } from 'ng-zorro-antd/button';
+import { NzDividerModule } from 'ng-zorro-antd/divider';
 
 import { CartItemInterface } from '@interfaces/cart-item.interface';
 import { CartService } from '@services/cart.service';
 import { SessionService } from '@services/session.service';
 import { StoreContextService } from '@services/store-context.service';
+import { WebSocketNotificationService } from '@services/web-socket-notification.service';
+import { NotificationInterface } from '@interfaces/notification/notification.interface';
 import { CompanyInterface } from '@interfaces/company';
 
 @Component({
@@ -34,7 +37,8 @@ import { CompanyInterface } from '@interfaces/company';
     NzInputModule,
     NzAvatarModule,
     NzDropDownModule,
-    NzButtonModule
+    NzButtonModule,
+    NzDividerModule
   ],
   templateUrl: './nav-bar.component.html',
   styleUrl: './nav-bar.component.scss'
@@ -54,13 +58,21 @@ export class NavBarComponent implements OnInit {
   public storeName: string = 'ATS Market';
   public navbarColor: string = '#001529'; // Color por defecto (dark)
 
+  // Notificaciones
+  public notifications$: Observable<NotificationInterface[]>;
+  public unreadCount$: Observable<number>;
+  public animateBell: boolean = false;
+
   constructor(
     private cartService: CartService,
     private _sessionService: SessionService,
     private _router: Router,
-    private _storeContext: StoreContextService
+    private _storeContext: StoreContextService,
+    public notificationService: WebSocketNotificationService
   ) {
     this.cartItems$ = this.cartService.cartItems$;
+    this.notifications$ = this.notificationService.notifications$;
+    this.unreadCount$ = this.notificationService.unreadCount$;
   }
 
   ngOnInit(): void {
@@ -76,6 +88,14 @@ export class NavBarComponent implements OnInit {
     this._storeContext.storeSettings$.subscribe(() => {
       this.updateLogo();
       this.updateNavbarColor();
+    });
+
+    // Escuchar el conteo de no leídos para disparar la animación de campana
+    this.unreadCount$.subscribe(count => {
+      if (count > 0) {
+        this.animateBell = true;
+        setTimeout(() => this.animateBell = false, 1200); // Duración de la oscilación
+      }
     });
   }
 
@@ -113,5 +133,19 @@ export class NavBarComponent implements OnInit {
     this._sessionService.logout();
     this.userIdentity = null;
     this._router.navigate(['/auth/login']);
+  }
+
+  public markAllAsRead(): void {
+    this.notificationService.markAllAsRead();
+  }
+
+  public navegarNotificacion(ntf: NotificationInterface): void {
+    // Marcar como leída de forma interna si hace clic
+    ntf.ntf_isread = true;
+    this.notificationService.markAllAsRead(); // para esta versión rápida
+    
+    if (ntf.ntf_actionurl) {
+      this._router.navigateByUrl(ntf.ntf_actionurl);
+    }
   }
 }

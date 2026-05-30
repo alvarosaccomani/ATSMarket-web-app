@@ -24,6 +24,50 @@
         <!-- Separador visual estético -->
         <li nz-menu-item style="pointer-events: none; padding: 0 8px;">|</li>
 
+        <!-- NOTIFICACIONES -->
+        <li nz-menu-item *ngIf="userIdentity" nz-dropdown [nzDropdownMenu]="notificationsMenu" nzPlacement="bottomRight" nzTrigger="click" style="padding: 0 16px;">
+            <div class="bell-icon-wrapper" [class.shake-bell]="animateBell">
+                <nz-badge [nzCount]="(unreadCount$ | async) ?? 0" [nzOverflowCount]="9" [nzStyle]="{ backgroundColor: '#ff4d4f', boxShadow: '0 0 0 1px #fff' }">
+                    <span nz-icon nzType="bell" nzTheme="outline" style="font-size: 19px; vertical-align: middle; color: rgba(255,255,255,0.85);"></span>
+                </nz-badge>
+            </div>
+        </li>
+
+        <nz-dropdown-menu #notificationsMenu="nzDropdownMenu">
+            <div class="notifications-dropdown-panel glassmorphic-panel">
+                <div class="dropdown-header" style="display: flex; justify-content: space-between; align-items: center; padding: 12px 16px; background: rgba(255, 255, 255, 0.05);">
+                    <h4 style="margin: 0; font-weight: 700; font-size: 14px; color: #262626;">Notificaciones</h4>
+                    <button nz-button nzType="link" nzSize="small" (click)="markAllAsRead()" *ngIf="(unreadCount$ | async) && (unreadCount$ | async)! > 0" style="padding: 0; font-size: 12px; height: auto;">
+                        Marcar leídas
+                    </button>
+                </div>
+                <nz-divider style="margin: 0;"></nz-divider>
+                <div class="notifications-list-container" style="max-height: 320px; overflow-y: auto; width: 320px;">
+                    <ng-container *ngIf="(notifications$ | async) && (notifications$ | async)!.length > 0; else emptyNotifications">
+                        <div class="notification-card-item" *ngFor="let ntf of notifications$ | async" [class.unread]="!ntf.ntf_isread" (click)="navegarNotificacion(ntf)">
+                            <div class="ntf-icon-box" [class]="ntf.ntf_type">
+                                <span nz-icon [nzType]="ntf.ntf_type === 'success' ? 'check-circle' : ntf.ntf_type === 'warning' ? 'exclamation-circle' : ntf.ntf_type === 'error' ? 'close-circle' : 'info-circle'" nzTheme="fill"></span>
+                            </div>
+                            <div class="ntf-content-box">
+                                <span class="ntf-title">{{ ntf.ntf_title }}</span>
+                                <p class="ntf-message">{{ ntf.ntf_message }}</p>
+                                <span class="ntf-time">{{ ntf.ntf_createdat | date:'shortTime' }} - {{ ntf.ntf_createdat | date:'mediumDate' }}</span>
+                            </div>
+                        </div>
+                    </ng-container>
+                    <ng-template #emptyNotifications>
+                        <div class="empty-notifications-state" style="padding: 32px 16px; text-align: center; display: flex; flex-direction: column; align-items: center; gap: 8px;">
+                            <span nz-icon nzType="bell" nzTheme="outline" style="font-size: 32px; color: #d9d9d9;"></span>
+                            <p style="margin: 0; color: #bfbfbf; font-size: 13px; font-weight: 500;">No tenés notificaciones aún</p>
+                        </div>
+                    </ng-template>
+                </div>
+            </div>
+        </nz-dropdown-menu>
+
+        <!-- Separador visual estético -->
+        <li nz-menu-item style="pointer-events: none; padding: 0 8px;">|</li>
+
         <!-- OPCIONES DE USUARIO -->
         <li nz-menu-item *ngIf="!userIdentity" routerLink="/auth/login">
             <span nz-icon nzType="user"></span> Ingresar
