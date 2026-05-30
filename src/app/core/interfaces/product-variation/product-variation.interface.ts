@@ -14,6 +14,8 @@ export interface ProductVariationInterface {
     prov_stock: number;
     prov_suggestedminimumsellingprice: number;
     inventoryStock?: InventoryStockInterface[];
+    prov_averagerating?: number;
+    prov_reviewscount?: number;
     prov_createdat: Date;
     prov_updatedat: Date;
 }
