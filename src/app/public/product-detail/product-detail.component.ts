@@ -23,6 +23,8 @@ import { ProductVariationsService } from '@services/product-variations.service';
 import { SessionService } from '@services/session.service';
 import { OrdersService } from '@services/orders.service';
 import { StoreContextService } from '@services/store-context.service';
+import { ProductVariationReviewsService } from '@services/product-variation-reviews.service';
+import { ProductVariationReviewInterface } from '@interfaces/product-variation-review';
 
 @Component({
   selector: 'app-product-detail',
@@ -77,6 +79,7 @@ export class ProductDetailComponent implements OnInit {
     private _sessionService: SessionService,
     private _ordersService: OrdersService,
     private _storeContext: StoreContextService,
+    private _reviewsService: ProductVariationReviewsService,
     private message: NzMessageService
   ) { }
 
@@ -157,7 +160,7 @@ export class ProductDetailComponent implements OnInit {
     this.router.navigate(['/public/store-catalog', this.storeSlug]);
   }
 
-  // --- MÉTODOS DE RESEÑAS (Idéntico a Catalog) ---
+  // --- MÉTODOS DE RESEÑAS ---
 
   private checkIfVerifiedBuyer(cus_uuid: string, prov_uuid: string): void {
     this._ordersService.getOrdersByCustomer(cus_uuid).subscribe({
@@ -176,32 +179,51 @@ export class ProductDetailComponent implements OnInit {
   }
 
   public loadProductReviews(prov_uuid: string): void {
-    const stored = localStorage.getItem(`ats_reviews_${prov_uuid}`);
-    let localReviews: any[] = [];
-    if (stored) {
-      localReviews = JSON.parse(stored);
-    }
+    const cmpUuid = this.producto?.cmp_uuid || '';
+    const proUuid = this.producto?.pro_uuid || '';
 
-    const seedReviews = this.generateSeedReviews(prov_uuid);
-    this.reviews = [...localReviews, ...seedReviews];
-    this.reviews.sort((a, b) => new Date(b.date).getTime() - new Date(a.date).getTime());
+    this._reviewsService.getProductVariationReviews(cmpUuid, proUuid, prov_uuid).subscribe({
+      next: (res) => {
+        const serverReviews = res.data || [];
+        
+        // Map the backend structure to the template properties
+        this.reviews = serverReviews.map(r => ({
+          author: (r as any).provrev_author || 'Comprador Anónimo',
+          avatar: (r as any).provrev_avatar || 'CA',
+          rating: r.provrev_rating,
+          comment: r.provrev_comment,
+          date: r.provrev_createdat,
+          verified: r.provrev_isverified
+        }));
+        
+        // Sort chronologically (newest first)
+        this.reviews.sort((a, b) => new Date(b.date).getTime() - new Date(a.date).getTime());
 
-    const totalReviews = this.reviews.length;
-    if (totalReviews > 0) {
-      const sum = this.reviews.reduce((acc, r) => acc + r.rating, 0);
-      this.averageRating = Number((sum / totalReviews).toFixed(1));
+        const totalReviews = this.reviews.length;
+        if (totalReviews > 0) {
+          const sum = this.reviews.reduce((acc, r) => acc + r.rating, 0);
+          this.averageRating = Number((sum / totalReviews).toFixed(1));
 
-      this.ratingDistribution = { 5: 0, 4: 0, 3: 0, 2: 0, 1: 0 };
-      this.reviews.forEach(r => {
-        const rating = r.rating as number;
-        if (this.ratingDistribution[rating] !== undefined) {
-          this.ratingDistribution[rating]++;
+          this.ratingDistribution = { 5: 0, 4: 0, 3: 0, 2: 0, 1: 0 };
+          this.reviews.forEach(r => {
+            const rating = r.rating as number;
+            if (this.ratingDistribution[rating] !== undefined) {
+              this.ratingDistribution[rating]++;
+            }
+          });
+        } else {
+          this.averageRating = 0;
+          this.ratingDistribution = { 5: 0, 4: 0, 3: 0, 2: 0, 1: 0 };
         }
-      });
-    } else {
-      this.averageRating = 0;
-      this.ratingDistribution = { 5: 0, 4: 0, 3: 0, 2: 0, 1: 0 };
-    }
+      },
+      error: (err) => {
+        console.error('Error loading reviews from database:', err);
+        this.reviews = [];
+        this.averageRating = 0;
+        this.ratingDistribution = { 5: 0, 4: 0, 3: 0, 2: 0, 1: 0 };
+        this.message.error('No se pudieron cargar las reseñas del servidor.');
+      }
+    });
   }
 
   public submitReview(): void {
@@ -213,31 +235,39 @@ export class ProductDetailComponent implements OnInit {
 
     this.isSubmittingReview = true;
     
-    setTimeout(() => {
-      const newReview = {
-        author: this.activeCustomer?.cus_name || this.activeCustomer?.usr_name || 'Comprador Anónimo',
-        avatar: (this.activeCustomer?.cus_name || this.activeCustomer?.usr_name || 'CA').substring(0, 2).toUpperCase(),
-        rating: this.userRating,
-        comment: this.userComment,
-        date: new Date().toISOString(),
-        verified: this.isVerifiedBuyer || true
-      };
+    // Construct real payload according to database schema / interface
+    const reviewData: Partial<ProductVariationReviewInterface> = {
+      cmp_uuid: this.producto.cmp_uuid,
+      pro_uuid: this.producto.pro_uuid || '',
+      prov_uuid: this.producto.prov_uuid,
+      usr_uuid: this.activeCustomer?.usr_uuid || '',
+      cus_uuid: this.activeCustomer?.cus_uuid || '',
+      provrev_rating: this.userRating,
+      provrev_comment: this.userComment,
+      provrev_isverified: this.isVerifiedBuyer || false
+    };
+    
+    // Add extra properties (author, avatar) for backend compatibility/caching
+    const authorName = this.activeCustomer?.cus_fullname || this.activeCustomer?.cus_name || this.activeCustomer?.usr_name || 'Comprador Anónimo';
+    (reviewData as any).provrev_author = authorName;
+    (reviewData as any).provrev_avatar = authorName.substring(0, 2).toUpperCase();
 
-      const stored = localStorage.getItem(`ats_reviews_${this.productId}`);
-      let localReviews: any[] = [];
-      if (stored) {
-        localReviews = JSON.parse(stored);
+    this._reviewsService.saveProductVariationReview(reviewData).subscribe({
+      next: (res) => {
+        this.message.success('¡Muchas gracias! Tu reseña ha sido publicada con éxito.');
+        this.userComment = '';
+        this.userRating = 5;
+        this.isSubmittingReview = false;
+        
+        // Reload reviews from the database
+        this.loadProductReviews(this.productId);
+      },
+      error: (err) => {
+        console.error('Error saving review to database:', err);
+        this.message.error('No se pudo publicar la reseña en el servidor.');
+        this.isSubmittingReview = false;
       }
-      localReviews.unshift(newReview);
-      localStorage.setItem(`ats_reviews_${this.productId}`, JSON.stringify(localReviews));
-
-      this.loadProductReviews(this.productId);
-
-      this.userComment = '';
-      this.userRating = 5;
-      this.isSubmittingReview = false;
-      this.message.success('¡Muchas gracias! Tu reseña ha sido publicada con éxito.');
-    }, 800);
+    });
   }
 
   public getRatingPercentage(stars: number): number {
@@ -245,76 +275,5 @@ export class ProductDetailComponent implements OnInit {
     if (total === 0) return 0;
     const count = this.ratingDistribution[stars] || 0;
     return Math.round((count / total) * 100);
-  }
-
-  private generateSeedReviews(prov_uuid: string): any[] {
-    const seed = prov_uuid.charCodeAt(0) % 4;
-    const date1 = new Date();
-    date1.setDate(date1.getDate() - 3);
-    const date2 = new Date();
-    date2.setDate(date2.getDate() - 12);
-    const date3 = new Date();
-    date3.setDate(date3.getDate() - 28);
-
-    const fallbacks = [
-      [
-        {
-          author: 'Martín S.',
-          avatar: 'MS',
-          rating: 5,
-          comment: 'La calidad del artículo es excelente, el material se siente super premium y la terminación es impecable. El envío me llegó al día siguiente por moto.',
-          date: date1.toISOString(),
-          verified: true
-        },
-        {
-          author: 'Clara G.',
-          avatar: 'CG',
-          rating: 4,
-          comment: 'Muy lindo producto. Corresponde exactamente a las fotos y la descripción técnica. Muy conforme con la compra.',
-          date: date2.toISOString(),
-          verified: true
-        }
-      ],
-      [
-        {
-          author: 'Roberto F.',
-          avatar: 'RF',
-          rating: 5,
-          comment: '¡Espectacular! Se nota que cuidan cada detalle en la fabricación. Ya lo recomendé a mis familiares y volveré a comprar seguro.',
-          date: date1.toISOString(),
-          verified: true
-        },
-        {
-          author: 'Sofía M.',
-          avatar: 'SM',
-          rating: 3,
-          comment: 'El producto está bien, pero demoró un poco el correo postal en entregarlo. Por lo demás, excelente trato del vendedor.',
-          date: date3.toISOString(),
-          verified: false
-        }
-      ],
-      [
-        {
-          author: 'Gabriela L.',
-          avatar: 'GL',
-          rating: 5,
-          comment: 'Totalmente recomendado. Llegó muy bien embalado y el diseño superó mis expectativas. Muchas gracias por la rapidez de respuesta.',
-          date: date2.toISOString(),
-          verified: true
-        }
-      ],
-      [
-        {
-          author: 'Esteban D.',
-          avatar: 'ED',
-          rating: 4,
-          comment: 'Muy buena relación calidad-precio. Cumple perfectamente con lo prometido y los detalles grabados son muy finos.',
-          date: date3.toISOString(),
-          verified: true
-        }
-      ]
-    ];
-
-    return fallbacks[seed] || fallbacks[0];
   }
 }
