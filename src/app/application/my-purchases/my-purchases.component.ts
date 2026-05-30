@@ -13,7 +13,9 @@ import { NzSpinModule } from 'ng-zorro-antd/spin';
 import { OrdersService } from '../../core/services/orders.service';
 import { SessionService } from '../../core/services/session.service';
 import { CompaniesService } from '../../core/services/companies.service';
+import { WebSocketNotificationService } from '../../core/services/web-socket-notification.service';
 import { OrderInterface } from '../../core/interfaces/order/order.interface';
+import { Subscription } from 'rxjs';
 
 declare const L: any;
 
@@ -47,10 +49,13 @@ export class MyPurchasesComponent implements OnInit, OnDestroy {
   public activeIntervals: { [orderUuid: string]: any } = {};
   public simulatedETA: { [orderUuid: string]: number } = {};
 
+  private _orderUpdateSub: Subscription | null = null;
+
   constructor(
     private _ordersService: OrdersService,
     private _sessionService: SessionService,
-    private _companiesService: CompaniesService
+    private _companiesService: CompaniesService,
+    private _notificationService: WebSocketNotificationService
   ) { }
 
   ngOnInit(): void {
@@ -60,6 +65,32 @@ export class MyPurchasesComponent implements OnInit, OnDestroy {
     } else {
       this.isLoading = false;
     }
+
+    // Suscribirse a las actualizaciones de pedidos en tiempo real cruzadas por pestaña
+    this._orderUpdateSub = this._notificationService.orderUpdates$.subscribe(update => {
+      const order = this.purchases.find(o => o.ord_uuid === update.ord_uuid);
+      if (order) {
+        order.ords_uuid = update.status;
+        
+        if (update.notes) {
+          // Limpiar incidencias previas
+          const clean = order.ord_customernotes.replace(/\[⚠️ INCIDENCIA:[^\]]+\]\s*\|\s*/g, '');
+          order.ord_customernotes = `[⚠️ INCIDENCIA: ${update.notes}] | ${clean}`;
+        } else if (update.status === 'SHIPPED') {
+          // Limpiar incidencias al retomar ruta
+          order.ord_customernotes = order.ord_customernotes.replace(/\[⚠️ INCIDENCIA:[^\]]+\]\s*\|\s*/g, '');
+        }
+
+        // Si cambió a SHIPPED (En Camino), iniciar el mapa y el rider en vivo
+        if (update.status === 'SHIPPED') {
+          setTimeout(() => {
+            this.initializeTrackingMap(order);
+          }, 500);
+        } else {
+          this.cleanupMap(order.ord_uuid);
+        }
+      }
+    });
   }
 
   private loadPurchases(cusUuid: string): void {
@@ -404,6 +435,9 @@ export class MyPurchasesComponent implements OnInit, OnDestroy {
 
   ngOnDestroy(): void {
     // Limpiar todos los recursos activos para evitar fugas de memoria (memory leaks)
+    if (this._orderUpdateSub) {
+      this._orderUpdateSub.unsubscribe();
+    }
     Object.keys(this.activeIntervals).forEach(uuid => clearInterval(this.activeIntervals[uuid]));
     Object.keys(this.activeMaps).forEach(uuid => {
       if (this.activeMaps[uuid]) {
