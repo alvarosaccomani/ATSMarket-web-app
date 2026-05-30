@@ -22,6 +22,7 @@ import { SessionService } from '../../core/services/session.service';
 import { OrderInterface } from '../../core/interfaces/order/order.interface';
 import { AddressesService } from '../../core/services/addresses.service';
 import { AddressInterface } from '../../core/interfaces/address/address.interface';
+import { WebSocketNotificationService } from '../../core/services/web-socket-notification.service';
 
 declare const L: any;
 
@@ -91,7 +92,8 @@ export class OrdersReceivedComponent implements OnInit, OnDestroy {
     private message: NzMessageService,
     private _ordersService: OrdersService,
     private _sessionService: SessionService,
-    private _addressesService: AddressesService
+    private _addressesService: AddressesService,
+    private _notificationService: WebSocketNotificationService
   ) { }
 
   ngOnInit(): void {
@@ -188,6 +190,18 @@ export class OrdersReceivedComponent implements OnInit, OnDestroy {
       this.allOrders[idx].ords_uuid = 'SHIPPED';
       this.filterOrdersIntoTabs();
       this.message.success(`Pedido ${order.ord_ordernumber} marcado como Despachado.`);
+
+      // Notificar en tiempo real al cliente
+      this._notificationService.broadcastOrderStatusUpdate(order.ord_uuid, 'SHIPPED');
+      this._notificationService.pushNotification({
+        usr_uuid: order.usr_uuid,
+        cus_uuid: order.cus_uuid,
+        cmp_uuid: order.cmp_uuid,
+        ntf_title: '¡Pedido en camino! 🛵',
+        ntf_message: `Tu pedido #${order.ord_ordernumber} ya está en camino a tu domicilio.`,
+        ntf_type: 'info',
+        ntf_actionurl: '/application/my-purchases'
+      });
     }
   }
 
@@ -199,6 +213,18 @@ export class OrdersReceivedComponent implements OnInit, OnDestroy {
       this.filterOrdersIntoTabs();
       this.message.success(`Pedido ${order.ord_ordernumber} marcado como Entregado con éxito.`);
       this.isDrawerVisible = false;
+
+      // Notificar en tiempo real al cliente
+      this._notificationService.broadcastOrderStatusUpdate(order.ord_uuid, 'DELIVERED');
+      this._notificationService.pushNotification({
+        usr_uuid: order.usr_uuid,
+        cus_uuid: order.cus_uuid,
+        cmp_uuid: order.cmp_uuid,
+        ntf_title: 'Pedido entregado exitosamente 🎉',
+        ntf_message: `¡Qué alegría! Tu pedido #${order.ord_ordernumber} fue entregado correctamente.`,
+        ntf_type: 'success',
+        ntf_actionurl: '/application/my-purchases'
+      });
     }
   }
 
@@ -468,6 +494,18 @@ export class OrdersReceivedComponent implements OnInit, OnDestroy {
       this.filterOrdersIntoTabs();
       this.message.success(`¡Carga verificada! Pedido #${this.checklistOrder.ord_ordernumber} en viaje.`);
       
+      // Notificar en tiempo real al cliente
+      this._notificationService.broadcastOrderStatusUpdate(this.checklistOrder.ord_uuid, 'SHIPPED');
+      this._notificationService.pushNotification({
+        usr_uuid: this.checklistOrder.usr_uuid,
+        cus_uuid: this.checklistOrder.cus_uuid,
+        cmp_uuid: this.checklistOrder.cmp_uuid,
+        ntf_title: '¡Pedido en camino! 🛵',
+        ntf_message: `Tu pedido #${this.checklistOrder.ord_ordernumber} ya está en camino a tu domicilio.`,
+        ntf_type: 'info',
+        ntf_actionurl: '/application/my-purchases'
+      });
+
       const orderCopy = this.checklistOrder;
       setTimeout(() => {
         this.initializeRiderMap(orderCopy);
@@ -504,6 +542,19 @@ export class OrdersReceivedComponent implements OnInit, OnDestroy {
       
       this.filterOrdersIntoTabs();
       this.message.warning(`Incidencia registrada. Pedido #${this.incidentOrder.ord_ordernumber} regresó a preparación.`);
+
+      // Notificar en tiempo real al cliente
+      this._notificationService.broadcastOrderStatusUpdate(this.incidentOrder.ord_uuid, 'PROCESSING', reasonText);
+      this._notificationService.pushNotification({
+        usr_uuid: this.incidentOrder.usr_uuid,
+        cus_uuid: this.incidentOrder.cus_uuid,
+        cmp_uuid: this.incidentOrder.cmp_uuid,
+        ntf_title: 'Incidencia en tu envío ⚠️',
+        ntf_message: `Tu pedido #${this.incidentOrder.ord_ordernumber} reportó novedad: "${reasonText}". Regresó a preparación.`,
+        ntf_type: 'warning',
+        ntf_actionurl: '/application/my-purchases'
+      });
+
       this.isIncidentVisible = false;
       this.incidentOrder = null;
     }
