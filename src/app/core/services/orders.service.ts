@@ -52,5 +52,13 @@ export class OrdersService {
     const headers = new HttpHeaders().set('content-type', 'application/json');
     return this._http.post(`${environment.apiUrl}order`, orderData, { headers });
   }
+
+  /**
+   * Cambia el estado de la orden.
+   */
+  public changeOrderStatus(cmp_uuid: string, ord_uuid: string, ords_uuid: string): Observable<{ data: any }> {
+    const headers = new HttpHeaders().set('content-type', 'application/json');
+    return this._http.put<{ data: any }>(`${environment.apiUrl}change-order-status/${cmp_uuid}/${ord_uuid}`, { ords_uuid }, { headers });
+  }
 }
 
