@@ -9,12 +9,15 @@ import { NzDividerModule } from 'ng-zorro-antd/divider';
 import { NzAlertModule } from 'ng-zorro-antd/alert';
 import { NzCollapseModule } from 'ng-zorro-antd/collapse';
 import { NzSpinModule } from 'ng-zorro-antd/spin';
+import { NzTimelineModule } from 'ng-zorro-antd/timeline';
 
 import { OrdersService } from '../../core/services/orders.service';
 import { SessionService } from '../../core/services/session.service';
 import { CompaniesService } from '../../core/services/companies.service';
 import { WebSocketNotificationService } from '../../core/services/web-socket-notification.service';
+import { OrdersHistoryService } from '../../core/services/orders-history.service';
 import { OrderInterface } from '../../core/interfaces/order/order.interface';
+import { OrderHistoryInterface } from '../../core/interfaces/order-history/order-history.interface';
 import { Subscription } from 'rxjs';
 
 declare const L: any;
@@ -32,7 +35,8 @@ declare const L: any;
     NzDividerModule,
     NzAlertModule,
     NzCollapseModule,
-    NzSpinModule
+    NzSpinModule,
+    NzTimelineModule
   ],
   templateUrl: './my-purchases.component.html',
   styleUrl: './my-purchases.component.scss'
@@ -49,13 +53,18 @@ export class MyPurchasesComponent implements OnInit, OnDestroy {
   public activeIntervals: { [orderUuid: string]: any } = {};
   public simulatedETA: { [orderUuid: string]: number } = {};
 
+  // Caché de historial de estados
+  public orderHistoryCache: { [orderUuid: string]: OrderHistoryInterface[] } = {};
+  public loadingHistory: { [orderUuid: string]: boolean } = {};
+
   private _orderUpdateSub: Subscription | null = null;
 
   constructor(
     private _ordersService: OrdersService,
     private _sessionService: SessionService,
     private _companiesService: CompaniesService,
-    private _notificationService: WebSocketNotificationService
+    private _notificationService: WebSocketNotificationService,
+    private _ordersHistoryService: OrdersHistoryService
   ) { }
 
   ngOnInit(): void {
@@ -291,6 +300,29 @@ export class MyPurchasesComponent implements OnInit, OnDestroy {
       } else {
         // Si se colapsa, limpiamos los intervalos y mapas activos para ahorrar recursos
         this.cleanupMap(order.ord_uuid);
+      }
+    }
+  }
+
+  public onHistoryExpand(isActive: boolean, order: OrderInterface): void {
+    if (isActive && (!this.orderHistoryCache[order.ord_uuid] || this.orderHistoryCache[order.ord_uuid].length === 0)) {
+      if (order.cmp_uuid && order.ord_uuid) {
+        this.loadingHistory[order.ord_uuid] = true;
+        this._ordersHistoryService.getOrderHistory(order.cmp_uuid, order.ord_uuid).subscribe({
+          next: (res: any) => {
+            if (res && res.data) {
+              // Ordenar por fecha ascendente para mostrar el flujo cronológico
+              this.orderHistoryCache[order.ord_uuid] = res.data.sort((a: any, b: any) => {
+                return new Date(a.ordh_createdat).getTime() - new Date(b.ordh_createdat).getTime();
+              });
+            }
+            this.loadingHistory[order.ord_uuid] = false;
+          },
+          error: (err: any) => {
+            console.error('Error al recuperar historial de estados:', err);
+            this.loadingHistory[order.ord_uuid] = false;
+          }
+        });
       }
     }
   }

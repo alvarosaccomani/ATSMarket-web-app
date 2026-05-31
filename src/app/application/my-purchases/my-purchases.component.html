@@ -179,6 +179,38 @@
                         </nz-collapse-panel>
                     </nz-collapse>
 
+                    <!-- Historial de Cambios de Estado en Acordeón -->
+                    <nz-collapse [nzBordered]="false" class="items-collapse history-collapse" style="margin-top: 8px;">
+                        <nz-collapse-panel [nzHeader]="historyHeader" (nzActiveChange)="onHistoryExpand($event, order)">
+                            <ng-template #historyHeader>
+                                <span class="collapse-title-text" style="color: #fa8c16 !important;">📅 Ver historial de estados (Seguimiento Detallado)</span>
+                            </ng-template>
+                            
+                            <!-- Spinner de carga -->
+                            <div *ngIf="loadingHistory[order.ord_uuid]" style="text-align: center; padding: 16px;">
+                                <nz-spin nzSimple nzTip="Recuperando movimientos..."></nz-spin>
+                            </div>
+                            
+                            <!-- Timeline del Historial -->
+                            <nz-timeline *ngIf="!loadingHistory[order.ord_uuid] && (orderHistoryCache[order.ord_uuid]?.length ?? 0) > 0" style="margin-top: 16px; padding: 0 8px;">
+                                <nz-timeline-item *ngFor="let hItem of orderHistoryCache[order.ord_uuid]" [nzColor]="getStatusColor(hItem.ords_uuid)">
+                                    <div class="history-timeline-item" style="padding-bottom: 8px;">
+                                        <span style="font-weight: 700; color: #2d3748; font-size: 13.5px;">{{ getStatusLabel(hItem.ords_uuid) }}</span>
+                                        <span style="display: block; font-size: 11px; color: #a0aec0; margin-top: 2px;">{{ hItem.ordh_createdat | date:'dd/MM/yyyy HH:mm' }}</span>
+                                        <p class="history-comment" *ngIf="hItem.ordh_comment" style="margin: 4px 0 0 0; font-size: 12.5px; color: #718096; background: #fff; border-left: 3px solid #cbd5e0; padding-left: 8px; font-style: italic;">
+                                            {{ hItem.ordh_comment }}
+                                        </p>
+                                    </div>
+                                </nz-timeline-item>
+                            </nz-timeline>
+                            
+                            <!-- Sin historial -->
+                            <div *ngIf="!loadingHistory[order.ord_uuid] && (orderHistoryCache[order.ord_uuid]?.length ?? 0) === 0" style="padding: 16px; text-align: center; color: #a0aec0; font-size: 13px;">
+                                <span nz-icon nzType="info-circle" style="margin-right: 6px;"></span> No se registran movimientos de estado para este pedido.
+                            </div>
+                        </nz-collapse-panel>
+                    </nz-collapse>
+
                     <!-- Desglose de precios en acordeón -->
                     <div class="prices-summary-box">
                         <div class="price-row">
