@@ -7,24 +7,24 @@
         }
     </div>
     <ul class="menu-sidebar" nz-menu nzTheme="dark" nzMode="inline">
-        <li nz-menu-item nzSelected routerLink="dashboard">
+        <li nz-menu-item routerLink="analytics" routerLinkActive="ant-menu-item-selected" [routerLinkActiveOptions]="{exact: true}">
             <span nz-icon nzType="dashboard"></span>
             <span>Resumen General</span>
         </li>
-        <li nz-menu-item routerLink="mis-tiendas">
+        <li nz-menu-item routerLink="mis-tiendas" routerLinkActive="ant-menu-item-selected">
             <span nz-icon nzType="shop"></span>
             <span>Mis Tiendas</span>
         </li>
-        <li nz-menu-item routerLink="mis-productos">
+        <li nz-menu-item routerLink="mis-productos" routerLinkActive="ant-menu-item-selected">
             <span nz-icon nzType="barcode"></span>
             <span>Gestión de Productos</span>
         </li>
-        <li nz-menu-item routerLink="ventas">
+        <li nz-menu-item routerLink="ventas" routerLinkActive="ant-menu-item-selected">
             <span nz-icon nzType="ordered-list"></span>
             <span>Historial de Ventas</span>
         </li>
         <li nz-divider></li>
-        <li nz-menu-item [routerLink]="['company-settings', companyUuid]" *ngIf="companyUuid">
+        <li nz-menu-item [routerLink]="['company-settings', companyUuid]" *ngIf="companyUuid" routerLinkActive="ant-menu-item-selected">
             <span nz-icon nzType="setting"></span>
             <span>Configuración Empresa</span>
         </li>
