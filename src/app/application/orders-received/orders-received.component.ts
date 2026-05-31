@@ -164,27 +164,87 @@ export class OrdersReceivedComponent implements OnInit, OnDestroy {
 
   public approvePayment(order: OrderInterface, event?: Event): void {
     if (event) event.stopPropagation();
+
+    if (order.cmp_uuid && order.ord_uuid) {
+      this._ordersService.changeOrderStatus(order.cmp_uuid, order.ord_uuid, 'PROCESSING').subscribe({
+        next: (res) => {
+          console.info('Estado de pago aprobado en el servidor:', res);
+        },
+        error: (err) => {
+          console.error('Error al aprobar pago en el servidor:', err);
+          this.message.error('No se pudo sincronizar el estado del pago con el servidor.');
+        }
+      });
+    }
+
     const idx = this.allOrders.findIndex(o => o.ord_uuid === order.ord_uuid);
     if (idx !== -1) {
       this.allOrders[idx].ords_uuid = 'PROCESSING';
       this.filterOrdersIntoTabs();
       this.message.success(`Pago Aprobado. Pedido ${order.ord_ordernumber} pasó a Preparación.`);
       this.isDrawerVisible = false;
+
+      // Sincronizar en tiempo real por sockets y push notifications
+      this._notificationService.broadcastOrderStatusUpdate(order.ord_uuid, 'PROCESSING');
+      this._notificationService.pushNotification({
+        usr_uuid: order.usr_uuid,
+        cus_uuid: order.cus_uuid,
+        cmp_uuid: order.cmp_uuid,
+        ntf_title: '¡Pago Aprobado! 🎉',
+        ntf_message: `Tu pago para el pedido #${order.ord_ordernumber} fue aprobado. Ya estamos preparando tus productos.`,
+        ntf_type: 'success',
+        ntf_actionurl: '/application/my-purchases'
+      });
     }
   }
 
   public rejectPayment(order: OrderInterface): void {
+    if (order.cmp_uuid && order.ord_uuid) {
+      this._ordersService.changeOrderStatus(order.cmp_uuid, order.ord_uuid, 'CANCELLED').subscribe({
+        next: (res) => {
+          console.info('Pago rechazado y orden cancelada en el servidor:', res);
+        },
+        error: (err) => {
+          console.error('Error al rechazar pago en el servidor:', err);
+          this.message.error('No se pudo sincronizar la cancelación con el servidor.');
+        }
+      });
+    }
+
     const idx = this.allOrders.findIndex(o => o.ord_uuid === order.ord_uuid);
     if (idx !== -1) {
       this.allOrders[idx].ords_uuid = 'CANCELLED';
       this.filterOrdersIntoTabs();
       this.message.error(`Pago Rechazado. Pedido ${order.ord_ordernumber} fue cancelado.`);
       this.isDrawerVisible = false;
+
+      // Notificar en tiempo real al cliente
+      this._notificationService.broadcastOrderStatusUpdate(order.ord_uuid, 'CANCELLED');
+      this._notificationService.pushNotification({
+        usr_uuid: order.usr_uuid,
+        cus_uuid: order.cus_uuid,
+        cmp_uuid: order.cmp_uuid,
+        ntf_title: 'Pago rechazado ❌',
+        ntf_message: `Lamentablemente tu pago para el pedido #${order.ord_ordernumber} fue rechazado y la orden fue cancelada.`,
+        ntf_type: 'error',
+        ntf_actionurl: '/application/my-purchases'
+      });
     }
   }
 
   public markAsShipped(order: OrderInterface, event: Event): void {
     event.stopPropagation();
+
+    if (order.cmp_uuid && order.ord_uuid) {
+      this._ordersService.changeOrderStatus(order.cmp_uuid, order.ord_uuid, 'SHIPPED').subscribe({
+        next: (res) => console.info('Pedido marcado como enviado en el servidor:', res),
+        error: (err) => {
+          console.error('Error al marcar envío en el servidor:', err);
+          this.message.error('No se pudo sincronizar el despacho con el servidor.');
+        }
+      });
+    }
+
     const idx = this.allOrders.findIndex(o => o.ord_uuid === order.ord_uuid);
     if (idx !== -1) {
       this.allOrders[idx].ords_uuid = 'SHIPPED';
@@ -207,6 +267,17 @@ export class OrdersReceivedComponent implements OnInit, OnDestroy {
 
   public markAsDelivered(order: OrderInterface, event?: Event): void {
     if (event) event.stopPropagation();
+
+    if (order.cmp_uuid && order.ord_uuid) {
+      this._ordersService.changeOrderStatus(order.cmp_uuid, order.ord_uuid, 'DELIVERED').subscribe({
+        next: (res) => console.info('Pedido marcado como entregado en el servidor:', res),
+        error: (err) => {
+          console.error('Error al marcar entrega en el servidor:', err);
+          this.message.error('No se pudo sincronizar la entrega con el servidor.');
+        }
+      });
+    }
+
     const idx = this.allOrders.findIndex(o => o.ord_uuid === order.ord_uuid);
     if (idx !== -1) {
       this.allOrders[idx].ords_uuid = 'DELIVERED';
@@ -488,6 +559,16 @@ export class OrdersReceivedComponent implements OnInit, OnDestroy {
   public confirmLoadAndStartRoute(): void {
     if (!this.checklistOrder || !this.isChecklistComplete()) return;
 
+    if (this.checklistOrder.cmp_uuid && this.checklistOrder.ord_uuid) {
+      this._ordersService.changeOrderStatus(this.checklistOrder.cmp_uuid, this.checklistOrder.ord_uuid, 'SHIPPED').subscribe({
+        next: (res) => console.info('Ruta iniciada y pedido en camino en el servidor:', res),
+        error: (err) => {
+          console.error('Error al iniciar despacho en el servidor:', err);
+          this.message.error('No se pudo sincronizar el viaje con el servidor.');
+        }
+      });
+    }
+
     const idx = this.allOrders.findIndex(o => o.ord_uuid === this.checklistOrder!.ord_uuid);
     if (idx !== -1) {
       this.allOrders[idx].ords_uuid = 'SHIPPED';
@@ -539,6 +620,14 @@ export class OrdersReceivedComponent implements OnInit, OnDestroy {
       
       // Devuelve el pedido a preparación
       this.allOrders[idx].ords_uuid = 'PROCESSING';
+
+      // Persistir el cambio de estado a preparación en el backend
+      if (this.incidentOrder.cmp_uuid && this.incidentOrder.ord_uuid) {
+        this._ordersService.changeOrderStatus(this.incidentOrder.cmp_uuid, this.incidentOrder.ord_uuid, 'PROCESSING').subscribe({
+          next: (res) => console.info('Incidencia registrada y devuelta a preparación en el servidor:', res),
+          error: (err) => console.error('Error al registrar incidencia en el servidor:', err)
+        });
+      }
       
       this.filterOrdersIntoTabs();
       this.message.warning(`Incidencia registrada. Pedido #${this.incidentOrder.ord_ordernumber} regresó a preparación.`);
