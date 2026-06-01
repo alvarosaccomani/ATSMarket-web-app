@@ -1,29 +1,19 @@
 <div class="finances-dashboard-wrapper">
-
+    
     <div class="dashboard-header">
         <div class="header-titles">
             <h1 class="page-title">Mi Billetera</h1>
-            <p class="page-subtitle">Gestiona el dinero generado por tus ventas, liquida fondos a tu banco y revisa el
-                historial.</p>
-        </div>
-
-        <div class="header-actions">
-            <!-- Botón Maestro de Acción Financiera -->
-            <button nz-button nzType="primary" nzSize="large" class="withdraw-btn" (click)="requestWithdrawal()"
-                [disabled]="availableBalance <= 0">
-                <span nz-icon nzType="bank" nzTheme="outline"></span>
-                Solicitar Retiro
-            </button>
+            <p class="page-subtitle">Gestiona el dinero generado por tus ventas, concilia rendiciones de repartidores y liquida fondos a tu banco.</p>
         </div>
     </div>
 
-    <!-- FILA 1: Cajas de Saldo -->
+    <!-- SECCIÓN DE KPIs GLOBALES (Afectados dinámicamente al conciliar) -->
     <div nz-row [nzGutter]="[16, 16]" class="balance-row">
-
+        
         <div nz-col nzXs="24" nzSm="12" nzLg="8">
-            <nz-card class="premium-card balance-card highlight-card">
+            <nz-card class="premium-card balance-card highlight-card" [nzBordered]="false">
                 <div class="balance-icon-wrapper">
-                    <span nz-icon nzType="check-circle" nzTheme="fill" style="color: #52c41a;"></span>
+                    <span nz-icon nzType="wallet" nzTheme="outline" style="color: #52c41a;"></span>
                 </div>
                 <nz-statistic [nzValue]="availableBalance" [nzTitle]="'Saldo Disponible (Retirable)'" [nzPrefix]="'$'"
                     [nzValueTemplate]="availableTemplate">
@@ -35,66 +25,211 @@
         </div>
 
         <div nz-col nzXs="24" nzSm="12" nzLg="8">
-            <nz-card class="premium-card balance-card">
+            <nz-card class="premium-card balance-card" [nzBordered]="false">
                 <div class="balance-icon-wrapper">
-                    <span nz-icon nzType="clock-circle" nzTheme="fill" style="color: #faad14;"></span>
+                    <span nz-icon nzType="hourglass" nzTheme="outline" style="color: #faad14;"></span>
                 </div>
-                <nz-statistic [nzValue]="pendingSettlement" [nzTitle]="'A Liquidar (En Clearing)'" [nzPrefix]="'$'"
+                <nz-statistic [nzValue]="pendingSettlement" [nzTitle]="'En Clearing Postal (Clearing)'" [nzPrefix]="'$'"
                     [nzValueTemplate]="pendingTemplate">
                 </nz-statistic>
                 <ng-template #pendingTemplate let-value>
-                    <span style="font-weight: 600;">{{ value | number:'1.2-2' }}</span>
+                    <span style="font-weight: 700; color: #1e293b;">{{ value | number:'1.2-2' }}</span>
                 </ng-template>
             </nz-card>
         </div>
 
         <div nz-col nzXs="24" nzSm="12" nzLg="8">
-            <nz-card class="premium-card balance-card bg-light">
+            <nz-card class="premium-card balance-card bg-light" [nzBordered]="false">
                 <div class="balance-icon-wrapper">
-                    <span nz-icon nzType="history" nzTheme="outline" style="color: #8c8c8c;"></span>
+                    <span nz-icon nzType="history" nzTheme="outline" style="color: #64748b;"></span>
                 </div>
                 <nz-statistic [nzValue]="totalWithdrawn" [nzTitle]="'Retirado Históricamente'" [nzPrefix]="'$'"
                     [nzValueTemplate]="historyTemplate">
                 </nz-statistic>
                 <ng-template #historyTemplate let-value>
-                    <span style="color: #595959; font-weight: 500;">{{ value | number:'1.2-2' }}</span>
+                    <span style="color: #475569; font-weight: 700;">{{ value | number:'1.2-2' }}</span>
                 </ng-template>
             </nz-card>
         </div>
+
     </div>
 
-    <!-- FILA 2: Historial de Movimientos -->
-    <nz-card class="premium-card" nzTitle="Historial de Retiros y Transferencias">
-        <nz-table #payoutTable [nzData]="payoutHistory" nzSize="middle" [nzPageSize]="10">
-            <thead>
-                <tr>
-                    <th nzWidth="15%">ID Transacción</th>
-                    <th nzWidth="20%">Fecha</th>
-                    <th nzWidth="20%">Monto Solicitado</th>
-                    <th nzWidth="25%">Destino (CBU/CVU)</th>
-                    <th nzWidth="10%">Estado</th>
-                    <th nzWidth="10%">Comprobante</th>
-                </tr>
-            </thead>
-            <tbody>
-                <tr *ngFor="let data of payoutTable.data">
-                    <td><span class="tx-id">{{ data.pay_uuid }}</span></td>
-                    <td>{{ data.pay_date | date:'dd MMM yyyy, HH:mm' }}</td>
-                    <td><span class="tx-amount">${{ data.pay_amount | number:'1.2-2' }}</span></td>
-                    <td><span class="tx-dest">{{ data.pay_destination }}</span></td>
-                    <td>
-                        <nz-tag [nzColor]="getStatusColor(data.pay_status)">{{ getStatusLabel(data.pay_status)
-                            }}</nz-tag>
-                    </td>
-                    <td>
-                        <button nz-button nzType="text" nzSize="small" [disabled]="!data.pay_receipt_url"
-                            nzTooltipTitle="Descargar Factura">
-                            <span nz-icon nzType="download" nzTheme="outline" style="color: #1890ff;"></span>
-                        </button>
-                    </td>
-                </tr>
-            </tbody>
-        </nz-table>
-    </nz-card>
+    <!-- SECCIÓN MAESTRA DE TABS FINANCIEROS (B2B / WMS LOGISTICS) -->
+    <nz-tabset class="finances-tabset" nzSize="large">
+        
+        <!-- SOLAPA A: RETIROS Y TRANSFERS BANCARIOS -->
+        <nz-tab nzTitle="🏦 Retiros y Billetera">
+            <div class="tab-content-box">
+                
+                <div class="wallet-actions-bar" style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 20px;">
+                    <h3 style="margin: 0; font-weight: 700; color: #1e293b;">Historial de Retiros y Transferencias</h3>
+                    <button nz-button nzType="primary" class="withdraw-btn-pill" nzSize="large" (click)="requestWithdrawal()" [disabled]="availableBalance <= 0">
+                        <span nz-icon nzType="bank" nzTheme="outline"></span>
+                        Retirar Fondos a CBU
+                    </button>
+                </div>
+
+                <nz-card class="premium-card table-card" [nzBordered]="false">
+                    <nz-table #payoutTable [nzData]="payoutHistory" nzSize="middle" [nzPageSize]="8" class="premium-table">
+                        <thead>
+                            <tr>
+                                <th nzWidth="20%">Referencia</th>
+                                <th nzWidth="20%">Fecha</th>
+                                <th nzWidth="20%">Monto</th>
+                                <th nzWidth="25%">Destinatario</th>
+                                <th nzWidth="15%">Estado</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            <tr *ngFor="let data of payoutTable.data">
+                                <td><span class="tx-id">{{ data.pay_uuid }}</span></td>
+                                <td>{{ data.pay_date | date:'dd/MM/yyyy HH:mm' }}</td>
+                                <td><span class="tx-amount" [style.color]="data.pay_uuid.startsWith('rc-') ? '#16a34a' : '#1e293b'">
+                                    {{ data.pay_uuid.startsWith('rc-') ? '+' : '-' }} ${{ data.pay_amount | number:'1.2-2' }}
+                                </span></td>
+                                <td><span class="tx-dest">{{ data.pay_destination }}</span></td>
+                                <td>
+                                    <nz-tag [nzColor]="getStatusColor(data.pay_status)">{{ getStatusLabel(data.pay_status) }}</nz-tag>
+                                </td>
+                            </tr>
+                        </tbody>
+                    </nz-table>
+                </nz-card>
+            </div>
+        </nz-tab>
+
+        <!-- SOLAPA B: RENDICIÓN DE CAJAS DE REPARTIDORES -->
+        <nz-tab nzTitle="🛵 Rendición de Repartidores">
+            <div class="tab-content-box">
+                
+                <div class="tab-section-header" style="margin-bottom: 20px;">
+                    <h3 style="margin: 0 0 4px 0; font-weight: 700; color: #1e293b;">Rendición diaria de Cajas (COD)</h3>
+                    <p style="margin: 0; color: #64748b; font-size: 13.5px;">Concilia el efectivo en mano que recaudan tus repartidores en los despachos contra entrega.</p>
+                </div>
+
+                <nz-spin [nzSpinning]="loadingRiders" nzTip="Auditando repartidores en la calle...">
+                    
+                    <!-- Grid de Tarjetas de Repartidores -->
+                    <div nz-row [nzGutter]="[20, 20]" *ngIf="activeRiders.length > 0" class="riders-grid">
+                        <div nz-col nzXs="24" nzSm="12" nzLg="8" *ngFor="let rider of activeRiders">
+                            <nz-card class="premium-card rider-card" [nzBordered]="false">
+                                <div class="rider-card-header">
+                                    <nz-avatar [nzSize]="48" nzIcon="user" style="background-color: rgba(24, 144, 255, 0.08); color: #1890ff;"></nz-avatar>
+                                    <div class="rider-title-box">
+                                        <h4 class="rider-name">{{ rider.rider_name }}</h4>
+                                        <span class="rider-orders-badge">📍 {{ rider.order_count }} envíos completados</span>
+                                    </div>
+                                </div>
+                                <nz-divider style="margin: 16px 0;"></nz-divider>
+                                <div class="rider-cash-stats">
+                                    <span class="stats-label">Efectivo en mano recaudado:</span>
+                                    <h3 class="stats-amount">${{ rider.theoretical_cash | number:'1.2-2' }}</h3>
+                                </div>
+                                <button nz-button nzType="primary" nzBlock nzSize="large" class="settlement-trigger-btn" (click)="openRiderSettlement(rider)">
+                                    <span nz-icon nzType="dollar" nzTheme="outline"></span>
+                                    Rendir Caja
+                                </button>
+                            </nz-card>
+                        </div>
+                    </div>
+
+                    <!-- Placeholder caso sin rendiciones pendientes -->
+                    <div *ngIf="activeRiders.length === 0" class="empty-riders-state">
+                        <nz-card class="premium-card text-center" style="padding: 48px 24px;" [nzBordered]="false">
+                            <span nz-icon nzType="safety-certificate" nzTheme="twotone" [nzTwotoneColor]="'#52c41a'" class="placeholder-icon"></span>
+                            <h3>¡Cajas Conciliadas!</h3>
+                            <p>No se registran repartidores con cobros en efectivo pendientes de rendir en la sucursal activa.</p>
+                        </nz-card>
+                    </div>
+
+                </nz-spin>
+            </div>
+        </nz-tab>
+
+    </nz-tabset>
+
+    <!-- CAJÓN BOTTOM-SHEET / DRAWER DE RECONCILIACIÓN EN CALIENTE -->
+    <nz-drawer [nzVisible]="isSettlementDrawerVisible" nzPlacement="right" [nzWidth]="420" nzTitle="Conciliación de Caja" (nzOnClose)="closeSettlementDrawer()">
+        <ng-container *nzDrawerContent>
+            <div class="settlement-drawer-wrapper" *ngIf="selectedRider">
+                
+                <div class="drawer-rider-header">
+                    <nz-avatar [nzSize]="40" nzIcon="user" style="background-color: rgba(24, 144, 255, 0.08); color: #1890ff;"></nz-avatar>
+                    <div>
+                        <h3 style="margin: 0; font-weight: 700; color: #1e293b;">{{ selectedRider.rider_name }}</h3>
+                        <span style="font-size: 12px; color: #64748b;">shift del día de la fecha</span>
+                    </div>
+                </div>
+
+                <nz-divider style="margin: 16px 0;"></nz-divider>
+
+                <!-- Planilla de Pedidos Auditados -->
+                <div class="stops-audited-section">
+                    <h4 class="section-title">Envíos entregados en este Shift</h4>
+                    <div class="audit-stops-list">
+                        <div class="audit-stop-card" *ngFor="let order of selectedRider.orders">
+                            <div class="stop-header">
+                                <span class="stop-id">#PED-{{ order.ord_ordernumber }}</span>
+                                <span class="stop-cash">${{ order.ord_total | number:'1.2-2' }}</span>
+                            </div>
+                            <div class="stop-footer">
+                                <span class="stop-client">{{ order.cus?.cus_fullname || 'Comprador ATSMarket' }}</span>
+                                <span class="stop-payment-tag" *ngIf="parseCustomerNotes(order.ord_customernotes) as parsed">{{ parsed.payment }}</span>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Bloque Matemático del Cierre -->
+                <div class="cash-counting-console">
+                    <div class="console-row">
+                        <span class="console-label">Efectivo Teórico (Sistema):</span>
+                        <strong class="console-value">${{ selectedRider.theoretical_cash | number:'1.2-2' }}</strong>
+                    </div>
+
+                    <div class="console-counting-input">
+                        <label for="cashReceived">Efectivo Físico Entregado:</label>
+                        <div class="input-dollar-addon">
+                            <span class="addon-symbol">$</span>
+                            <input type="number" id="cashReceived" nz-input [(ngModel)]="physicalCashReceived" placeholder="Ingresa el monto contado" />
+                        </div>
+                    </div>
+
+                    <!-- Indicador interactivo de discrepancias -->
+                    <div class="discrepancy-status-wrapper" style="margin-top: 16px;">
+                        <span class="console-label" style="display: block; margin-bottom: 6px;">Cuadre de Rendición:</span>
+                        
+                        <!-- Caso A: Caja perfecta -->
+                        <div *ngIf="getCashDifference() === 0" class="discrepancy-tag perfect-match">
+                            <span nz-icon nzType="check-circle" nzTheme="fill"></span>
+                            <span>Caja Cuadrada ($0.00)</span>
+                        </div>
+
+                        <!-- Caso B: Faltante -->
+                        <div *ngIf="getCashDifference() < 0" class="discrepancy-tag shortage">
+                            <span nz-icon nzType="close-circle" nzTheme="fill"></span>
+                            <span>Faltante de Caja (-${{ getAbsoluteDiff() | number:'1.2-2' }})</span>
+                        </div>
+
+                        <!-- Caso C: Sobrante -->
+                        <div *ngIf="getCashDifference() > 0" class="discrepancy-tag surplus">
+                            <span nz-icon nzType="info-circle" nzTheme="fill"></span>
+                            <span>Sobrante de Caja (+${{ getCashDifference() | number:'1.2-2' }})</span>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Botones finales de conciliación -->
+                <div class="drawer-actions-footer">
+                    <button nz-button nzType="default" nzSize="large" (click)="closeSettlementDrawer()">Cancelar</button>
+                    <button nz-button nzType="primary" nzSize="large" [disabled]="physicalCashReceived === null || physicalCashReceived < 0" (click)="confirmSettlement()">
+                        <span nz-icon nzType="check" nzTheme="outline"></span>
+                        Liquidar y Cerrar Caja
+                    </button>
+                </div>
+
+            </div>
+        </ng-container>
+    </nz-drawer>
 
 </div>

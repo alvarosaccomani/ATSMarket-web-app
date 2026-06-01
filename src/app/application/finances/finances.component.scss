@@ -1,88 +1,480 @@
 .finances-dashboard-wrapper {
-    padding: 24px;
-    background-color: #f7f9fc;
+    padding: 28px;
+    background: radial-gradient(circle at 0% 0%, #f8fafc 0%, #f1f5f9 100%);
     min-height: calc(100vh - 64px);
+    animation: financesFadeIn 0.5s cubic-bezier(0.16, 1, 0.3, 1);
 }
 
 .dashboard-header {
     display: flex;
     justify-content: space-between;
     align-items: center;
-    margin-bottom: 24px;
+    margin-bottom: 32px;
     flex-wrap: wrap;
-    gap: 16px;
+    gap: 20px;
 
     .page-title {
-        font-size: 28px;
-        font-weight: 600;
-        color: #1f1f1f;
-        margin-bottom: 4px;
+        font-size: 32px;
+        font-weight: 800;
+        color: #0f172a;
+        margin-bottom: 6px;
+        letter-spacing: -0.8px;
     }
 
     .page-subtitle {
-        color: #8c8c8c;
-        font-size: 15px;
+        color: #64748b;
+        font-size: 15.5px;
         margin: 0;
+        font-weight: 500;
     }
 }
 
+// PREMIUM GLASSMORPHIC CARDS
 .premium-card {
-    border-radius: 12px;
-    box-shadow: 0 4px 24px rgba(0, 0, 0, 0.04);
+    background: rgba(255, 255, 255, 0.75) !important;
+    backdrop-filter: blur(20px);
+    border: 1px solid rgba(255, 255, 255, 0.5) !important;
+    border-radius: 20px !important;
+    box-shadow: 0 10px 30px rgba(15, 23, 42, 0.03), 
+                inset 0 1px 0 rgba(255, 255, 255, 0.6) !important;
+    transition: all 0.4s cubic-bezier(0.16, 1, 0.3, 1) !important;
+    
+    &:hover {
+        transform: translateY(-4px);
+        box-shadow: 0 20px 40px rgba(15, 23, 42, 0.07), 
+                    inset 0 1px 0 rgba(255, 255, 255, 0.8) !important;
+        background: rgba(255, 255, 255, 0.85) !important;
+    }
 }
 
+// KPI GRID
 .balance-row {
-    margin-bottom: 24px !important;
+    margin-bottom: 28px !important;
 }
 
 .balance-card {
     position: relative;
     overflow: hidden;
-    padding-left: 12px;
+    padding: 12px 16px;
 
     &.highlight-card {
-        border-top: 4px solid #52c41a;
+        border-top: 4px solid #16a34a !important;
     }
 
     &.bg-light {
-        background-color: #fafafa;
+        background-color: rgba(241, 245, 249, 0.6);
     }
 
     .balance-icon-wrapper {
         position: absolute;
         top: 24px;
         right: 24px;
-        font-size: 32px;
+        font-size: 36px;
         opacity: 0.15;
     }
 
     .highlight-value {
-        color: #52c41a;
-        font-weight: 700;
+        color: #16a34a;
+        font-weight: 800;
         font-size: 32px;
+        letter-spacing: -0.5px;
     }
 }
 
-.withdraw-btn {
+.withdraw-btn-pill {
+    display: inline-flex;
+    align-items: center;
+    gap: 8px;
+    font-weight: 700;
+    border-radius: 12px;
+    box-shadow: 0 4px 12px rgba(24, 144, 255, 0.2);
+    transition: all 0.2s ease;
+
+    &:hover {
+        transform: translateY(-1px);
+        box-shadow: 0 6px 16px rgba(24, 144, 255, 0.3);
+    }
+}
+
+// PREMIUM TABS
+.finances-tabset {
+    ::ng-deep {
+        .ant-tabs-nav-list {
+            gap: 12px;
+        }
+
+        .ant-tabs-tab {
+            font-size: 16px;
+            font-weight: 700;
+            color: #64748b;
+            padding: 12px 16px;
+            border-radius: 12px 12px 0 0;
+            transition: all 0.3s ease;
+            
+            &:hover {
+                color: #1890ff;
+            }
+        }
+
+        .ant-tabs-tab-active {
+            .ant-tabs-tab-btn {
+                color: #1890ff !important;
+                font-weight: 800;
+            }
+        }
+        
+        .ant-tabs-ink-bar {
+            height: 3px;
+            border-radius: 3px 3px 0 0;
+            background: #1890ff;
+        }
+    }
+}
+
+.tab-content-box {
+    padding: 24px 0;
+}
+
+// COURIER CARDS GRID
+.rider-card {
+    padding: 8px;
+    
+    .rider-card-header {
+        display: flex;
+        align-items: center;
+        gap: 16px;
+    }
+
+    .rider-title-box {
+        .rider-name {
+            font-size: 16.5px;
+            font-weight: 800;
+            color: #1e293b;
+            margin: 0 0 2px 0;
+        }
+
+        .rider-orders-badge {
+            font-size: 12px;
+            font-weight: 600;
+            color: #1890ff;
+            background: rgba(24, 144, 255, 0.08);
+            padding: 2px 8px;
+            border-radius: 6px;
+        }
+    }
+
+    .rider-cash-stats {
+        margin: 20px 0 24px 0;
+
+        .stats-label {
+            font-size: 12px;
+            text-transform: uppercase;
+            font-weight: 700;
+            letter-spacing: 0.5px;
+            color: #94a3b8;
+            display: block;
+            margin-bottom: 4px;
+        }
+
+        .stats-amount {
+            font-size: 30px;
+            font-weight: 800;
+            color: #0f172a;
+            letter-spacing: -0.5px;
+            margin: 0;
+        }
+    }
+
+    .settlement-trigger-btn {
+        font-weight: 700;
+        border-radius: 12px;
+        display:flex;
+        align-items: center;
+        justify-content: center;
+        gap: 8px;
+        box-shadow: 0 4px 12px rgba(24, 144, 255, 0.15);
+    }
+}
+
+// EMPTY PLACEHOLDERS
+.empty-riders-state {
+    .placeholder-icon {
+        font-size: 56px;
+        margin-bottom: 16px;
+        display: block;
+    }
+
+    h3 {
+        font-size: 19px;
+        font-weight: 800;
+        color: #1e293b;
+        margin-bottom: 6px;
+    }
+
+    p {
+        font-size: 14.5px;
+        color: #64748b;
+        max-width: 440px;
+        margin: 0 auto;
+        line-height: 1.5;
+    }
+}
+
+// AUDITED STOPS LIST inside DRAWER
+.settlement-drawer-wrapper {
+    height: 100%;
+    display: flex;
+    flex-direction: column;
+    padding-bottom: 24px;
+}
+
+.drawer-rider-header {
+    display: flex;
+    align-items: center;
+    gap: 14px;
+}
+
+.stops-audited-section {
+    margin-bottom: 24px;
+
+    .section-title {
+        font-size: 12px;
+        text-transform: uppercase;
+        font-weight: 700;
+        letter-spacing: 0.5px;
+        color: #94a3b8;
+        margin-bottom: 12px;
+    }
+
+    .audit-stops-list {
+        display: flex;
+        flex-direction: column;
+        gap: 10px;
+        max-height: 220px;
+        overflow-y: auto;
+        padding-right: 4px;
+        
+        // Custom sleek scrollbar
+        &::-webkit-scrollbar {
+            width: 4px;
+        }
+        &::-webkit-scrollbar-thumb {
+            background: #cbd5e1;
+            border-radius: 4px;
+        }
+    }
+}
+
+.audit-stop-card {
+    background: #f8fafc;
+    border: 1px solid #e2e8f0;
+    border-radius: 12px;
+    padding: 10px 14px;
+    transition: all 0.2s ease;
+
+    &:hover {
+        background: #fff;
+        border-color: #cbd5e1;
+        box-shadow: 0 4px 12px rgba(15, 23, 42, 0.03);
+    }
+
+    .stop-header {
+        display: flex;
+        justify-content: space-between;
+        font-weight: 700;
+        font-size: 13.5px;
+        color: #1e293b;
+        margin-bottom: 4px;
+    }
+
+    .stop-footer {
+        display: flex;
+        justify-content: space-between;
+        font-size: 12px;
+        color: #64748b;
+
+        .stop-payment-tag {
+            font-weight: 700;
+            color: #64748b;
+            background: #e2e8f0;
+            padding: 1px 6px;
+            border-radius: 4px;
+            font-size: 10.5px;
+            text-transform: uppercase;
+        }
+    }
+}
+
+// CASH COUNTING CONSOLE inside DRAWER
+.cash-counting-console {
+    background: #fafafa;
+    border: 1px solid #f0f0f0;
+    border-radius: 16px;
+    padding: 18px;
+    margin-top: auto;
+    margin-bottom: 24px;
+    box-shadow: inset 0 2px 4px rgba(0,0,0,0.02);
+
+    .console-row {
+        display: flex;
+        justify-content: space-between;
+        align-items: center;
+        margin-bottom: 16px;
+
+        .console-label {
+            font-size: 13px;
+            font-weight: 700;
+            color: #64748b;
+        }
+
+        .console-value {
+            font-size: 18px;
+            font-weight: 800;
+            color: #0f172a;
+        }
+    }
+
+    .console-counting-input {
+        display: flex;
+        flex-direction: column;
+        gap: 6px;
+
+        label {
+            font-size: 13.5px;
+            font-weight: 700;
+            color: #475569;
+        }
+    }
+
+    .input-dollar-addon {
+        position: relative;
+        display: flex;
+        align-items: center;
+
+        .addon-symbol {
+            position: absolute;
+            left: 14px;
+            font-weight: 800;
+            color: #94a3b8;
+            font-size: 15px;
+        }
+
+        input {
+            padding-left: 28px !important;
+            height: 44px;
+            border-radius: 10px;
+            font-size: 16px;
+            font-weight: 700;
+            color: #0f172a;
+            
+            &:focus {
+                border-color: #1890ff;
+                box-shadow: 0 0 0 2px rgba(24, 144, 255, 0.15);
+            }
+        }
+    }
+}
+
+// DYNAMIC DISCREPANCY GLOWING TAGS
+.discrepancy-tag {
     display: flex;
     align-items: center;
     gap: 8px;
-    font-weight: 600;
+    padding: 10px 14px;
+    border-radius: 10px;
+    font-size: 13px;
+    font-weight: 700;
+    
+    &.perfect-match {
+        color: #16a34a;
+        background: rgba(22, 163, 74, 0.08);
+        border: 1px dashed rgba(22, 163, 74, 0.25);
+    }
+
+    &.shortage {
+        color: #dc2626;
+        background: rgba(220, 38, 38, 0.08);
+        border: 1px dashed rgba(220, 38, 38, 0.25);
+        animation: shakeInput 0.4s ease;
+    }
+
+    &.surplus {
+        color: #2563eb;
+        background: rgba(37, 99, 235, 0.08);
+        border: 1px dashed rgba(37, 99, 235, 0.25);
+    }
 }
 
-// Historial tabla
+// FIXED DRAWER ACTIONS FOOTER
+.drawer-actions-footer {
+    display: flex;
+    justify-content: flex-end;
+    gap: 12px;
+    border-top: 1px solid #f0f0f0;
+    padding-top: 16px;
+
+    button {
+        height: 44px;
+        border-radius: 10px;
+        font-weight: 700;
+        display: inline-flex;
+        align-items: center;
+        justify-content: center;
+        gap: 6px;
+    }
+}
+
+// PREMIUM TABLE STYLING
+.premium-table {
+    ::ng-deep {
+        .ant-table-thead > tr > th {
+            background: rgba(248, 250, 252, 0.6) !important;
+            color: #64748b !important;
+            font-weight: 700 !important;
+            font-size: 12.5px !important;
+            text-transform: uppercase !important;
+            letter-spacing: 0.5px !important;
+            border-bottom: 1px solid rgba(226, 232, 240, 0.8) !important;
+        }
+
+        .ant-table-tbody > tr > td {
+            border-bottom: 1px solid rgba(226, 232, 240, 0.5) !important;
+            padding: 14px 16px !important;
+        }
+    }
+}
+
 .tx-id {
     font-family: monospace;
-    font-size: 13px;
-    color: #8c8c8c;
+    font-size: 12.5px;
+    color: #94a3b8;
 }
 
 .tx-amount {
-    font-weight: 600;
-    color: #262626;
+    font-weight: 800;
+    font-size: 14.5px;
 }
 
 .tx-dest {
-    font-size: 14px;
-    color: #595959;
+    font-size: 13.5px;
+    color: #475569;
+    font-weight: 600;
+}
+
+// KEYFRAME ANIMATIONS
+@keyframes financesFadeIn {
+    from {
+        opacity: 0;
+        transform: translateY(12px);
+    }
+    to {
+        opacity: 1;
+        transform: translateY(0);
+    }
+}
+
+@keyframes shakeInput {
+    0%, 100% { transform: translateX(0); }
+    20%, 60% { transform: translateX(-4px); }
+    40%, 80% { transform: translateX(4px); }
 }
