@@ -124,7 +124,7 @@ export class AnalyticsComponent implements OnInit {
         // Calcular clientes únicos
         const uniqueCustomers = new Set<string>();
         validOrders.forEach((o: any) => {
-          const clientIdentifier = o.ord_customeremail || o.ord_customername || o.cus_uuid || o.ord_contactphone;
+          const clientIdentifier = o.ord_customeremail || o.cus?.cus_fullname || o.cus_uuid || o.ord_contactphone;
           if (clientIdentifier) {
             uniqueCustomers.add(clientIdentifier);
           }

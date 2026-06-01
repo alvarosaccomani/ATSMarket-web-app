@@ -1,3 +1,4 @@
+import { CustomerInterface } from "@interfaces/customer";
 import { OrderDetailInterface } from "@interfaces/order-detail";
 
 export interface OrderInterface {
@@ -5,7 +6,11 @@ export interface OrderInterface {
     ord_uuid: string;
     usr_uuid: string;
     cus_uuid: string;
+    cus?: CustomerInterface;
     adr_uuid: string;
+    ord_customeremail: string;
+    ord_customername: string;
+    ord_contactphone: string;
     ord_ordernumber: number;
     ords_uuid: string;
     ord_date: Date;
