@@ -12,6 +12,10 @@ import { NzSpinModule } from 'ng-zorro-antd/spin';
 import { NzTimelineModule } from 'ng-zorro-antd/timeline';
 import { NzDrawerModule } from 'ng-zorro-antd/drawer';
 import { NzInputModule } from 'ng-zorro-antd/input';
+import { NzRateModule } from 'ng-zorro-antd/rate';
+import { NzModalModule } from 'ng-zorro-antd/modal';
+import { NzMessageModule, NzMessageService } from 'ng-zorro-antd/message';
+import { NzAvatarModule } from 'ng-zorro-antd/avatar';
 
 import { OrdersService } from '../../core/services/orders.service';
 import { SessionService } from '../../core/services/session.service';
@@ -19,10 +23,12 @@ import { CompaniesService } from '../../core/services/companies.service';
 import { WebSocketNotificationService } from '../../core/services/web-socket-notification.service';
 import { OrdersHistoryService } from '../../core/services/orders-history.service';
 import { ChatService } from '../../core/services/chat.service';
+import { ProductVariationReviewsService } from '../../core/services/product-variation-reviews.service';
 import { OrderInterface } from '../../core/interfaces/order/order.interface';
 import { OrderHistoryInterface } from '../../core/interfaces/order-history/order-history.interface';
 import { MessageInterface } from '../../core/interfaces/message/message.interface';
-import { Subscription } from 'rxjs';
+import { ProductVariationReviewInterface } from '../../core/interfaces/product-variation-review/product-variation-review.interface';
+import { Subscription, forkJoin } from 'rxjs';
 
 declare const L: any;
 
@@ -42,7 +48,11 @@ declare const L: any;
     NzSpinModule,
     NzTimelineModule,
     NzDrawerModule,
-    NzInputModule
+    NzInputModule,
+    NzRateModule,
+    NzModalModule,
+    NzMessageModule,
+    NzAvatarModule
   ],
   templateUrl: './my-purchases.component.html',
   styleUrl: './my-purchases.component.scss'
@@ -69,6 +79,12 @@ export class MyPurchasesComponent implements OnInit, OnDestroy {
   public chatMessageText = '';
   public activeChatMessages: MessageInterface[] = [];
 
+  // Estados de Calificaciones / Opiniones posventa
+  public isRatingVisible = false;
+  public ratingOrder: OrderInterface | null = null;
+  public ratingItems: any[] = [];
+  public ratedOrdersCache: string[] = [];
+
   private _orderUpdateSub: Subscription | null = null;
   private _chatMessagesSub: Subscription | null = null;
 
@@ -78,8 +94,11 @@ export class MyPurchasesComponent implements OnInit, OnDestroy {
     private _companiesService: CompaniesService,
     private _notificationService: WebSocketNotificationService,
     private _ordersHistoryService: OrdersHistoryService,
-    private _chatService: ChatService
+    private _chatService: ChatService,
+    private _reviewsService: ProductVariationReviewsService,
+    private message: NzMessageService
   ) { }
+
 
   ngOnInit(): void {
     this.customer = this._sessionService.getCustomer();
@@ -87,6 +106,15 @@ export class MyPurchasesComponent implements OnInit, OnDestroy {
       this.loadPurchases(this.customer.cus_uuid);
     } else {
       this.isLoading = false;
+    }
+
+    const storedRated = localStorage.getItem('ats_rated_orders');
+    if (storedRated) {
+      try {
+        this.ratedOrdersCache = JSON.parse(storedRated);
+      } catch (e) {
+        console.error('Error parsing rated orders cache:', e);
+      }
     }
 
     // Suscribirse a las actualizaciones de pedidos en tiempo real cruzadas por pestaña
@@ -532,6 +560,102 @@ export class MyPurchasesComponent implements OnInit, OnDestroy {
         container.scrollTop = container.scrollHeight;
       }
     }, 100);
+  }
+
+  // --- METODOS DE OPINIONES / FEEDBACK POSVENTA ---
+
+  public openRatingWorkflow(order: OrderInterface): void {
+    this.ratingOrder = order;
+    this.ratingItems = [];
+
+    const items = this.getOrderItems(order);
+
+    // Si los items aún se están consultando en segundo plano, dar un breve delay
+    if (items.length === 0) {
+      setTimeout(() => {
+        const loadedItems = this.getOrderItems(order);
+        this.buildRatingItems(loadedItems);
+      }, 900);
+    } else {
+      this.buildRatingItems(items);
+    }
+
+    this.isRatingVisible = true;
+  }
+
+  private buildRatingItems(items: any[]): void {
+    if (!this.ratingOrder) return;
+    const details = this.ratingOrder.orderDetails || [];
+
+    this.ratingItems = details.map(d => ({
+      pro_uuid: d.pro_uuid,
+      prov_uuid: d.prov_uuid,
+      name: d.ordd_productname,
+      sku: d.ordd_sku,
+      rating: 5,
+      comment: '',
+      submitted: false
+    }));
+  }
+
+  public submitAllRatings(): void {
+    if (!this.ratingOrder || this.ratingItems.length === 0) return;
+
+    const unsubmitted = this.ratingItems.filter(i => !i.submitted);
+    if (unsubmitted.length === 0) {
+      this.closeRating();
+      return;
+    }
+
+    this.isLoading = true; // Activar feedback visual global
+
+    const requests = unsubmitted.map(item => {
+      const reviewData: Partial<ProductVariationReviewInterface> = {
+        cmp_uuid: this.ratingOrder!.cmp_uuid,
+        pro_uuid: item.pro_uuid || '',
+        prov_uuid: item.prov_uuid,
+        usr_uuid: this.customer?.usr_uuid || '',
+        cus_uuid: this.customer?.cus_uuid || '',
+        provrev_rating: item.rating,
+        provrev_comment: item.comment?.trim() || 'Compra calificada con éxito.',
+        provrev_isverified: true
+      };
+
+      const authorName = this.customer?.cus_fullname || this.customer?.cus_name || 'Comprador ATS';
+      (reviewData as any).provrev_author = authorName;
+      (reviewData as any).provrev_avatar = authorName.substring(0, 2).toUpperCase();
+
+      return this._reviewsService.saveProductVariationReview(reviewData);
+    });
+
+    forkJoin(requests).subscribe({
+      next: () => {
+        const ordUuid = this.ratingOrder!.ord_uuid;
+        if (!this.ratedOrdersCache.includes(ordUuid)) {
+          this.ratedOrdersCache.push(ordUuid);
+          localStorage.setItem('ats_rated_orders', JSON.stringify(this.ratedOrdersCache));
+        }
+
+        this.message.success('¡Muchas gracias! Tus valoraciones de producto fueron guardadas y publicadas.');
+        this.isLoading = false;
+        this.closeRating();
+      },
+      error: (err) => {
+        console.error('Error al enviar calificaciones posventa en lote:', err);
+        this.message.error('Ocurrió un inconveniente al registrar tus opiniones en el servidor.');
+        this.isLoading = false;
+      }
+    });
+  }
+
+  public isOrderAlreadyRated(ordUuid: string): boolean {
+    return this.ratedOrdersCache.includes(ordUuid);
+  }
+
+  public closeRating(): void {
+    this.isRatingVisible = false;
+    this.ratingOrder = null;
+    this.ratingItems = [];
   }
 
   ngOnDestroy(): void {

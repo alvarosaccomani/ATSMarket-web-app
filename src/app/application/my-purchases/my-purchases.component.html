@@ -238,6 +238,15 @@
 
                 <!-- Botones de Acción / Pie de Tarjeta -->
                 <div class="purchase-card-footer" style="display: flex; gap: 12px; flex-wrap: wrap;">
+                    <!-- Botón para Calificar Productos (Solo si el pedido está Entregado) -->
+                    <button nz-button nzType="primary" *ngIf="order.ords_uuid === 'DELIVERED'"
+                            [disabled]="isOrderAlreadyRated(order.ord_uuid)"
+                            (click)="openRatingWorkflow(order)"
+                            style="flex: 1; min-width: 180px; display: inline-flex; align-items: center; justify-content: center; gap: 8px; font-weight: 600; border-radius: 8px; height: 40px; background: #52c41a; border-color: #52c41a; box-shadow: 0 4px 10px rgba(82, 196, 26, 0.15);">
+                        <span nz-icon nzType="star" nzTheme="outline" style="font-size: 18px;"></span>
+                        {{ isOrderAlreadyRated(order.ord_uuid) ? 'Calificado ✅' : 'Calificar Productos' }}
+                    </button>
+
                     <button nz-button nzType="primary" class="chat-inapp-btn" (click)="openChat(order)" style="flex: 1; min-width: 180px; display: inline-flex; align-items: center; justify-content: center; gap: 8px; font-weight: 600; border-radius: 8px; height: 40px; background: linear-gradient(135deg, #722ed1 0%, #520330 100%); border-color: #722ed1; box-shadow: 0 4px 10px rgba(114, 46, 209, 0.15);">
                         <span nz-icon nzType="message" nzTheme="outline" style="font-size: 18px;"></span>
                         Chat de Soporte en Vivo
@@ -307,6 +316,64 @@
                               [nzAutosize]="{ minRows: 1, maxRows: 3 }"></textarea>
                     <button nz-button nzType="primary" (click)="sendChatMessage()" [disabled]="!chatMessageText.trim()">
                         <span nz-icon nzType="send" nzTheme="outline"></span>
+                    </button>
+                </div>
+
+            </div>
+        </ng-container>
+    </nz-drawer>
+
+    <!-- CAJÓN DE CALIFICACIONES / VALORACIÓN DE PRODUCTOS (Reemplazo de nz-modal) -->
+    <nz-drawer
+        [nzVisible]="isRatingVisible"
+        nzPlacement="right"
+        [nzWidth]="450"
+        nzTitle="Calificar Productos Recibidos"
+        (nzOnClose)="closeRating()">
+        <ng-container *nzDrawerContent>
+            <div class="rating-drawer-wrapper" *ngIf="ratingOrder">
+                
+                <div class="rating-drawer-header">
+                    <p class="rating-drawer-subtitle">
+                        Ayuda a otros compradores compartiendo tu opinión verídica sobre los artículos del pedido 
+                        <strong>#PED-{{ ratingOrder.ord_ordernumber }}</strong>.
+                    </p>
+                </div>
+
+                <div class="rating-drawer-body">
+                    <div class="rating-items-list">
+                        <div *ngFor="let item of ratingItems" class="rating-item-row">
+                            <div class="rating-item-header">
+                                <nz-avatar nzShape="square" nzSize="large" 
+                                           [nzSrc]="'https://api.dicebear.com/7.x/identicon/svg?seed=' + item.sku"
+                                           class="rating-avatar"></nz-avatar>
+                                <div class="rating-product-info">
+                                    <h4 class="rating-product-name">{{ item.name }}</h4>
+                                    <span class="rating-product-sku">SKU: {{ item.sku }}</span>
+                                </div>
+                            </div>
+
+                            <!-- Estrellas interactiva -->
+                            <div class="rating-stars-container">
+                                <span class="rating-stars-label">Puntuación:</span>
+                                <nz-rate [(ngModel)]="item.rating"></nz-rate>
+                            </div>
+
+                            <!-- Comentario -->
+                            <div class="rating-comment-container">
+                                <textarea nz-input [(ngModel)]="item.comment" 
+                                          placeholder="Escribe tu reseña sobre el producto (calidad, empaque, talle, etc.)..."
+                                          [nzAutosize]="{ minRows: 2, maxRows: 4 }"></textarea>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Footer del Drawer Fijo -->
+                <div class="rating-drawer-footer">
+                    <button nz-button nzType="default" (click)="closeRating()">Cancelar</button>
+                    <button nz-button nzType="primary" [nzLoading]="isLoading" (click)="submitAllRatings()" class="rating-submit-btn">
+                        Enviar Calificaciones
                     </button>
                 </div>
 
