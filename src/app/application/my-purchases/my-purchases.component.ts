@@ -10,14 +10,18 @@ import { NzAlertModule } from 'ng-zorro-antd/alert';
 import { NzCollapseModule } from 'ng-zorro-antd/collapse';
 import { NzSpinModule } from 'ng-zorro-antd/spin';
 import { NzTimelineModule } from 'ng-zorro-antd/timeline';
+import { NzDrawerModule } from 'ng-zorro-antd/drawer';
+import { NzInputModule } from 'ng-zorro-antd/input';
 
 import { OrdersService } from '../../core/services/orders.service';
 import { SessionService } from '../../core/services/session.service';
 import { CompaniesService } from '../../core/services/companies.service';
 import { WebSocketNotificationService } from '../../core/services/web-socket-notification.service';
 import { OrdersHistoryService } from '../../core/services/orders-history.service';
+import { ChatService } from '../../core/services/chat.service';
 import { OrderInterface } from '../../core/interfaces/order/order.interface';
 import { OrderHistoryInterface } from '../../core/interfaces/order-history/order-history.interface';
+import { MessageInterface } from '../../core/interfaces/message/message.interface';
 import { Subscription } from 'rxjs';
 
 declare const L: any;
@@ -36,7 +40,9 @@ declare const L: any;
     NzAlertModule,
     NzCollapseModule,
     NzSpinModule,
-    NzTimelineModule
+    NzTimelineModule,
+    NzDrawerModule,
+    NzInputModule
   ],
   templateUrl: './my-purchases.component.html',
   styleUrl: './my-purchases.component.scss'
@@ -57,14 +63,22 @@ export class MyPurchasesComponent implements OnInit, OnDestroy {
   public orderHistoryCache: { [orderUuid: string]: OrderHistoryInterface[] } = {};
   public loadingHistory: { [orderUuid: string]: boolean } = {};
 
+  // Estados del Chat en Vivo
+  public isChatVisible = false;
+  public activeChatOrder: OrderInterface | null = null;
+  public chatMessageText = '';
+  public activeChatMessages: MessageInterface[] = [];
+
   private _orderUpdateSub: Subscription | null = null;
+  private _chatMessagesSub: Subscription | null = null;
 
   constructor(
     private _ordersService: OrdersService,
     private _sessionService: SessionService,
     private _companiesService: CompaniesService,
     private _notificationService: WebSocketNotificationService,
-    private _ordersHistoryService: OrdersHistoryService
+    private _ordersHistoryService: OrdersHistoryService,
+    private _chatService: ChatService
   ) { }
 
   ngOnInit(): void {
@@ -465,10 +479,68 @@ export class MyPurchasesComponent implements OnInit, OnDestroy {
     }
   }
 
+  public openChat(order: OrderInterface): void {
+    this.activeChatOrder = order;
+    this.chatMessageText = '';
+    this.isChatVisible = true;
+
+    this._chatService.loadActiveChat(order.cmp_uuid, order.ord_uuid);
+
+    if (this._chatMessagesSub) {
+      this._chatMessagesSub.unsubscribe();
+    }
+    this._chatMessagesSub = this._chatService.activeChatMessages$.subscribe(messages => {
+      this.activeChatMessages = messages;
+      this.scrollToBottom();
+    });
+  }
+
+  public closeChat(): void {
+    this.isChatVisible = false;
+    this._chatService.clearActiveChat();
+    if (this._chatMessagesSub) {
+      this._chatMessagesSub.unsubscribe();
+      this._chatMessagesSub = null;
+    }
+    this.activeChatOrder = null;
+    this.activeChatMessages = [];
+  }
+
+  public sendChatMessage(): void {
+    if (!this.activeChatOrder || !this.chatMessageText.trim()) return;
+
+    const companyUuid = this.activeChatOrder.cmp_uuid;
+    const orderUuid = this.activeChatOrder.ord_uuid;
+    const sender = 'BUYER';
+    const senderName = this.customer?.cus_fullname || this.customer?.cus_name || 'Comprador';
+    const text = this.chatMessageText;
+    const usrUuid = this.customer?.usr_uuid || '';
+    const cusUuid = this.customer?.cus_uuid || '';
+
+    this._chatService.sendMessage(companyUuid, orderUuid, sender, senderName, text, usrUuid, cusUuid).subscribe({
+      next: () => {
+        this.chatMessageText = '';
+        this.scrollToBottom();
+      }
+    });
+  }
+
+  private scrollToBottom(): void {
+    setTimeout(() => {
+      const container = document.querySelector('.chat-messages-container');
+      if (container) {
+        container.scrollTop = container.scrollHeight;
+      }
+    }, 100);
+  }
+
   ngOnDestroy(): void {
     // Limpiar todos los recursos activos para evitar fugas de memoria (memory leaks)
     if (this._orderUpdateSub) {
       this._orderUpdateSub.unsubscribe();
+    }
+    if (this._chatMessagesSub) {
+      this._chatMessagesSub.unsubscribe();
     }
     Object.keys(this.activeIntervals).forEach(uuid => clearInterval(this.activeIntervals[uuid]));
     Object.keys(this.activeMaps).forEach(uuid => {

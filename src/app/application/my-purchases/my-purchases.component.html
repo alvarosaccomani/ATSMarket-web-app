@@ -237,10 +237,14 @@
                 </div>
 
                 <!-- Botones de Acción / Pie de Tarjeta -->
-                <div class="purchase-card-footer">
-                    <a nz-button nzType="primary" class="chat-whatsapp-btn" target="_blank" [href]="getWhatsAppLink(order)">
+                <div class="purchase-card-footer" style="display: flex; gap: 12px; flex-wrap: wrap;">
+                    <button nz-button nzType="primary" class="chat-inapp-btn" (click)="openChat(order)" style="flex: 1; min-width: 180px; display: inline-flex; align-items: center; justify-content: center; gap: 8px; font-weight: 600; border-radius: 8px; height: 40px; background: linear-gradient(135deg, #722ed1 0%, #520330 100%); border-color: #722ed1; box-shadow: 0 4px 10px rgba(114, 46, 209, 0.15);">
+                        <span nz-icon nzType="message" nzTheme="outline" style="font-size: 18px;"></span>
+                        Chat de Soporte en Vivo
+                    </button>
+                    <a nz-button nzType="default" class="chat-whatsapp-btn" target="_blank" [href]="getWhatsAppLink(order)" style="flex: 1; min-width: 180px; border-color: #25d366; color: #25d366; display: inline-flex; align-items: center; justify-content: center; gap: 8px; font-weight: 600; border-radius: 8px; height: 40px; background: rgba(37,211,102,0.02);">
                         <span nz-icon nzType="whats-app" nzTheme="outline" style="font-size: 18px;"></span>
-                        Chatear con el comercio
+                        WhatsApp de Respaldo
                     </a>
                 </div>
 
@@ -248,5 +252,66 @@
         </div>
 
     </ng-container>
+
+    <!-- CAJÓN DE CHAT EN VIVO DE SOPORTE -->
+    <nz-drawer
+        [nzVisible]="isChatVisible"
+        nzPlacement="right"
+        [nzWidth]="420"
+        nzTitle="Soporte y Chat en Vivo"
+        (nzOnClose)="closeChat()">
+        <ng-container *nzDrawerContent>
+            <div class="chat-drawer-wrapper" *ngIf="activeChatOrder">
+                
+                <!-- Encabezado del Comercio -->
+                <div class="chat-merchant-header">
+                    <div class="header-shop-avatar">
+                        <span nz-icon nzType="shop"></span>
+                    </div>
+                    <div>
+                        <h4 style="margin: 0; font-weight: 800; color: #1e293b; font-size: 14.5px;">{{ companyNamesCache[activeChatOrder.cmp_uuid] || 'Comercio' }}</h4>
+                        <span style="font-size: 12px; color: #64748b;">Pedido #PED-{{ activeChatOrder.ord_ordernumber }}</span>
+                    </div>
+                </div>
+
+                <nz-divider style="margin: 12px 0;"></nz-divider>
+
+                <!-- Zona de Mensajes -->
+                <div class="chat-messages-container">
+                    <div *ngIf="activeChatMessages.length === 0" class="chat-empty-state">
+                        <span nz-icon nzType="message" class="empty-chat-icon"></span>
+                        <p>¡Inicia la conversación! Escribe una consulta sobre tu entrega, facturación o productos.</p>
+                    </div>
+                    
+                    <div *ngFor="let msg of activeChatMessages" class="chat-message-row"
+                         [class.buyer-row]="msg.msg_sender === 'BUYER'"
+                         [class.merchant-row]="msg.msg_sender === 'MERCHANT'"
+                         [class.rider-row]="msg.msg_sender === 'RIDER'">
+                        
+                        <div class="message-bubble">
+                            <!-- Nombre del emisor si no es el comprador -->
+                            <div class="bubble-sender-name" *ngIf="msg.msg_sender !== 'BUYER'">
+                                {{ msg.msg_sender === 'RIDER' ? '🛵 Repartidor' : '🏪 Vendedor' }} ({{ msg.msg_sendername }})
+                            </div>
+                            <div class="bubble-text">{{ msg.msg_text }}</div>
+                            <div class="bubble-time">{{ msg.msg_createdat | date:'HH:mm' }}</div>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Input de Mensaje -->
+                <div class="chat-input-wrapper">
+                    <textarea nz-input [(ngModel)]="chatMessageText" 
+                              (keydown.enter)="sendChatMessage(); $event.preventDefault()" 
+                              placeholder="Escribe tu mensaje..." 
+                              [nzAutosize]="{ minRows: 1, maxRows: 3 }"></textarea>
+                    <button nz-button nzType="primary" (click)="sendChatMessage()" [disabled]="!chatMessageText.trim()">
+                        <span nz-icon nzType="send" nzTheme="outline"></span>
+                    </button>
+                </div>
+
+            </div>
+        </ng-container>
+    </nz-drawer>
 
 </div>
