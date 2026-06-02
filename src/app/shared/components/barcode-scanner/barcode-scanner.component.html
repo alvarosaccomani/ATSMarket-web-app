@@ -1,1 +1,65 @@
-<p>barcode-scanner works!</p>
+<div class="barcode-scanner-container">
+    
+    <!-- Botón de Cerrar/Volver -->
+    <button class="btn-close-scanner" (click)="onClose.emit()" nz-tooltip nzTooltipTitle="Cerrar escáner">
+        <span nz-icon nzType="close" nzTheme="outline"></span>
+    </button>
+
+    <!-- Cargando Cámara -->
+    <div *ngIf="isLoading" class="scanner-status-overlay">
+        <nz-spin nzSimple nzSize="large"></nz-spin>
+        <span class="status-text">Iniciando cámara trasera...</span>
+    </div>
+
+    <!-- Error de Cámara -->
+    <div *ngIf="cameraError && !isLoading" class="scanner-status-overlay error-bg">
+        <span nz-icon nzType="warning" nzTheme="outline" class="error-icon"></span>
+        <p class="error-message">{{ cameraError }}</p>
+        <button nz-button nzType="primary" (click)="startCamera()" class="btn-retry">
+            <span nz-icon nzType="reload" nzTheme="outline"></span> Reintentar Cámara
+        </button>
+    </div>
+
+    <!-- Viewport del Video -->
+    <video #video autoplay playsinline [style.display]="!isLoading && !cameraError ? 'block' : 'none'">
+    </video>
+
+    <!-- Máscara de Escaneo y Línea Láser Animada -->
+    <div *ngIf="isScanning && !isLoading && !cameraError" class="scanner-overlay-mask">
+        <div class="scanner-aperture">
+            <div class="corner top-left"></div>
+            <div class="corner top-right"></div>
+            <div class="corner bottom-left"></div>
+            <div class="corner bottom-right"></div>
+            <div class="laser-line"></div>
+        </div>
+        <p class="scan-hint-text">{{ scannerHint }}</p>
+        
+        <!-- Alerta de navegador no soportado para cámara (solo lectura por hardware/teclado) -->
+        <div *ngIf="!isDetectorSupported" class="no-detector-warning">
+            <span nz-icon nzType="info-circle" nzTheme="outline"></span>
+            Escaneo automático no soportado en este navegador. Utilizá el campo de texto abajo o una lectora física.
+        </div>
+    </div>
+
+    <!-- Panel de Entrada Manual / Lector de Hardware Fijo en el fondo -->
+    <div class="scanner-manual-panel">
+        <div class="manual-input-wrapper">
+            <span nz-icon nzType="barcode" class="input-barcode-icon"></span>
+            <input #manualInput type="text" 
+                   placeholder="Escribí el SKU / Ubicación o escaneá..." 
+                   [(ngModel)]="manualCode" 
+                   (keyup.enter)="onManualSubmit()"
+                   (blur)="focusInput()"
+                   class="manual-barcode-input" />
+            <button nz-button nzType="primary" 
+                    [disabled]="!manualCode.trim()" 
+                    (click)="onManualSubmit()" 
+                    class="btn-send-manual">
+                <span nz-icon nzType="arrow-right" nzTheme="outline"></span>
+            </button>
+        </div>
+        <span class="manual-help-text">El campo de texto se auto-enfoca para soportar pistolas lectoras USB/Bluetooth.</span>
+    </div>
+
+</div>
