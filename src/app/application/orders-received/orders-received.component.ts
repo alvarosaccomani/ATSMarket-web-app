@@ -13,7 +13,9 @@ import { NzCardModule } from 'ng-zorro-antd/card';
 import { NzAlertModule } from 'ng-zorro-antd/alert';
 import { NzInputModule } from 'ng-zorro-antd/input';
 import { NzProgressModule } from 'ng-zorro-antd/progress';
+import { NzModalModule } from 'ng-zorro-antd/modal';
 import { FormsModule } from '@angular/forms';
+import { BarcodeScannerComponent } from '../../shared/components/barcode-scanner/barcode-scanner.component';
 
 import { Subject, Observable } from 'rxjs';
 import { takeUntil } from 'rxjs/operators';
@@ -45,7 +47,9 @@ declare const L: any;
     NzCardModule,
     NzAlertModule,
     NzInputModule,
-    NzProgressModule
+    NzProgressModule,
+    NzModalModule,
+    BarcodeScannerComponent
   ],
   templateUrl: './orders-received.component.html',
   styleUrl: './orders-received.component.scss'
@@ -62,6 +66,7 @@ export class OrdersReceivedComponent implements OnInit, OnDestroy {
   public isChecklistVisible = false;
   public checklistOrder: OrderInterface | null = null;
   public checklistItems: { name: string; qty: number; checked: boolean }[] = [];
+  public isChecklistScannerActive = false;
 
   // Drawer de Incidencias
   public isIncidentVisible = false;
@@ -608,6 +613,34 @@ export class OrdersReceivedComponent implements OnInit, OnDestroy {
       this.isChecklistVisible = false;
       this.checklistOrder = null;
     }
+  }
+
+  public onChecklistBarcodeScanned(code: string): void {
+    if (!this.checklistOrder) return;
+
+    const details = this.checklistOrder.orderDetails || [];
+    const matchedDetail = details.find(d => d.ordd_sku?.toLowerCase() === code.toLowerCase());
+
+    if (matchedDetail) {
+      const item = this.checklistItems.find(i => i.name === matchedDetail.ordd_productname);
+      if (item) {
+        if (item.checked) {
+          this.message.warning(`El artículo "${item.name}" ya fue verificado.`);
+        } else {
+          item.checked = true;
+          this.message.success(`Artículo verificado: ${item.name}`);
+        }
+      } else {
+        this.message.error('No se pudo vincular el artículo del pedido.');
+      }
+    } else {
+      this.message.error(`El código "${code}" no pertenece a ningún artículo de este pedido.`);
+    }
+  }
+
+  public resetChecklist(): void {
+    this.checklistItems.forEach(i => i.checked = false);
+    this.message.info('Checklist de carga reiniciado.');
   }
 
   // --- CONTROL DE INCIDENCIAS ---

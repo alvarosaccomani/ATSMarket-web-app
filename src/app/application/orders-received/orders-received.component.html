@@ -409,6 +409,22 @@
                     </div>
                 </div>
 
+                <!-- Botones de Acción de Checklist: Escaneo y Reset -->
+                <div style="display: flex; gap: 12px; margin-bottom: 16px;">
+                    <button nz-button nzType="default" nzSize="large" 
+                            (click)="isChecklistScannerActive = true"
+                            style="flex: 1; border-radius: 8px; font-weight: 600; height: 48px; display: inline-flex; align-items: center; justify-content: center; gap: 8px; border-color: #1890ff; color: #1890ff; background: rgba(24, 144, 255, 0.02);">
+                        <span nz-icon nzType="camera" nzTheme="outline" style="font-size: 18px;"></span>
+                        Escanear con Cámara
+                    </button>
+                    <button nz-button nzType="default" nzSize="large" 
+                            (click)="resetChecklist()"
+                            nz-tooltip nzTooltipTitle="Reiniciar verificación"
+                            style="border-radius: 8px; height: 48px; width: 48px; display: inline-flex; align-items: center; justify-content: center; padding: 0;">
+                        <span nz-icon nzType="reload" nzTheme="outline"></span>
+                    </button>
+                </div>
+
                 <!-- Botón de Confirmación -->
                 <button nz-button nzType="primary" nzBlock nzSize="large" class="confirm-route-start-btn"
                         [disabled]="!isChecklistComplete()"
@@ -422,6 +438,23 @@
             📋 Control de Carga - Pedido #{{ checklistOrder?.ord_ordernumber }}
         </ng-template>
     </nz-drawer>
+
+    <!-- MODAL DE CÁMARA ESCÁNER DE CÓDIGO DE BARRAS DE PICKING -->
+    <nz-modal
+        [(nzVisible)]="isChecklistScannerActive"
+        [nzFooter]="null"
+        [nzClosable]="false"
+        [nzWidth]="420"
+        [nzBodyStyle]="{ 'padding': '0', 'overflow': 'hidden', 'border-radius': '16px' }">
+        <ng-container *nzModalContent>
+            <app-barcode-scanner
+                *ngIf="isChecklistScannerActive"
+                scannerHint="Escanear el SKU del producto del pedido"
+                (onScan)="onChecklistBarcodeScanned($event)"
+                (onClose)="isChecklistScannerActive = false">
+            </app-barcode-scanner>
+        </ng-container>
+    </nz-modal>
 
     <!-- DRAWER MÓVIL: REPORTAR CONTRATIEMPO (INCIDENCIAS) -->
     <nz-drawer [nzVisible]="isIncidentVisible" nzPlacement="bottom" [nzTitle]="incidentTitle" [nzHeight]="'auto'"
