@@ -290,6 +290,116 @@
     }
   }
 
+  /* Tarjetas de Bloqueo de Reseñas (Glassmorphic Locks) */
+  .review-lock-card {
+    background: rgba(255, 255, 255, 0.45) !important;
+    backdrop-filter: blur(20px);
+    -webkit-backdrop-filter: blur(20px);
+    border: 1px solid rgba(232, 232, 232, 0.8) !important;
+    box-shadow: 0 10px 30px rgba(0, 0, 0, 0.02);
+    padding: 32px 24px;
+    border-radius: 16px;
+    display: flex;
+    align-items: center;
+    gap: 24px;
+    margin-bottom: 32px;
+    transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+
+    &:hover {
+      transform: translateY(-2px);
+      box-shadow: 0 12px 36px rgba(0, 0, 0, 0.05);
+      border-color: rgba(24, 144, 255, 0.2) !important;
+    }
+
+    .lock-icon-wrapper {
+      width: 56px;
+      height: 56px;
+      border-radius: 14px;
+      background: rgba(24, 144, 255, 0.08);
+      display: flex;
+      justify-content: center;
+      align-items: center;
+      flex-shrink: 0;
+
+      .lock-icon {
+        font-size: 24px;
+        color: #1890ff;
+      }
+    }
+
+    &.purchase-lock {
+      .lock-icon-wrapper {
+        background: rgba(250, 140, 22, 0.08);
+        
+        .lock-icon {
+          color: #fa8c16;
+        }
+      }
+      
+      &:hover {
+        border-color: rgba(250, 140, 22, 0.2) !important;
+      }
+    }
+
+    .lock-content {
+      flex: 1;
+
+      h4 {
+        margin: 0 0 6px 0;
+        font-weight: 800;
+        font-size: 16px;
+        color: #1f1f1f;
+        letter-spacing: -0.3px;
+      }
+
+      p {
+        margin: 0 0 16px 0;
+        color: #8c8c8c;
+        font-size: 13.5px;
+        line-height: 1.5;
+        max-width: 520px;
+      }
+
+      .lock-action-btn {
+        height: 38px;
+        border-radius: 6px;
+        font-weight: 600;
+        font-size: 13.5px;
+        box-shadow: 0 2px 6px rgba(24, 144, 255, 0.15);
+        display: inline-flex;
+        align-items: center;
+        gap: 6px;
+        
+        &.purchase-btn {
+          border-color: #fa8c16;
+          color: #fa8c16;
+          background: transparent;
+          box-shadow: none;
+          
+          &:hover {
+            background: #fa8c16;
+            color: #fff;
+          }
+        }
+      }
+    }
+  }
+
+  @media (max-width: 576px) {
+    .review-lock-card {
+      flex-direction: column;
+      text-align: center;
+      padding: 24px 16px;
+      gap: 16px;
+      
+      .lock-content {
+        p {
+          margin-bottom: 16px;
+        }
+      }
+    }
+  }
+
   /* Listado de Opiniones */
   .reviews-list {
     margin-top: 16px;

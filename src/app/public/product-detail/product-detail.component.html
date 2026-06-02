@@ -105,8 +105,36 @@
 
             <nz-divider style="margin: 32px 0;"></nz-divider>
 
-            <!-- Formulario Dejar Reseña -->
-            <div class="new-review-form">
+            <!-- Caso A: No Autenticado (Login Blocker) -->
+            <div *ngIf="!activeCustomer" class="review-lock-card login-lock">
+                <div class="lock-icon-wrapper">
+                    <span nz-icon nzType="lock" nzTheme="outline" class="lock-icon animate-pulse"></span>
+                </div>
+                <div class="lock-content">
+                    <h4>Iniciá sesión para opinar</h4>
+                    <p>Para garantizar opiniones 100% reales, debés estar registrado e ingresar a tu cuenta para dejar una reseña.</p>
+                    <button nz-button nzType="primary" nzSize="large" (click)="navigateToLogin()" class="lock-action-btn">
+                        <span nz-icon nzType="login" nzTheme="outline"></span> Iniciar Sesión / Registrarse
+                    </button>
+                </div>
+            </div>
+
+            <!-- Caso B: Autenticado pero no Comprador Verificado (Verified Purchase Lock) -->
+            <div *ngIf="activeCustomer && !isVerifiedBuyer" class="review-lock-card purchase-lock">
+                <div class="lock-icon-wrapper">
+                    <span nz-icon nzType="info-circle" nzTheme="outline" class="lock-icon text-amber"></span>
+                </div>
+                <div class="lock-content">
+                    <h4>Reseñas Exclusivas de Compradores</h4>
+                    <p>Solo los clientes que compraron este producto pueden dejar una calificación en la tienda para asegurar total transparencia.</p>
+                    <button nz-button nzType="default" nzSize="large" (click)="scrollToBuy()" class="lock-action-btn purchase-btn">
+                        <span nz-icon nzType="shopping-cart" nzTheme="outline"></span> Adquirir este Producto
+                    </button>
+                </div>
+            </div>
+
+            <!-- Caso C: Comprador Verificado (Formulario Habilitado) -->
+            <div *ngIf="activeCustomer && isVerifiedBuyer" class="new-review-form">
                 <h4>Escribir Reseña del Producto</h4>
                 
                 <div style="display: flex; align-items: center; gap: 16px; margin-bottom: 14px; flex-wrap: wrap;">
@@ -114,7 +142,7 @@
                     <nz-rate [(ngModel)]="userRating" style="font-size: 20px;"></nz-rate>
                     
                     <!-- Badge de Compra Verificada Condicional -->
-                    <nz-tag *ngIf="isVerifiedBuyer" nzColor="gold" style="margin-left: auto; font-weight: 600; border-radius: 4px; padding: 2px 8px;">
+                    <nz-tag nzColor="gold" style="margin-left: auto; font-weight: 600; border-radius: 4px; padding: 2px 8px;">
                         <span nz-icon nzType="check-circle" nzTheme="fill"></span> Compra Verificada
                     </nz-tag>
                 </div>

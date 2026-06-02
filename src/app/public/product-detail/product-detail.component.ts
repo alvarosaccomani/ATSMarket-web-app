@@ -276,4 +276,15 @@ export class ProductDetailComponent implements OnInit {
     const count = this.ratingDistribution[stars] || 0;
     return Math.round((count / total) * 100);
   }
+
+  public navigateToLogin(): void {
+    this.router.navigate(['/auth/login'], { queryParams: { returnUrl: this.router.url } });
+  }
+
+  public scrollToBuy(): void {
+    const element = document.querySelector('.detail-price-box');
+    if (element) {
+      element.scrollIntoView({ behavior: 'smooth', block: 'center' });
+    }
+  }
 }
