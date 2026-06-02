@@ -68,30 +68,54 @@
             </div>
         </div>
 
-        <!-- FILA 2: Gráficos de Barras (Mix de Categorías) y Top Products -->
+        <!-- FILA 2: Gráficos de Ingresos Brutos y Mix de Categorías -->
         <div nz-row [nzGutter]="[16, 16]" class="charts-row" style="margin-top: 20px;">
-
-            <!-- Columna Izquierda: Mix de Ventas -->
-            <div nz-col nzXs="24" nzLg="8">
-                <nz-card class="premium-card full-height-card" nzTitle="Distribución de Ingresos" [nzBordered]="false">
-                    <div class="category-bars-container">
-                        <div class="category-bar-item" *ngFor="let cat of categoryMix">
-                            <div class="cat-bar-header">
-                                <span class="cat-name">{{ cat.category }}</span>
-                                <span class="cat-pct">{{ cat.percentage }}%</span>
-                            </div>
-                            <nz-progress [nzPercent]="cat.percentage" [nzStrokeColor]="cat.color" nzStatus="active"
-                                [nzShowInfo]="false"></nz-progress>
-                        </div>
-                        <div *ngIf="categoryMix.length === 0" style="text-align: center; padding: 40px 0; color: #8c8c8c;">
-                            <span nz-icon nzType="bar-chart" style="font-size: 24px; margin-bottom: 8px; display: block;"></span>
-                            Sin datos de ventas para graficar
+            
+            <!-- Evolución Temporal de Ingresos -->
+            <div nz-col nzXs="24" nzLg="16">
+                <nz-card class="premium-card full-height-card" nzTitle="Evolución de Ingresos Brutos (Histórico)" [nzBordered]="false">
+                    <div class="chart-wrapper">
+                        <div #revenueChart class="chart-container"></div>
+                        <div *ngIf="processedRevenues.length === 0" class="empty-chart-state">
+                            <span nz-icon nzType="line-chart" style="font-size: 28px; margin-bottom: 8px; display: block;"></span>
+                            Sin historial de ingresos para graficar
                         </div>
                     </div>
                 </nz-card>
             </div>
 
-            <!-- Columna Derecha: Ranking de Productos -->
+            <!-- Mix de Categorías (Distribución de Ventas) -->
+            <div nz-col nzXs="24" nzLg="8">
+                <nz-card class="premium-card full-height-card" nzTitle="Mix de Categorías (Participación)" [nzBordered]="false">
+                    <div class="chart-wrapper">
+                        <div #categoryChart class="chart-container"></div>
+                        <div *ngIf="categoryMix.length === 0" class="empty-chart-state">
+                            <span nz-icon nzType="pie-chart" style="font-size: 28px; margin-bottom: 8px; display: block;"></span>
+                            Sin datos de categorías
+                        </div>
+                    </div>
+                </nz-card>
+            </div>
+
+        </div>
+
+        <!-- FILA 3: Actividad Semanal de Pedidos y Ranking de Productos Estrella -->
+        <div nz-row [nzGutter]="[16, 16]" class="charts-row" style="margin-top: 20px;">
+
+            <!-- Actividad de Pedidos Semanales -->
+            <div nz-col nzXs="24" nzLg="8">
+                <nz-card class="premium-card full-height-card" nzTitle="Actividad Semanal de Pedidos" [nzBordered]="false">
+                    <div class="chart-wrapper">
+                        <div #weeklyChart class="chart-container"></div>
+                        <div *ngIf="processedWeeklyOrders.length === 0" class="empty-chart-state">
+                            <span nz-icon nzType="bar-chart" style="font-size: 28px; margin-bottom: 8px; display: block;"></span>
+                            Sin actividad registrada
+                        </div>
+                    </div>
+                </nz-card>
+            </div>
+
+            <!-- Ranking de Productos Estrella (Tabla) -->
             <div nz-col nzXs="24" nzLg="16">
                 <nz-card class="premium-card full-height-card" nzTitle="Ranking de Productos (Top 5 por Ventas)" [nzBordered]="false">
                     <nz-table #topProductsTable [nzData]="topProducts" nzShowPagination="false" nzSize="middle" class="premium-table">
