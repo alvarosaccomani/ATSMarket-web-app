@@ -17,6 +17,7 @@ import { NzSwitchModule } from 'ng-zorro-antd/switch';
 import { NzMessageService } from 'ng-zorro-antd/message';
 import { NzPopconfirmModule } from 'ng-zorro-antd/popconfirm';
 import { NzEmptyModule } from 'ng-zorro-antd/empty';
+import { BarcodeScannerComponent } from '../../shared/components/barcode-scanner/barcode-scanner.component';
 
 import { WarehousesService } from '@services/warehouses.service';
 import { WarehousesLocationsService } from '@services/warehouses-locations.service';
@@ -45,7 +46,8 @@ import { WarehouseLocationInterface } from '@interfaces/warehouse-location';
     NzCollapseModule,
     NzSwitchModule,
     NzPopconfirmModule,
-    NzEmptyModule
+    NzEmptyModule,
+    BarcodeScannerComponent
   ],
   templateUrl: './warehouses.component.html',
   styleUrl: './warehouses.component.scss',
@@ -73,6 +75,7 @@ export class WarehousesComponent implements OnInit {
   // Control de Modales / Cajones
   public isWarehouseModalVisible = false;
   public isLocationsDrawerVisible = false;
+  public isLocationScannerActive = false;
   public isEditingWarehouse = false;
   public isEditingLocation = false;
   public editingLocation: WarehouseLocationInterface | null = null;
@@ -261,6 +264,15 @@ export class WarehousesComponent implements OnInit {
       const matchShelf = loc.warl_shelf?.toLowerCase().includes(query) || false;
       return matchCode || matchAisle || matchSector || matchRack || matchShelf;
     });
+  }
+
+  public onLocationBarcodeScanned(code: string): void {
+    if (!code) return;
+
+    this.locationSearchQuery = code.trim();
+    this.applyLocationFilters();
+    this.message.success(`Filtro aplicado para ubicación: ${code}`);
+    this.isLocationScannerActive = false;
   }
 
   public deleteLocation(location: WarehouseLocationInterface): void {

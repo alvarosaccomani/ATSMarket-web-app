@@ -220,7 +220,10 @@
               <input type="text" nz-input [(ngModel)]="locationSearchQuery" (ngModelChange)="applyLocationFilters()" placeholder="Buscar por código, pasillo o rack..." />
             </nz-input-group>
             <ng-template #suffixIconSearch>
-              <span nz-icon nzType="search"></span>
+              <div style="display: flex; align-items: center; gap: 8px;">
+                <span nz-icon nzType="camera" nzTheme="outline" (click)="isLocationScannerActive = true" style="cursor: pointer; color: #1890ff; font-size: 16px;" nz-tooltip nzTooltipTitle="Escanear Ubicación (Código de barras)"></span>
+                <span nz-icon nzType="search" style="color: rgba(0, 0, 0, 0.45);"></span>
+              </div>
             </ng-template>
           </div>
 
@@ -278,5 +281,22 @@
       </div>
     </div>
   </nz-drawer>
+
+  <!-- MODAL DE CÁMARA ESCÁNER DE CÓDIGO DE BARRAS DE UBICACIONES WMS -->
+  <nz-modal
+      [(nzVisible)]="isLocationScannerActive"
+      [nzFooter]="null"
+      [nzClosable]="false"
+      [nzWidth]="420"
+      [nzBodyStyle]="{ 'padding': '0', 'overflow': 'hidden', 'border-radius': '16px' }">
+      <ng-container *nzModalContent>
+          <app-barcode-scanner
+              *ngIf="isLocationScannerActive"
+              scannerHint="Escanear el código de barras de la ubicación"
+              (onScan)="onLocationBarcodeScanned($event)"
+              (onClose)="isLocationScannerActive = false">
+          </app-barcode-scanner>
+      </ng-container>
+  </nz-modal>
 
 </div>
