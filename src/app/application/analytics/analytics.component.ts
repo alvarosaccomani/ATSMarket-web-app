@@ -89,9 +89,9 @@ export class AnalyticsComponent implements OnInit, AfterViewInit, OnDestroy {
   public topProducts: TopProduct[] = [];
 
   // Datos procesados para series temporales
-  private processedDates: string[] = [];
-  private processedRevenues: number[] = [];
-  private processedWeeklyOrders: number[] = [0, 0, 0, 0, 0, 0, 0];
+  public processedDates: string[] = [];
+  public processedRevenues: number[] = [];
+  public processedWeeklyOrders: number[] = [0, 0, 0, 0, 0, 0, 0];
 
   constructor(
     private _sessionService: SessionService,
