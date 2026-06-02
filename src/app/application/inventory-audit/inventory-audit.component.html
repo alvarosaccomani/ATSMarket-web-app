@@ -191,13 +191,25 @@
 <!-- ADJUSTMENT MODAL -->
 <nz-modal 
     [(nzVisible)]="isAdjustmentModalVisible" 
-    nzTitle="Registrar Ajuste Manual de Stock" 
+    [nzTitle]="modalTitle" 
     (nzOnCancel)="closeAdjustmentModal()" 
     (nzOnOk)="onSaveAdjustment()" 
     [nzOkLoading]="isSavingAdjustment"
     [nzOkText]="'Guardar Ajuste'"
     [nzCancelText]="'Cancelar'"
     nzWidth="550px">
+    
+    <ng-template #modalTitle>
+        <div style="display: flex; justify-content: space-between; align-items: center; padding-right: 24px; width: 100%;">
+            <span>Registrar Ajuste Manual de Stock</span>
+            <button nz-button nzType="default" nzSize="small" 
+                    (click)="isAuditScannerActive = true"
+                    style="border-radius: 6px; display: inline-flex; align-items: center; gap: 6px; border-color: #1890ff; color: #1890ff; background: rgba(24, 144, 255, 0.02); font-weight: 600;">
+                <span nz-icon nzType="camera" nzTheme="outline"></span>
+                Escanear con Cámara
+            </button>
+        </div>
+    </ng-template>
     
     <ng-container *nzModalContent>
         <form nz-form [formGroup]="adjustmentForm" [nzLayout]="'vertical'" class="adjustment-modal-form">
@@ -277,5 +289,22 @@
             </nz-form-item>
 
         </form>
+    </ng-container>
+</nz-modal>
+
+<!-- MODAL DE CÁMARA ESCÁNER DE CÓDIGO DE BARRAS DE AUDITORÍA -->
+<nz-modal
+    [(nzVisible)]="isAuditScannerActive"
+    [nzFooter]="null"
+    [nzClosable]="false"
+    [nzWidth]="420"
+    [nzBodyStyle]="{ 'padding': '0', 'overflow': 'hidden', 'border-radius': '16px' }">
+    <ng-container *nzModalContent>
+        <app-barcode-scanner
+            *ngIf="isAuditScannerActive"
+            scannerHint="Escanear SKU de variación o código de ubicación"
+            (onScan)="onAuditBarcodeScanned($event)"
+            (onClose)="isAuditScannerActive = false">
+        </app-barcode-scanner>
     </ng-container>
 </nz-modal>

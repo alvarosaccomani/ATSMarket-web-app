@@ -33,6 +33,7 @@ import { WarehousesLocationsService } from '@services/warehouses-locations.servi
 import { InventoryStocksService } from '@services/inventory-stocks.service';
 import { forkJoin, of } from 'rxjs';
 import { catchError } from 'rxjs/operators';
+import { BarcodeScannerComponent } from '../../shared/components/barcode-scanner/barcode-scanner.component';
 
 @Component({
   selector: 'app-inventory-audit',
@@ -54,7 +55,8 @@ import { catchError } from 'rxjs/operators';
     NzModalModule,
     NzFormModule,
     NzInputNumberModule,
-    NzToolTipModule
+    NzToolTipModule,
+    BarcodeScannerComponent
   ],
   templateUrl: './inventory-audit.component.html',
   styleUrl: './inventory-audit.component.scss'
@@ -86,6 +88,7 @@ export class InventoryAuditComponent implements OnInit {
   // Ajuste Manual Modal
   public isAdjustmentModalVisible: boolean = false;
   public isSavingAdjustment: boolean = false;
+  public isAuditScannerActive: boolean = false;
   public isLoadingVariations: boolean = false;
   public adjustmentForm!: FormGroup;
   public selectedProductVariations: ProductVariationInterface[] = [];
@@ -305,6 +308,40 @@ export class InventoryAuditComponent implements OnInit {
 
   public closeAdjustmentModal(): void {
     this.isAdjustmentModalVisible = false;
+    this.isAuditScannerActive = false;
+  }
+
+  public onAuditBarcodeScanned(code: string): void {
+    if (!code) return;
+    
+    const formattedCode = code.trim().toLowerCase();
+    
+    // Paso 1: Validar si es una ubicación física (Bin Code)
+    const matchedLocation = this.selectedWarehouseLocations.find(l => l.warl_bincode.toLowerCase() === formattedCode);
+    if (matchedLocation) {
+      this.adjustmentForm.patchValue({ warl_uuid: matchedLocation.warl_uuid });
+      this._messageService.success('Ubicación Detectada', `Se seleccionó la ubicación física: ${matchedLocation.warl_bincode}`);
+      this.isAuditScannerActive = false;
+      return;
+    }
+
+    // Paso 2: Validar si es un SKU de variación
+    const matchedVar = Object.values(this.allVariationsMap).find(item => 
+      item.prov.prov_sku?.toLowerCase() === formattedCode || 
+      item.prov.prov_code?.toLowerCase() === formattedCode
+    );
+
+    if (matchedVar) {
+      // Autoseleccionar producto y variación en el formulario
+      this.adjustmentForm.patchValue({
+        pro_uuid: matchedVar.pro.pro_uuid,
+        prov_uuid: matchedVar.prov.prov_uuid
+      });
+      this._messageService.success('Producto Detectado', `Se autoseleccionó: ${matchedVar.pro.pro_name} (${matchedVar.prov.prov_name})`);
+      this.isAuditScannerActive = false;
+    } else {
+      this._messageService.error('No Encontrado', `El código "${code}" no coincide con ningún SKU de variación o ubicación física del depósito.`);
+    }
   }
 
   public onSaveAdjustment(): void {
