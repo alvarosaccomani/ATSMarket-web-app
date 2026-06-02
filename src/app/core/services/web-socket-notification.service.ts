@@ -1,5 +1,6 @@
 import { Injectable, OnDestroy } from '@angular/core';
 import { BehaviorSubject, Observable, Subject } from 'rxjs';
+import { io, Socket } from 'socket.io-client';
 import { environment } from '../../../environments/environment';
 import { NotificationInterface } from '@interfaces/notification/notification.interface';
 import { NotificationsService } from './notifications.service';
@@ -9,7 +10,7 @@ import { NotificationsService } from './notifications.service';
 })
 export class WebSocketNotificationService implements OnDestroy {
 
-  private ws: WebSocket | null = null;
+  private socket: Socket | null = null;
   private channel: BroadcastChannel;
   
   // Observables para el estado y flujo de notificaciones
@@ -109,40 +110,37 @@ export class WebSocketNotificationService implements OnDestroy {
    * Intenta conectar al servidor de WebSockets si existe en el entorno.
    */
   private connectWebSocket(): void {
-    const wsUrl = (environment as any).apiUrlSocket || 'ws://localhost:3000/realtime';
+    const socketUrl = environment.apiUrlSocket || 'http://localhost:3002';
     
     try {
-      this.ws = new WebSocket(wsUrl);
+      this.socket = io(socketUrl, {
+        transports: ['websocket', 'polling']
+      });
 
-      this.ws.onopen = () => {
-        console.log('🔌 Conectado exitosamente al servidor WebSocket de ATSMarket.');
-      };
+      this.socket.on('connect', () => {
+        console.log('🔌 Conectado exitosamente al servidor Socket.io de ATSMarket.');
+      });
 
-      this.ws.onmessage = (event) => {
-        try {
-          const data = JSON.parse(event.data);
-          if (data.type === 'NEW_NOTIFICATION') {
-            this.handleNewNotificationIncoming(data.payload);
-          } else if (data.type === 'ORDER_STATUS_UPDATED') {
-            this.orderUpdatesSubject.next(data.payload);
-            // También difundir localmente a otras pestañas
-            this.channel.postMessage({ type: 'ORDER_STATUS_UPDATED', payload: data.payload });
-          }
-        } catch (e) {
-          console.warn('Mensaje de WebSocket recibido no parseable:', event.data);
-        }
-      };
+      // Escuchar eventos en tiempo real transmitidos por el backend
+      this.socket.on('NEW_NOTIFICATION', (payload: any) => {
+        this.handleNewNotificationIncoming(payload);
+      });
 
-      this.ws.onerror = () => {
-        // Silencioso, ya que el BroadcastChannel local suplirá la comunicación en modo desarrollo
-      };
+      this.socket.on('ORDER_STATUS_UPDATED', (payload: any) => {
+        this.orderUpdatesSubject.next(payload);
+        // También difundir localmente a otras pestañas (BroadcastChannel)
+        this.channel.postMessage({ type: 'ORDER_STATUS_UPDATED', payload });
+      });
 
-      this.ws.onclose = () => {
-        // Reintentar conexión de forma diferida cada 15 segundos
-        setTimeout(() => this.connectWebSocket(), 15000);
-      };
+      this.socket.on('connect_error', () => {
+        // Silencioso
+      });
+
+      this.socket.on('disconnect', () => {
+        console.warn('Conexión de socket de ATSMarket perdida.');
+      });
     } catch (e) {
-      console.warn('No se pudo establecer la conexión de WebSockets. Operando en Modo Broadcast local.');
+      console.warn('No se pudo establecer la conexión de Sockets. Operando en Modo Broadcast local.');
     }
   }
 
@@ -156,9 +154,9 @@ export class WebSocketNotificationService implements OnDestroy {
     this.channel.postMessage({ type: 'ORDER_STATUS_UPDATED', payload });
     this.orderUpdatesSubject.next(payload);
 
-    // 2. Transmitir por WebSocket al servidor si está activo
-    if (this.ws && this.ws.readyState === WebSocket.OPEN) {
-      this.ws.send(JSON.stringify({ type: 'ORDER_STATUS_UPDATED', payload }));
+    // 2. Transmitir por Socket al servidor si está activo
+    if (this.socket && this.socket.connected) {
+      this.socket.emit('ORDER_STATUS_UPDATED', payload);
     }
   }
 
@@ -185,9 +183,9 @@ export class WebSocketNotificationService implements OnDestroy {
     // 3. Difundirla a todas las demás pestañas abiertas (BroadcastChannel)
     this.channel.postMessage({ type: 'NEW_NOTIFICATION', payload: newNtf });
 
-    // 4. Enviar por WebSocket al servidor
-    if (this.ws && this.ws.readyState === WebSocket.OPEN) {
-      this.ws.send(JSON.stringify({ type: 'NEW_NOTIFICATION', payload: newNtf }));
+    // 4. Enviar por Socket al servidor
+    if (this.socket && this.socket.connected) {
+      this.socket.emit('NEW_NOTIFICATION', newNtf);
     }
   }
 
@@ -206,9 +204,9 @@ export class WebSocketNotificationService implements OnDestroy {
    * Desconectar explícitamente el socket.
    */
   public disconnect(): void {
-    if (this.ws) {
-      this.ws.close();
-      this.ws = null;
+    if (this.socket) {
+      this.socket.disconnect();
+      this.socket = null;
     }
   }
 }
