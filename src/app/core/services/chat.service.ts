@@ -1,9 +1,10 @@
 import { Injectable, OnDestroy } from '@angular/core';
 import { HttpClient, HttpHeaders } from '@angular/common/http';
-import { BehaviorSubject, Observable, of } from 'rxjs';
+import { BehaviorSubject, Observable, of, Subscription } from 'rxjs';
 import { catchError, map } from 'rxjs/operators';
 import { environment } from '../../../environments/environment';
 import { MessageInterface } from '../interfaces/message/message.interface';
+import { WebSocketNotificationService } from './web-socket-notification.service';
 
 @Injectable({
   providedIn: 'root'
@@ -17,19 +18,31 @@ export class ChatService implements OnDestroy {
   public activeChatMessages$ = this.activeChatMessagesSubject.asObservable();
   
   private currentActiveOrdUuid: string | null = null;
+  private _socketChatSub: Subscription | null = null;
 
   constructor(
-    private _http: HttpClient
+    private _http: HttpClient,
+    private _wsNotificationService: WebSocketNotificationService
   ) {
     // Inicializar el canal BroadcastChannel para intercomunicación en tiempo real entre pestañas
     this.channel = new BroadcastChannel('ats_market_realtime');
     this.setupBroadcastListener();
+    this.setupSocketListener();
   }
 
   ngOnDestroy(): void {
     if (this.channel) {
       this.channel.close();
     }
+    if (this._socketChatSub) {
+      this._socketChatSub.unsubscribe();
+    }
+  }
+
+  private setupSocketListener(): void {
+    this._socketChatSub = this._wsNotificationService.chatMessages$.subscribe(msg => {
+      this.receiveMessage(msg);
+    });
   }
 
   /**
@@ -127,7 +140,10 @@ export class ChatService implements OnDestroy {
     // 2. Difundir en tiempo real a otras pestañas locales (Comprador/Vendedor en el mismo navegador)
     this.channel.postMessage({ type: 'NEW_CHAT_MESSAGE', payload: newMessage });
 
-    // 3. Si la orden es la que está abierta en pantalla, inyectar el mensaje de inmediato
+    // 3. Emitir mensaje por Socket.io para sincro en caliente entre distintos dispositivos
+    this._wsNotificationService.emitChatMessage(newMessage);
+
+    // 4. Si la orden es la que está abierta en pantalla, inyectar el mensaje de inmediato
     this.receiveMessage(newMessage);
 
     // 4. Intentar guardar en la base de datos del backend
