@@ -33,6 +33,8 @@ import { FinancesComponent } from './finances/finances.component';
 import { AddressesComponent } from './addresses/addresses.component';
 
 import { authGuard } from '@guards/auth.guard';
+import { superAdminGuard } from '@guards/super-admin.guard';
+import { roleGuard } from '@guards/role.guard';
 import { merchantGuard } from '@guards/merchant.guard';
 
 export const APPLICATION_ROUTES: Routes = [
@@ -45,8 +47,8 @@ export const APPLICATION_ROUTES: Routes = [
             { path: 'menu-item/:mnu_uuid', component: MenuItemComponent, canActivate: [merchantGuard] },
             { path: 'my-companies', component: MyCompaniesComponent },
             { path: 'company/:cmp_uuid', component: CompanyComponent, canActivate: [merchantGuard] },
-            { path: 'company-settings/:cmp_uuid', component: CompanySettingsComponent, canActivate: [merchantGuard] },
-            { path: 'user-rol-company/:cmp_uuid', component: UserRolCompanyComponent, canActivate: [merchantGuard] },
+            { path: 'company-settings/:cmp_uuid', component: CompanySettingsComponent, canActivate: [merchantGuard, roleGuard], data: { expectedRoles: ['admin', 'administrador', 'owner'] } },
+            { path: 'user-rol-company/:cmp_uuid', component: UserRolCompanyComponent, canActivate: [merchantGuard, roleGuard], data: { expectedRoles: ['admin', 'administrador', 'owner'] } },
             { path: 'price-list', component: PriceListComponent, canActivate: [merchantGuard] },
             { path: 'dist-price-list', component: DistPriceListComponent, canActivate: [merchantGuard] },
             { path: 'global-items', component: GlobalItemsComponent, canActivate: [merchantGuard] },
@@ -55,7 +57,7 @@ export const APPLICATION_ROUTES: Routes = [
             { path: 'global-category/:gitm_uuid/:gcat_uuid', component: GlobalCategoryComponent, canActivate: [merchantGuard] },
             { path: 'global-materials', component: GlobalMaterialsComponent, canActivate: [merchantGuard] },
             { path: 'global-material/:gmat_uuid', component: GlobalMaterialComponent, canActivate: [merchantGuard] },
-            { path: 'super-admin', component: SuperAdminComponent },
+            { path: 'super-admin', component: SuperAdminComponent, canActivate: [superAdminGuard] },
             { path: 'materials', component: MaterialsComponent, canActivate: [merchantGuard] },
             { path: 'material/:mat_uuid', component: MaterialComponent, canActivate: [merchantGuard] },
             { path: 'warehouses', component: WarehousesComponent, canActivate: [merchantGuard] },
@@ -69,7 +71,7 @@ export const APPLICATION_ROUTES: Routes = [
             { path: 'suppliers', component: SuppliersComponent, canActivate: [merchantGuard] },
             { path: 'supplier/:sup_uuid', component: SupplierComponent, canActivate: [merchantGuard] },
             { path: 'analytics', component: AnalyticsComponent, canActivate: [merchantGuard] },
-            { path: 'finances', component: FinancesComponent, canActivate: [merchantGuard] },
+            { path: 'finances', component: FinancesComponent, canActivate: [merchantGuard, roleGuard], data: { expectedRoles: ['admin', 'administrador', 'owner'] } },
             { path: 'addresses', component: AddressesComponent }
         ]
     }
