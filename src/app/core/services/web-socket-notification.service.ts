@@ -24,6 +24,10 @@ export class WebSocketNotificationService implements OnDestroy {
   private orderUpdatesSubject = new Subject<{ ord_uuid: string, status: string, notes?: string }>();
   public orderUpdates$ = this.orderUpdatesSubject.asObservable();
 
+  // Canal específico para mensajes de chat en tiempo real
+  private chatMessagesSubject = new Subject<any>();
+  public chatMessages$ = this.chatMessagesSubject.asObservable();
+
   constructor(
     private _notificationsService: NotificationsService
   ) {
@@ -132,6 +136,12 @@ export class WebSocketNotificationService implements OnDestroy {
         this.channel.postMessage({ type: 'ORDER_STATUS_UPDATED', payload });
       });
 
+      this.socket.on('NEW_CHAT_MESSAGE', (payload: any) => {
+        this.chatMessagesSubject.next(payload);
+        // También difundir localmente a otras pestañas (BroadcastChannel)
+        this.channel.postMessage({ type: 'NEW_CHAT_MESSAGE', payload });
+      });
+
       this.socket.on('connect_error', () => {
         // Silencioso
       });
@@ -157,6 +167,15 @@ export class WebSocketNotificationService implements OnDestroy {
     // 2. Transmitir por Socket al servidor si está activo
     if (this.socket && this.socket.connected) {
       this.socket.emit('ORDER_STATUS_UPDATED', payload);
+    }
+  }
+
+  /**
+   * Emite un mensaje de chat en tiempo real al servidor
+   */
+  public emitChatMessage(message: any): void {
+    if (this.socket && this.socket.connected) {
+      this.socket.emit('NEW_CHAT_MESSAGE', message);
     }
   }
 
