@@ -23,6 +23,8 @@ import { OrderInterface } from '../../core/interfaces/order/order.interface';
 import { AddressesService } from '../../core/services/addresses.service';
 import { AddressInterface } from '../../core/interfaces/address/address.interface';
 import { WebSocketNotificationService } from '../../core/services/web-socket-notification.service';
+import { ChatService } from '../../core/services/chat.service';
+import { MessageInterface } from '../../core/interfaces/message/message.interface';
 
 declare const L: any;
 
@@ -85,6 +87,13 @@ export class OrdersReceivedComponent implements OnInit, OnDestroy {
   public activeGpsWatchId: any = null;
   public riderCoords: { lat: number; lng: number } | null = null;
   private loadingOrders: { [key: string]: boolean } = {};
+
+  // Estados del Chat en Vivo
+  public isChatVisible = false;
+  public activeChatOrder: OrderInterface | null = null;
+  public chatMessageText = '';
+  public activeChatMessages: MessageInterface[] = [];
+  private _chatMessagesSub: any = null;
   
   private destroy$ = new Subject<void>();
 
@@ -93,7 +102,8 @@ export class OrdersReceivedComponent implements OnInit, OnDestroy {
     private _ordersService: OrdersService,
     private _sessionService: SessionService,
     private _addressesService: AddressesService,
-    private _notificationService: WebSocketNotificationService
+    private _notificationService: WebSocketNotificationService,
+    private _chatService: ChatService
   ) { }
 
   ngOnInit(): void {
@@ -121,6 +131,9 @@ export class OrdersReceivedComponent implements OnInit, OnDestroy {
     this.destroy$.next();
     this.destroy$.complete();
     this.stopActiveGpsTracking();
+    if (this._chatMessagesSub) {
+      this._chatMessagesSub.unsubscribe();
+    }
     Object.keys(this.activeRiderMaps).forEach(uuid => {
       if (this.activeRiderMaps[uuid]) {
         this.activeRiderMaps[uuid].remove();
@@ -792,5 +805,69 @@ export class OrdersReceivedComponent implements OnInit, OnDestroy {
       navigator.geolocation.clearWatch(this.activeGpsWatchId);
       this.activeGpsWatchId = null;
     }
+  }
+
+  public openChat(order: OrderInterface, event?: Event): void {
+    if (event) {
+      event.stopPropagation();
+    }
+    this.activeChatOrder = order;
+    this.chatMessageText = '';
+    this.isChatVisible = true;
+
+    this._chatService.loadActiveChat(order.cmp_uuid, order.ord_uuid);
+
+    if (this._chatMessagesSub) {
+      this._chatMessagesSub.unsubscribe();
+    }
+    this._chatMessagesSub = this._chatService.activeChatMessages$.subscribe(messages => {
+      this.activeChatMessages = messages;
+      this.scrollToBottom();
+    });
+  }
+
+  public closeChat(): void {
+    this.isChatVisible = false;
+    this._chatService.clearActiveChat();
+    if (this._chatMessagesSub) {
+      this._chatMessagesSub.unsubscribe();
+      this._chatMessagesSub = null;
+    }
+    this.activeChatOrder = null;
+    this.activeChatMessages = [];
+  }
+
+  public sendChatMessage(): void {
+    if (!this.activeChatOrder || !this.chatMessageText.trim()) return;
+
+    const companyUuid = this.activeChatOrder.cmp_uuid;
+    const orderUuid = this.activeChatOrder.ord_uuid;
+    const sender = this.isDeliveryMode ? 'RIDER' : 'MERCHANT';
+    
+    const company = this._sessionService.getCompany();
+    const identity = this._sessionService.getCurrentSession() as any;
+    const senderName = this.isDeliveryMode 
+      ? (identity?.identity?.usr_name || 'Repartidor ATS')
+      : (company?.cmp_name || 'Tienda ATS');
+
+    const text = this.chatMessageText;
+    const usrUuid = identity?.identity?.usr_uuid || '';
+    const cusUuid = this.activeChatOrder.cus_uuid;
+
+    this._chatService.sendMessage(companyUuid, orderUuid, sender, senderName, text, usrUuid, cusUuid).subscribe({
+      next: () => {
+        this.chatMessageText = '';
+        this.scrollToBottom();
+      }
+    });
+  }
+
+  private scrollToBottom(): void {
+    setTimeout(() => {
+      const container = document.querySelector('.chat-messages-container');
+      if (container) {
+        container.scrollTop = container.scrollHeight;
+      }
+    }, 100);
   }
 }

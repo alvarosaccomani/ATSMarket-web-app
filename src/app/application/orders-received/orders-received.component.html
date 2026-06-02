@@ -326,6 +326,12 @@
                                class="tactile-btn wa-btn" style="flex: 1; border-color: #25d366; color: #25d366; display: inline-flex; align-items: center; justify-content: center; background: rgba(37,211,102,0.01); border-radius: 8px; height: 44px;">
                                 <span nz-icon nzType="whats-app" nzTheme="outline" style="font-size: 16px;"></span>
                             </a>
+
+                            <!-- Live Chat In-App -->
+                            <button nz-button nzType="default" nzSize="large" (click)="openChat(order, $event)"
+                                    class="tactile-btn chat-btn" style="flex: 1; border-color: #722ed1; color: #722ed1; display: inline-flex; align-items: center; justify-content: center; background: rgba(114,46,209,0.01); border-radius: 8px; height: 44px;">
+                                <span nz-icon nzType="message" nzTheme="outline" style="font-size: 16px;"></span>
+                            </button>
                         </div>
                     </div>
                     
@@ -588,15 +594,21 @@
                     </nz-descriptions>
 
                     <!-- Botones Rápidos para Whatsapp y Llamadas del Repartidor -->
-                    <div style="margin-top: 12px; display: flex; gap: 10px;">
-                        <a nz-button nzType="default" style="flex: 1; border-color: #1890ff; color: #1890ff; display: inline-flex; align-items: center; justify-content: center; gap: 4px; border-radius: 6px; font-weight: 500; font-size: 13px;"
-                           [href]="'tel:' + addr.adr_contactphone">
-                            <span nz-icon nzType="phone" nzTheme="outline"></span> Llamar por Teléfono
-                        </a>
-                        <a nz-button nzType="default" style="flex: 1; border-color: #25d366; color: #25d366; display: inline-flex; align-items: center; justify-content: center; gap: 4px; border-radius: 6px; font-weight: 500; font-size: 13px; background: rgba(37,211,102,0.01);"
-                           target="_blank" [href]="'https://wa.me/' + addr.adr_contactphone.replace(' ', '').replace('+', '').replace('-', '')">
-                            <span nz-icon nzType="whats-app" nzTheme="outline"></span> Enviar WhatsApp
-                        </a>
+                    <div style="margin-top: 12px; display: flex; flex-direction: column; gap: 8px;">
+                        <div style="display: flex; gap: 10px;">
+                            <a nz-button nzType="default" style="flex: 1; border-color: #1890ff; color: #1890ff; display: inline-flex; align-items: center; justify-content: center; gap: 4px; border-radius: 6px; font-weight: 500; font-size: 13px; height: 38px;"
+                               [href]="'tel:' + addr.adr_contactphone">
+                                <span nz-icon nzType="phone" nzTheme="outline"></span> Llamar
+                            </a>
+                            <a nz-button nzType="default" style="flex: 1; border-color: #25d366; color: #25d366; display: inline-flex; align-items: center; justify-content: center; gap: 4px; border-radius: 6px; font-weight: 500; font-size: 13px; background: rgba(37,211,102,0.01); height: 38px;"
+                               target="_blank" [href]="'https://wa.me/' + addr.adr_contactphone.replace(' ', '').replace('+', '').replace('-', '')">
+                                <span nz-icon nzType="whats-app" nzTheme="outline"></span> WhatsApp
+                            </a>
+                        </div>
+                        <button nz-button nzType="primary" (click)="openChat(selectedOrder)"
+                                style="width: 100%; border-color: #722ed1; background: linear-gradient(135deg, #722ed1 0%, #520330 100%); color: #fff; display: inline-flex; align-items: center; justify-content: center; gap: 6px; border-radius: 6px; font-weight: 600; font-size: 13px; height: 38px; box-shadow: 0 4px 10px rgba(114, 46, 209, 0.15);">
+                            <span nz-icon nzType="message" nzTheme="outline"></span> Abrir Chat en Vivo (Soporte Directo)
+                        </button>
                     </div>
                 </div>
                 <ng-template #basicCus>
@@ -680,4 +692,67 @@
     <ng-template #drawerTitle>
         Detalle de Despacho y Entrega
     </ng-template>
+</nz-drawer>
+
+<!-- CAJÓN DE CHAT EN VIVO PARA COMERCIO / REPARTIDOR -->
+<nz-drawer
+    [nzVisible]="isChatVisible"
+    nzPlacement="right"
+    [nzWidth]="420"
+    nzTitle="Chat con el Cliente (Tiempo Real)"
+    (nzOnClose)="closeChat()">
+    <ng-container *nzDrawerContent>
+        <div class="chat-drawer-wrapper" *ngIf="activeChatOrder">
+            
+            <!-- Datos del Cliente -->
+            <div class="chat-merchant-header">
+                <div class="header-shop-avatar">
+                    <span nz-icon nzType="user"></span>
+                </div>
+                <div>
+                    <h4 style="margin: 0; font-weight: 800; color: #1e293b; font-size: 14.5px;">{{ activeChatOrder.cus?.cus_fullname || 'Cliente ATSMarket' }}</h4>
+                    <span style="font-size: 12px; color: #64748b;">Pedido #PED-{{ activeChatOrder.ord_ordernumber }}</span>
+                </div>
+            </div>
+
+            <nz-divider style="margin: 12px 0;"></nz-divider>
+
+            <!-- Mensajes -->
+            <div class="chat-messages-container">
+                <div *ngIf="activeChatMessages.length === 0" class="chat-empty-state">
+                    <span nz-icon nzType="message" class="empty-chat-icon"></span>
+                    <p>¡No hay mensajes aún! Escríbele al cliente para notificarle novedades o coordinar la entrega.</p>
+                </div>
+                
+                <div *ngFor="let msg of activeChatMessages" class="chat-message-row"
+                     [class.buyer-row]="msg.msg_sender === (isDeliveryMode ? 'RIDER' : 'MERCHANT')"
+                     [class.merchant-row]="msg.msg_sender === 'BUYER'"
+                     [class.rider-row]="msg.msg_sender !== 'BUYER' && msg.msg_sender !== (isDeliveryMode ? 'RIDER' : 'MERCHANT')">
+                    
+                    <div class="message-bubble">
+                        <div class="bubble-sender-name" *ngIf="msg.msg_sender === 'BUYER'">
+                            👤 Cliente
+                        </div>
+                        <div class="bubble-sender-name" *ngIf="msg.msg_sender !== 'BUYER' && msg.msg_sender !== (isDeliveryMode ? 'RIDER' : 'MERCHANT')">
+                            {{ msg.msg_sender === 'RIDER' ? '🛵 Repartidor' : '🏪 Tienda' }} ({{ msg.msg_sendername }})
+                        </div>
+                        <div class="bubble-text">{{ msg.msg_text }}</div>
+                        <div class="bubble-time">{{ msg.msg_createdat | date:'HH:mm' }}</div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Input de Mensaje -->
+            <div class="chat-input-wrapper">
+                <textarea nz-input [(ngModel)]="chatMessageText" 
+                          (keydown.enter)="sendChatMessage(); $event.preventDefault()" 
+                          placeholder="Escribe tu mensaje..." 
+                          [nzAutosize]="{ minRows: 1, maxRows: 3 }"></textarea>
+                <button nz-button nzType="primary" (click)="sendChatMessage()" [disabled]="!chatMessageText.trim()">
+                    <span nz-icon nzType="send" nzTheme="outline"></span>
+                </button>
+            </div>
+
+        </div>
+    </ng-container>
 </nz-drawer>
