@@ -109,7 +109,7 @@ export class WebSocketNotificationService implements OnDestroy {
    * Intenta conectar al servidor de WebSockets si existe en el entorno.
    */
   private connectWebSocket(): void {
-    const wsUrl = (environment as any).wsUrl || 'ws://localhost:3000/realtime';
+    const wsUrl = (environment as any).apiUrlSocket || 'ws://localhost:3000/realtime';
     
     try {
       this.ws = new WebSocket(wsUrl);
