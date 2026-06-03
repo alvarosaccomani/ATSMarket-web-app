@@ -106,6 +106,13 @@ export class StoreCatalogComponent implements OnInit {
       }
     });
 
+    // Suscribirse a los queryParams de la URL para inicializar filtros
+    this.route.queryParams.subscribe(params => {
+      this.searchTerm = params['search'] || '';
+      this.selectedCategory = params['category'] || null;
+      this.applyFilters();
+    });
+
     // Suscribirse a las configuraciones
     this._storeContext.storeSettings$.subscribe(settings => {
       // Si necesitamos hacer algo específico con los settings aquí
