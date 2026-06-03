@@ -110,126 +110,132 @@
                         </div>
                     </form>
 
-                    <!-- ====== SELECCIÓN DE MODALIDAD DE ENVÍO ====== -->
-                    <div class="shipping-method-section" style="margin-top: 24px; padding-top: 24px; border-top: 1px solid #f0f0f0;">
-                        <h3 style="font-weight: 600; margin-bottom: 16px; color: #262626;">🚚 Método de Despacho</h3>
-                        
-                        <nz-radio-group [ngModel]="shippingMethod" (ngModelChange)="setShippingMethod($event)" style="width: 100%; display: flex; flex-direction: column; gap: 16px;">
-                            
-                            <!-- Opción 1: Motomensajería (Solo si está habilitada y disponible localmente) -->
-                            <label *ngIf="storeContext.getSetting('SHIPPING_LOCAL_MOTO_ENABLE', 'true') === 'true'" nz-radio nzValue="moto" class="payment-radio-box" [nzDisabled]="!isLocalDeliveryAvailable" [class.active-box]="shippingMethod === 'moto'" style="margin-left: 0; padding: 16px; border: 1px solid #d9d9d9; border-radius: 8px; display: flex; transition: all 0.3s ease;">
-                                <div class="radio-content" style="display: flex; gap: 16px; align-items: center; width: 100%;">
-                                    <span nz-icon nzType="car" nzTheme="outline" style="font-size: 32px; color: var(--ant-primary-color); padding: 8px; background: rgba(24, 144, 255, 0.1); border-radius: 50%;"></span>
-                                    <div class="pay-text" style="flex: 1;">
-                                        <h3 style="margin: 0 0 4px 0; font-size: 16px; font-weight: 600;">🚴 Motomensajería Local (Express)</h3>
-                                        <p style="margin: 0; font-size: 13px; color: #8c8c8c;" *ngIf="isLocalDeliveryAvailable">
-                                            Entrega ultra rápida en el día. Cubre hasta {{ storeContext.getSetting('DELIVERY_LOCAL_RADIUS', 25) }} km de distancia.
-                                        </p>
-                                        <p style="margin: 0; font-size: 13px; color: #ff4d4f; font-weight: 500;" *ngIf="!isLocalDeliveryAvailable">
-                                            ⚠️ Fuera del radio de cobertura local (más de {{ storeContext.getSetting('DELIVERY_LOCAL_RADIUS', 25) }} km).
-                                        </p>
-                                    </div>
-                                    <span class="price-badge" style="font-size: 20px; font-weight: 700; color: var(--ant-primary-color);">${{ storeContext.getSetting('DELIVERY_LOCAL_COST', 350) }}</span>
-                                </div>
-                            </label>
-                            
-                            <!-- Opción 2: Correo Nacional -->
-                            <label *ngIf="storeContext.getSetting('SHIPPING_NATIONAL_CORREO_ENABLE', 'true') === 'true'" nz-radio nzValue="correo" class="payment-radio-box" [class.active-box]="shippingMethod === 'correo'" style="margin-left: 0; padding: 16px; border: 1px solid #d9d9d9; border-radius: 8px; display: flex; transition: all 0.3s ease;">
-                                <div class="radio-content" style="display: flex; gap: 16px; align-items: center; width: 100%;">
-                                    <span nz-icon nzType="global" nzTheme="outline" style="font-size: 32px; color: #1890ff; padding: 8px; background: rgba(24, 144, 255, 0.1); border-radius: 50%;"></span>
-                                    <div class="pay-text" style="flex: 1;">
-                                        <h3 style="margin: 0 0 4px 0; font-size: 16px; font-weight: 600;">📦 Correo Postal Nacional</h3>
-                                        <p style="margin: 0; font-size: 13px; color: #8c8c8c;">
-                                            Envío estándar a todo el país vía Correo Postal (3 a 5 días hábiles).
-                                        </p>
-                                    </div>
-                                    <span class="price-badge" style="font-size: 20px; font-weight: 700; color: #1890ff;">${{ storeContext.getSetting('DELIVERY_NATIONAL_COST', 800) }}</span>
-                                </div>
-                            </label>
-
-                            <!-- Opción 3: Retiro en Local -->
-                            <label *ngIf="storeContext.getSetting('SHIPPING_RETIRO_LOCAL_ENABLE', 'true') === 'true'" nz-radio nzValue="retiro" class="payment-radio-box" [class.active-box]="shippingMethod === 'retiro'" style="margin-left: 0; padding: 16px; border: 1px solid #d9d9d9; border-radius: 8px; display: flex; transition: all 0.3s ease;">
-                                <div class="radio-content" style="display: flex; gap: 16px; align-items: center; width: 100%;">
-                                    <span nz-icon nzType="shop" nzTheme="outline" style="font-size: 32px; color: #52c41a; padding: 8px; background: rgba(82, 196, 26, 0.1); border-radius: 50%;"></span>
-                                    <div class="pay-text" style="flex: 1;">
-                                        <h3 style="margin: 0 0 4px 0; font-size: 16px; font-weight: 600;">🏪 Retiro en el Local</h3>
-                                        <p style="margin: 0; font-size: 13px; color: #8c8c8c;">
-                                            Retirá tu compra sin cargo directamente en nuestra sucursal.
-                                        </p>
-                                    </div>
-                                    <span class="price-badge" style="font-size: 20px; font-weight: 700; color: #52c41a;">Gratis</span>
-                                </div>
-                            </label>
-
-                            <!-- Opción 4: Acordar con Vendedor -->
-                            <label *ngIf="storeContext.getSetting('SHIPPING_ACORDAR_VENDEDOR_ENABLE', 'true') === 'true'" nz-radio nzValue="acordar" class="payment-radio-box" [class.active-box]="shippingMethod === 'acordar'" style="margin-left: 0; padding: 16px; border: 1px solid #d9d9d9; border-radius: 8px; display: flex; transition: all 0.3s ease;">
-                                <div class="radio-content" style="display: flex; gap: 16px; align-items: center; width: 100%;">
-                                    <span nz-icon nzType="message" nzTheme="outline" style="font-size: 32px; color: #fa8c16; padding: 8px; background: rgba(250, 140, 22, 0.1); border-radius: 50%;"></span>
-                                    <div class="pay-text" style="flex: 1;">
-                                        <h3 style="margin: 0 0 4px 0; font-size: 16px; font-weight: 600;">💬 Acordar con el Vendedor</h3>
-                                        <p style="margin: 0; font-size: 13px; color: #8c8c8c;">
-                                            Coordiná el envío, pago o entrega personalizada directamente con la tienda.
-                                        </p>
-                                    </div>
-                                    <span class="price-badge" style="font-size: 16px; font-weight: 600; color: #fa8c16;">A convenir</span>
-                                </div>
-                            </label>
-                            
-                        </nz-radio-group>
-                    </div>
-
-                    <!-- Selector de Courier Postal Dinámico (API Correo) -->
-                    <div class="postal-options-wrapper" *ngIf="shippingMethod === 'correo'" style="margin-top: 24px; padding: 20px; background: rgba(250, 250, 250, 0.7); border: 1px solid #e8e8e8; border-radius: 12px; animation: fadeIn 0.3s ease-out;">
-                        
-                        <h4 style="margin: 0 0 16px 0; font-size: 15px; font-weight: 600; color: #262626; display: flex; align-items: center; gap: 8px;">
-                            <span nz-icon nzType="global" nzTheme="outline" style="color: #1890ff;"></span>
-                            Seleccioná una Empresa Postal (Servicio en Tiempo Real)
-                        </h4>
-
-                        <!-- Cargador Dinámico de la API de Correos -->
-                        <div class="postal-loading-spinner" *ngIf="isCalculatingShipping" style="display: flex; flex-direction: column; align-items: center; justify-content: center; padding: 32px 0; gap: 12px;">
-                            <nz-spin nzSimple nzSize="large"></nz-spin>
-                            <p style="margin: 0; font-size: 13px; color: #595959; font-weight: 500; text-shadow: 0 1px 1px white;">Cotizando tarifas dinámicas con servidores de Correo Argentino y DHL...</p>
-                        </div>
-
-                        <!-- Advertencia si no hay código postal cargado -->
-                        <div class="postal-no-zip-alert" *ngIf="!isCalculatingShipping && postalOptions.length === 0" style="padding: 12px 16px;">
-                            <nz-alert nzType="warning" nzShowIcon nzMessage="Código Postal Requerido"
-                                nzDescription="Por favor, completa el Código Postal en el formulario de arriba (o selecciona una dirección guardada) para cotizar el flete en vivo.">
-                            </nz-alert>
-                        </div>
-
-                        <!-- Opciones cotizadas en vivo -->
-                        <div class="postal-options-grid" *ngIf="!isCalculatingShipping && postalOptions.length > 0" style="display: flex; flex-direction: column; gap: 12px;">
-                            <div *ngFor="let opt of postalOptions" class="postal-card" 
-                                [class.selected-postal-card]="selectedPostalOptionId === opt.id"
-                                (click)="selectPostalOption(opt.id)">
-                                
-                                <span nz-icon [nzType]="opt.icon" nzTheme="outline" 
-                                    [style.color]="selectedPostalOptionId === opt.id ? '#1890ff' : '#8c8c8c'"
-                                    style="font-size: 24px; padding: 10px; background: #fafafa; border-radius: 50%; transition: all 0.2s;">
-                                </span>
-
-                                <div class="postal-card-text" style="flex: 1;">
-                                    <h4 style="margin: 0 0 4px 0; font-size: 14px; font-weight: 600; color: #262626; display: flex; align-items: center; gap: 8px;">
-                                        {{ opt.providerName }}
-                                        <span class="delivery-time-badge" style="font-size: 11px; font-weight: 500; background: #f5f5f5; color: #595959; padding: 1px 6px; border-radius: 10px; border: 1px solid #d9d9d9;">
-                                            🚚 {{ opt.estimatedDays }}
-                                        </span>
-                                    </h4>
-                                    <p style="margin: 0; font-size: 12px; color: #8c8c8c; line-height: 1.3;">{{ opt.description }}</p>
-                                </div>
-
-                                <div class="postal-card-cost" style="text-align: right;">
-                                    <span style="font-size: 18px; font-weight: 700;" 
-                                        [style.color]="selectedPostalOptionId === opt.id ? '#1890ff' : '#262626'">
-                                        ${{ opt.cost | number:'1.0-0' }}
-                                    </span>
-                                </div>
-
+                    <!-- Desglose por tienda (Split de Pedidos) -->
+                    <div *ngFor="let g of storesInOrder; let last = last" class="store-checkout-group" [style.borderBottom]="last ? 'none' : '2px dashed #f0f0f0'" style="margin-top: 24px; padding-top: 24px; padding-bottom: 24px;">
+                        <div class="store-group-header" style="display: flex; align-items: center; gap: 12px; margin-bottom: 16px;">
+                            <img [src]="getStoreSetting(g, 'STORE_LOGO_URL') || 'assets/images/default-store.png'" alt="Logo tienda" style="width: 40px; height: 40px; border-radius: 8px; object-fit: cover; border: 1px solid #e8e8e8;" />
+                            <div>
+                                <h3 style="margin: 0; font-weight: 700; font-size: 16px; color: #262626;">🏢 {{ g.company?.cmp_name || 'Tienda ATSMarket' }}</h3>
+                                <p style="margin: 0; font-size: 12px; color: #8c8c8c;">{{ g.items.length }} producto(s) en este pedido</p>
                             </div>
                         </div>
 
+                        <!-- Lista de productos de la tienda -->
+                        <div class="store-group-items" style="background: #fafafa; border-radius: 8px; padding: 12px; margin-bottom: 16px;">
+                            <div *ngFor="let item of g.items" style="display: flex; align-items: center; justify-content: space-between; padding: 8px 0; border-bottom: 1px solid #f0f0f0;">
+                                <div style="display: flex; align-items: center; gap: 8px; flex: 1;">
+                                    <img [src]="item.prov_image || 'assets/images/default-product.png'" style="width: 32px; height: 32px; border-radius: 4px; object-fit: cover;" />
+                                    <div>
+                                        <span style="font-weight: 500; font-size: 13px; color: #262626;">{{ item.prov_name }}</span>
+                                        <span *ngIf="item.prov_size || item.prov_color" style="display: block; font-size: 11px; color: #8c8c8c;">
+                                            {{ item.prov_color }} / {{ item.prov_size }}
+                                        </span>
+                                    </div>
+                                </div>
+                                <div style="text-align: right; margin-left: 16px;">
+                                    <span style="font-size: 12px; color: #8c8c8c;">{{ item.quantity }} x ${{ item.prov_suggestedminimumsellingprice | number:'1.2-2' }}</span>
+                                    <span style="display: block; font-weight: 600; font-size: 13px; color: #262626;">${{ item.subtotal | number:'1.2-2' }}</span>
+                                </div>
+                            </div>
+                            <div style="text-align: right; padding-top: 8px; font-weight: 600; font-size: 14px; color: #262626;">
+                                Subtotal Tienda: <span style="font-size: 15px; color: var(--ant-primary-color);">${{ g.subtotal | number:'1.2-2' }}</span>
+                            </div>
+                        </div>
+
+                        <!-- Opciones de envío para esta tienda -->
+                        <div class="shipping-method-section" style="margin-top: 16px;">
+                            <h4 style="font-weight: 600; margin-bottom: 12px; color: #434343;">🚚 Método de Envío para esta tienda:</h4>
+                            
+                            <nz-radio-group [ngModel]="g.shippingMethod" (ngModelChange)="setStoreShippingMethod(g, $event)" style="width: 100%; display: flex; flex-direction: column; gap: 12px;">
+                                
+                                <!-- Opción 1: Motomensajería (Solo si está habilitada y disponible localmente) -->
+                                <label *ngIf="getStoreSetting(g, 'SHIPPING_LOCAL_MOTO_ENABLE', 'true') === 'true'" nz-radio nzValue="moto" class="payment-radio-box" [nzDisabled]="!g.isLocalDeliveryAvailable" [class.active-box]="g.shippingMethod === 'moto'" style="margin-left: 0; padding: 12px 16px; border: 1px solid #d9d9d9; border-radius: 8px; display: flex; transition: all 0.3s ease;">
+                                    <div class="radio-content" style="display: flex; gap: 12px; align-items: center; width: 100%;">
+                                        <span nz-icon nzType="car" nzTheme="outline" style="font-size: 24px; color: var(--ant-primary-color); padding: 6px; background: rgba(24, 144, 255, 0.1); border-radius: 50%;"></span>
+                                        <div class="pay-text" style="flex: 1;">
+                                            <h4 style="margin: 0 0 2px 0; font-size: 14px; font-weight: 600;">🚴 Motomensajería Local (Express)</h4>
+                                            <p style="margin: 0; font-size: 12px; color: #8c8c8c;" *ngIf="g.isLocalDeliveryAvailable">
+                                                Entrega rápida. Cubre hasta {{ getStoreSetting(g, 'DELIVERY_LOCAL_RADIUS', 25) }} km.
+                                            </p>
+                                            <p style="margin: 0; font-size: 12px; color: #ff4d4f; font-weight: 500;" *ngIf="!g.isLocalDeliveryAvailable">
+                                                ⚠️ Fuera del radio de cobertura local (más de {{ getStoreSetting(g, 'DELIVERY_LOCAL_RADIUS', 25) }} km).
+                                            </p>
+                                        </div>
+                                        <span class="price-badge" style="font-size: 16px; font-weight: 700; color: var(--ant-primary-color);">${{ getStoreSetting(g, 'DELIVERY_LOCAL_COST', 350) }}</span>
+                                    </div>
+                                </label>
+                                
+                                <!-- Opción 2: Correo Nacional -->
+                                <label *ngIf="getStoreSetting(g, 'SHIPPING_NATIONAL_CORREO_ENABLE', 'true') === 'true'" nz-radio nzValue="correo" class="payment-radio-box" [class.active-box]="g.shippingMethod === 'correo'" style="margin-left: 0; padding: 12px 16px; border: 1px solid #d9d9d9; border-radius: 8px; display: flex; transition: all 0.3s ease;">
+                                    <div class="radio-content" style="display: flex; gap: 12px; align-items: center; width: 100%;">
+                                        <span nz-icon nzType="global" nzTheme="outline" style="font-size: 24px; color: #1890ff; padding: 6px; background: rgba(24, 144, 255, 0.1); border-radius: 50%;"></span>
+                                        <div class="pay-text" style="flex: 1;">
+                                            <h4 style="margin: 0 0 2px 0; font-size: 14px; font-weight: 600;">📦 Correo Postal Nacional</h4>
+                                            <p style="margin: 0; font-size: 12px; color: #8c8c8c;">
+                                                Envío estándar a domicilio o sucursal.
+                                            </p>
+                                        </div>
+                                        <span class="price-badge" style="font-size: 16px; font-weight: 700; color: #1890ff;">${{ getStoreSetting(g, 'DELIVERY_NATIONAL_COST', 800) }}</span>
+                                    </div>
+                                </label>
+
+                                <!-- Opción 3: Retiro en Local -->
+                                <label *ngIf="getStoreSetting(g, 'SHIPPING_RETIRO_LOCAL_ENABLE', 'true') === 'true'" nz-radio nzValue="retiro" class="payment-radio-box" [class.active-box]="g.shippingMethod === 'retiro'" style="margin-left: 0; padding: 12px 16px; border: 1px solid #d9d9d9; border-radius: 8px; display: flex; transition: all 0.3s ease;">
+                                    <div class="radio-content" style="display: flex; gap: 12px; align-items: center; width: 100%;">
+                                        <span nz-icon nzType="shop" nzTheme="outline" style="font-size: 24px; color: #52c41a; padding: 6px; background: rgba(82, 196, 26, 0.1); border-radius: 50%;"></span>
+                                        <div class="pay-text" style="flex: 1;">
+                                            <h4 style="margin: 0 0 2px 0; font-size: 14px; font-weight: 600;">🏪 Retiro en el Local</h4>
+                                            <p style="margin: 0; font-size: 12px; color: #8c8c8c;">
+                                                Retirás sin cargo directamente en sucursal.
+                                            </p>
+                                        </div>
+                                        <span class="price-badge" style="font-size: 16px; font-weight: 700; color: #52c41a;">Gratis</span>
+                                    </div>
+                                </label>
+
+                                <!-- Opción 4: Acordar con Vendedor -->
+                                <label *ngIf="getStoreSetting(g, 'SHIPPING_ACORDAR_VENDEDOR_ENABLE', 'true') === 'true'" nz-radio nzValue="acordar" class="payment-radio-box" [class.active-box]="g.shippingMethod === 'acordar'" style="margin-left: 0; padding: 12px 16px; border: 1px solid #d9d9d9; border-radius: 8px; display: flex; transition: all 0.3s ease;">
+                                    <div class="radio-content" style="display: flex; gap: 12px; align-items: center; width: 100%;">
+                                        <span nz-icon nzType="message" nzTheme="outline" style="font-size: 24px; color: #fa8c16; padding: 6px; background: rgba(250, 140, 22, 0.1); border-radius: 50%;"></span>
+                                        <div class="pay-text" style="flex: 1;">
+                                            <h4 style="margin: 0 0 2px 0; font-size: 14px; font-weight: 600;">💬 Acordar con el Vendedor</h4>
+                                            <p style="margin: 0; font-size: 12px; color: #8c8c8c;">
+                                                Coordiná la entrega directamente.
+                                            </p>
+                                        </div>
+                                        <span class="price-badge" style="font-size: 14px; font-weight: 600; color: #fa8c16;">A convenir</span>
+                                    </div>
+                                </label>
+                                
+                            </nz-radio-group>
+
+                            <!-- Selector de Courier Postal Dinámico por tienda -->
+                            <div class="postal-options-wrapper" *ngIf="g.shippingMethod === 'correo'" style="margin-top: 12px; padding: 12px; background: rgba(250, 250, 250, 0.7); border: 1px solid #e8e8e8; border-radius: 8px;">
+                                <h5 style="margin: 0 0 8px 0; font-size: 13px; font-weight: 600; color: #262626;">Empresa Postal:</h5>
+                                <div class="postal-loading-spinner" *ngIf="g.isCalculatingShipping" style="display: flex; align-items: center; gap: 8px; padding: 8px 0;">
+                                    <nz-spin nzSimple nzSize="small"></nz-spin>
+                                    <span style="font-size: 12px; color: #595959;">Calculando tarifas en tiempo real...</span>
+                                </div>
+                                <div *ngIf="!g.isCalculatingShipping && g.postalOptions.length === 0" style="padding: 4px 0;">
+                                    <nz-alert nzType="warning" nzShowIcon nzMessage="Código Postal requerido." nzSize="small"></nz-alert>
+                                </div>
+                                <div class="postal-options-grid" *ngIf="!g.isCalculatingShipping && g.postalOptions.length > 0" style="display: flex; flex-direction: column; gap: 8px;">
+                                    <div *ngFor="let opt of g.postalOptions" class="postal-card" 
+                                        [class.selected-postal-card]="g.selectedPostalOptionId === opt.id"
+                                        (click)="selectStorePostalOption(g, opt.id)"
+                                        style="display: flex; align-items: center; justify-content: space-between; padding: 8px; border: 1px solid #e8e8e8; border-radius: 6px; cursor: pointer; transition: all 0.2s;">
+                                        <div style="display: flex; align-items: center; gap: 8px;">
+                                            <span nz-icon [nzType]="opt.icon" nzTheme="outline" style="font-size: 16px;"></span>
+                                            <div>
+                                                <span style="font-size: 12px; font-weight: 600;">{{ opt.providerName }}</span>
+                                                <span style="display: block; font-size: 10px; color: #8c8c8c;">{{ opt.estimatedDays }} - {{ opt.description }}</span>
+                                            </div>
+                                        </div>
+                                        <span style="font-size: 13px; font-weight: 700; color: var(--ant-primary-color);">${{ opt.cost }}</span>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
                     </div>
 
                     <button nz-button nzType="primary" nzSize="large" nzBlock style="margin-top: 24px;"
@@ -398,8 +404,28 @@
                                 <span>Artículos Físicos</span>
                                 <strong>{{ cartItemCount }} u.</strong>
                             </div>
+
+                            <!-- Desglose por tienda -->
+                            <div style="margin: 12px 0; padding: 12px; background: rgba(0,0,0,0.02); border-radius: 8px;">
+                                <div style="font-size: 11px; font-weight: 700; color: #8c8c8c; margin-bottom: 8px; text-transform: uppercase;">Detalle por Tienda</div>
+                                <div *ngFor="let g of storesInOrder" style="display: flex; flex-direction: column; gap: 4px; margin-bottom: 8px; padding-bottom: 8px; border-bottom: 1px dashed #e8e8e8; font-size: 12px;">
+                                    <div style="display: flex; justify-content: space-between; font-weight: 600; color: #262626;">
+                                        <span>{{ g.company?.cmp_name || 'Tienda' }}</span>
+                                        <span>${{ (g.subtotal + g.shippingCost) | number:'1.2-2' }}</span>
+                                    </div>
+                                    <div style="display: flex; justify-content: space-between; font-size: 11px; color: #8c8c8c; padding-left: 8px;">
+                                        <span>Subtotal:</span>
+                                        <span>${{ g.subtotal | number:'1.2-2' }}</span>
+                                    </div>
+                                    <div style="display: flex; justify-content: space-between; font-size: 11px; color: #8c8c8c; padding-left: 8px;">
+                                        <span>Envío ({{ g.shippingMethod | uppercase }}):</span>
+                                        <span>${{ g.shippingCost | number:'1.2-2' }}</span>
+                                    </div>
+                                </div>
+                            </div>
+
                             <div class="summary-row">
-                                <span>Costo de Envío</span>
+                                <span>Total Envíos Consolidado</span>
                                 <strong style="color: #1890ff;">${{ shippingCost | number:'1.2-2' }}</strong>
                             </div>
                             <div class="summary-row">
@@ -427,16 +453,31 @@
 
         <!-- ====== PASO 3: PANTALLA DE ÉXITO ====== -->
         <div class="success-screen" *ngIf="currentStep === 3">
-            <span nz-icon nzType="check-circle" nzTheme="fill" class="success-icon"></span>
+            <span nz-icon nzType="check-circle" nzTheme="fill" class="success-icon" style="color: #52c41a; font-size: 72px;"></span>
             <h1>¡Gracias, tu compra se realizó con éxito!</h1>
-            <p>Se te asignó el Pedido N° <strong>#PED-{{ generatedOrderNumber }}</strong>. El
-                vendedor recibió tu comprobante y se encuentra analizando tu orden. Te informaremos por mail cuando se
-                procese o empaque.</p>
+            <p style="font-size: 16px; color: #595959; margin-bottom: 24px;">Tu compra se dividió en múltiples pedidos independientes para cada comercio:</p>
+
+            <div style="max-width: 500px; margin: 0 auto 32px auto; background: #fafafa; border: 1px solid #e8e8e8; border-radius: 12px; padding: 20px; text-align: left;">
+                <div *ngFor="let g of storesInOrder" style="display: flex; align-items: center; justify-content: space-between; padding: 12px 0; border-bottom: 1px solid #f0f0f0;">
+                    <div style="display: flex; align-items: center; gap: 10px;">
+                        <img [src]="getStoreSetting(g, 'STORE_LOGO_URL') || 'assets/images/default-store.png'" style="width: 32px; height: 32px; border-radius: 6px; object-fit: cover;" />
+                        <div>
+                            <span style="font-weight: 600; font-size: 14px; color: #262626; display: block;">{{ g.company?.cmp_name || 'Tienda' }}</span>
+                            <span style="font-size: 11px; color: #8c8c8c;">{{ g.items.length }} producto(s)</span>
+                        </div>
+                    </div>
+                    <div style="text-align: right;">
+                        <strong style="color: var(--ant-primary-color); font-size: 14px; display: block;">#PED-{{ g.generatedOrderNumber }}</strong>
+                        <span style="font-size: 12px; font-weight: 600; color: #52c41a;">Total: ${{ (g.subtotal + g.shippingCost) | number:'1.2-2' }}</span>
+                    </div>
+                </div>
+            </div>
+
+            <p style="color: #8c8c8c;">Cada vendedor recibió su orden correspondiente y analizará tu pedido por separado. Te informaremos por mail el estado de cada uno.</p>
 
             <div style="margin-top: 32px; display: flex; gap: 16px; justify-content: center;">
-                <button nz-button nzType="primary" nzSize="large" routerLink="/">Seguir Comprando en el
-                    Catálogo</button>
-                <button nz-button nzType="default" nzSize="large">Descargar Recibo</button>
+                <button nz-button nzType="primary" nzSize="large" routerLink="/">Seguir Comprando en el Catálogo</button>
+                <button nz-button nzType="default" nzSize="large">Descargar Recibos</button>
             </div>
         </div>
 

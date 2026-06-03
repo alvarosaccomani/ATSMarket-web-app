@@ -6,7 +6,7 @@ import { CartService } from '../../core/services/cart.service';
 import { AddressesService } from '../../core/services/addresses.service';
 import { AddressInterface } from '../../core/interfaces/address/address.interface';
 import { OrderDetailInterface } from '../../core/interfaces/order-detail/order-detail.interface';
-import { Subscription, forkJoin, of } from 'rxjs';
+import { Subscription, forkJoin, of, Observable } from 'rxjs';
 import { map, catchError } from 'rxjs/operators';
 import { OrdersService } from '../../core/services/orders.service';
 import { StoreContextService } from '../../core/services/store-context.service';
@@ -16,6 +16,27 @@ import { MessageService } from '../../core/services/message.service';
 import { StockMovementsService } from '../../core/services/stock-movements.service';
 import { ProductVariationsService } from '../../core/services/product-variations.service';
 import { InventoryStocksService } from '../../core/services/inventory-stocks.service';
+import { CompaniesService } from '../../core/services/companies.service';
+import { CompaniesSettingsService } from '../../core/services/companies-settings.service';
+import { CompanyInterface } from '../../core/interfaces/company/company.interface';
+import { CartItemInterface } from '../../core/interfaces/cart-item.interface';
+
+export interface StoreOrderGroup {
+  cmp_uuid: string;
+  company?: CompanyInterface;
+  settings?: { [key: string]: any };
+  items: CartItemInterface[];
+  subtotal: number;
+  shippingMethod: 'moto' | 'correo' | 'retiro' | 'acordar';
+  selectedPostalOptionId: 'correo_std' | 'correo_exp' | 'correo_priority';
+  isLocalDeliveryAvailable: boolean;
+  shippingCost: number;
+  postalOptions: any[];
+  isCalculatingShipping: boolean;
+  trackingNumber?: string;
+  generatedOrderNumber?: number;
+  orderUuid?: string;
+}
 
 import { NzFormModule } from 'ng-zorro-antd/form';
 import { NzInputModule } from 'ng-zorro-antd/input';
@@ -56,6 +77,7 @@ import { NzSpinModule } from 'ng-zorro-antd/spin';
 export class CheckoutComponent implements OnInit, OnDestroy {
 
   public shippingForm!: FormGroup;
+  public storesInOrder: StoreOrderGroup[] = [];
   public totalFinal: number = 0;
   public cartItemCount: number = 0;
   public cartItemsList: any[] = [];
@@ -182,7 +204,9 @@ export class CheckoutComponent implements OnInit, OnDestroy {
     private _messageService: MessageService,
     private _stockMovementsService: StockMovementsService,
     private _productVariationsService: ProductVariationsService,
-    private _inventoryStocksService: InventoryStocksService
+    private _inventoryStocksService: InventoryStocksService,
+    private companiesService: CompaniesService,
+    private companiesSettingsService: CompaniesSettingsService
   ) { }
 
   ngOnInit(): void {
@@ -234,9 +258,8 @@ export class CheckoutComponent implements OnInit, OnDestroy {
     this.cartSub = this.cartService.cartItems$.subscribe((cartItems: any[]) => {
       this.cartItemsList = cartItems;
       this.cartItemCount = cartItems.reduce((acc: number, item: any) => acc + item.quantity, 0);
-      this.totalSubtotal = cartItems.reduce((acc: number, item: any) => acc + item.subtotal, 0);
-      this.updateShippingCost();
-      this.calculatePostalShippingRates();
+      
+      this.resolveStoresData(cartItems);
 
       if (this.cartItemCount === 0 && this.currentStep < 3) {
         this.message.warning('Tu carrito está vacío, serás redirigido al catálogo.');
@@ -282,29 +305,180 @@ export class CheckoutComponent implements OnInit, OnDestroy {
     return R * c;
   }
 
-  public checkShippingEligibility(): void {
-    if (!this.currentCompany) return;
+  public getStoreSetting(storeGroup: StoreOrderGroup, key: string, defaultValue: any = null): any {
+    const settings = storeGroup.settings || {};
+    const company = storeGroup.company;
+    let value = settings[key];
 
-    // Obtener parámetros de envío dinámicos configurados por la tienda
-    const localRadius = Number(this.storeContext.getSetting('DELIVERY_LOCAL_RADIUS', 25));
-    const localCost = Number(this.storeContext.getSetting('DELIVERY_LOCAL_COST', 350));
-    const nationalCost = Number(this.storeContext.getSetting('DELIVERY_NATIONAL_COST', 800));
+    if (value === undefined || value === null || value === '') {
+      if (company) {
+        switch (key) {
+          case 'STORE_LOGO_URL':
+            value = company.cmp_logo;
+            break;
+          case 'HOME_BANNER_IMAGE':
+            value = company.cmp_banner;
+            break;
+          case 'HOME_BANNER_TITLE':
+            value = company.cmp_name;
+            break;
+          case 'STORE_WHATSAPP':
+            value = company.cmp_whatsapp || company.cmp_phone;
+            break;
+          case 'STORE_INSTAGRAM':
+            value = company.cmp_instagram;
+            break;
+          case 'STORE_FACEBOOK':
+            value = company.cmp_facebook;
+            break;
+          case 'HOME_BANNER_DESCRIPTION':
+          case 'HOME_BANNER_SUBTITLE':
+            value = company.cmp_description;
+            break;
+          case 'CURRENCY':
+            value = company.cmp_currency;
+            break;
+          case 'ALLOW_BACKORDERS':
+            value = company.cmp_allowbackorders;
+            break;
+          case 'THEME_PRIMARY_COLOR':
+            value = company.cmp_primarycolor;
+            break;
+        }
+      }
+    }
+
+    return (value !== undefined && value !== null && value !== '') ? value : defaultValue;
+  }
+
+  public resolveStoresData(cartItems: any[]): void {
+    const groupedItems: { [key: string]: any[] } = {};
+    cartItems.forEach(item => {
+      const cmpUuid = item.cmp_uuid || (this.currentCompany ? this.currentCompany.cmp_uuid : '');
+      if (cmpUuid) {
+        if (!groupedItems[cmpUuid]) {
+          groupedItems[cmpUuid] = [];
+        }
+        groupedItems[cmpUuid].push(item);
+      }
+    });
+
+    const uniqueCmpUuids = Object.keys(groupedItems);
+    if (uniqueCmpUuids.length === 0) {
+      this.storesInOrder = [];
+      this.recalculateGrandTotal();
+      return;
+    }
+
+    const newStoresList: StoreOrderGroup[] = [];
+    const fetchRequests: Observable<any>[] = [];
+
+    uniqueCmpUuids.forEach(cmpUuid => {
+      const existing = this.storesInOrder.find(s => s.cmp_uuid === cmpUuid);
+      const items = groupedItems[cmpUuid];
+      const subtotal = items.reduce((acc, item) => acc + item.subtotal, 0);
+
+      if (existing) {
+        existing.items = items;
+        existing.subtotal = subtotal;
+        newStoresList.push(existing);
+      } else {
+        const newGroup: StoreOrderGroup = {
+          cmp_uuid: cmpUuid,
+          items: items,
+          subtotal: subtotal,
+          shippingMethod: 'correo',
+          selectedPostalOptionId: 'correo_std',
+          isLocalDeliveryAvailable: false,
+          shippingCost: 0,
+          postalOptions: [],
+          isCalculatingShipping: false
+        };
+        newStoresList.push(newGroup);
+
+        const companyInfo$ = this.companiesService.getCompanyById(cmpUuid).pipe(
+          map(res => (res && res.data && res.data.length > 0) ? res.data[0] : undefined),
+          catchError(() => of(undefined))
+        );
+        const companySettings$ = this.companiesSettingsService.getCompaniesSettings(cmpUuid).pipe(
+          map(res => {
+            const settingsMap: { [key: string]: any } = {};
+            if (res && res.data) {
+              res.data.forEach((s: any) => {
+                let val = s.cmps_value;
+                if (val === 'true') val = true;
+                if (val === 'false') val = false;
+                if (!isNaN(val) && s.cmps_datatype === 'number') val = Number(val);
+                settingsMap[s.cmps_key] = val;
+              });
+            }
+            return settingsMap;
+          }),
+          catchError(() => of({}))
+        );
+
+        fetchRequests.push(
+          forkJoin({ company: companyInfo$, settings: companySettings$ }).pipe(
+            map(res => {
+              newGroup.company = res.company;
+              newGroup.settings = res.settings;
+              return newGroup;
+            })
+          )
+        );
+      }
+    });
+
+    this.storesInOrder = newStoresList;
+
+    if (fetchRequests.length > 0) {
+      forkJoin(fetchRequests).subscribe(() => {
+        this.storesInOrder.forEach(g => {
+          this.checkShippingEligibilityForStore(g);
+          if (g.shippingMethod === 'correo') {
+            this.calculatePostalShippingRatesForStore(g);
+          }
+        });
+        this.recalculateGrandTotal();
+      });
+    } else {
+      this.storesInOrder.forEach(g => {
+        this.checkShippingEligibilityForStore(g);
+        if (g.shippingMethod === 'correo') {
+          this.calculatePostalShippingRatesForStore(g);
+        }
+      });
+      this.recalculateGrandTotal();
+    }
+  }
+
+  public checkShippingEligibility(): void {
+    this.storesInOrder.forEach(storeGroup => {
+      this.checkShippingEligibilityForStore(storeGroup);
+    });
+    this.recalculateGrandTotal();
+  }
+
+  public checkShippingEligibilityForStore(storeGroup: StoreOrderGroup): void {
+    if (!storeGroup.company) return;
+
+    const localRadius = Number(this.getStoreSetting(storeGroup, 'DELIVERY_LOCAL_RADIUS', 25));
+    const localCost = Number(this.getStoreSetting(storeGroup, 'DELIVERY_LOCAL_COST', 350));
+    const nationalCost = Number(this.getStoreSetting(storeGroup, 'DELIVERY_NATIONAL_COST', 800));
 
     let isLocal = false;
 
     if (this.selectedAddressId !== 'new') {
       const addr = this.myAddresses.find(a => a.adr_uuid === this.selectedAddressId);
       if (addr) {
-        // 1. Intentar por coordenadas (Haversine)
-        if (this.currentCompany.cmp_lat && this.currentCompany.cmp_lng && addr.adr_lat && addr.adr_lng) {
+        if (storeGroup.company.cmp_lat && storeGroup.company.cmp_lng && addr.adr_lat && addr.adr_lng) {
           const dist = this.calculateDistance(
-            this.currentCompany.cmp_lat, this.currentCompany.cmp_lng,
+            storeGroup.company.cmp_lat, storeGroup.company.cmp_lng,
             addr.adr_lat, addr.adr_lng
           );
           isLocal = dist <= localRadius;
         } else {
-          // 2. Fallback por coincidencia de texto de ciudad
-          const compAddress = (this.currentCompany.cmp_address || '').toLowerCase();
+          const compAddress = (storeGroup.company.cmp_address || '').toLowerCase();
           const addrCity = (addr.adr_city || '').toLowerCase().trim();
           if (addrCity && compAddress.includes(addrCity)) {
             isLocal = true;
@@ -312,189 +486,135 @@ export class CheckoutComponent implements OnInit, OnDestroy {
         }
       }
     } else {
-      // Dirección Nueva: usar coordenadas si fueron detectadas
-      if (this.currentCompany.cmp_lat && this.currentCompany.cmp_lng && this.detectedCoords) {
+      if (storeGroup.company.cmp_lat && storeGroup.company.cmp_lng && this.detectedCoords) {
         const dist = this.calculateDistance(
-          this.currentCompany.cmp_lat, this.currentCompany.cmp_lng,
+          storeGroup.company.cmp_lat, storeGroup.company.cmp_lng,
           this.detectedCoords.lat, this.detectedCoords.lng
         );
         isLocal = dist <= localRadius;
       } else {
-        // Fallback por coincidencia de ciudad
         const formCity = (this.shippingForm.get('ciudad')?.value || '').toLowerCase().trim();
-        const compAddress = (this.currentCompany.cmp_address || '').toLowerCase();
+        const compAddress = (storeGroup.company.cmp_address || '').toLowerCase();
         if (formCity && compAddress.includes(formCity)) {
           isLocal = true;
         }
       }
     }
 
-    this.isLocalDeliveryAvailable = isLocal;
-    
-    const motoEnabled = this.storeContext.getSetting('SHIPPING_LOCAL_MOTO_ENABLE', 'true') === 'true';
-    const correoEnabled = this.storeContext.getSetting('SHIPPING_NATIONAL_CORREO_ENABLE', 'true') === 'true';
-    const retiroEnabled = this.storeContext.getSetting('SHIPPING_RETIRO_LOCAL_ENABLE', 'true') === 'true';
-    const acordarEnabled = this.storeContext.getSetting('SHIPPING_ACORDAR_VENDEDOR_ENABLE', 'true') === 'true';
+    storeGroup.isLocalDeliveryAvailable = isLocal;
 
-    // Verificar si el actual seleccionado sigue siendo válido
+    const motoEnabled = this.getStoreSetting(storeGroup, 'SHIPPING_LOCAL_MOTO_ENABLE', 'true') === 'true';
+    const correoEnabled = this.getStoreSetting(storeGroup, 'SHIPPING_NATIONAL_CORREO_ENABLE', 'true') === 'true';
+    const retiroEnabled = this.getStoreSetting(storeGroup, 'SHIPPING_RETIRO_LOCAL_ENABLE', 'true') === 'true';
+    const acordarEnabled = this.getStoreSetting(storeGroup, 'SHIPPING_ACORDAR_VENDEDOR_ENABLE', 'true') === 'true';
+
     let currentValid = false;
-    if (this.shippingMethod === 'moto' && motoEnabled && this.isLocalDeliveryAvailable) currentValid = true;
-    if (this.shippingMethod === 'correo' && correoEnabled) currentValid = true;
-    if (this.shippingMethod === 'retiro' && retiroEnabled) currentValid = true;
-    if (this.shippingMethod === 'acordar' && acordarEnabled) currentValid = true;
+    if (storeGroup.shippingMethod === 'moto' && motoEnabled && storeGroup.isLocalDeliveryAvailable) currentValid = true;
+    if (storeGroup.shippingMethod === 'correo' && correoEnabled) currentValid = true;
+    if (storeGroup.shippingMethod === 'retiro' && retiroEnabled) currentValid = true;
+    if (storeGroup.shippingMethod === 'acordar' && acordarEnabled) currentValid = true;
 
     if (!currentValid) {
-      // Intentar reasignar a una opción válida por prioridad
       if (correoEnabled) {
-        this.shippingMethod = 'correo';
+        storeGroup.shippingMethod = 'correo';
       } else if (retiroEnabled) {
-        this.shippingMethod = 'retiro';
+        storeGroup.shippingMethod = 'retiro';
       } else if (acordarEnabled) {
-        this.shippingMethod = 'acordar';
-      } else if (motoEnabled && this.isLocalDeliveryAvailable) {
-        this.shippingMethod = 'moto';
+        storeGroup.shippingMethod = 'acordar';
+      } else if (motoEnabled && storeGroup.isLocalDeliveryAvailable) {
+        storeGroup.shippingMethod = 'moto';
       } else {
-        // Fallback final: si ninguno es elegible, asignamos el primero habilitado por el comercio
         if (motoEnabled) {
-          this.shippingMethod = 'moto';
+          storeGroup.shippingMethod = 'moto';
         } else if (retiroEnabled) {
-          this.shippingMethod = 'retiro';
+          storeGroup.shippingMethod = 'retiro';
         } else {
-          this.shippingMethod = 'acordar';
+          storeGroup.shippingMethod = 'acordar';
         }
       }
     }
 
-    this.updateShippingCost(localCost, nationalCost);
+    this.updateStoreShippingCost(storeGroup, localCost, nationalCost);
   }
 
-  public detectCurrentLocation(): void {
-    if (!navigator.geolocation) {
-      this.message.error('La geolocalización no está soportada por tu navegador.');
-      return;
-    }
-
-    this.isDetectingLocation = true;
-    navigator.geolocation.getCurrentPosition(
-      (position) => {
-        const lat = position.coords.latitude;
-        const lng = position.coords.longitude;
-        this.detectedCoords = { lat, lng };
-
-        // Realizar geocodificación reversa
-        this.reverseGeocode(lat, lng);
-      },
-      (error) => {
-        this.isDetectingLocation = false;
-        this.message.error('No se pudo detectar tu ubicación. Por favor, ingresá los datos manualmente.');
-        console.error('Error de geolocalización:', error);
-      },
-      { enableHighAccuracy: true, timeout: 8000 }
-    );
+  public updateShippingCost(): void {
+    this.recalculateGrandTotal();
   }
 
-  private reverseGeocode(lat: number, lng: number): void {
-    fetch(`https://nominatim.openstreetmap.org/reverse?format=json&lat=${lat}&lon=${lng}&zoom=18&addressdetails=1`)
-      .then(res => res.json())
-      .then(data => {
-        this.isDetectingLocation = false;
-        if (data && data.address) {
-          const addr = data.address;
-          const road = addr.road || '';
-          const houseNumber = addr.house_number || '';
-          const city = addr.city || addr.town || addr.village || addr.suburb || '';
-          const state = addr.state || '';
-          const postcode = addr.postcode || '';
+  public updateStoreShippingCost(storeGroup: StoreOrderGroup, localCost?: number, nationalCost?: number): void {
+    const lCost = localCost !== undefined ? localCost : Number(this.getStoreSetting(storeGroup, 'DELIVERY_LOCAL_COST', 350));
+    const nCost = nationalCost !== undefined ? nationalCost : Number(this.getStoreSetting(storeGroup, 'DELIVERY_NATIONAL_COST', 800));
 
-          // Actualizar el formulario reactivo
-          this.shippingForm.patchValue({
-            direccion: `${road} ${houseNumber}`.trim(),
-            ciudad: city,
-            provincia: state,
-            codigoPostal: postcode
-          });
-
-          this.message.success('📍 Ubicación detectada y autocompletada.');
-          
-          // Re-calcular la elegibilidad de envío con las nuevas coordenadas y ciudad
-          this.checkShippingEligibility();
-        } else {
-          this.message.warning('Ubicación detectada, pero no pudimos autocompletar la dirección. Rellénala manualmente.');
-          this.checkShippingEligibility();
-        }
-      })
-      .catch(err => {
-        this.isDetectingLocation = false;
-        console.error('Error en geocodificación reversa:', err);
-        this.message.warning('Ubicación detectada, pero falló el servicio de traducción. Rellena los campos manualmente.');
-        this.checkShippingEligibility();
-      });
-  }
-
-  public updateShippingCost(localCost?: number, nationalCost?: number): void {
-    const lCost = localCost !== undefined ? localCost : Number(this.storeContext.getSetting('DELIVERY_LOCAL_COST', 350));
-    const nCost = nationalCost !== undefined ? nationalCost : Number(this.storeContext.getSetting('DELIVERY_NATIONAL_COST', 800));
-
-    if (this.shippingMethod === 'moto') {
-      this.shippingCost = lCost;
-    } else if (this.shippingMethod === 'correo') {
-      if (this.postalOptions.length > 0) {
-        const option = this.postalOptions.find(o => o.id === this.selectedPostalOptionId) || this.postalOptions[0];
-        this.shippingCost = option.cost;
+    if (storeGroup.shippingMethod === 'moto') {
+      storeGroup.shippingCost = lCost;
+    } else if (storeGroup.shippingMethod === 'correo') {
+      if (storeGroup.postalOptions.length > 0) {
+        const option = storeGroup.postalOptions.find(o => o.id === storeGroup.selectedPostalOptionId) || storeGroup.postalOptions[0];
+        storeGroup.shippingCost = option.cost;
       } else {
-        this.shippingCost = nCost;
+        storeGroup.shippingCost = nCost;
       }
     } else {
-      this.shippingCost = 0;
+      storeGroup.shippingCost = 0;
     }
-    this.totalFinal = this.totalSubtotal + this.shippingCost;
+    this.recalculateGrandTotal();
   }
 
-  public setShippingMethod(method: 'moto' | 'correo' | 'retiro' | 'acordar'): void {
-    this.shippingMethod = method;
+  public setStoreShippingMethod(storeGroup: StoreOrderGroup, method: 'moto' | 'correo' | 'retiro' | 'acordar'): void {
+    storeGroup.shippingMethod = method;
     if (method === 'correo') {
-      this.calculatePostalShippingRates();
+      this.calculatePostalShippingRatesForStore(storeGroup);
     } else {
-      this.updateShippingCost();
+      this.updateStoreShippingCost(storeGroup);
     }
+  }
+
+  public selectStorePostalOption(storeGroup: StoreOrderGroup, optionId: 'correo_std' | 'correo_exp' | 'correo_priority'): void {
+    storeGroup.selectedPostalOptionId = optionId;
+    this.updateStoreShippingCost(storeGroup);
   }
 
   public calculatePostalShippingRates(): void {
+    this.storesInOrder.forEach(storeGroup => {
+      if (storeGroup.shippingMethod === 'correo') {
+        this.calculatePostalShippingRatesForStore(storeGroup);
+      }
+    });
+  }
+
+  public calculatePostalShippingRatesForStore(storeGroup: StoreOrderGroup): void {
     const postcode = this.selectedAddressId !== 'new'
       ? this.myAddresses.find(a => a.adr_uuid === this.selectedAddressId)?.adr_postalcode || ''
       : this.shippingForm.get('codigoPostal')?.value || '';
 
-    if (this.cartItemsList.length === 0 || !postcode.trim()) {
-      this.postalOptions = [];
+    if (storeGroup.items.length === 0 || !postcode.trim()) {
+      storeGroup.postalOptions = [];
       return;
     }
 
-    this.isCalculatingShipping = true;
+    storeGroup.isCalculatingShipping = true;
 
-    // Calcular peso y volumen simulados
-    const totalWeight = this.cartItemsList.reduce((sum, item) => sum + (item.quantity * 0.45), 0); // 0.45 kg promedio
-    const totalVolume = this.cartItemsList.reduce((sum, item) => sum + (item.quantity * 1200), 0); // 1200 cm3 promedio
+    const totalWeight = storeGroup.items.reduce((sum, item) => sum + (item.quantity * 0.45), 0);
+    const totalVolume = storeGroup.items.reduce((sum, item) => sum + (item.quantity * 1200), 0);
 
-    // Calcular factor de zona según código postal (primer dígito)
     const firstDigit = postcode.trim().replace(/\D/g, '').substring(0, 1);
     let zoneMultiplier = 1.3;
     if (['1', '2'].includes(firstDigit)) {
-      zoneMultiplier = 1.0; // Centro / Buenos Aires / CABA
+      zoneMultiplier = 1.0;
     } else if (['3', '4'].includes(firstDigit)) {
-      zoneMultiplier = 1.25; // Centro-Oeste / Litoral
+      zoneMultiplier = 1.25;
     } else if (['5', '6'].includes(firstDigit)) {
-      zoneMultiplier = 1.55; // Norte / Cuyo
+      zoneMultiplier = 1.55;
     } else if (['7', '8', '9'].includes(firstDigit)) {
-      zoneMultiplier = 1.95; // Patagonia profunda / Sur
+      zoneMultiplier = 1.95;
     }
 
-    // Simular llamada de 850ms al cotizador postal
     setTimeout(() => {
       const costStd = Math.round((600 + (totalWeight * 140) + (totalVolume * 0.04)) * zoneMultiplier);
       const costExp = Math.round((950 + (totalWeight * 200) + (totalVolume * 0.07)) * zoneMultiplier);
       const costPriority = Math.round((1450 + (totalWeight * 310) + (totalVolume * 0.11)) * zoneMultiplier);
 
-      this.postalOptions = [
+      storeGroup.postalOptions = [
         {
           id: 'correo_std',
           providerName: 'Correo Argentino Standard',
@@ -521,20 +641,79 @@ export class CheckoutComponent implements OnInit, OnDestroy {
         }
       ];
 
-      this.isCalculatingShipping = false;
+      storeGroup.isCalculatingShipping = false;
 
-      // Asegurar que la opción seleccionada exista
-      const currentOption = this.postalOptions.find(o => o.id === this.selectedPostalOptionId) || this.postalOptions[0];
-      this.selectedPostalOptionId = currentOption.id;
+      const currentOption = storeGroup.postalOptions.find(o => o.id === storeGroup.selectedPostalOptionId) || storeGroup.postalOptions[0];
+      storeGroup.selectedPostalOptionId = currentOption.id;
 
-      // Actualizar costos de envío en el checkout
-      this.updateShippingCost();
+      this.updateStoreShippingCost(storeGroup);
     }, 850);
   }
 
-  public selectPostalOption(optionId: 'correo_std' | 'correo_exp' | 'correo_priority'): void {
-    this.selectedPostalOptionId = optionId;
-    this.updateShippingCost();
+  public recalculateGrandTotal(): void {
+    this.totalSubtotal = this.storesInOrder.reduce((sum, g) => sum + g.subtotal, 0);
+    this.shippingCost = this.storesInOrder.reduce((sum, g) => sum + g.shippingCost, 0);
+    this.totalFinal = this.totalSubtotal + this.shippingCost;
+  }
+
+  public detectCurrentLocation(): void {
+    if (!navigator.geolocation) {
+      this.message.error('La geolocalización no está soportada por tu navegador.');
+      return;
+    }
+
+    this.isDetectingLocation = true;
+    navigator.geolocation.getCurrentPosition(
+      (position) => {
+        const lat = position.coords.latitude;
+        const lng = position.coords.longitude;
+        this.detectedCoords = { lat, lng };
+
+        this.reverseGeocode(lat, lng);
+      },
+      (error) => {
+        this.isDetectingLocation = false;
+        this.message.error('No se pudo detectar tu ubicación. Por favor, ingresá los datos manualmente.');
+        console.error('Error de geolocalización:', error);
+      },
+      { enableHighAccuracy: true, timeout: 8000 }
+    );
+  }
+
+  private reverseGeocode(lat: number, lng: number): void {
+    fetch(`https://nominatim.openstreetmap.org/reverse?format=json&lat=${lat}&lon=${lng}&zoom=18&addressdetails=1`)
+      .then(res => res.json())
+      .then(data => {
+        this.isDetectingLocation = false;
+        if (data && data.address) {
+          const addr = data.address;
+          const road = addr.road || '';
+          const houseNumber = addr.house_number || '';
+          const city = addr.city || addr.town || addr.village || addr.suburb || '';
+          const state = addr.state || '';
+          const postcode = addr.postcode || '';
+
+          this.shippingForm.patchValue({
+            direccion: `${road} ${houseNumber}`.trim(),
+            ciudad: city,
+            provincia: state,
+            codigoPostal: postcode
+          });
+
+          this.message.success('📍 Ubicación detectada y autocompletada.');
+          
+          this.checkShippingEligibility();
+        } else {
+          this.message.warning('Ubicación detectada, pero no pudimos autocompletar la dirección. Rellénala manualmente.');
+          this.checkShippingEligibility();
+        }
+      })
+      .catch(err => {
+        this.isDetectingLocation = false;
+        console.error('Error en geocodificación reversa:', err);
+        this.message.warning('Ubicación detectada, pero falló el servicio de traducción. Rellena los campos manualmente.');
+        this.checkShippingEligibility();
+      });
   }
 
   // --- NAVEGACIÓN ENTRE PASOS ---
@@ -682,89 +861,20 @@ export class CheckoutComponent implements OnInit, OnDestroy {
       }
     }
 
-    if (!this.currentCompany) {
-      this.message.error('Error: No se pudo identificar la tienda actual.');
+    if (this.storesInOrder.length === 0) {
+      this.message.error('Error: Tu carrito está vacío.');
       return;
     }
 
     this.isProcessingPayment = true;
-
-    let methodText = '';
-    if (this.shippingMethod === 'moto') {
-      methodText = 'Motomensajería Local';
-    } else if (this.shippingMethod === 'correo') {
-      const option = this.postalOptions.find(o => o.id === this.selectedPostalOptionId);
-      methodText = option ? `Envío Postal (${option.providerName})` : 'Correo Postal Nacional';
-    } else if (this.shippingMethod === 'retiro') {
-      methodText = 'Retiro en el Local (Gratis)';
-    } else {
-      methodText = 'Acordar con el Vendedor';
-    }
-
-    const last4 = this.cardNumber.replace(/\s/g, '').slice(-4);
-    const mockTxId = 'ch_stripe_' + Math.random().toString(36).substring(2, 10).toUpperCase();
-
-    let notes = '';
-    if (this.paymentMethod === 'transfer') {
-      notes = `[Envío: ${methodText} ($${this.shippingCost})] | Método de pago: Transferencia Bancaria. Comprobante: ${this.transactionId}`;
-    } else {
-      notes = `[Envío: ${methodText} ($${this.shippingCost})] | Método de pago: Tarjeta (${this.cardBrand.toUpperCase()} **** ${last4}). Transacción: ${mockTxId}`;
-    }
-
-    let trackingNumber = '';
-    if (this.shippingMethod === 'correo') {
-      const code = this.selectedPostalOptionId === 'correo_std' ? 'AR' : this.selectedPostalOptionId === 'correo_exp' ? 'AN' : 'DH';
-      trackingNumber = `${code}-${Math.floor(Math.random() * 900000) + 100000}-GPS`;
-    }
-
-    const orderNumber = Math.floor(Math.random() * 90000) + 10000;
-    this.generatedOrderNumber = orderNumber;
-
-    const customer = this._sessionService.getCustomer();
     const identity = this._sessionService.getIdentity();
-
-    const orderDetails: OrderDetailInterface[] = this.cartItemsList.map(item => ({
-      cmp_uuid: item.cmp_uuid || this.currentCompany.cmp_uuid,
-      ord_uuid: '',
-      ordd_uuid: '',
-      pro_uuid: item.pro_uuid,
-      prov_uuid: item.prov_uuid,
-      ordd_productname: item.prov_name || 'Producto ATSMarket',
-      ordd_code: item.prov_code || '',
-      ordd_sku: item.prov_sku || '',
-      ordd_quantity: item.quantity,
-      ordd_unitprice: item.prov_suggestedminimumsellingprice || 0,
-      ordd_discount: 0,
-      ordd_subtotal: item.subtotal || (item.quantity * (item.prov_suggestedminimumsellingprice || 0)),
-      ordd_taxrate: 0,
-      ordd_tax: 0,
-      ordd_basecost: item.prov_suggestedminimumsellingprice || 0
-    }));
-
-    const payload = {
-      cmp_uuid: this.currentCompany.cmp_uuid,
-      usr_uuid: identity ? identity.usr_uuid : 'guest',
-      cus_uuid: customer ? customer.cus_uuid : 'guest-customer',
-      adr_uuid: this.selectedAddressId,
-      ord_ordernumber: orderNumber,
-      ords_uuid: this.paymentMethod === 'transfer' ? 'PENDING' : 'PROCESSING',
-      ord_date: new Date(),
-      ord_subtotal: this.totalSubtotal,
-      ord_shippingcost: this.shippingCost,
-      ord_tax: 0,
-      ord_total: this.totalFinal,
-      ord_customernotes: notes,
-      ord_trackingnumber: trackingNumber,
-      orderDetails: orderDetails
-    };
 
     // --- CHECK STOCK EN CALIENTE ANTES DE PAGAR (CONSIDERANDO STOCK MULTI-DEPÓSITO) ---
     const stockChecks = this.cartItemsList.map(item => {
-      const cmpUuid = item.cmp_uuid || this.currentCompany.cmp_uuid;
+      const cmpUuid = item.cmp_uuid || (this.currentCompany ? this.currentCompany.cmp_uuid : '');
       const proUuid = item.pro_uuid;
       const provUuid = item.prov_uuid;
 
-      // Consultamos el stock distribuido en tiempo real en todos los depósitos
       return this._inventoryStocksService.getStocksByVariation(cmpUuid, proUuid, provUuid).pipe(
         map((res: any) => {
           if (res && res.success && Array.isArray(res.data) && res.data.length > 0) {
@@ -821,31 +931,31 @@ export class CheckoutComponent implements OnInit, OnDestroy {
             );
           } else {
             if (this.paymentMethod === 'card') {
-              this.processCardPaymentSimulation(payload, orderNumber, notes, identity, orderDetails);
+              this.processCardPaymentSimulation(identity);
             } else {
-              this.saveOrderAfterStockCheck(payload, orderNumber, notes, identity, orderDetails);
+              this.saveOrderAfterStockCheck(identity);
             }
           }
         },
         error: (err) => {
           console.warn('Fallo en checkStock preventivo, procediendo con guardado ordinario (fallback):', err);
           if (this.paymentMethod === 'card') {
-            this.processCardPaymentSimulation(payload, orderNumber, notes, identity, orderDetails);
+            this.processCardPaymentSimulation(identity);
           } else {
-            this.saveOrderAfterStockCheck(payload, orderNumber, notes, identity, orderDetails);
+            this.saveOrderAfterStockCheck(identity);
           }
         }
       });
     } else {
       if (this.paymentMethod === 'card') {
-        this.processCardPaymentSimulation(payload, orderNumber, notes, identity, orderDetails);
+        this.processCardPaymentSimulation(identity);
       } else {
-        this.saveOrderAfterStockCheck(payload, orderNumber, notes, identity, orderDetails);
+        this.saveOrderAfterStockCheck(identity);
       }
     }
   }
 
-  private processCardPaymentSimulation(payload: any, orderNumber: number, notes: string, identity: any, orderDetails: any[]): void {
+  private processCardPaymentSimulation(identity: any): void {
     const rawNumber = this.cardNumber.replace(/\s/g, '');
     const isDeclineCard = rawNumber.endsWith('4444');
 
@@ -869,7 +979,7 @@ export class CheckoutComponent implements OnInit, OnDestroy {
           } else {
             this.processingMessage = '🚀 Pago aprobado con éxito. Guardando orden de compra...';
             setTimeout(() => {
-              this.saveOrderAfterStockCheck(payload, orderNumber, notes, identity, orderDetails);
+              this.saveOrderAfterStockCheck(identity);
             }, 800);
           }
         }, 1500);
@@ -877,46 +987,144 @@ export class CheckoutComponent implements OnInit, OnDestroy {
     }, 1500);
   }
 
-  private saveOrderAfterStockCheck(payload: any, orderNumber: number, notes: string, identity: any, orderDetails: any[]): void {
-    this.ordersService.saveOrder(payload).subscribe({
-      next: (res: any) => {
-        const orderUuid = res?.data?.ord_uuid || '';
-        
-        // Registrar movimientos de salida (OUT) por cada producto comprado en el checkout
-        const movementRequests = orderDetails.map(item => {
-          const movementPayload = {
-            cmp_uuid: payload.cmp_uuid,
-            pro_uuid: item.pro_uuid,
-            prov_uuid: item.prov_uuid,
-            ord_uuid: orderUuid || null,
-            usr_uuid: identity ? identity.usr_uuid : null,
-            tsmo_uuid: 'OUT',
-            smo_quantity: item.ordd_quantity,
-            smo_previousstock: 0,
-            smo_currentstock: 0,
-            smo_reason: `Venta - Pedido #PED-${orderNumber}`,
-            smo_createdat: new Date()
-          };
-          return this._stockMovementsService.saveStockMovement(movementPayload);
+  private saveOrderAfterStockCheck(identity: any): void {
+    const customer = this._sessionService.getCustomer();
+    const last4 = this.cardNumber.replace(/\s/g, '').slice(-4);
+    const mockTxId = 'ch_stripe_' + Math.random().toString(36).substring(2, 10).toUpperCase();
+
+    const orderSaveObservables = this.storesInOrder.map(g => {
+      const storeOrderNumber = Math.floor(Math.random() * 90000) + 10000;
+      g.generatedOrderNumber = storeOrderNumber;
+
+      let methodText = '';
+      if (g.shippingMethod === 'moto') {
+        methodText = 'Motomensajería Local';
+      } else if (g.shippingMethod === 'correo') {
+        const option = g.postalOptions.find(o => o.id === g.selectedPostalOptionId);
+        methodText = option ? `Envío Postal (${option.providerName})` : 'Correo Postal Nacional';
+      } else if (g.shippingMethod === 'retiro') {
+        methodText = 'Retiro en el Local (Gratis)';
+      } else {
+        methodText = 'Acordar con el Vendedor';
+      }
+
+      let notes = '';
+      if (this.paymentMethod === 'transfer') {
+        notes = `[Sub-Pedido de Carrito Multi-Tienda] | [Envío: ${methodText} ($${g.shippingCost})] | Método de pago: Transferencia Bancaria. Comprobante: ${this.transactionId}`;
+      } else {
+        notes = `[Sub-Pedido de Carrito Multi-Tienda] | [Envío: ${methodText} ($${g.shippingCost})] | Método de pago: Tarjeta (${this.cardBrand.toUpperCase()} **** ${last4}). Transacción: ${mockTxId}`;
+      }
+
+      let trackingNumber = '';
+      if (g.shippingMethod === 'correo') {
+        const code = g.selectedPostalOptionId === 'correo_std' ? 'AR' : g.selectedPostalOptionId === 'correo_exp' ? 'AN' : 'DH';
+        trackingNumber = `${code}-${Math.floor(Math.random() * 900000) + 100000}-GPS`;
+      }
+
+      const orderDetails: OrderDetailInterface[] = g.items.map(item => ({
+        cmp_uuid: g.cmp_uuid,
+        ord_uuid: '',
+        ordd_uuid: '',
+        pro_uuid: item.pro_uuid,
+        prov_uuid: item.prov_uuid,
+        ordd_productname: item.prov_name || 'Producto ATSMarket',
+        ordd_code: item.prov_code || '',
+        ordd_sku: item.prov_sku || '',
+        ordd_quantity: item.quantity,
+        ordd_unitprice: item.prov_suggestedminimumsellingprice || 0,
+        ordd_discount: 0,
+        ordd_subtotal: item.subtotal || (item.quantity * (item.prov_suggestedminimumsellingprice || 0)),
+        ordd_taxrate: 0,
+        ordd_tax: 0,
+        ordd_basecost: item.prov_suggestedminimumsellingprice || 0
+      }));
+
+      const payload = {
+        cmp_uuid: g.cmp_uuid,
+        usr_uuid: identity ? identity.usr_uuid : 'guest',
+        cus_uuid: customer ? customer.cus_uuid : 'guest-customer',
+        adr_uuid: this.selectedAddressId,
+        ord_ordernumber: storeOrderNumber,
+        ords_uuid: this.paymentMethod === 'transfer' ? 'PENDING' : 'PROCESSING',
+        ord_date: new Date(),
+        ord_subtotal: g.subtotal,
+        ord_shippingcost: g.shippingCost,
+        ord_tax: 0,
+        ord_total: g.subtotal + g.shippingCost,
+        ord_customernotes: notes,
+        ord_trackingnumber: trackingNumber,
+        orderDetails: orderDetails
+      };
+
+      return this.ordersService.saveOrder(payload).pipe(
+        map((res: any) => {
+          const orderUuid = res?.data?.ord_uuid || '';
+          g.orderUuid = orderUuid;
+          return { success: true, storeGroup: g, orderUuid };
+        }),
+        catchError((err) => {
+          console.error(`Error al guardar orden para tienda ${g.cmp_uuid}:`, err);
+          return of({ success: false, storeGroup: g, orderUuid: '', error: err });
+        })
+      );
+    });
+
+    forkJoin(orderSaveObservables).subscribe({
+      next: (saveResults) => {
+        const failures = saveResults.filter(r => !r.success);
+        if (failures.length > 0) {
+          this.isProcessingPayment = false;
+          const failedStoreNames = failures.map(f => f.storeGroup.company?.cmp_name || f.storeGroup.cmp_uuid).join(', ');
+          this.message.error(`Ocurrió un error al procesar las órdenes para las siguientes tiendas: ${failedStoreNames}. Por favor intente nuevamente.`);
+          return;
+        }
+
+        // Registrar movimientos de salida (OUT) por cada producto comprado en el checkout multi-tienda
+        const stockMovements: Observable<any>[] = [];
+        saveResults.forEach(r => {
+          const storeGroup = r.storeGroup;
+          const orderUuid = r.orderUuid;
+          const orderNum = storeGroup.generatedOrderNumber;
+
+          storeGroup.items.forEach(item => {
+            const movementPayload = {
+              cmp_uuid: storeGroup.cmp_uuid,
+              pro_uuid: item.pro_uuid,
+              prov_uuid: item.prov_uuid,
+              ord_uuid: orderUuid || null,
+              usr_uuid: identity ? identity.usr_uuid : null,
+              tsmo_uuid: 'OUT',
+              smo_quantity: item.quantity,
+              smo_previousstock: 0,
+              smo_currentstock: 0,
+              smo_reason: `Venta - Pedido #PED-${orderNum}`,
+              smo_createdat: new Date()
+            };
+            stockMovements.push(this._stockMovementsService.saveStockMovement(movementPayload).pipe(
+              catchError((err) => {
+                console.error(`Fallo al registrar movimiento stock para var ${item.prov_uuid}:`, err);
+                return of(null);
+              })
+            ));
+          });
         });
 
-        // Ejecutar las peticiones en paralelo
-        if (movementRequests.length > 0) {
-          forkJoin(movementRequests).subscribe({
-            next: () => console.log('Movimientos de stock registrados exitosamente desde Checkout.'),
-            error: (err) => console.error('Error al registrar movimientos de stock desde Checkout:', err)
+        if (stockMovements.length > 0) {
+          forkJoin(stockMovements).subscribe({
+            next: () => console.log('Todos los movimientos de stock registrados exitosamente desde Checkout multi-tienda.'),
+            error: (err) => console.error('Error general al registrar movimientos de stock:', err)
           });
         }
 
         this.isProcessingPayment = false;
         this.currentStep = 3; // Mostrar pantalla de éxito
         this.cartService.clearCart();
-        this.message.success('¡Compra confirmada con éxito!');
+        this.message.success('¡Compra multi-tienda confirmada con éxito!');
       },
-      error: (err: any) => {
+      error: (err) => {
         this.isProcessingPayment = false;
-        this.message.error('No se pudo procesar tu compra. Por favor, intentá nuevamente.');
-        console.error('Error al crear orden:', err);
+        this.message.error('Fallo grave al procesar las órdenes. Por favor verifique sus datos.');
+        console.error('Error general en saveOrder forkJoin:', err);
       }
     });
   }
