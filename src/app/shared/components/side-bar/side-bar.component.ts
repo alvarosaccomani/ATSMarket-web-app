@@ -24,6 +24,7 @@ import { SessionService } from '@services/session.service';
 export class SideBarComponent {
   public isCollapsed: boolean = false;
   public companyUuid: string | null = null;
+  public isSuperAdmin: boolean = false;
 
   constructor(private _sessionService: SessionService) { }
 
@@ -33,5 +34,7 @@ export class SideBarComponent {
       const company = JSON.parse(companyStr);
       this.companyUuid = company.cmp_uuid;
     }
+    const identity = this._sessionService.getIdentity();
+    this.isSuperAdmin = identity && (identity.usr_sysadmin === true || identity.usr_sysadmin === 1 || identity.usr_sysadmin === '1');
   }
 }

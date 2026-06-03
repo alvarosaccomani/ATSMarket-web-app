@@ -28,6 +28,10 @@
             <span nz-icon nzType="setting"></span>
             <span>Configuración Empresa</span>
         </li>
+        <li nz-menu-item routerLink="super-admin" *ngIf="isSuperAdmin" routerLinkActive="ant-menu-item-selected">
+            <span nz-icon nzType="safety-certificate"></span>
+            <span>Consola SuperAdmin</span>
+        </li>
         <li nz-menu-item routerLink="/">
             <span nz-icon nzType="arrow-left"></span>
             <span>Volver al Market</span>
