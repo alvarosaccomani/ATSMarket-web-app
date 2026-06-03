@@ -8,9 +8,9 @@
     </div>
 
     <!-- ====== KPI CARDS DE LA PLATAFORMA ====== -->
-    <div nz-row [nzGutter]="24" class="kpi-grid">
+    <div nz-row [nzGutter]="16" class="kpi-grid">
         <!-- Tarjeta 1: Total Tiendas -->
-        <div nz-col [nzXs]="24" [nzSm]="12" [nzLg]="6" style="margin-bottom: 24px;">
+        <div nz-col [nzXs]="24" [nzSm]="12" [nzLg]="4" style="margin-bottom: 16px;">
             <nz-card class="kpi-card text-center" [nzBordered]="false">
                 <div class="kpi-icon-wrapper blue-glow">
                     <span nz-icon nzType="shop" nzTheme="outline"></span>
@@ -21,7 +21,7 @@
         </div>
 
         <!-- Tarjeta 2: Tiendas Activas -->
-        <div nz-col [nzXs]="24" [nzSm]="12" [nzLg]="6" style="margin-bottom: 24px;">
+        <div nz-col [nzXs]="24" [nzSm]="12" [nzLg]="4" style="margin-bottom: 16px;">
             <nz-card class="kpi-card text-center" [nzBordered]="false">
                 <div class="kpi-icon-wrapper green-glow">
                     <span nz-icon nzType="check-circle" nzTheme="outline"></span>
@@ -32,24 +32,46 @@
         </div>
 
         <!-- Tarjeta 3: Volumen de Ventas -->
-        <div nz-col [nzXs]="24" [nzSm]="12" [nzLg]="6" style="margin-bottom: 24px;">
+        <div nz-col [nzXs]="24" [nzSm]="12" [nzLg]="4" style="margin-bottom: 16px;">
             <nz-card class="kpi-card text-center" [nzBordered]="false">
                 <div class="kpi-icon-wrapper orange-glow">
                     <span nz-icon nzType="line-chart" nzTheme="outline"></span>
                 </div>
                 <div class="kpi-val">${{ totalSalesVolume | number:'1.2-2' }}</div>
-                <div class="kpi-label">Volumen Facturado (SaaS)</div>
+                <div class="kpi-label">Facturación Global</div>
             </nz-card>
         </div>
 
         <!-- Tarjeta 4: Comisiones Acumuladas -->
-        <div nz-col [nzXs]="24" [nzSm]="12" [nzLg]="6" style="margin-bottom: 24px;">
+        <div nz-col [nzXs]="24" [nzSm]="12" [nzLg]="4" style="margin-bottom: 16px;">
+            <nz-card class="kpi-card text-center" [nzBordered]="false">
+                <div class="kpi-icon-wrapper gold-glow">
+                    <span nz-icon nzType="percentage" nzTheme="outline"></span>
+                </div>
+                <div class="kpi-val">${{ totalPlatformCommission | number:'1.2-2' }}</div>
+                <div class="kpi-label">Comisiones ({{ commissionRate }}%)</div>
+            </nz-card>
+        </div>
+
+        <!-- Tarjeta 5: Abonos de Suscripción -->
+        <div nz-col [nzXs]="24" [nzSm]="12" [nzLg]="4" style="margin-bottom: 16px;">
+            <nz-card class="kpi-card text-center" [nzBordered]="false">
+                <div class="kpi-icon-wrapper gold-glow">
+                    <span nz-icon nzType="calendar" nzTheme="outline"></span>
+                </div>
+                <div class="kpi-val">${{ totalSubscriptionsVolume | number:'1.2-2' }}</div>
+                <div class="kpi-label">Abonos Cobrados</div>
+            </nz-card>
+        </div>
+
+        <!-- Tarjeta 6: Ingresos SaaS Totales -->
+        <div nz-col [nzXs]="24" [nzSm]="12" [nzLg]="4" style="margin-bottom: 16px;">
             <nz-card class="kpi-card text-center commission-highlight" [nzBordered]="false">
                 <div class="kpi-icon-wrapper gold-glow">
                     <span nz-icon nzType="wallet" nzTheme="fill"></span>
                 </div>
-                <div class="kpi-val neon-gold">${{ totalPlatformCommission | number:'1.2-2' }}</div>
-                <div class="kpi-label">Comisiones Retenidas ({{ commissionRate }}%)</div>
+                <div class="kpi-val neon-gold">${{ totalPlatformRevenue | number:'1.2-2' }}</div>
+                <div class="kpi-label">Ingreso Total SaaS</div>
             </nz-card>
         </div>
     </div>
@@ -60,22 +82,40 @@
             <nz-tabset nzSize="large">
                 
                 <!-- ====== PESTAÑA 1: AUDITORÍA DE TIENDAS ====== -->
-                <nz-tab nzTitle="🏢 Moderación de Tiendas">
+                <nz-tab [nzTitle]="'🏢 Moderación de Tiendas ' + (getPendingCompaniesCount() > 0 ? '(' + getPendingCompaniesCount() + ')' : '')">
                     <div style="margin-bottom: 20px;">
-                        <nz-alert nzType="info" nzShowIcon nzMessage="Auditoría de Tenants"
-                            nzDescription="Pausá comercios que incumplan los términos del contrato comercial o aprobá nuevas tiendas registradas.">
+                        <nz-alert nzType="info" nzShowIcon nzMessage="Auditoría de Tenants y Configuración SaaS"
+                            nzDescription="Pausá comercios que incumplan los términos, aprobá nuevas tiendas o configurá su modelo de monetización (Comisión por Venta vs Abono Mensual Fijo).">
                         </nz-alert>
                     </div>
 
-                    <nz-table #companiesTable [nzData]="companies" [nzPageSize]="8" class="premium-table">
+                    <!-- Barra de Filtros -->
+                    <div class="table-filters-container" style="display: flex; gap: 16px; margin-bottom: 20px; align-items: center; flex-wrap: wrap; background: rgba(0,0,0,0.02); padding: 12px 16px; border-radius: 8px;">
+                        <div style="flex: 1; min-width: 250px;">
+                            <nz-input-group [nzPrefix]="searchPrefix">
+                                <ng-template #searchPrefix><span nz-icon nzType="search"></span></ng-template>
+                                <input type="text" nz-input placeholder="Buscar tienda por nombre, slug o teléfono..." [(ngModel)]="searchStoreTerm" />
+                            </nz-input-group>
+                        </div>
+                        <div style="width: 220px;">
+                            <nz-select [(ngModel)]="selectedStoreStatus" style="width: 100%;">
+                                <nz-option nzValue="all" nzLabel="Todos los Estados"></nz-option>
+                                <nz-option nzValue="active" nzLabel="Habilitadas (Activas)"></nz-option>
+                                <nz-option nzValue="inactive" nzLabel="Suspendidas (Inactivas)"></nz-option>
+                                <nz-option nzValue="pending" nzLabel="Pendientes de Auditoría"></nz-option>
+                            </nz-select>
+                        </div>
+                    </div>
+
+                    <nz-table #companiesTable [nzData]="getFilteredCompanies()" [nzPageSize]="8" class="premium-table">
                         <thead>
                             <tr>
                                 <th>Logo</th>
                                 <th>Nombre Comercial</th>
                                 <th>Slug / Enlace</th>
-                                <th>Contacto / Dirección</th>
+                                <th>Plan de Cobro SaaS</th>
                                 <th>Estado</th>
-                                <th style="text-align: center;">Acciones de Moderación</th>
+                                <th style="text-align: center; width: 280px;">Acciones de Moderación</th>
                             </tr>
                         </thead>
                         <tbody>
@@ -88,14 +128,30 @@
                                 </td>
                                 <td>
                                     <strong>{{ data.cmp_name }}</strong>
-                                    <div style="font-size: 11px; color: #8c8c8c;">Moneda: {{ data.cmp_currency || 'ARS' }}</div>
+                                    <div style="font-size: 11px; color: #8c8c8c;">📞 {{ data.cmp_phone }}</div>
+                                    <div style="font-size: 11px; color: #8c8c8c;">📍 {{ data.cmp_address }}</div>
                                 </td>
                                 <td>
                                     <code class="slug-badge">/store/{{ data.cmp_slug }}</code>
                                 </td>
                                 <td>
-                                    <div style="font-size: 12px;">📞 {{ data.cmp_phone }}</div>
-                                    <div style="font-size: 11px; color: #8c8c8c;">📍 {{ data.cmp_address }}</div>
+                                    <div style="display: flex; flex-direction: column; gap: 4px;">
+                                        <nz-select [ngModel]="storePlans[data.cmp_uuid]?.type || 'commission'" 
+                                                   (ngModelChange)="updateStorePlanType(data.cmp_uuid, $event)"
+                                                   style="width: 140px;" nzSize="small">
+                                            <nz-option nzValue="commission" nzLabel="📈 Plan Comisión"></nz-option>
+                                            <nz-option nzValue="subscription" nzLabel="📅 Abono Fijo"></nz-option>
+                                        </nz-select>
+                                        
+                                        <!-- Configurar Abono si está en plan suscripción -->
+                                        <div *ngIf="storePlans[data.cmp_uuid]?.type === 'subscription'" style="display: flex; align-items: center; gap: 4px; margin-top: 2px;">
+                                            <span style="font-size: 11px; color: #8c8c8c;">Cuota ($):</span>
+                                            <input type="number" nz-input nzSize="small" 
+                                                   [value]="storePlans[data.cmp_uuid]?.fee || 15000" 
+                                                   (blur)="updateStoreSubscriptionFee(data.cmp_uuid, $event)"
+                                                   style="width: 80px; padding: 2px 4px; height: 20px; font-size: 11px;" />
+                                        </div>
+                                    </div>
                                 </td>
                                 <td>
                                     <nz-tag [nzColor]="getStatusColor(data.cmp_status)">
@@ -103,19 +159,19 @@
                                     </nz-tag>
                                 </td>
                                 <td style="text-align: center;">
-                                    <div style="display: flex; gap: 8px; justify-content: center;">
+                                    <div style="display: flex; gap: 6px; justify-content: center;">
                                         <!-- Habilitar -->
-                                        <button *ngIf="data.cmp_status !== 'active'" nz-button nzType="primary" nzDanger="false"
+                                        <button *ngIf="data.cmp_status !== 'active'" nz-button nzType="primary" nzSize="small"
                                             (click)="updateCompanyStatus(data, 'active')" style="background-color: #52c41a; border-color: #52c41a;">
                                             <span nz-icon nzType="play-circle" nzTheme="outline"></span> Habilitar
                                         </button>
                                         <!-- Pausar -->
-                                        <button *ngIf="data.cmp_status === 'active'" nz-button nzType="primary" nzDanger
+                                        <button *ngIf="data.cmp_status === 'active'" nz-button nzType="primary" nzSize="small" nzDanger
                                             (click)="updateCompanyStatus(data, 'inactive')">
                                             <span nz-icon nzType="pause-circle" nzTheme="outline"></span> Suspender
                                         </button>
                                         <!-- Marcar Pendiente -->
-                                        <button *ngIf="data.cmp_status !== 'pending'" nz-button nzType="default"
+                                        <button *ngIf="data.cmp_status !== 'pending'" nz-button nzType="default" nzSize="small"
                                             (click)="updateCompanyStatus(data, 'pending')">
                                             <span nz-icon nzType="audit" nzTheme="outline"></span> Auditar
                                         </button>
@@ -126,100 +182,240 @@
                     </nz-table>
                 </nz-tab>
 
-                <!-- ====== PESTAÑA 2: MOTOR DE COMISIONES ====== -->
-                <nz-tab nzTitle="🪙 Ledger de Comisiones (SaaS Billing)">
-                    <div style="margin-bottom: 20px; display: flex; justify-content: space-between; align-items: center;">
-                        <nz-alert nzType="success" nzShowIcon nzMessage="Facturación de la Plataforma"
-                            nzDescription="Ledger de transacciones reales que calcula la tasa del 5% retenida por cada venta aprobada."
-                            style="flex: 1; margin-right: 24px;">
-                        </nz-alert>
-                        <div class="commission-config-panel">
-                            <span class="label">Tasa: </span>
-                            <span class="value">{{ commissionRate }}% Fijo</span>
-                        </div>
-                    </div>
+                <!-- ====== PESTAÑA 2: FACTURACIÓN SAAS (LEDGERS) ====== -->
+                <nz-tab nzTitle="🪙 Facturación SaaS">
+                    <nz-tabset [nzSelectedIndex]="0" nzType="line">
+                        
+                        <!-- SUB-PESTAÑA 2.1: COMISIONES POR PEDIDO -->
+                        <nz-tab nzTitle="📈 Comisiones por Pedido">
+                            <div style="margin-bottom: 20px; display: flex; justify-content: space-between; align-items: center; flex-wrap: wrap; gap: 16px;">
+                                <nz-alert nzType="success" nzShowIcon nzMessage="Comisiones por Transacciones"
+                                    nzDescription="Cálculo dinámico de la tasa de comisión de tiendas bajo el Plan Comisión. Cambiá la tasa y se actualizarán los montos al instante."
+                                    style="flex: 1; margin-right: 24px; min-width: 280px;">
+                                </nz-alert>
+                                
+                                <div style="display: flex; align-items: center; gap: 12px; background: rgba(0,0,0,0.02); padding: 8px 16px; border-radius: 8px;">
+                                    <strong>Tasa de Comisión (%): </strong>
+                                    <input type="number" nz-input [ngModel]="commissionRate" (ngModelChange)="onCommissionRateChange($event)" style="width: 80px;" min="0" max="100" />
+                                </div>
+                            </div>
 
-                    <nz-table #ordersTable [nzData]="allOrders" [nzPageSize]="10" class="premium-table">
-                        <thead>
-                            <tr>
-                                <th>Tienda</th>
-                                <th>Pedido</th>
-                                <th>Fecha</th>
-                                <th>Estado</th>
-                                <th>Total Venta</th>
-                                <th style="color: #d4b106;">Comisión Retenida (5%)</th>
-                            </tr>
-                        </thead>
-                        <tbody>
-                            <tr *ngFor="let data of ordersTable.data" [class.cancelled-row]="data.ords_uuid === 'CANCELLED'">
-                                <td>
-                                    <strong>{{ data.companyName }}</strong>
-                                </td>
-                                <td>
-                                    <code style="font-weight: 600;">#PED-{{ data.ord_ordernumber }}</code>
-                                </td>
-                                <td>
-                                    {{ data.ord_date | date:'mediumDate' }}
-                                </td>
-                                <td>
-                                    <nz-tag [nzColor]="getOrderStatusColor(data.ords_uuid)">
-                                        {{ getOrderStatusLabel(data.ords_uuid) }}
-                                    </nz-tag>
-                                </td>
-                                <td>
-                                    <strong>${{ data.ord_total | number:'1.2-2' }}</strong>
-                                </td>
-                                <td style="font-weight: 700; color: #d4b106;">
-                                    <span *ngIf="data.ords_uuid !== 'CANCELLED'">+${{ data.platformCommission | number:'1.2-2' }}</span>
-                                    <span *ngIf="data.ords_uuid === 'CANCELLED'" style="text-decoration: line-through; color: #8c8c8c;">$0.00</span>
-                                </td>
-                            </tr>
-                        </tbody>
-                    </nz-table>
+                            <!-- Filtros de Comisión -->
+                            <div style="display: flex; gap: 16px; margin-bottom: 16px;">
+                                <nz-radio-group [(ngModel)]="filterCommissionStatus" nzButtonStyle="solid" nzSize="small">
+                                    <label nz-radio-button nzValue="all">Todos los Pedidos</label>
+                                    <label nz-radio-button nzValue="pending">Pendientes de Cobro</label>
+                                    <label nz-radio-button nzValue="settled">Comisiones Liquidadas</label>
+                                </nz-radio-group>
+                            </div>
+
+                            <nz-table #ordersTable [nzData]="getFilteredCommissions()" [nzPageSize]="10" class="premium-table">
+                                <thead>
+                                    <tr>
+                                        <th>Tienda</th>
+                                        <th>Plan de Cobro</th>
+                                        <th>Pedido</th>
+                                        <th>Fecha</th>
+                                        <th>Estado Pedido</th>
+                                        <th>Total Venta</th>
+                                        <th style="color: #fa8c16;">Comisión ({{ commissionRate }}%)</th>
+                                        <th style="text-align: center; width: 180px;">Acción</th>
+                                    </tr>
+                                </thead>
+                                <tbody>
+                                    <tr *ngFor="let data of ordersTable.data" [class.cancelled-row]="data.ords_uuid === 'CANCELLED'">
+                                        <td><strong>{{ data.companyName }}</strong></td>
+                                        <td>
+                                            <nz-tag [nzColor]="data.billingPlan === 'commission' ? 'blue' : 'orange'">
+                                                {{ data.billingPlan === 'commission' ? '📈 Comisión' : '📅 Abono Fijo' }}
+                                            </nz-tag>
+                                        </td>
+                                        <td><code style="font-weight: 600;">#PED-{{ data.ord_ordernumber }}</code></td>
+                                        <td>{{ data.ord_date | date:'mediumDate' }}</td>
+                                        <td>
+                                            <nz-tag [nzColor]="getOrderStatusColor(data.ords_uuid)">
+                                                {{ getOrderStatusLabel(data.ords_uuid) }}
+                                            </nz-tag>
+                                        </td>
+                                        <td><strong>${{ data.ord_total | number:'1.2-2' }}</strong></td>
+                                        <td style="font-weight: 700; color: #fa8c16;">
+                                            <span *ngIf="data.billingPlan === 'commission' && data.ords_uuid !== 'CANCELLED'">+${{ data.platformCommission | number:'1.2-2' }}</span>
+                                            <span *ngIf="data.billingPlan === 'subscription'" style="color: #8c8c8c; font-style: italic;">$0.00 (Suscrita)</span>
+                                            <span *ngIf="data.ords_uuid === 'CANCELLED'" style="text-decoration: line-through; color: #8c8c8c;">$0.00</span>
+                                        </td>
+                                        <td style="text-align: center;">
+                                            <button *ngIf="data.billingPlan === 'commission' && data.commissionStatus === 'pending' && data.ords_uuid !== 'CANCELLED'" 
+                                                    nz-button nzType="primary" nzSize="small" (click)="settleCommission(data.ord_uuid)">
+                                                💰 Liquidar
+                                            </button>
+                                            <button *ngIf="data.billingPlan === 'commission' && data.commissionStatus === 'pending' && data.ords_uuid !== 'CANCELLED'"
+                                                    nz-button nzType="default" nzSize="small" (click)="settleAllCommissions(data.cmp_uuid)" style="margin-left: 4px;" nz-tooltip nzTooltipTitle="Liquidar todas las de esta tienda">
+                                                💼 Todo
+                                            </button>
+                                            <span *ngIf="data.commissionStatus === 'settled'" style="color: #52c41a; font-weight: 600;">
+                                                <span nz-icon nzType="check-circle" nzTheme="outline"></span> Liquidada
+                                            </span>
+                                            <span *ngIf="data.billingPlan === 'subscription'" style="color: #8c8c8c;">-</span>
+                                            <span *ngIf="data.ords_uuid === 'CANCELLED'" style="color: #bfbfbf; text-decoration: line-through;">Cancelado</span>
+                                        </td>
+                                    </tr>
+                                </tbody>
+                            </nz-table>
+                        </nz-tab>
+                        
+                        <!-- SUB-PESTAÑA 2.2: ABONOS DE SUSCRIPCIÓN -->
+                        <nz-tab nzTitle="📅 Abonos de Suscripción (Mensual)">
+                            <div style="margin-bottom: 20px;">
+                                <nz-alert nzType="info" nzShowIcon nzMessage="Control de Membresías Mensuales"
+                                    nzDescription="Seguimiento de cobros de abonos fijos de tiendas asociadas al Plan Suscripción. Ciclo de cobro actual: {{ currentBillingMonth }}.">
+                                </nz-alert>
+                            </div>
+
+                            <!-- Filtros de Suscripción -->
+                            <div style="display: flex; gap: 16px; margin-bottom: 16px;">
+                                <nz-radio-group [(ngModel)]="filterSubscriptionStatus" nzButtonStyle="solid" nzSize="small">
+                                    <label nz-radio-button nzValue="all">Todos los Abonos</label>
+                                    <label nz-radio-button nzValue="pending">Pendientes de Cobro</label>
+                                    <label nz-radio-button nzValue="paid">Cobrados</label>
+                                </nz-radio-group>
+                            </div>
+
+                            <nz-table #subscriptionsTable [nzData]="getSubscriptionStores()" [nzPageSize]="10" class="premium-table">
+                                <thead>
+                                    <tr>
+                                        <th>Logo</th>
+                                        <th>Tienda</th>
+                                        <th>Contacto</th>
+                                        <th>Ciclo de Cobro</th>
+                                        <th>Monto Abono</th>
+                                        <th>Estado de Cobro</th>
+                                        <th style="text-align: center; width: 180px;">Acción</th>
+                                    </tr>
+                                </thead>
+                                <tbody>
+                                    <tr *ngFor="let data of subscriptionsTable.data">
+                                        <td>
+                                            <div class="company-logo-avatar">
+                                                <img *ngIf="data.cmp_logo" [src]="data.cmp_logo" alt="Logo" />
+                                                <span *ngIf="!data.cmp_logo" nz-icon nzType="picture" nzTheme="outline"></span>
+                                            </div>
+                                        </td>
+                                        <td><strong>{{ data.cmp_name }}</strong></td>
+                                        <td>{{ data.cmp_phone }}<br><small style="color: #8c8c8c;">{{ data.cmp_email }}</small></td>
+                                        <td><nz-tag nzColor="geekblue">{{ currentBillingMonth }}</nz-tag></td>
+                                        <td><strong>${{ (storePlans[data.cmp_uuid]?.fee || 15000) | number:'1.2-2' }}</strong></td>
+                                        <td>
+                                            <nz-tag [nzColor]="subscriptionPayments[data.cmp_uuid]?.[currentBillingMonth] === 'paid' ? 'success' : 'warning'">
+                                                {{ subscriptionPayments[data.cmp_uuid]?.[currentBillingMonth] === 'paid' ? 'Cobrado' : 'Pendiente de Cobro' }}
+                                            </nz-tag>
+                                        </td>
+                                        <td style="text-align: center;">
+                                            <button *ngIf="subscriptionPayments[data.cmp_uuid]?.[currentBillingMonth] !== 'paid'" 
+                                                    nz-button nzType="primary" nzSize="small" (click)="paySubscription(data.cmp_uuid)">
+                                                💵 Registrar Cobro
+                                            </button>
+                                            <span *ngIf="subscriptionPayments[data.cmp_uuid]?.[currentBillingMonth] === 'paid'" style="color: #52c41a; font-weight: 600;">
+                                                <span nz-icon nzType="check-circle" nzTheme="outline"></span> Cobrado
+                                            </span>
+                                        </td>
+                                    </tr>
+                                </tbody>
+                            </nz-table>
+                        </nz-tab>
+                        
+                    </nz-tabset>
                 </nz-tab>
 
-                <!-- ====== PESTAÑA 3: CATEGORÍAS GLOBALES ====== -->
-                <nz-tab nzTitle="🏷️ Categorías Globales">
-                    <div style="margin-bottom: 20px; display: flex; justify-content: space-between; align-items: center;">
-                        <nz-alert nzType="info" nzShowIcon nzMessage="Rubros y Categorías Maestras"
-                            nzDescription="Administra los rubros globales del marketplace que asocian los productos en el catálogo público."
-                            style="flex: 1; margin-right: 24px;">
-                        </nz-alert>
-                        <button nz-button nzType="primary" (click)="openCategoryModal()">
-                            <span nz-icon nzType="plus-circle" nzTheme="outline"></span> Nueva Categoría Global
-                        </button>
-                    </div>
+                <!-- ====== PESTAÑA 3: CATÁLOGO MAESTRO ====== -->
+                <nz-tab nzTitle="🏷️ Catálogo Maestro">
+                    <nz-tabset [nzSelectedIndex]="0" nzType="line">
+                        
+                        <!-- SUB-PESTAÑA 3.1: RUBROS GLOBALES -->
+                        <nz-tab nzTitle="📦 Rubros Globales">
+                            <div style="margin-bottom: 20px; display: flex; justify-content: space-between; align-items: center;">
+                                <nz-alert nzType="info" nzShowIcon nzMessage="Rubros Maestros (Mercados)"
+                                    nzDescription="Administra los rubros o líneas de negocio principales en los que los comercios pueden vender productos."
+                                    style="flex: 1; margin-right: 24px;">
+                                </nz-alert>
+                                <button nz-button nzType="primary" (click)="openItemModal()">
+                                    <span nz-icon nzType="plus-circle" nzTheme="outline"></span> Nuevo Rubro Global
+                                </button>
+                            </div>
 
-                    <nz-table #categoriesTable [nzData]="globalCategories" [nzPageSize]="8" class="premium-table">
-                        <thead>
-                            <tr>
-                                <th>Rubro Principal</th>
-                                <th>Nombre de Categoría</th>
-                                <th>Descripción Técnica</th>
-                                <th style="text-align: center; width: 120px;">Acción</th>
-                            </tr>
-                        </thead>
-                        <tbody>
-                            <tr *ngFor="let data of categoriesTable.data">
-                                <td>
-                                    <nz-tag nzColor="geekblue">
-                                        {{ getGlobalItemName(data.gitm_uuid) }}
-                                    </nz-tag>
-                                </td>
-                                <td>
-                                    <strong>{{ data.gcat_name }}</strong>
-                                </td>
-                                <td>
-                                    {{ data.gcat_description }}
-                                </td>
-                                <td style="text-align: center;">
-                                    <button nz-button nzType="text" nzDanger (click)="deleteGlobalCategory(data)" nz-tooltip nzTooltipTitle="Eliminar Categoría Global">
-                                        <span nz-icon nzType="delete" nzTheme="fill"></span>
-                                    </button>
-                                </td>
-                            </tr>
-                        </tbody>
-                    </nz-table>
+                            <nz-table #itemsTable [nzData]="globalItems" [nzPageSize]="8" class="premium-table">
+                                <thead>
+                                    <tr>
+                                        <th>Nombre del Rubro</th>
+                                        <th>Descripción</th>
+                                        <th style="text-align: center; width: 150px;">Acciones</th>
+                                    </tr>
+                                </thead>
+                                <tbody>
+                                    <tr *ngFor="let data of itemsTable.data">
+                                        <td>
+                                            <strong>{{ data.gitm_name }}</strong>
+                                        </td>
+                                        <td>
+                                            {{ data.gitm_description || 'Sin descripción' }}
+                                        </td>
+                                        <td style="text-align: center;">
+                                            <button nz-button nzType="text" (click)="openItemModal(data)" nz-tooltip nzTooltipTitle="Editar Rubro">
+                                                <span nz-icon nzType="edit" nzTheme="fill" style="color: #1890ff;"></span>
+                                            </button>
+                                            <button nz-button nzType="text" nzDanger (click)="deleteGlobalItem(data)" nz-tooltip nzTooltipTitle="Eliminar Rubro">
+                                                <span nz-icon nzType="delete" nzTheme="fill"></span>
+                                            </button>
+                                        </td>
+                                    </tr>
+                                </tbody>
+                            </nz-table>
+                        </nz-tab>
+
+                        <!-- SUB-PESTAÑA 3.2: CATEGORÍAS GLOBALES -->
+                        <nz-tab nzTitle="🏷️ Categorías Globales">
+                            <div style="margin-bottom: 20px; display: flex; justify-content: space-between; align-items: center;">
+                                <nz-alert nzType="info" nzShowIcon nzMessage="Categorías del Catálogo"
+                                    nzDescription="Administra las categorías de productos que se asocian a cada rubro principal."
+                                    style="flex: 1; margin-right: 24px;">
+                                </nz-alert>
+                                <button nz-button nzType="primary" (click)="openCategoryModal()">
+                                    <span nz-icon nzType="plus-circle" nzTheme="outline"></span> Nueva Categoría Global
+                                </button>
+                            </div>
+
+                            <nz-table #categoriesTable [nzData]="globalCategories" [nzPageSize]="8" class="premium-table">
+                                <thead>
+                                    <tr>
+                                        <th>Rubro Principal</th>
+                                        <th>Nombre de Categoría</th>
+                                        <th>Descripción Técnica</th>
+                                        <th style="text-align: center; width: 120px;">Acción</th>
+                                    </tr>
+                                </thead>
+                                <tbody>
+                                    <tr *ngFor="let data of categoriesTable.data">
+                                        <td>
+                                            <nz-tag nzColor="geekblue">
+                                                {{ getGlobalItemName(data.gitm_uuid) }}
+                                            </nz-tag>
+                                        </td>
+                                        <td>
+                                            <strong>{{ data.gcat_name }}</strong>
+                                        </td>
+                                        <td>
+                                            {{ data.gcat_description }}
+                                        </td>
+                                        <td style="text-align: center;">
+                                            <button nz-button nzType="text" nzDanger (click)="deleteGlobalCategory(data)" nz-tooltip nzTooltipTitle="Eliminar Categoría Global">
+                                                <span nz-icon nzType="delete" nzTheme="fill"></span>
+                                            </button>
+                                        </td>
+                                    </tr>
+                                </tbody>
+                            </nz-table>
+                        </nz-tab>
+                        
+                    </nz-tabset>
                 </nz-tab>
 
             </nz-tabset>
@@ -263,6 +459,36 @@
         <button nz-button nzType="default" (click)="handleCategoryCancel()">Cancelar</button>
         <button nz-button nzType="primary" [nzLoading]="isSubmittingCategory" (click)="submitCategory()">
             💾 Crear Categoría
+        </button>
+    </ng-template>
+</nz-modal>
+
+<!-- ====== MODAL CREACIÓN/EDICIÓN RUBRO GLOBAL ====== -->
+<nz-modal [(nzVisible)]="isItemModalVisible" [nzTitle]="editingItemUuid ? 'Editar Rubro Global' : 'Crear Nuevo Rubro Global'" [nzFooter]="itemModalFooter" (nzOnCancel)="handleItemCancel()">
+    <ng-container *nzModalContent>
+        <form nz-form [formGroup]="itemForm" (ngSubmit)="submitItem()" nzLayout="vertical">
+            <!-- Nombre -->
+            <nz-form-item>
+                <nz-form-label nzRequired>Nombre del Rubro</nz-form-label>
+                <nz-form-control nzErrorTip="Por favor, ingresá el nombre del rubro global.">
+                    <input nz-input formControlName="gitm_name" placeholder="Ej: Tecnología, Indumentaria, Santería" />
+                </nz-form-control>
+            </nz-form-item>
+
+            <!-- Descripción -->
+            <nz-form-item>
+                <nz-form-label>Descripción</nz-form-label>
+                <nz-form-control>
+                    <textarea nz-input formControlName="gitm_description" [nzAutosize]="{ minRows: 3, maxRows: 5 }" placeholder="Describí brevemente este rubro comercial..."></textarea>
+                </nz-form-control>
+            </nz-form-item>
+        </form>
+    </ng-container>
+
+    <ng-template #itemModalFooter>
+        <button nz-button nzType="default" (click)="handleItemCancel()">Cancelar</button>
+        <button nz-button nzType="primary" [nzLoading]="isSubmittingItem" (click)="submitItem()">
+            💾 {{ editingItemUuid ? 'Guardar Cambios' : 'Crear Rubro' }}
         </button>
     </ng-template>
 </nz-modal>
