@@ -1,9 +1,11 @@
 import { Injectable, PLATFORM_ID, Inject } from '@angular/core';
 import { isPlatformBrowser } from '@angular/common';
-import { BehaviorSubject, Observable } from 'rxjs';
+import { BehaviorSubject, Observable, forkJoin, of } from 'rxjs';
+import { map, catchError } from 'rxjs/operators';
 import { CartItemInterface } from '@interfaces/cart-item.interface';
 import { ProductVariationInterface } from '@interfaces/product-variation';
 import { StoreContextService } from './store-context.service';
+import { CompaniesSettingsService } from './companies-settings.service';
 import { NzMessageService } from 'ng-zorro-antd/message';
 
 @Injectable({
@@ -17,7 +19,8 @@ export class CartService {
   constructor(
     @Inject(PLATFORM_ID) private platformId: Object,
     private _storeContext: StoreContextService,
-    private message: NzMessageService
+    private message: NzMessageService,
+    private _settingsService: CompaniesSettingsService
   ) {
     if (isPlatformBrowser(this.platformId)) {
       const savedCart = localStorage.getItem(this.STORAGE_KEY);
@@ -56,6 +59,67 @@ export class CartService {
       return;
     }
 
+    // 1. Verificar si hay productos de otras tiendas en el carrito
+    const differentStoreItems = currentItems.filter(item => item.cmp_uuid !== product.cmp_uuid);
+    if (differentStoreItems.length > 0) {
+      // Hay productos de otras tiendas. Necesitamos validar si se permite la combinación.
+      this._settingsService.getCompaniesSettings(product.cmp_uuid).subscribe({
+        next: (res) => {
+          let incomingAllowsMulti = true;
+          if (res && res.data) {
+            const setting = res.data.find((s: any) => s.cmps_key === 'ALLOW_MULTI_STORE_CART');
+            if (setting) {
+              incomingAllowsMulti = setting.cmps_value !== 'false';
+            }
+          }
+
+          if (!incomingAllowsMulti) {
+            this.message.warning(`Esta tienda no permite combinar sus productos con los de otras tiendas.`);
+            return;
+          }
+
+          // Consultar las configuraciones de las tiendas de los productos ya presentes en el carrito
+          const existingCmpUuids = [...new Set(differentStoreItems.map(item => item.cmp_uuid))];
+          const checks = existingCmpUuids.map(uuid => 
+            this._settingsService.getCompaniesSettings(uuid).pipe(
+              map(settingsRes => {
+                const setting = settingsRes?.data?.find((s: any) => s.cmps_key === 'ALLOW_MULTI_STORE_CART');
+                return {
+                  uuid,
+                  allows: setting ? setting.cmps_value !== 'false' : true
+                };
+              }),
+              catchError(() => of({ uuid, allows: true }))
+            )
+          );
+
+          forkJoin(checks).subscribe({
+            next: (results) => {
+              const blockedStore = results.find(r => !r.allows);
+              if (blockedStore) {
+                this.message.warning(`El carrito contiene productos de una tienda que no permite compras multi-tienda.`);
+                return;
+              }
+
+              this.proceedAddToCart(product, quantity);
+            },
+            error: () => {
+              this.proceedAddToCart(product, quantity);
+            }
+          });
+        },
+        error: () => {
+          this.proceedAddToCart(product, quantity);
+        }
+      });
+    } else {
+      // El carrito está vacío o contiene solo productos de la misma tienda.
+      this.proceedAddToCart(product, quantity);
+    }
+  }
+
+  private proceedAddToCart(product: ProductVariationInterface, quantity: number): void {
+    const currentItems = this.cartItemsSubject.value;
     const existingItem = currentItems.find(item => item.prov_uuid === product.prov_uuid);
 
     if (existingItem) {
@@ -72,6 +136,7 @@ export class CartService {
 
     this.cartItemsSubject.next([...currentItems]);
     this.syncToLocalStorage(currentItems);
+    this.message.success(`${product.prov_name} agregado al carrito.`);
   }
 
   public updateQuantity(productId: string, quantity: number): void {
