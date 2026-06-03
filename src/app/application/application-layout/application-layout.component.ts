@@ -1,7 +1,7 @@
-import { Component, OnInit } from '@angular/core';
+import { Component, OnInit, OnDestroy } from '@angular/core';
 import { RouterOutlet, RouterLink, Router, NavigationEnd } from '@angular/router';
 import { CommonModule } from '@angular/common';
-import { filter } from 'rxjs';
+import { filter, Subject, takeUntil } from 'rxjs';
 
 import { NzLayoutModule } from 'ng-zorro-antd/layout';
 import { SideBarComponent } from '@components/side-bar/side-bar.component';
@@ -13,11 +13,13 @@ import { NzDropDownModule } from 'ng-zorro-antd/dropdown';
 import { NzButtonModule } from 'ng-zorro-antd/button';
 import { NzToolTipModule } from 'ng-zorro-antd/tooltip';
 import { ApplicationBarComponent } from '@components/application-bar/application-bar.component';
+import { NzNotificationModule, NzNotificationService } from 'ng-zorro-antd/notification';
 
 import { SessionService } from '@services/session.service';
 import { UserRolesCompanyService } from '@services/user-roles-company.service';
 import { MenuInterface } from '@interfaces/menu';
 import { AppMenusService } from '@services/app-menus.service';
+import { WebSocketNotificationService } from '../../core/services/web-socket-notification.service';
 
 @Component({
   selector: 'app-application-layout',
@@ -34,12 +36,13 @@ import { AppMenusService } from '@services/app-menus.service';
     NzDropDownModule,
     NzButtonModule,
     NzToolTipModule,
+    NzNotificationModule,
     ApplicationBarComponent
   ],
   templateUrl: './application-layout.component.html',
   styleUrl: './application-layout.component.scss'
 })
-export class ApplicationLayoutComponent implements OnInit {
+export class ApplicationLayoutComponent implements OnInit, OnDestroy {
 
   public isCollapsed = false;
   public userRolesCompany: any[] = [];
@@ -49,11 +52,15 @@ export class ApplicationLayoutComponent implements OnInit {
   public menuItems: MenuInterface[] = [];
   public breadcrumbs: string[] = ['Inicio'];
 
+  private destroy$ = new Subject<void>();
+
   constructor(
     private _sessionService: SessionService,
     private _userRolesCompanyService: UserRolesCompanyService,
     private _appMmenusService: AppMenusService,
-    private _router: Router
+    private _router: Router,
+    private _notificationService: WebSocketNotificationService,
+    private _nzNotificationService: NzNotificationService
   ) { }
 
   ngOnInit(): void {
@@ -91,6 +98,40 @@ export class ApplicationLayoutComponent implements OnInit {
     ).subscribe((event: any) => {
       this.updateBreadcrumbs(event.urlAfterRedirects);
     });
+
+    // Suscribirse al canal de notificaciones en tiempo real
+    this._notificationService.incomingNotification$
+      .pipe(takeUntil(this.destroy$))
+      .subscribe((ntf) => {
+        // Validar que la notificación corresponda a la tienda/compañía activa
+        if (ntf.cmp_uuid && this.activeCompany && ntf.cmp_uuid === this.activeCompany.cmp_uuid) {
+          const type = ntf.ntf_type || 'info';
+          let borderLeftColor = '#1890ff'; // Info blue
+          if (type === 'success') borderLeftColor = '#52c41a'; // Success green
+          else if (type === 'warning') borderLeftColor = '#faad14'; // Warning yellow
+          else if (type === 'error') borderLeftColor = '#ff4d4f'; // Error red
+
+          // Mostrar notificación flotante visual
+          this._nzNotificationService.create(
+            type,
+            ntf.ntf_title,
+            ntf.ntf_message,
+            {
+              nzDuration: 7000,
+              nzPlacement: 'topRight',
+              nzStyle: {
+                background: '#ffffff',
+                borderLeft: `5px solid ${borderLeftColor}`,
+                borderRadius: '8px',
+                boxShadow: '0 4px 16px rgba(0, 0, 0, 0.12)'
+              }
+            }
+          );
+
+          // Reproducir alerta de sonido armónico
+          this._notificationService.playNotificationSound();
+        }
+      });
   }
 
   private loadMenuTree(): void {
@@ -165,5 +206,10 @@ export class ApplicationLayoutComponent implements OnInit {
   public logout(): void {
     this._sessionService.logout();
     this._router.navigate(['/auth/login']);
+  }
+
+  ngOnDestroy(): void {
+    this.destroy$.next();
+    this.destroy$.complete();
   }
 }
