@@ -83,9 +83,20 @@ export class MarketHomeComponent {
     });
   }
 
-  // Al buscar globalmente, podríamos redirigir a un buscador general
+  // Al buscar globalmente, redirigimos al catálogo general
   public onGlobalSearch(): void {
-    console.log('Buscando en todo el Marketplace:', this.searchGlobal);
+    const queryParams: any = {};
+    if (this.searchGlobal.trim()) {
+      queryParams.search = this.searchGlobal.trim();
+    }
+    if (this.itemSelected && this.itemSelected !== '0') {
+      queryParams.item = this.itemSelected;
+    }
+    this.router.navigate(['/public/catalog'], { queryParams });
+  }
+
+  public filterByCategory(gcat_uuid: string) {
+    this.router.navigate(['/public/catalog'], { queryParams: { category: gcat_uuid } });
   }
 
   private getGlobalItems(): void {
@@ -143,11 +154,6 @@ export class MarketHomeComponent {
           console.error('Error cargando empresas:', err);
         }
       });
-  }
-
-  public filterByCategory(gcat_uuid: string) {
-    console.log('Filtrando por categoría:', gcat_uuid);
-    // Aquí rediriges a la búsqueda con el filtro aplicado
   }
 
   public goToStore(slug: string): void {
