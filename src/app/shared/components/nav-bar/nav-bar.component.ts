@@ -1,8 +1,8 @@
 import { Component, OnInit } from '@angular/core';
 import { CommonModule, AsyncPipe } from '@angular/common';
-import { RouterLink, Router } from '@angular/router';
+import { RouterLink, Router, NavigationEnd } from '@angular/router';
 import { FormsModule } from '@angular/forms';
-import { Observable } from 'rxjs';
+import { Observable, filter } from 'rxjs';
 
 // NG-ZORRO Modules
 import { NzDrawerModule } from 'ng-zorro-antd/drawer';
@@ -57,6 +57,7 @@ export class NavBarComponent implements OnInit {
   public storeLogoUrl: string = '';
   public storeName: string = 'ATS Market';
   public navbarColor: string = '#001529'; // Color por defecto (dark)
+  public searchQuery: string = '';
 
   // Notificaciones
   public notifications$: Observable<NotificationInterface[]>;
@@ -97,6 +98,17 @@ export class NavBarComponent implements OnInit {
         setTimeout(() => this.animateBell = false, 1200); // Duración de la oscilación
       }
     });
+
+    // Sincronizar el buscador del navbar con los queryParams de la URL
+    const initialTree = this._router.parseUrl(this._router.url);
+    this.searchQuery = initialTree.queryParams['search'] || '';
+
+    this._router.events.pipe(
+      filter(event => event instanceof NavigationEnd)
+    ).subscribe(() => {
+      const tree = this._router.parseUrl(this._router.url);
+      this.searchQuery = tree.queryParams['search'] || '';
+    });
   }
 
   private updateLogo(): void {
@@ -110,14 +122,19 @@ export class NavBarComponent implements OnInit {
     this.navbarColor = customColor || '#001529';
   }
 
-  // Maneja el cambio en el campo de búsqueda.
-
-  public onSearchInputChange(event: Event): void {
-    const value = (event.target as HTMLInputElement).value;
-    if (value && value.trim().length > 3) {
-      console.log('Buscando:', value);
-      // **TODO:** Implementar la lógica de búsqueda,
-      // ej: redirigir a '/catalogo?q=' + value
+  // Ejecuta la búsqueda desde el navbar
+  public onSearch(): void {
+    const queryParams: any = {};
+    if (this.searchQuery && this.searchQuery.trim()) {
+      queryParams.search = this.searchQuery.trim();
+    }
+    
+    if (this.activeStore) {
+      // Si estamos dentro de una tienda, buscamos en esa tienda
+      this._router.navigate(['/public/store-catalog', this.activeStore.cmp_slug], { queryParams });
+    } else {
+      // Si no, buscamos en el catálogo general
+      this._router.navigate(['/public/catalog'], { queryParams });
     }
   }
 

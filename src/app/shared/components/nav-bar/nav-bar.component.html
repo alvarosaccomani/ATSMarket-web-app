@@ -9,9 +9,11 @@
 
     <div class="search-container">
         <nz-input-group [nzAddOnBefore]="searchIcon">
-            <ng-template #searchIcon><span nz-icon nzType="search"></span></ng-template>
-            <input type="text" nz-input placeholder="Buscar rosarios, medallas, santos..."
-                (ngModelChange)="onSearchInputChange($event)" />
+            <ng-template #searchIcon>
+                <span nz-icon nzType="search" (click)="onSearch()" style="cursor: pointer;"></span>
+            </ng-template>
+            <input type="text" nz-input [placeholder]="activeStore ? 'Buscar en ' + storeName + '...' : 'Buscar productos, rubros...'"
+                [(ngModel)]="searchQuery" (keydown.enter)="onSearch()" />
         </nz-input-group>
     </div>
 
