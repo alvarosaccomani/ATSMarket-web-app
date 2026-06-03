@@ -143,6 +143,19 @@ export class CompanySettingsComponent implements OnInit {
     return [
       {
         cmp_uuid: this.cmp_uuid,
+        cmps_uuid: 'shipping_enable_5',
+        cmps_key: 'ALLOW_MULTI_STORE_CART',
+        cmps_parameter: 'Soportar Carrito Multi-Tienda',
+        cmps_description: 'Permitir que los clientes combinen productos de tu tienda con productos de otras tiendas en la misma compra.',
+        cmps_datatype: 'boolean',
+        cmps_value: 'true',
+        cmps_group: 'Ventas',
+        cmps_options: '',
+        cmps_updatedat: new Date(),
+        cmps_createdat: new Date()
+      },
+      {
+        cmp_uuid: this.cmp_uuid,
         cmps_uuid: '1',
         cmps_key: 'search_filter_mode',
         cmps_parameter: 'Rubros y Categorias',
