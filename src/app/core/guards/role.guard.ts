@@ -13,9 +13,15 @@ export const roleGuard: CanActivateFn = (route, state) => {
   const message = inject(NzMessageService);
 
   // 1. Validar autenticación básica
-  if (!sessionService.getIdentity()) {
+  const identity = sessionService.getIdentity();
+  if (!identity) {
     router.navigate(['/auth/login'], { queryParams: { returnUrl: state.url } });
     return false;
+  }
+
+  // 1.5. Bypass para SuperAdministrador global de la plataforma
+  if (identity.usr_sysadmin === true || identity.usr_sysadmin === 1 || identity.usr_sysadmin === '1') {
+    return true;
   }
 
   // 2. Validar contexto de compañía activo
