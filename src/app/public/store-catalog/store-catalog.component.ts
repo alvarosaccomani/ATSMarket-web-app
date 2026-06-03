@@ -212,7 +212,6 @@ export class StoreCatalogComponent implements OnInit {
 
   public agregarAlCarrito(producto: ProductVariationInterface): void {
     this.cartService.addToCart(producto, 1);
-    this.message.success(`${producto.prov_name} agregado al carrito.`);
   }
 
   public openDrawer(): void {

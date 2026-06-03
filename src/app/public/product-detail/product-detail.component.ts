@@ -152,7 +152,6 @@ export class ProductDetailComponent implements OnInit {
   public agregarAlCarrito(): void {
     if (this.producto) {
       this.cartService.addToCart(this.producto, 1);
-      this.message.success(`${this.producto.prov_name} agregado al carrito.`);
     }
   }
 

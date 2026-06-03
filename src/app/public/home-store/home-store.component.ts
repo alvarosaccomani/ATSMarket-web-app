@@ -133,7 +133,6 @@ export class HomeStoreComponent {
     }
 
     this._cartService.addToCart(producto, 1);
-    this.message.success(`${producto.prov_name} agregado al carrito.`);
   }
 
   public goToStoreCatalog(): void {
