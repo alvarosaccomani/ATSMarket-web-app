@@ -164,6 +164,80 @@
             </div>
 
         </div>
+
+        <!-- FILA 4: Rentabilidad y Alertas de Stock WMS -->
+        <div nz-row [nzGutter]="[16, 16]" class="charts-row" style="margin-top: 20px; margin-bottom: 20px;">
+
+            <!-- Margen de Ganancia y Rentabilidad -->
+            <div nz-col nzXs="24" nzLg="12">
+                <nz-card class="premium-card full-height-card" nzTitle="Análisis de Rentabilidad (Costo vs. Venta)" [nzBordered]="false">
+                    <div class="chart-wrapper">
+                        <div #profitabilityChart class="chart-container"></div>
+                        <div *ngIf="profitabilityList.length === 0" class="empty-chart-state">
+                            <span nz-icon nzType="fund" style="font-size: 28px; margin-bottom: 8px; display: block;"></span>
+                            Sin datos de costos/precios para comparar
+                        </div>
+                    </div>
+                </nz-card>
+            </div>
+
+            <!-- Distribución de Stock y Alertas -->
+            <div nz-col nzXs="24" nzLg="12">
+                <nz-card class="premium-card full-height-card" nzTitle="Inventario WMS y Tasa de Rotación" [nzBordered]="false">
+                    <div style="display: flex; gap: 20px; height: 100%; flex-wrap: wrap;">
+                        
+                        <!-- Mini KPIs e Histograma WMS -->
+                        <div style="flex: 1 1 200px; display: flex; flex-direction: column; gap: 14px;">
+                            <div style="background: rgba(24, 144, 255, 0.05); padding: 12px; border-radius: 12px; border: 1px solid rgba(24, 144, 255, 0.1);">
+                                <span style="font-size: 11px; font-weight: 700; color: #1890ff; text-transform: uppercase; letter-spacing: 0.5px; display: block;">Rotación Mensual</span>
+                                <strong style="font-size: 20px; color: #1e293b; display: block; margin-top: 4px;">{{ turnoverRate }}x</strong>
+                                <span style="font-size: 11px; color: #64748b;">Rotaciones completas en 30 días</span>
+                            </div>
+                            <div style="background: rgba(82, 196, 26, 0.05); padding: 12px; border-radius: 12px; border: 1px solid rgba(82, 196, 26, 0.1);">
+                                <span style="font-size: 11px; font-weight: 700; color: #52c41a; text-transform: uppercase; letter-spacing: 0.5px; display: block;">Stock Total Físico</span>
+                                <strong style="font-size: 20px; color: #1e293b; display: block; margin-top: 4px;">{{ totalStockItems }} un.</strong>
+                                <span style="font-size: 11px; color: #64748b;">Unidades en depósito</span>
+                            </div>
+                        </div>
+
+                        <!-- Gráfico de Dona WMS -->
+                        <div style="flex: 1 1 220px; height: 160px; position: relative;">
+                            <div #wmsStockChart style="width: 100%; height: 100%;"></div>
+                        </div>
+
+                        <nz-divider style="margin: 8px 0;"></nz-divider>
+
+                        <!-- Panel de Alertas de Stock Bajo -->
+                        <div style="width: 100%;">
+                            <h4 style="font-size: 13px; font-weight: 700; color: #475569; margin-bottom: 10px; display: flex; align-items: center; gap: 6px;">
+                                <span nz-icon nzType="warning" nzTheme="fill" style="color: #fa8c16;"></span>
+                                Alertas de Stock Bajo (Menos de 10 unidades)
+                            </h4>
+                            <div class="low-stock-scroll-container" style="max-height: 105px; overflow-y: auto; display: flex; flex-direction: column; gap: 8px; padding-right: 4px;">
+                                <div *ngFor="let alert of lowStockAlerts" 
+                                     style="display: flex; align-items: center; justify-content: space-between; background: rgba(250, 140, 22, 0.05); padding: 8px 12px; border-radius: 8px; border: 1px solid rgba(250, 140, 22, 0.15); font-size: 12.5px;">
+                                    <div style="display: flex; flex-direction: column;">
+                                        <span style="font-weight: 600; color: #1e293b;">{{ alert.name }}</span>
+                                        <span style="font-size: 10.5px; color: #64748b;">SKU: {{ alert.sku }}</span>
+                                    </div>
+                                    <nz-tag [nzColor]="alert.stock === 0 ? 'red' : 'orange'" style="font-weight: 700; border-radius: 4px; margin: 0;">
+                                        {{ alert.stock === 0 ? 'SIN STOCK' : alert.stock + ' UN' }}
+                                    </nz-tag>
+                                </div>
+                                <div *ngIf="lowStockAlerts.length === 0" 
+                                     style="text-align: center; color: #52c41a; font-weight: 600; padding: 10px 0; font-size: 12.5px;">
+                                    <span nz-icon nzType="check-circle" nzTheme="outline" style="margin-right: 4px;"></span>
+                                    ¡Excelente! Todo el stock está saludable.
+                                </div>
+                            </div>
+                        </div>
+
+                    </div>
+                </nz-card>
+            </div>
+
+        </div>
+
     </nz-spin>
 
 </div>

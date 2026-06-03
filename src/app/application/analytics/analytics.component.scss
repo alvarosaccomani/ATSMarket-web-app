@@ -254,3 +254,20 @@
         transform: translateY(0);
     }
 }
+
+// Custom Scrollbar for Alert Panel
+.low-stock-scroll-container {
+    &::-webkit-scrollbar {
+        width: 6px;
+    }
+    &::-webkit-scrollbar-track {
+        background: transparent;
+    }
+    &::-webkit-scrollbar-thumb {
+        background: #cbd5e1;
+        border-radius: 4px;
+        &:hover {
+            background: #94a3b8;
+        }
+    }
+}
