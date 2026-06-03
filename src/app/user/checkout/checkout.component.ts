@@ -16,6 +16,7 @@ import { MessageService } from '../../core/services/message.service';
 import { StockMovementsService } from '../../core/services/stock-movements.service';
 import { ProductVariationsService } from '../../core/services/product-variations.service';
 import { InventoryStocksService } from '../../core/services/inventory-stocks.service';
+import { WebSocketNotificationService } from '../../core/services/web-socket-notification.service';
 import { CompaniesService } from '../../core/services/companies.service';
 import { CompaniesSettingsService } from '../../core/services/companies-settings.service';
 import { CompanyInterface } from '../../core/interfaces/company/company.interface';
@@ -205,6 +206,7 @@ export class CheckoutComponent implements OnInit, OnDestroy {
     private _stockMovementsService: StockMovementsService,
     private _productVariationsService: ProductVariationsService,
     private _inventoryStocksService: InventoryStocksService,
+    private _notificationService: WebSocketNotificationService,
     private companiesService: CompaniesService,
     private companiesSettingsService: CompaniesSettingsService
   ) { }
@@ -1060,6 +1062,18 @@ export class CheckoutComponent implements OnInit, OnDestroy {
         map((res: any) => {
           const orderUuid = res?.data?.ord_uuid || '';
           g.orderUuid = orderUuid;
+
+          // Disparar la notificación en tiempo real para el comercio/vendedor
+          this._notificationService.pushNotification({
+            usr_uuid: 'vendor',
+            cus_uuid: customer ? customer.cus_uuid : 'guest-customer',
+            cmp_uuid: g.cmp_uuid,
+            ntf_title: '🛍️ ¡Nuevo pedido recibido!',
+            ntf_message: `Has recibido el pedido #${storeOrderNumber} por un total de $${g.subtotal + g.shippingCost}.`,
+            ntf_type: 'success',
+            ntf_actionurl: '/application/orders-received'
+          });
+
           return { success: true, storeGroup: g, orderUuid };
         }),
         catchError((err) => {
