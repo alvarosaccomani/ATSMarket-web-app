@@ -17,7 +17,7 @@ import { NzModalModule } from 'ng-zorro-antd/modal';
 import { FormsModule } from '@angular/forms';
 import { BarcodeScannerComponent } from '../../shared/components/barcode-scanner/barcode-scanner.component';
 
-import { Subject, Observable } from 'rxjs';
+import { Subject, Observable, forkJoin } from 'rxjs';
 import { takeUntil } from 'rxjs/operators';
 import { OrdersService } from '../../core/services/orders.service';
 import { SessionService } from '../../core/services/session.service';
@@ -67,6 +67,7 @@ export class OrdersReceivedComponent implements OnInit, OnDestroy {
   public checklistOrder: OrderInterface | null = null;
   public checklistItems: { name: string; qty: number; checked: boolean }[] = [];
   public isChecklistScannerActive = false;
+  public activeTabIndex = 0;
 
   // Drawer de Incidencias
   public isIncidentVisible = false;
@@ -641,6 +642,519 @@ export class OrdersReceivedComponent implements OnInit, OnDestroy {
   public resetChecklist(): void {
     this.checklistItems.forEach(i => i.checked = false);
     this.message.info('Checklist de carga reiniciado.');
+  }
+
+  // --- IMPRESIÓN DE ETIQUETAS DE DESPACHO (SHIPPING LABELS) ---
+
+  public printShippingLabel(order: OrderInterface): void {
+    const cachedAddress = this.deliveryAddressesCache[order.adr_uuid];
+    if (cachedAddress) {
+      this.doPrintLabel(order, cachedAddress);
+    } else if (order.cus_uuid) {
+      this.message.loading('Cargando dirección de envío...', { nzDuration: 800 });
+      this._addressesService.fetchAddressesByCustomer(order.cus_uuid).subscribe({
+        next: (res: any) => {
+          const list = res.data || [];
+          const matched = list.find((a: any) => a.adr_uuid === order.adr_uuid);
+          if (matched) {
+            this.deliveryAddressesCache[order.adr_uuid] = matched;
+            this.doPrintLabel(order, matched);
+          } else {
+            this.doPrintLabel(order, this.getFallbackAddress(order));
+          }
+        },
+        error: () => {
+          this.doPrintLabel(order, this.getFallbackAddress(order));
+        }
+      });
+    } else {
+      this.doPrintLabel(order, this.getFallbackAddress(order));
+    }
+  }
+
+  private getFallbackAddress(order: OrderInterface): AddressInterface {
+    return {
+      cmp_uuid: order.cmp_uuid || '',
+      adr_uuid: order.adr_uuid || '',
+      cus_uuid: order.cus_uuid || '',
+      sup_uuid: '',
+      adr_alias: 'Envío',
+      adr_recipientname: order.ord_customername || 'Cliente',
+      adr_contactphone: order.ord_contactphone || '',
+      adr_reference: '',
+      adr_country: 'Argentina',
+      adr_address: 'Domicilio de entrega no especificado',
+      adr_street: 'Domicilio de entrega',
+      adr_number: '',
+      adr_floor: '',
+      adr_apartment: '',
+      adr_city: 'Localidad no especificada',
+      adr_province: '',
+      adr_postalcode: '',
+      adr_lat: 0,
+      adr_lng: 0,
+      adr_createdat: new Date(),
+      adr_updatedat: new Date()
+    };
+  }
+
+  private doPrintLabel(order: OrderInterface, address: AddressInterface): void {
+    const printWindow = window.open('', '_blank');
+    if (!printWindow) {
+      this.message.error('No se pudo abrir la ventana de impresión. Por favor, deshabilite el bloqueador de ventanas emergentes.');
+      return;
+    }
+
+    const company = this._sessionService.getCompany() || {};
+    const coName = company.cmp_name || 'Comercio ATSMarket';
+    const coAddress = company.cmp_address || 'Dirección no especificada';
+    const coPhone = company.cmp_phone || 'Teléfono no especificado';
+
+    const delivery = this.getDeliveryType(order.ord_customernotes);
+    const parsedNotes = this.parseCustomerNotes(order.ord_customernotes);
+
+    const addressStr = address.adr_address || `${address.adr_street || ''} ${address.adr_number || ''}${address.adr_floor ? ', Piso ' + address.adr_floor : ''}${address.adr_apartment ? ', Depto ' + address.adr_apartment : ''}`.trim() || 'Domicilio de entrega no especificado';
+    const cityStr = `${address.adr_city}${address.adr_postalcode ? ' (CP: ' + address.adr_postalcode + ')' : ''}`;
+
+    const barcodeVal = `*${order.ord_ordernumber}*`;
+
+    const htmlContent = `
+<!DOCTYPE html>
+<html>
+<head>
+  <meta charset="utf-8">
+  <title>Etiqueta de Envío - PED-${order.ord_ordernumber}</title>
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;600;700;900&family=Libre+Barcode+39&display=swap" rel="stylesheet">
+  <style>
+    @media print {
+      @page {
+        size: 100mm 150mm;
+        margin: 0;
+      }
+      body {
+        margin: 0;
+        padding: 0;
+        background: #fff;
+      }
+    }
+    * {
+      box-sizing: border-box;
+    }
+    body {
+      font-family: 'Inter', sans-serif;
+      width: 100mm;
+      height: 150mm;
+      padding: 5mm;
+      color: #000;
+      background: #fff;
+    }
+    .label-box {
+      border: 3px solid #000;
+      width: 100%;
+      height: 100%;
+      padding: 4mm;
+      display: flex;
+      flex-direction: column;
+      justify-content: space-between;
+      border-radius: 8px;
+    }
+    .header {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      border-bottom: 3px solid #000;
+      padding-bottom: 2mm;
+    }
+    .header-logo {
+      font-size: 18px;
+      font-weight: 900;
+      letter-spacing: -0.5px;
+    }
+    .header-badge {
+      font-size: 13px;
+      font-weight: 900;
+      border: 2px solid #000;
+      padding: 2px 8px;
+      border-radius: 4px;
+      text-transform: uppercase;
+      background: #000;
+      color: #fff;
+    }
+    .section {
+      border-bottom: 2px dashed #000;
+      padding: 3mm 0;
+    }
+    .section:last-of-type {
+      border-bottom: none;
+    }
+    .section-title {
+      font-size: 10px;
+      font-weight: 800;
+      text-transform: uppercase;
+      margin-bottom: 1.5mm;
+      letter-spacing: 0.5px;
+    }
+    .section-content {
+      font-size: 13px;
+      line-height: 1.4;
+    }
+    .sender-details {
+      font-size: 11px;
+      line-height: 1.3;
+    }
+    .barcode-section {
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      justify-content: center;
+      padding: 2mm 0;
+      text-align: center;
+    }
+    .barcode {
+      font-family: 'Libre Barcode 39', cursive;
+      font-size: 60px;
+      margin: 0;
+      line-height: 1;
+    }
+    .barcode-text {
+      font-size: 12px;
+      font-weight: 700;
+      margin-top: 1mm;
+      font-family: monospace;
+      letter-spacing: 1px;
+    }
+    .shipping-method {
+      display: flex;
+      align-items: center;
+      gap: 10px;
+    }
+    .method-name {
+      font-size: 16px;
+      font-weight: 900;
+      text-transform: uppercase;
+    }
+  </style>
+</head>
+<body>
+  <div class="label-box">
+    
+    <div class="header">
+      <span class="header-logo">ATSMARKET LOGISTICA</span>
+      <span class="header-badge">${delivery.label}</span>
+    </div>
+
+    <!-- REMITENTE -->
+    <div class="section">
+      <div class="section-title">Remitente (Origen)</div>
+      <div class="sender-details">
+        <strong>${coName}</strong><br>
+        Dirección: ${coAddress}<br>
+        Teléfono: ${coPhone}
+      </div>
+    </div>
+
+    <!-- DESTINATARIO -->
+    <div class="section">
+      <div class="section-title">Destinatario (Destino)</div>
+      <div class="section-content">
+        <strong>${order.ord_customername}</strong><br>
+        Dirección: ${addressStr}<br>
+        Ciudad: ${cityStr}<br>
+        Teléfono: ${order.ord_contactphone || 'N/A'}<br>
+        Email: ${order.ord_customeremail || 'N/A'}
+      </div>
+    </div>
+
+    <!-- METODO Y NOTAS -->
+    <div class="section">
+      <div class="section-title">Detalles de Entrega</div>
+      <div class="section-content">
+        <div class="shipping-method">
+          <span class="method-name">${parsedNotes.shipping || delivery.label}</span>
+        </div>
+        ${parsedNotes.extraNotes ? '<div style="margin-top: 1.5mm; font-size: 11px; border-left: 2px solid #000; padding-left: 6px; font-style: italic;"><strong>Notas:</strong> ' + parsedNotes.extraNotes + '</div>' : ''}
+      </div>
+    </div>
+
+    <!-- CODIGO DE BARRAS -->
+    <div class="barcode-section">
+      <p class="barcode">${barcodeVal}</p>
+      <div class="barcode-text">ORD-PED-${order.ord_ordernumber}</div>
+    </div>
+
+  </div>
+</body>
+</html>
+    `;
+
+    printWindow.document.open();
+    printWindow.document.write(htmlContent);
+    printWindow.document.close();
+
+    setTimeout(() => {
+      printWindow.focus();
+      printWindow.print();
+      printWindow.close();
+    }, 850);
+  }
+
+  public printBatchShippingLabels(): void {
+    let targetOrders: OrderInterface[] = [];
+    switch (this.activeTabIndex) {
+      case 0: targetOrders = this.pendingOrders; break;
+      case 1: targetOrders = this.processingOrders; break;
+      case 2: targetOrders = this.shippedOrders; break;
+      case 3: targetOrders = this.deliveredOrders; break;
+    }
+
+    const shippableOrders = targetOrders.filter(o => {
+      const type = this.getDeliveryType(o.ord_customernotes);
+      return type.label !== 'Retiro';
+    });
+
+    if (shippableOrders.length === 0) {
+      this.message.warning('No hay pedidos con envío (correo/moto) en la pestaña actual para imprimir.');
+      return;
+    }
+
+    this.message.loading(`Preparando impresión de ${shippableOrders.length} etiquetas...`, { nzDuration: 1200 });
+
+    const missingCusUuids = shippableOrders
+      .filter(o => !this.deliveryAddressesCache[o.adr_uuid] && o.cus_uuid)
+      .map(o => o.cus_uuid);
+
+    if (missingCusUuids.length > 0) {
+      const requests = Array.from(new Set(missingCusUuids)).map(cusUuid =>
+        this._addressesService.fetchAddressesByCustomer(cusUuid)
+      );
+
+      forkJoin(requests).subscribe({
+        next: (results: any[]) => {
+          results.forEach(res => {
+            const list = res.data || [];
+            list.forEach((addr: any) => {
+              this.deliveryAddressesCache[addr.adr_uuid] = addr;
+            });
+          });
+          this.doPrintLabelBatch(shippableOrders);
+        },
+        error: () => {
+          this.doPrintLabelBatch(shippableOrders);
+        }
+      });
+    } else {
+      this.doPrintLabelBatch(shippableOrders);
+    }
+  }
+
+  private doPrintLabelBatch(orders: OrderInterface[]): void {
+    const printWindow = window.open('', '_blank');
+    if (!printWindow) {
+      this.message.error('No se pudo abrir la ventana de impresión. Por favor, deshabilite el bloqueador de ventanas emergentes.');
+      return;
+    }
+
+    const company = this._sessionService.getCompany() || {};
+    const coName = company.cmp_name || 'Comercio ATSMarket';
+    const coAddress = company.cmp_address || 'Dirección no especificada';
+    const coPhone = company.cmp_phone || 'Teléfono no especificado';
+
+    let pagesHtml = '';
+
+    orders.forEach((order, index) => {
+      const address = this.deliveryAddressesCache[order.adr_uuid] || this.getFallbackAddress(order);
+      const delivery = this.getDeliveryType(order.ord_customernotes);
+      const parsedNotes = this.parseCustomerNotes(order.ord_customernotes);
+
+      const addressStr = address.adr_address || `${address.adr_street || ''} ${address.adr_number || ''}${address.adr_floor ? ', Piso ' + address.adr_floor : ''}${address.adr_apartment ? ', Depto ' + address.adr_apartment : ''}`.trim() || 'Domicilio de entrega no especificado';
+      const cityStr = `${address.adr_city}${address.adr_postalcode ? ' (CP: ' + address.adr_postalcode + ')' : ''}`;
+      const barcodeVal = `*${order.ord_ordernumber}*`;
+
+      pagesHtml += `
+      <div class="label-box">
+        <div class="header">
+          <span class="header-logo">ATSMARKET LOGISTICA</span>
+          <span class="header-badge">${delivery.label}</span>
+        </div>
+
+        <div class="section">
+          <div class="section-title">Remitente (Origen)</div>
+          <div class="sender-details">
+            <strong>${coName}</strong><br>
+            Dirección: ${coAddress}<br>
+            Teléfono: ${coPhone}
+          </div>
+        </div>
+
+        <div class="section">
+          <div class="section-title">Destinatario (Destino)</div>
+          <div class="section-content">
+            <strong>${order.ord_customername}</strong><br>
+            Dirección: ${addressStr}<br>
+            Ciudad: ${cityStr}<br>
+            Teléfono: ${order.ord_contactphone || 'N/A'}<br>
+            Email: ${order.ord_customeremail || 'N/A'}
+          </div>
+        </div>
+
+        <div class="section">
+          <div class="section-title">Detalles de Entrega</div>
+          <div class="section-content">
+            <div class="shipping-method">
+              <span class="method-name">${parsedNotes.shipping || delivery.label}</span>
+            </div>
+            ${parsedNotes.extraNotes ? '<div style="margin-top: 1.5mm; font-size: 11px; border-left: 2px solid #000; padding-left: 6px; font-style: italic;"><strong>Notas:</strong> ' + parsedNotes.extraNotes + '</div>' : ''}
+          </div>
+        </div>
+
+        <div class="barcode-section">
+          <p class="barcode">${barcodeVal}</p>
+          <div class="barcode-text">ORD-PED-${order.ord_ordernumber}</div>
+        </div>
+      </div>
+      `;
+
+      if (index < orders.length - 1) {
+        pagesHtml += `<div class="page-break"></div>`;
+      }
+    });
+
+    const htmlContent = `
+<!DOCTYPE html>
+<html>
+<head>
+  <meta charset="utf-8">
+  <title>Lote de Etiquetas de Envío</title>
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;600;700;900&family=Libre+Barcode+39&display=swap" rel="stylesheet">
+  <style>
+    @media print {
+      @page {
+        size: 100mm 150mm;
+        margin: 0;
+      }
+      body {
+        margin: 0;
+        padding: 0;
+        background: #fff;
+      }
+      .page-break {
+        page-break-after: always;
+        clear: both;
+      }
+    }
+    * {
+      box-sizing: border-box;
+    }
+    body {
+      font-family: 'Inter', sans-serif;
+      color: #000;
+      background: #fff;
+      margin: 0;
+      padding: 0;
+    }
+    .label-box {
+      width: 100mm;
+      height: 150mm;
+      padding: 5mm;
+      display: flex;
+      flex-direction: column;
+      justify-content: space-between;
+      border: 3px solid #000;
+      border-radius: 8px;
+      page-break-inside: avoid;
+    }
+    .header {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      border-bottom: 3px solid #000;
+      padding-bottom: 2mm;
+    }
+    .header-logo {
+      font-size: 18px;
+      font-weight: 900;
+      letter-spacing: -0.5px;
+    }
+    .header-badge {
+      font-size: 13px;
+      font-weight: 900;
+      border: 2px solid #000;
+      padding: 2px 8px;
+      border-radius: 4px;
+      text-transform: uppercase;
+      background: #000;
+      color: #fff;
+    }
+    .section {
+      border-bottom: 2px dashed #000;
+      padding: 3mm 0;
+    }
+    .section:last-of-type {
+      border-bottom: none;
+    }
+    .section-title {
+      font-size: 10px;
+      font-weight: 800;
+      text-transform: uppercase;
+      margin-bottom: 1.5mm;
+      letter-spacing: 0.5px;
+    }
+    .section-content {
+      font-size: 13px;
+      line-height: 1.4;
+    }
+    .sender-details {
+      font-size: 11px;
+      line-height: 1.3;
+    }
+    .barcode-section {
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      justify-content: center;
+      padding: 2mm 0;
+      text-align: center;
+    }
+    .barcode {
+      font-family: 'Libre Barcode 39', cursive;
+      font-size: 60px;
+      margin: 0;
+      line-height: 1;
+    }
+    .barcode-text {
+      font-size: 12px;
+      font-weight: 700;
+      margin-top: 1mm;
+      font-family: monospace;
+      letter-spacing: 1px;
+    }
+    .shipping-method {
+      display: flex;
+      align-items: center;
+      gap: 10px;
+    }
+    .method-name {
+      font-size: 16px;
+      font-weight: 900;
+      text-transform: uppercase;
+    }
+  </style>
+</head>
+<body>
+  ${pagesHtml}
+</body>
+</html>
+    `;
+
+    printWindow.document.open();
+    printWindow.document.write(htmlContent);
+    printWindow.document.close();
+
+    setTimeout(() => {
+      printWindow.focus();
+      printWindow.print();
+      printWindow.close();
+    }, 850);
   }
 
   // --- CONTROL DE INCIDENCIAS ---

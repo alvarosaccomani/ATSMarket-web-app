@@ -5,15 +5,21 @@
             <h1 class="page-title">{{ isDeliveryMode ? 'Hoja de Ruta de Repartos' : 'Gestión de Pedidos' }}</h1>
             <p class="page-subtitle">{{ isDeliveryMode ? 'Seguimiento y logística en tiempo real para el repartidor.' : 'Administra, prepara y despacha las compras de tus clientes.' }}</p>
         </div>
-        <button nz-button [nzType]="isDeliveryMode ? 'primary' : 'default'" class="delivery-toggle-btn" (click)="toggleDeliveryMode()">
-            <span nz-icon [nzType]="isDeliveryMode ? 'shop' : 'car'"></span>
-            {{ isDeliveryMode ? 'Vista Administrador' : 'Modo Repartidor (Ruta)' }}
-        </button>
+        <div style="display: flex; gap: 8px;">
+            <button *ngIf="!isDeliveryMode" nz-button nzType="default" (click)="printBatchShippingLabels()" style="border-radius: 6px; display: inline-flex; align-items: center; gap: 6px; font-weight: 500; border-color: #1890ff; color: #1890ff; background: rgba(24, 144, 255, 0.03);">
+                <span nz-icon nzType="printer" nzTheme="outline"></span>
+                Imprimir Etiquetas en Lote
+            </button>
+            <button nz-button [nzType]="isDeliveryMode ? 'primary' : 'default'" class="delivery-toggle-btn" (click)="toggleDeliveryMode()">
+                <span nz-icon [nzType]="isDeliveryMode ? 'shop' : 'car'"></span>
+                {{ isDeliveryMode ? 'Vista Administrador' : 'Modo Repartidor (Ruta)' }}
+            </button>
+        </div>
     </div>
 
     <!-- Pestañas para dividir el ciclo de vida del pedido -->
     <nz-card class="premium-card" *ngIf="!isDeliveryMode">
-        <nz-tabset [nzSize]="'large'">
+        <nz-tabset [nzSize]="'large'" [(nzSelectedIndex)]="activeTabIndex">
 
             <!-- TAB 1: NUEVOS (PENDIENTES) -->
             <nz-tab [nzTitle]="titlePending">
@@ -51,9 +57,18 @@
                                 <nz-tag [nzColor]="getStatusColor(data.ords_uuid)">{{ getStatusLabel(data.ords_uuid) }}</nz-tag>
                             </td>
                             <td>
-                                <button nz-button nzType="primary" nzSize="small" style="border-radius: 4px;" (click)="openOrderDetails(data)">
-                                    Validar Pago
-                                </button>
+                                <div style="display: flex; gap: 8px; align-items: center;">
+                                    <button nz-button nzType="primary" nzSize="small" style="border-radius: 4px;" (click)="openOrderDetails(data); $event.stopPropagation()">
+                                        Validar Pago
+                                    </button>
+                                    <button *ngIf="getDeliveryType(data.ord_customernotes).label !== 'Retiro'" 
+                                            nz-button nzType="default" nzSize="small" 
+                                            style="border-radius: 4px; display: inline-flex; align-items: center; justify-content: center; border-color: #1890ff; color: #1890ff; background: rgba(24, 144, 255, 0.02);" 
+                                            nz-tooltip nzTooltipTitle="Imprimir Etiqueta"
+                                            (click)="printShippingLabel(data); $event.stopPropagation()">
+                                        <span nz-icon nzType="tag" nzTheme="outline"></span>
+                                    </button>
+                                </div>
                             </td>
                         </tr>
                     </tbody>
@@ -96,10 +111,19 @@
                                 <nz-tag [nzColor]="getStatusColor(data.ords_uuid)">{{ getStatusLabel(data.ords_uuid) }}</nz-tag>
                             </td>
                             <td>
-                                <button nz-button nzType="primary" nzSize="small" style="background: #fa8c16; border-color: #fa8c16; border-radius: 4px;"
-                                    (click)="markAsShipped(data, $event)">
-                                    Despachar
-                                </button>
+                                <div style="display: flex; gap: 8px; align-items: center;">
+                                    <button nz-button nzType="primary" nzSize="small" style="background: #fa8c16; border-color: #fa8c16; border-radius: 4px;"
+                                        (click)="markAsShipped(data, $event)">
+                                        Despachar
+                                    </button>
+                                    <button *ngIf="getDeliveryType(data.ord_customernotes).label !== 'Retiro'" 
+                                            nz-button nzType="default" nzSize="small" 
+                                            style="border-radius: 4px; display: inline-flex; align-items: center; justify-content: center; border-color: #1890ff; color: #1890ff; background: rgba(24, 144, 255, 0.02);" 
+                                            nz-tooltip nzTooltipTitle="Imprimir Etiqueta"
+                                            (click)="printShippingLabel(data); $event.stopPropagation()">
+                                        <span nz-icon nzType="tag" nzTheme="outline"></span>
+                                    </button>
+                                </div>
                             </td>
                         </tr>
                     </tbody>
@@ -143,8 +167,17 @@
                                 <nz-tag [nzColor]="getStatusColor(data.ords_uuid)">{{ getStatusLabel(data.ords_uuid) }}</nz-tag>
                             </td>
                             <td>
-                                <button nz-button nzType="primary" nzSize="small" style="background: #52c41a; border-color: #52c41a; border-radius: 4px;"
-                                    (click)="markAsDelivered(data, $event)">Entregar</button>
+                                <div style="display: flex; gap: 8px; align-items: center;">
+                                    <button nz-button nzType="primary" nzSize="small" style="background: #52c41a; border-color: #52c41a; border-radius: 4px;"
+                                        (click)="markAsDelivered(data, $event)">Entregar</button>
+                                    <button *ngIf="getDeliveryType(data.ord_customernotes).label !== 'Retiro'" 
+                                            nz-button nzType="default" nzSize="small" 
+                                            style="border-radius: 4px; display: inline-flex; align-items: center; justify-content: center; border-color: #1890ff; color: #1890ff; background: rgba(24, 144, 255, 0.02);" 
+                                            nz-tooltip nzTooltipTitle="Imprimir Etiqueta"
+                                            (click)="printShippingLabel(data); $event.stopPropagation()">
+                                        <span nz-icon nzType="tag" nzTheme="outline"></span>
+                                    </button>
+                                </div>
                             </td>
                         </tr>
                     </tbody>
@@ -188,8 +221,17 @@
                                 <nz-tag [nzColor]="getStatusColor(data.ords_uuid)">{{ getStatusLabel(data.ords_uuid) }}</nz-tag>
                             </td>
                             <td>
-                                <button nz-button nzType="default" nzSize="small" style="border-radius: 4px;"
-                                    (click)="openOrderDetails(data)">Ver</button>
+                                <div style="display: flex; gap: 8px; align-items: center;">
+                                    <button nz-button nzType="default" nzSize="small" style="border-radius: 4px;"
+                                        (click)="openOrderDetails(data); $event.stopPropagation()">Ver</button>
+                                    <button *ngIf="getDeliveryType(data.ord_customernotes).label !== 'Retiro'" 
+                                            nz-button nzType="default" nzSize="small" 
+                                            style="border-radius: 4px; display: inline-flex; align-items: center; justify-content: center; border-color: #1890ff; color: #1890ff; background: rgba(24, 144, 255, 0.02);" 
+                                            nz-tooltip nzTooltipTitle="Imprimir Etiqueta"
+                                            (click)="printShippingLabel(data); $event.stopPropagation()">
+                                        <span nz-icon nzType="tag" nzTheme="outline"></span>
+                                    </button>
+                                </div>
                             </td>
                         </tr>
                     </tbody>
@@ -598,17 +640,29 @@
                                 </p>
 
                                 <!-- Botón de mapas premium para el conductor / repartidor -->
-                                <div style="margin-top: 12px;">
-                                    <a nz-button nzType="default" nzBlock nzSize="large" target="_blank"
+                                <div style="margin-top: 12px; display: flex; gap: 10px;">
+                                    <a nz-button nzType="default" nzSize="large" target="_blank"
                                        [href]="getGoogleMapsLink(addr)"
-                                       style="border-color: #52c41a; color: #52c41a; display: inline-flex; align-items: center; justify-content: center; gap: 6px; font-weight: 500; border-radius: 6px; background: rgba(82,196,26,0.02); font-size: 14px;">
+                                       style="flex: 1; border-color: #52c41a; color: #52c41a; display: inline-flex; align-items: center; justify-content: center; gap: 6px; font-weight: 500; border-radius: 6px; background: rgba(82,196,26,0.02); font-size: 14px; height: 40px;">
                                         <span nz-icon nzType="compass" nzTheme="outline" style="font-size: 16px;"></span>
-                                        Navegar GPS (Google Maps)
+                                        Navegar GPS
                                     </a>
+                                    <button nz-button nzType="default" nzSize="large" (click)="printShippingLabel(selectedOrder)"
+                                       style="flex: 1; border-color: #1890ff; color: #1890ff; display: inline-flex; align-items: center; justify-content: center; gap: 6px; font-weight: 500; border-radius: 6px; background: rgba(24,144,255,0.02); font-size: 14px; height: 40px;">
+                                        <span nz-icon nzType="printer" nzTheme="outline" style="font-size: 16px;"></span>
+                                        Imprimir Etiqueta
+                                    </button>
                                 </div>
                             </div>
                             <ng-template #noAddr>
                                 <p style="margin: 0; font-size: 13px; color: #8c8c8c;">Dirección no cargada en libreta. Ver detalles en formulario de compra.</p>
+                                <div style="margin-top: 12px;">
+                                    <button nz-button nzType="default" nzBlock nzSize="large" (click)="printShippingLabel(selectedOrder)"
+                                       style="border-color: #1890ff; color: #1890ff; display: inline-flex; align-items: center; justify-content: center; gap: 6px; font-weight: 500; border-radius: 6px; background: rgba(24,144,255,0.02); font-size: 14px; height: 40px;">
+                                        <span nz-icon nzType="printer" nzTheme="outline" style="font-size: 16px;"></span>
+                                        Imprimir Etiqueta
+                                    </button>
+                                </div>
                             </ng-template>
                         </div>
 
