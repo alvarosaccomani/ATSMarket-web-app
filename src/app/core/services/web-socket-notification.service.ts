@@ -20,6 +20,10 @@ export class WebSocketNotificationService implements OnDestroy {
   private unreadCountSubject = new BehaviorSubject<number>(0);
   public unreadCount$ = this.unreadCountSubject.asObservable();
 
+  // Canal específico para notificaciones entrantes individuales en tiempo real
+  private incomingNotificationSubject = new Subject<NotificationInterface>();
+  public incomingNotification$ = this.incomingNotificationSubject.asObservable();
+
   // Canal específico para actualizaciones de órdenes en tiempo real
   private orderUpdatesSubject = new Subject<{ ord_uuid: string, status: string, notes?: string }>();
   public orderUpdates$ = this.orderUpdatesSubject.asObservable();
@@ -108,6 +112,52 @@ export class WebSocketNotificationService implements OnDestroy {
     this.notificationsSubject.next(updated);
     this.saveToStorage(updated);
     this.updateUnreadCount(updated);
+
+    // Emitir la notificación individual recién llegada
+    this.incomingNotificationSubject.next(notification);
+  }
+
+  /**
+   * Reproduce un sonido armónico y agradable (chime) usando la API nativa de Audio Web del navegador.
+   */
+  public playNotificationSound(): void {
+    try {
+      const audioCtx = new (window.AudioContext || (window as any).webkitAudioContext)();
+      
+      // Primera nota (D5 - 587.33 Hz)
+      const osc1 = audioCtx.createOscillator();
+      const gain1 = audioCtx.createGain();
+      osc1.connect(gain1);
+      gain1.connect(audioCtx.destination);
+      osc1.type = 'sine';
+      osc1.frequency.setValueAtTime(587.33, audioCtx.currentTime);
+      gain1.gain.setValueAtTime(0.08, audioCtx.currentTime);
+      gain1.gain.exponentialRampToValueAtTime(0.001, audioCtx.currentTime + 0.35);
+      osc1.start(audioCtx.currentTime);
+      osc1.stop(audioCtx.currentTime + 0.35);
+      
+      // Segunda nota (A5 - 880 Hz) con ligero retraso de 100ms
+      setTimeout(() => {
+        try {
+          if (audioCtx.state === 'closed') return;
+          const osc2 = audioCtx.createOscillator();
+          const gain2 = audioCtx.createGain();
+          osc2.connect(gain2);
+          gain2.connect(audioCtx.destination);
+          osc2.type = 'sine';
+          osc2.frequency.setValueAtTime(880, audioCtx.currentTime);
+          gain2.gain.setValueAtTime(0.08, audioCtx.currentTime);
+          gain2.gain.exponentialRampToValueAtTime(0.001, audioCtx.currentTime + 0.5);
+          osc2.start(audioCtx.currentTime);
+          osc2.stop(audioCtx.currentTime + 0.5);
+        } catch (innerErr) {
+          // Capturar errores si el contexto se cerró en el medio
+        }
+      }, 100);
+      
+    } catch (e) {
+      console.warn('No se pudo reproducir el sonido de notificación sintético:', e);
+    }
   }
 
   /**
