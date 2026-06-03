@@ -16,6 +16,17 @@
             <nz-divider></nz-divider>
 
             <div class="filter-group">
+                <h4 class="filter-subtitle">Rubro</h4>
+                <nz-select [(ngModel)]="selectedGlobalItem" (ngModelChange)="applyFilters()"
+                    nzPlaceHolder="Selecciona un rubro" nzSize="large" style="width: 100%;">
+                    <nz-option *ngFor="let option of itemOptions" [nzLabel]="option.label"
+                        [nzValue]="option.value"></nz-option>
+                </nz-select>
+            </div>
+
+            <nz-divider></nz-divider>
+
+            <div class="filter-group">
                 <h4 class="filter-subtitle">Categoría</h4>
                 <nz-select [(ngModel)]="selectedCategory" (ngModelChange)="applyFilters()"
                     nzPlaceHolder="Selecciona una categoría" nzSize="large" style="width: 100%;">
@@ -145,6 +156,15 @@
                     </nz-input-group>
                 </div>
                 <!-- Selectores duplicados para comodidad mobile -->
+                <div class="filter-group" style="margin-top:16px;">
+                    <h4 class="filter-subtitle">Rubro</h4>
+                    <nz-select [(ngModel)]="selectedGlobalItem" (ngModelChange)="applyFilters()"
+                        nzPlaceHolder="Selecciona un rubro" nzSize="large" style="width: 100%;">
+                        <nz-option *ngFor="let option of itemOptions" [nzLabel]="option.label"
+                            [nzValue]="option.value"></nz-option>
+                    </nz-select>
+                </div>
+
                 <div class="filter-group" style="margin-top:16px;">
                     <h4 class="filter-subtitle">Categoría</h4>
                     <nz-select [(ngModel)]="selectedCategory" (ngModelChange)="applyFilters()"

@@ -1,7 +1,7 @@
 import { Component, OnInit } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { FormsModule } from '@angular/forms';
-import { Router } from '@angular/router';
+import { Router, ActivatedRoute } from '@angular/router';
 import { NzLayoutModule } from 'ng-zorro-antd/layout';
 import { NzGridModule } from 'ng-zorro-antd/grid';
 import { NzCardModule } from 'ng-zorro-antd/card';
@@ -18,10 +18,13 @@ import { NzPaginationModule } from 'ng-zorro-antd/pagination';
 import { NzMessageModule, NzMessageService } from 'ng-zorro-antd/message';
 import { NzTagModule } from 'ng-zorro-antd/tag';
 
+import { forkJoin } from 'rxjs';
 import { ProductVariationInterface } from '@interfaces/product-variation';
 import { CartService } from '@services/cart.service';
 import { ProductsService } from '@services/products.service';
 import { CompaniesService } from '@services/companies.service';
+import { GlobalItemsService } from '@services/global-items.service';
+import { GlobalCategoriesService } from '@services/global-categories.service';
 
 @Component({
   selector: 'app-catalog',
@@ -54,7 +57,14 @@ export class CatalogComponent implements OnInit {
   public paginatedProducts: ProductVariationInterface[] = []; // Productos a renderizar en la página actual
 
   public searchTerm: string = '';
+  
+  // Opciones de rubros y categorías dinámicas
+  public itemOptions: { label: string, value: string | null }[] = [{ label: 'Todos los Rubros', value: null }];
+  public categoryOptions: { label: string, value: string | null }[] = [{ label: 'Todas las Categorías', value: null }];
+  
+  public selectedGlobalItem: string | null = null;
   public selectedCategory: string | null = null;
+  
   public materialOptions = ['Resina', 'Madera', 'Plata 925', 'Metal', 'Otro'];
   public selectedMaterials: string[] = [];
   public priceRange: [number, number] = [0, 50000];
@@ -65,34 +75,83 @@ export class CatalogComponent implements OnInit {
   public pageSize: number = 12;
   public pageSizeOptions: number[] = [12, 24, 48, 96];
 
-  public categoryOptions = [
-    { label: 'Todos', value: null },
-    { label: 'Estatuas & Figuras', value: 'estatuas' },
-    { label: 'Rosarios de Autor', value: 'rosarios' },
-    { label: 'Medallas y Relicarios', value: 'medallas' },
-    { label: 'Otros Artículos', value: 'otros' }
-  ];
-
   constructor(
+    private route: ActivatedRoute,
     private router: Router,
     private cartService: CartService,
     private productService: ProductsService,
     private companiesService: CompaniesService,
+    private globalItemsService: GlobalItemsService,
+    private globalCategoriesService: GlobalCategoriesService,
     private message: NzMessageService
   ) { }
 
   ngOnInit(): void {
-    // Simulación temporal.
-    this.productService.getProducts('').subscribe((products: any) => {
-      this.allProducts = products;
-      // Ajustar rango inicial inteligente basado en los productos disponibles
-      if (this.allProducts.length > 0) {
-        const precios = this.allProducts.map(p => p.prov_suggestedminimumsellingprice);
-        const min = Math.min(...precios);
-        const max = Math.max(...precios);
-        this.priceRange = [Math.floor(min), Math.ceil(max) > 0 ? Math.ceil(max) : 50000];
+    forkJoin({
+      items: this.globalItemsService.getGlobalItems(),
+      categories: this.globalCategoriesService.getGlobalCategories(),
+      products: this.productService.getProducts('')
+    }).subscribe({
+      next: (res: any) => {
+        // 1. Cargar opciones de Rubros
+        if (res.items && res.items.success) {
+          this.itemOptions = [
+            { label: 'Todos los Rubros', value: null },
+            ...res.items.data.map((i: any) => ({ label: i.gitm_name, value: i.gitm_uuid }))
+          ];
+        }
+
+        // 2. Cargar opciones de Categorías
+        if (res.categories && res.categories.success) {
+          this.categoryOptions = [
+            { label: 'Todas las Categorías', value: null },
+            ...res.categories.data.map((c: any) => ({ label: c.gcat_name, value: c.gcat_uuid }))
+          ];
+        }
+
+        // 3. Mapear productos a variaciones de forma segura
+        const rawData = res.products?.data || res.products || [];
+        let variations: ProductVariationInterface[] = [];
+        if (Array.isArray(rawData)) {
+          if (rawData.length > 0 && ('productVariations' in rawData[0] || 'itm_uuid' in rawData[0])) {
+            rawData.forEach((prod: any) => {
+              if (prod.productVariations && Array.isArray(prod.productVariations)) {
+                prod.productVariations.forEach((v: any) => {
+                  variations.push({
+                    ...v,
+                    cat_uuid: prod.cat_uuid,
+                    itm_uuid: prod.itm_uuid,
+                    pro_name: prod.pro_name
+                  });
+                });
+              }
+            });
+          } else {
+            variations = rawData;
+          }
+        }
+        this.allProducts = variations;
+
+        // Ajustar rango de precios dinámico
+        if (this.allProducts.length > 0) {
+          const precios = this.allProducts.map(p => p.prov_suggestedminimumsellingprice);
+          const min = Math.min(...precios);
+          const max = Math.max(...precios);
+          this.priceRange = [Math.floor(min), Math.ceil(max) > 0 ? Math.ceil(max) : 50000];
+        }
+
+        // 4. Leer parámetros de la URL para inicializar filtros
+        this.route.queryParams.subscribe(params => {
+          this.searchTerm = params['search'] || '';
+          this.selectedCategory = params['category'] || null;
+          this.selectedGlobalItem = params['item'] || null;
+          this.applyFilters();
+        });
+      },
+      error: (err) => {
+        console.error('Error cargando catálogo:', err);
+        this.message.error('Ocurrió un error al cargar el catálogo de productos.');
       }
-      this.applyFilters();
     });
   }
 
@@ -108,7 +167,11 @@ export class CatalogComponent implements OnInit {
     }
 
     if (this.selectedCategory) {
-      // result = result.filter(p => p.categoria === this.selectedCategory);
+      result = result.filter(p => (p as any).cat_uuid === this.selectedCategory);
+    }
+
+    if (this.selectedGlobalItem) {
+      result = result.filter(p => (p as any).itm_uuid === this.selectedGlobalItem);
     }
 
     if (this.selectedMaterials.length > 0) {
