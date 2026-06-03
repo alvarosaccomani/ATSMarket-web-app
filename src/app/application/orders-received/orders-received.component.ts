@@ -119,6 +119,25 @@ export class OrdersReceivedComponent implements OnInit, OnDestroy {
         this.selectedOrderAddress = list.find(a => a.adr_uuid === this.selectedOrder!.adr_uuid) || null;
       }
     });
+
+    const company = this._sessionService.getCompany();
+    this.loadOrders();
+
+    // Escuchar notificaciones entrantes en tiempo real para refrescar el listado de pedidos sin recargar la pestaña
+    this._notificationService.incomingNotification$
+      .pipe(takeUntil(this.destroy$))
+      .subscribe((ntf) => {
+        if (ntf.cmp_uuid && company && ntf.cmp_uuid === company.cmp_uuid) {
+          console.info('Nuevo pedido recibido por WebSocket/BroadcastChannel. Refrescando Kanban en tiempo real...');
+          this.loadOrders();
+        }
+      });
+  }
+
+  /**
+   * Carga el listado completo de pedidos desde el servidor para la tienda activa.
+   */
+  public loadOrders(): void {
     const company = this._sessionService.getCompany();
     if (company && company.cmp_uuid) {
       this._ordersService.getOrders(company.cmp_uuid).subscribe({
