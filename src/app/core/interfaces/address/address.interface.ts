@@ -9,6 +9,10 @@ export interface AddressInterface {
     adr_reference: string;
     adr_country: string;
     adr_address: string;
+    adr_street: string;
+    adr_number: string;
+    adr_floor: string;
+    adr_apartment: string;
     adr_city: string;
     adr_province: string;
     adr_postalcode: string;
