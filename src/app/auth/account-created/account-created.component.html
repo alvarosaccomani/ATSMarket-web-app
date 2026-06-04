@@ -1,1 +1,29 @@
-<p>account-created works!</p>
+<div class="account-created-wrapper">
+    <div class="account-created-content">
+
+        <nz-card class="account-created-card">
+            <div class="account-created-header">
+                <div class="success-icon-wrapper">
+                    <span nz-icon nzType="mail" nzTheme="outline" class="mail-icon"></span>
+                </div>
+                <h2>¡Cuenta Creada!</h2>
+                <p>Casi hemos terminado</p>
+            </div>
+
+            <div class="message-body">
+                <p>
+                    Se ha enviado un mensaje de confirmación a tu correo electrónico 
+                    <span class="email-highlight">{{usr_email}}</span>. Por favor, revisa tu bandeja 
+                    de entrada (y spam si es necesario) y sigue las instrucciones para activar tu cuenta.
+                </p>
+            </div>
+
+            <div class="actions">
+                <button nz-button nzType="primary" nzBlock routerLink="/auth/login" nzSize="large">
+                    Ir al Inicio de Sesión
+                </button>
+            </div>
+        </nz-card>
+
+    </div>
+</div>

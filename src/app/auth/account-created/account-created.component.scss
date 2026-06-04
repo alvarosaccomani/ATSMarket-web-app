@@ -1,0 +1,82 @@
+.account-created-wrapper {
+    background: linear-gradient(135deg, #f5f7fa 0%, #c3cfe2 100%);
+    min-height: 100vh;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    padding: 20px;
+}
+
+.account-created-content {
+    width: 100%;
+    display: flex;
+    justify-content: center;
+}
+
+.account-created-card {
+    width: 100%;
+    max-width: 460px;
+    min-width: 300px;
+    border-radius: 12px;
+    box-shadow: 0 10px 30px rgba(0, 0, 0, 0.1);
+    text-align: center;
+    padding: 24px;
+}
+
+.account-created-header {
+    margin-bottom: 24px;
+
+    .success-icon-wrapper {
+        width: 72px;
+        height: 72px;
+        background-color: rgba(82, 196, 26, 0.1);
+        border-radius: 50%;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        margin: 0 auto 16px;
+        
+        .mail-icon {
+            font-size: 36px;
+            color: #52c41a;
+        }
+    }
+
+    h2 {
+        margin: 0;
+        color: #1f1f1f;
+        font-size: 24px;
+        font-weight: 600;
+    }
+
+    p {
+        color: #8c8c8c;
+        margin-top: 8px;
+        font-size: 14px;
+    }
+}
+
+.message-body {
+    background-color: #fafafa;
+    border: 1px solid #f0f0f0;
+    border-radius: 8px;
+    padding: 16px 20px;
+    margin-bottom: 24px;
+    text-align: left;
+    
+    p {
+        color: #595959;
+        font-size: 14px;
+        line-height: 1.6;
+        margin: 0;
+    }
+}
+
+.email-highlight {
+    font-weight: 600;
+    color: #1890ff;
+}
+
+.actions {
+    margin-top: 24px;
+}
