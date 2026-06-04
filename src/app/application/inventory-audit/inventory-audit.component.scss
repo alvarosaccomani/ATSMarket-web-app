@@ -298,3 +298,82 @@
 .adjustment-modal-form {
     padding-top: 8px;
 }
+
+@media print {
+  ::ng-deep {
+    nz-sider,
+    nz-header,
+    nz-breadcrumb,
+    nz-footer,
+    .ant-layout-header,
+    .ant-layout-sider {
+      display: none !important;
+    }
+
+    .ant-layout {
+      margin-left: 0 !important;
+      padding-left: 0 !important;
+      padding-top: 0 !important;
+      background: #fff !important;
+    }
+  }
+
+  .inventory-audit-wrapper {
+    padding: 0 !important;
+    background: #fff !important;
+    min-height: auto !important;
+  }
+
+  .dashboard-header {
+    margin-bottom: 20px !important;
+    .header-actions {
+      display: none !important;
+    }
+  }
+
+  .kpis-grid {
+    grid-template-columns: repeat(4, 1fr) !important;
+    gap: 12px !important;
+    margin-bottom: 20px !important;
+
+    .kpi-card {
+      background: #fff !important;
+      border: 1px solid #e8e8e8 !important;
+      box-shadow: none !important;
+      transform: none !important;
+      
+      .kpi-icon-wrapper {
+        display: none !important;
+      }
+    }
+  }
+
+  .filters-card-wrapper {
+    display: none !important;
+  }
+
+  .table-card {
+    border: none !important;
+    box-shadow: none !important;
+
+    ::ng-deep {
+      .ant-table-body {
+        max-height: none !important;
+        overflow: visible !important;
+      }
+      .ant-table-pagination {
+        display: none !important;
+      }
+      .ant-table {
+        background: #fff !important;
+      }
+      .ant-table-thead > tr > th {
+        background: #f5f5f5 !important;
+        border-bottom: 2px solid #e8e8e8 !important;
+      }
+      .ant-table-tbody > tr > td {
+        border-bottom: 1px solid #f0f0f0 !important;
+      }
+    }
+  }
+}

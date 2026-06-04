@@ -499,4 +499,87 @@ export class InventoryAuditComponent implements OnInit {
       default: return 'question';
     }
   }
+
+  public exportToExcel(): void {
+    if (!this.filteredMovements || this.filteredMovements.length === 0) {
+      this._messageService.warning('Advertencia', 'No hay datos para exportar.');
+      return;
+    }
+
+    const headers = [
+      'Fecha',
+      'Tipo',
+      'Producto',
+      'Variación',
+      'SKU',
+      'Cantidad',
+      'Stock Previo',
+      'Stock Resultante',
+      'Motivo / Referencia',
+      'Operador'
+    ];
+
+    const escapeCSV = (val: any): string => {
+      if (val === null || val === undefined) return '';
+      let str = String(val).trim();
+      str = str.replace(/"/g, '""');
+      if (str.includes(';') || str.includes('\n') || str.includes('\r') || str.includes('"')) {
+        return `"${str}"`;
+      }
+      return str;
+    };
+
+    const csvRows = [
+      'sep=;',
+      headers.join(';')
+    ];
+
+    this.filteredMovements.forEach(m => {
+      const dateStr = m.smo_createdat ? new Date(m.smo_createdat).toLocaleString('es-AR') : '';
+      const typeStr = this.getMovementTypeLabel(m.tsmo_uuid);
+      const prodName = this.getProductName(m.prov_uuid);
+      const varName = this.getVariationName(m.prov_uuid);
+      const sku = this.getVariationSku(m.prov_uuid);
+      const qty = m.smo_quantity;
+      const prevStock = m.smo_previousstock;
+      const currStock = m.smo_currentstock;
+      const reason = m.smo_reason || '';
+      const operator = m.usr_uuid ? 'Administrador' : 'Sistema (Venta)';
+
+      const row = [
+        escapeCSV(dateStr),
+        escapeCSV(typeStr),
+        escapeCSV(prodName),
+        escapeCSV(varName),
+        escapeCSV(sku),
+        qty,
+        prevStock,
+        currStock,
+        escapeCSV(reason),
+        escapeCSV(operator)
+      ];
+
+      csvRows.push(row.join(';'));
+    });
+
+    const csvString = csvRows.join('\r\n');
+    const blob = new Blob(['\uFEFF' + csvString], { type: 'text/csv;charset=utf-8;' });
+    
+    const link = document.createElement('a');
+    if (link.download !== undefined) {
+      const url = URL.createObjectURL(blob);
+      const formattedDate = new Date().toISOString().slice(0, 10);
+      const safeStoreName = this.activeCmpName.replace(/[^a-z0-9]/gi, '_').toLowerCase();
+      link.setAttribute('href', url);
+      link.setAttribute('download', `auditoria_stock_${safeStoreName}_${formattedDate}.csv`);
+      link.style.visibility = 'hidden';
+      document.body.appendChild(link);
+      link.click();
+      document.body.removeChild(link);
+    }
+  }
+
+  public exportToPdf(): void {
+    window.print();
+  }
 }

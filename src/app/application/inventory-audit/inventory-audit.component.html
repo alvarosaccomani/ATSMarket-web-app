@@ -7,7 +7,13 @@
             <p class="page-subtitle">Historial de movimientos de stock, auditoría logística y valoración de mercadería en <strong>{{ activeCmpName }}</strong>.</p>
         </div>
 
-        <div class="header-actions">
+        <div class="header-actions" style="display: flex; gap: 8px;">
+            <button nz-button nzType="default" nzSize="large" class="export-btn excel-btn" (click)="exportToExcel()" [disabled]="filteredMovements.length === 0">
+                <span nz-icon nzType="download"></span> Exportar Excel (CSV)
+            </button>
+            <button nz-button nzType="default" nzSize="large" class="export-btn pdf-btn" (click)="exportToPdf()" [disabled]="filteredMovements.length === 0">
+                <span nz-icon nzType="file-pdf"></span> Exportar PDF (Imprimir)
+            </button>
             <button nz-button nzType="primary" nzSize="large" class="adjust-stock-btn" (click)="openAdjustmentModal()">
                 <span nz-icon nzType="plus"></span> Ajustar Stock Manual
             </button>
