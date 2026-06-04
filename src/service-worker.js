@@ -1,4 +1,4 @@
-const CACHE_VERSION = 'v2';
+const CACHE_VERSION = 'v2.1';
 const STATIC_CACHE = `ats-static-${CACHE_VERSION}`;
 const DYNAMIC_CACHE = `ats-dynamic-${CACHE_VERSION}`;
 
