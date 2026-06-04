@@ -1,1 +1,174 @@
-<p>items works!</p>
+<div class="items-dashboard-wrapper">
+    <div class="dashboard-header">
+        <div class="header-titles">
+            <h1 class="page-title">Maestro de Rubros / Familias</h1>
+            <p class="page-subtitle">Administra los rubros y familias de productos de tu comercio.</p>
+        </div>
+
+        <div class="header-actions">
+            <nz-input-group [nzPrefix]="prefixIconSearch" nzSize="large" style="width: 320px; margin-right: 16px;">
+                <input type="text" nz-input placeholder="Buscar por nombre o descripción..." 
+                    (input)="onSearch(txtSearch.value)" #txtSearch />
+            </nz-input-group>
+
+            <button nz-button nzType="primary" nzSize="large" (click)="openCreateDrawer()">
+                <span nz-icon nzType="plus"></span> Agregar Rubro
+            </button>
+
+            <ng-template #prefixIconSearch>
+                <span nz-icon nzType="search"></span>
+            </ng-template>
+        </div>
+    </div>
+
+    <!-- MAIN ITEMS CARD AND TABLE -->
+    <nz-card class="premium-card" [nzBordered]="false">
+        <nz-table 
+            #itemsTable 
+            [nzData]="(filteredItems$ | async) || []" 
+            nzSize="middle" 
+            [nzPageSize]="20"
+            [nzScroll]="{ y: 'calc(100vh - 310px)' }">
+            <thead>
+                <tr>
+                    <th nzWidth="40%">Nombre del Rubro</th>
+                    <th nzWidth="25%">Grupo / Clasificación</th>
+                    <th nzWidth="20%">Fecha Registro</th>
+                    <th nzWidth="15%" nzAlign="right">Acciones</th>
+                </tr>
+            </thead>
+            <tbody>
+                <tr *ngFor="let data of itemsTable.data" class="clickable-row" (click)="openItemDetail(data)">
+                    <td>
+                        <div class="item-cell">
+                            <nz-avatar nzIcon="appstore"
+                                [nzSrc]="'https://api.dicebear.com/7.x/initials/svg?seed=' + data.itm_name"
+                                style="background-color: #f6ffed; border: 1px solid #b7eb8f; color: #52c41a;"></nz-avatar>
+                            <div class="item-info">
+                                <span class="item-name">{{ data.itm_name }}</span>
+                                <span class="item-uuid">REF: {{ data.itm_uuid.substring(0,8) }}</span>
+                            </div>
+                        </div>
+                    </td>
+                    <td>
+                        <nz-tag [nzColor]="data.gitm_uuid ? 'green' : 'default'">
+                            {{ getGlobalItemName(data.gitm_uuid) }}
+                        </nz-tag>
+                    </td>
+                    <td>
+                        <span class="date-cell">{{ data.itm_createdat | date:'dd/MM/yyyy' }}</span>
+                    </td>
+                    <td nzAlign="right" (click)="$event.stopPropagation()">
+                        <button nz-button nzType="link" (click)="openItemDetail(data)">Ver Ficha</button>
+                    </td>
+                </tr>
+            </tbody>
+        </nz-table>
+    </nz-card>
+</div>
+
+<!-- DRAWER: VER / CREAR / EDITAR RUBRO -->
+<nz-drawer 
+    [nzVisible]="isDrawerVisible" 
+    nzPlacement="right" 
+    [nzTitle]="drawerTitle" 
+    [nzWidth]="'500px'" 
+    (nzOnClose)="closeDrawer()">
+    <ng-container *nzDrawerContent>
+        <nz-spin [nzSpinning]="isLoading">
+            <div class="drawer-content-wrapper">
+                
+                <!-- MODO VISTA DETALLADA -->
+                <div *ngIf="selectedItem && !isEditing" class="view-mode-container">
+                    <div class="profile-header">
+                        <nz-avatar [nzSize]="64" nzIcon="appstore" style="background-color: #f6ffed; border: 1px solid #b7eb8f; color: #52c41a;"></nz-avatar>
+                        <div class="profile-header-info">
+                            <h2>{{ selectedItem.itm_name }}</h2>
+                            <span style="color: #8c8c8c;">ID: {{ selectedItem.itm_uuid }}</span>
+                        </div>
+                    </div>
+
+                    <nz-divider></nz-divider>
+
+                    <nz-descriptions nzTitle="Información del Rubro" [nzColumn]="1" nzSize="small">
+                        <nz-descriptions-item nzTitle="Nombre">{{ selectedItem.itm_name }}</nz-descriptions-item>
+                        <nz-descriptions-item nzTitle="Descripción">
+                            {{ selectedItem.itm_description || 'Sin descripción detallada.' }}
+                        </nz-descriptions-item>
+                        <nz-descriptions-item nzTitle="Grupo Relacionado">
+                            <nz-tag nzColor="green">{{ getGlobalItemName(selectedItem.gitm_uuid) }}</nz-tag>
+                        </nz-descriptions-item>
+                    </nz-descriptions>
+
+                    <nz-divider></nz-divider>
+
+                    <nz-descriptions nzTitle="Auditoría" [nzColumn]="1" nzSize="small">
+                        <nz-descriptions-item nzTitle="Creado">{{ selectedItem.itm_createdat | date:'medium' }}</nz-descriptions-item>
+                        <nz-descriptions-item nzTitle="Última Modificación">{{ selectedItem.itm_updatedat | date:'medium' }}</nz-descriptions-item>
+                    </nz-descriptions>
+
+                    <div style="margin-top: 32px; display: flex; gap: 8px;">
+                        <button nz-button nzType="primary" nzBlock (click)="enableEditing()">
+                            <span nz-icon nzType="edit"></span> Editar
+                        </button>
+                        <button nz-button nzDanger nzBlock (click)="onDeleteItem(selectedItem)">
+                            <span nz-icon nzType="delete"></span> Eliminar
+                        </button>
+                    </div>
+                </div>
+
+                <!-- MODO FORMULARIO (EDICIÓN Y CREACIÓN) -->
+                <form *ngIf="isEditing" [formGroup]="itemForm" (ngSubmit)="onSave()" nz-form nzLayout="vertical">
+                    <div class="form-mode-container">
+                        <div class="profile-header">
+                            <nz-avatar [nzSize]="64" nzIcon="form" style="background-color: #e6f7ff; border: 1px solid #91d5ff; color: #1890ff;"></nz-avatar>
+                            <div class="profile-header-info">
+                                <h2>{{ selectedItem ? 'Editar Rubro' : 'Nuevo Rubro' }}</h2>
+                                <p style="color: #8c8c8c; margin: 0; font-size: 13px;">Completá los datos del rubro comercial.</p>
+                            </div>
+                        </div>
+
+                        <nz-divider></nz-divider>
+
+                        <nz-form-item>
+                            <nz-form-label nzRequired nzFor="gitm_uuid" style="font-weight: 600;">Grupo Global de Rubro</nz-form-label>
+                            <nz-form-control nzErrorTip="Seleccionar el grupo global es obligatorio.">
+                                <nz-select formControlName="gitm_uuid" id="gitm_uuid" placeholder="Selecciona la clasificación global..." nzSize="large">
+                                    <nz-option *ngFor="let gitem of globalItems" [nzLabel]="gitem.gitm_name" [nzValue]="gitem.gitm_uuid"></nz-option>
+                                </nz-select>
+                            </nz-form-control>
+                        </nz-form-item>
+
+                        <nz-form-item>
+                            <nz-form-label nzRequired nzFor="itm_name" style="font-weight: 600;">Nombre del Rubro</nz-form-label>
+                            <nz-form-control nzErrorTip="El nombre es obligatorio y debe tener al menos 2 caracteres.">
+                                <input nz-input formControlName="itm_name" id="itm_name" placeholder="Ej: Indumentaria, Calzado, Almacén..." nzSize="large" />
+                            </nz-form-control>
+                        </nz-form-item>
+
+                        <nz-form-item>
+                            <nz-form-label nzFor="itm_description" style="font-weight: 600;">Descripción</nz-form-label>
+                            <nz-form-control>
+                                <textarea nz-input formControlName="itm_description" id="itm_description" placeholder="Añade detalles sobre esta familia de productos..." [nzAutosize]="{ minRows: 4, maxRows: 6 }"></textarea>
+                            </nz-form-control>
+                        </nz-form-item>
+
+                        <div style="margin-top: 32px; display: flex; gap: 8px;">
+                            <button nz-button nzType="primary" nzBlock type="submit" [nzLoading]="isLoading">
+                                <span nz-icon nzType="save"></span> Guardar
+                            </button>
+                            <button nz-button nzType="default" nzBlock type="button" (click)="selectedItem ? (isEditing = false) : closeDrawer()">
+                                Cancelar
+                            </button>
+                        </div>
+                    </div>
+                </form>
+
+            </div>
+        </nz-spin>
+    </ng-container>
+
+    <ng-template #drawerTitle>
+        {{ selectedItem ? (isEditing ? 'Editar Especificación de Rubro' : 'Ficha Técnica de Rubro') : 'Agregar Nuevo Rubro' }}
+    </ng-template>
+</nz-drawer>
