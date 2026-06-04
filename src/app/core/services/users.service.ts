@@ -19,8 +19,11 @@ export class UsersService {
     return this._http.post(environment.apiUrl + 'register', params, {headers:headers});
   }
 
-  public signup(user: any): Observable<any> {
-    return this.singup(user);
+  public forgotPassword(usr_email: string): Observable<any> {
+    let params = JSON.stringify({ usr_email: usr_email });
+    let headers = new HttpHeaders().set('content-type','application/json');
+
+    return this._http.post(environment.apiUrl + 'forgot-password', params, {headers:headers});
   }
 
   public login(user: any, gettoken: string | null = null): Observable<any> {
