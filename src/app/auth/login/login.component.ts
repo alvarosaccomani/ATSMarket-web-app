@@ -1,6 +1,6 @@
 import { Component, OnInit } from '@angular/core';
 import { CommonModule } from '@angular/common';
-import { Router, ActivatedRoute } from '@angular/router';
+import { Router, RouterLink, ActivatedRoute } from '@angular/router';
 import { FormBuilder, FormGroup, ReactiveFormsModule, Validators } from '@angular/forms';
 
 // Imports de Ng-Zorro (necesarios para standalone)
@@ -20,6 +20,7 @@ import { UsersService } from '@services/users.service';
   imports: [
     CommonModule,
     ReactiveFormsModule,
+    RouterLink,
     NzFormModule,
     NzInputModule,
     NzButtonModule,
