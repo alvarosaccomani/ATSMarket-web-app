@@ -143,7 +143,7 @@ export class CompanySettingsComponent implements OnInit {
     return [
       {
         cmp_uuid: this.cmp_uuid,
-        cmps_uuid: 'shipping_enable_5',
+        cmps_uuid: '1',
         cmps_key: 'ALLOW_MULTI_STORE_CART',
         cmps_parameter: 'Soportar Carrito Multi-Tienda',
         cmps_description: 'Permitir que los clientes combinen productos de tu tienda con productos de otras tiendas en la misma compra.',
@@ -156,7 +156,59 @@ export class CompanySettingsComponent implements OnInit {
       },
       {
         cmp_uuid: this.cmp_uuid,
-        cmps_uuid: '1',
+        cmps_uuid: '2',
+        cmps_key: 'PAYMENT_STRIPE_ENABLE',
+        cmps_parameter: 'Habilitar Cobros con Stripe',
+        cmps_description: 'Activa la pasarela internacional de Stripe para aceptar tarjetas de crédito/débito en línea.',
+        cmps_datatype: 'boolean',
+        cmps_value: 'true',
+        cmps_group: 'Pagos y Finanzas',
+        cmps_options: '',
+        cmps_updatedat: new Date(),
+        cmps_createdat: new Date()
+      },
+      {
+        cmp_uuid: this.cmp_uuid,
+        cmps_uuid: '3',
+        cmps_key: 'PAYMENT_STRIPE_PUBLIC_KEY',
+        cmps_parameter: 'Stripe Public Key (PK)',
+        cmps_description: 'Clave pública de Stripe (pk_live_... o pk_test_...) para configurar la pasarela de cobros.',
+        cmps_datatype: 'string',
+        cmps_value: 'pk_test_51P_mock_stripe_pk_12345',
+        cmps_group: 'Pagos y Finanzas',
+        cmps_options: '',
+        cmps_updatedat: new Date(),
+        cmps_createdat: new Date()
+      },
+      {
+        cmp_uuid: this.cmp_uuid,
+        cmps_uuid: '4',
+        cmps_key: 'PAYMENT_MERCADO_PAGO_ENABLE',
+        cmps_parameter: 'Habilitar Cobros con Mercado Pago',
+        cmps_description: 'Activa la pasarela regional de Mercado Pago para cobros locales en pesos (tarjeta, efectivo, dinero en cuenta).',
+        cmps_datatype: 'boolean',
+        cmps_value: 'true',
+        cmps_group: 'Pagos y Finanzas',
+        cmps_options: '',
+        cmps_updatedat: new Date(),
+        cmps_createdat: new Date()
+      },
+      {
+        cmp_uuid: this.cmp_uuid,
+        cmps_uuid: '5',
+        cmps_key: 'PAYMENT_MERCADO_PAGO_PUBLIC_KEY',
+        cmps_parameter: 'Mercado Pago Public Key (PK)',
+        cmps_description: 'Clave pública de Mercado Pago (APP_USR-... o TEST-...) provista por tu consola de Mercado Pago.',
+        cmps_datatype: 'string',
+        cmps_value: 'APP_USR-mock-mp-pk-987654321',
+        cmps_group: 'Pagos y Finanzas',
+        cmps_options: '',
+        cmps_updatedat: new Date(),
+        cmps_createdat: new Date()
+      },
+      {
+        cmp_uuid: this.cmp_uuid,
+        cmps_uuid: '6',
         cmps_key: 'search_filter_mode',
         cmps_parameter: 'Rubros y Categorias',
         cmps_description: 'Que Rubros y Categorias se mostraran en el arbol de filtro.',
@@ -171,7 +223,7 @@ export class CompanySettingsComponent implements OnInit {
 
       {
         cmp_uuid: this.cmp_uuid,
-        cmps_uuid: '2b',
+        cmps_uuid: '7',
         cmps_key: 'THEME_NAVBAR_COLOR',
         cmps_parameter: 'Color de Barra de Navegación',
         cmps_description: 'Define el color de fondo para la cabecera (Navbar) en el catálogo público.',
@@ -184,7 +236,7 @@ export class CompanySettingsComponent implements OnInit {
       },
       {
         cmp_uuid: this.cmp_uuid,
-        cmps_uuid: '3',
+        cmps_uuid: '8',
         cmps_key: 'MAX_CART_ITEMS',
         cmps_parameter: 'Límite de Ítems en Carrito',
         cmps_description: 'Cantidad permitida de unidades que un cliente puede añadir de una sola vez a su compra actual.',
@@ -197,7 +249,7 @@ export class CompanySettingsComponent implements OnInit {
       },
       {
         cmp_uuid: this.cmp_uuid,
-        cmps_uuid: 'shipping_1',
+        cmps_uuid: '9',
         cmps_key: 'DELIVERY_LOCAL_RADIUS',
         cmps_parameter: 'Radio de Envío Local (km)',
         cmps_description: 'Radio máximo en kilómetros desde la ubicación de la tienda para ofrecer envíos rápidos por Motomensajería.',
@@ -210,7 +262,7 @@ export class CompanySettingsComponent implements OnInit {
       },
       {
         cmp_uuid: this.cmp_uuid,
-        cmps_uuid: 'shipping_2',
+        cmps_uuid: '10',
         cmps_key: 'DELIVERY_LOCAL_COST',
         cmps_parameter: 'Costo de Envío Local ($)',
         cmps_description: 'Precio de envío por Motomensajería dentro del radio de cobertura local.',
@@ -223,7 +275,7 @@ export class CompanySettingsComponent implements OnInit {
       },
       {
         cmp_uuid: this.cmp_uuid,
-        cmps_uuid: 'shipping_3',
+        cmps_uuid: '11',
         cmps_key: 'DELIVERY_NATIONAL_COST',
         cmps_parameter: 'Costo de Envío Nacional ($)',
         cmps_description: 'Precio fijo de envío estándar a todo el país vía Correo Postal.',
@@ -236,7 +288,7 @@ export class CompanySettingsComponent implements OnInit {
       },
       {
         cmp_uuid: this.cmp_uuid,
-        cmps_uuid: 'shipping_enable_1',
+        cmps_uuid: '12',
         cmps_key: 'SHIPPING_LOCAL_MOTO_ENABLE',
         cmps_parameter: 'Ofrecer Motomensajería Local',
         cmps_description: 'Habilitar la opción de envío rápido por Motomensajería dentro de la ciudad.',
@@ -249,7 +301,7 @@ export class CompanySettingsComponent implements OnInit {
       },
       {
         cmp_uuid: this.cmp_uuid,
-        cmps_uuid: 'shipping_enable_2',
+        cmps_uuid: '13',
         cmps_key: 'SHIPPING_NATIONAL_CORREO_ENABLE',
         cmps_parameter: 'Ofrecer Correo Postal Nacional',
         cmps_description: 'Habilitar la opción de despacho estándar a todo el país vía Correo Postal.',
@@ -262,7 +314,7 @@ export class CompanySettingsComponent implements OnInit {
       },
       {
         cmp_uuid: this.cmp_uuid,
-        cmps_uuid: 'shipping_enable_3',
+        cmps_uuid: '14',
         cmps_key: 'SHIPPING_RETIRO_LOCAL_ENABLE',
         cmps_parameter: 'Ofrecer Retiro en Local',
         cmps_description: 'Permitir a los compradores retirar el pedido en tu local físico o punto de entrega sin cargo.',
@@ -275,7 +327,7 @@ export class CompanySettingsComponent implements OnInit {
       },
       {
         cmp_uuid: this.cmp_uuid,
-        cmps_uuid: 'shipping_enable_4',
+        cmps_uuid: '15',
         cmps_key: 'SHIPPING_ACORDAR_VENDEDOR_ENABLE',
         cmps_parameter: 'Ofrecer Acordar con el Vendedor',
         cmps_description: 'Habilitar la opción de coordinar la entrega y flete de forma personalizada con el cliente.',
@@ -290,7 +342,7 @@ export class CompanySettingsComponent implements OnInit {
       // --- GRUPO: TIENDA - HOME ---
       {
         cmp_uuid: this.cmp_uuid,
-        cmps_uuid: '10',
+        cmps_uuid: '16',
         cmps_key: 'HOME_BANNER_SHOW',
         cmps_parameter: 'Mostrar Banner Principal',
         cmps_description: 'Habilitar o deshabilitar la sección del banner/hero en la página de inicio.',
@@ -303,7 +355,7 @@ export class CompanySettingsComponent implements OnInit {
       },
       {
         cmp_uuid: this.cmp_uuid,
-        cmps_uuid: '12',
+        cmps_uuid: '17',
         cmps_key: 'HOME_BANNER_DESCRIPTION',
         cmps_parameter: 'Descripción Banner (Marketing)',
         cmps_description: 'Texto promocional o slogan que aparece resaltado en el banner principal.',
@@ -317,7 +369,7 @@ export class CompanySettingsComponent implements OnInit {
 
       {
         cmp_uuid: this.cmp_uuid,
-        cmps_uuid: '14',
+        cmps_uuid: '18',
         cmps_key: 'HOME_BANNER_BUTTON_TEXT',
         cmps_parameter: 'Texto Botón Banner',
         cmps_description: 'Etiqueta del botón de acción en el banner principal.',
@@ -330,7 +382,7 @@ export class CompanySettingsComponent implements OnInit {
       },
       {
         cmp_uuid: this.cmp_uuid,
-        cmps_uuid: '15',
+        cmps_uuid: '19',
         cmps_key: 'HOME_CATEGORIES_TITLE',
         cmps_parameter: 'Título de Categorías',
         cmps_description: 'Encabezado de la sección de categorías en el inicio.',
@@ -343,7 +395,7 @@ export class CompanySettingsComponent implements OnInit {
       },
       {
         cmp_uuid: this.cmp_uuid,
-        cmps_uuid: '16',
+        cmps_uuid: '20',
         cmps_key: 'HOME_FEATURED_TITLE',
         cmps_parameter: 'Título de Productos Destacados',
         cmps_description: 'Encabezado de la sección de productos destacados o de la semana.',
@@ -356,7 +408,7 @@ export class CompanySettingsComponent implements OnInit {
       },
       {
         cmp_uuid: this.cmp_uuid,
-        cmps_uuid: '17',
+        cmps_uuid: '21',
         cmps_key: 'HOME_FEATURED_COUNT',
         cmps_parameter: 'Cantidad de Destacados',
         cmps_description: 'Número de productos a mostrar en la sección destacada del inicio.',
@@ -369,7 +421,7 @@ export class CompanySettingsComponent implements OnInit {
       },
       {
         cmp_uuid: this.cmp_uuid,
-        cmps_uuid: '18',
+        cmps_uuid: '22',
         cmps_key: 'HOME_INFO_BLOCK_1_TITLE',
         cmps_parameter: 'Info 1: Título',
         cmps_description: 'Título del primer bloque informativo/beneficio.',
@@ -382,7 +434,7 @@ export class CompanySettingsComponent implements OnInit {
       },
       {
         cmp_uuid: this.cmp_uuid,
-        cmps_uuid: '19',
+        cmps_uuid: '23',
         cmps_key: 'HOME_INFO_BLOCK_1_DESC',
         cmps_parameter: 'Info 1: Descripción',
         cmps_description: 'Descripción del primer bloque informativo.',
@@ -395,7 +447,7 @@ export class CompanySettingsComponent implements OnInit {
       },
       {
         cmp_uuid: this.cmp_uuid,
-        cmps_uuid: '20',
+        cmps_uuid: '24',
         cmps_key: 'HOME_INFO_BLOCK_1_ICON',
         cmps_parameter: 'Info 1: Icono',
         cmps_description: 'Icono de Ant Design para el bloque 1.',
@@ -408,7 +460,7 @@ export class CompanySettingsComponent implements OnInit {
       },
       {
         cmp_uuid: this.cmp_uuid,
-        cmps_uuid: '21',
+        cmps_uuid: '25',
         cmps_key: 'HOME_INFO_BLOCK_2_TITLE',
         cmps_parameter: 'Info 2: Título',
         cmps_description: 'Título del segundo bloque informativo.',
@@ -421,7 +473,7 @@ export class CompanySettingsComponent implements OnInit {
       },
       {
         cmp_uuid: this.cmp_uuid,
-        cmps_uuid: '22',
+        cmps_uuid: '26',
         cmps_key: 'HOME_INFO_BLOCK_2_DESC',
         cmps_parameter: 'Info 2: Descripción',
         cmps_description: 'Descripción del segundo bloque informativo.',
@@ -434,7 +486,7 @@ export class CompanySettingsComponent implements OnInit {
       },
       {
         cmp_uuid: this.cmp_uuid,
-        cmps_uuid: '23',
+        cmps_uuid: '27',
         cmps_key: 'HOME_INFO_BLOCK_2_ICON',
         cmps_parameter: 'Info 2: Icono',
         cmps_description: 'Icono de Ant Design para el bloque 2.',
@@ -447,7 +499,7 @@ export class CompanySettingsComponent implements OnInit {
       },
       {
         cmp_uuid: this.cmp_uuid,
-        cmps_uuid: '24',
+        cmps_uuid: '28',
         cmps_key: 'HOME_INFO_BLOCK_3_TITLE',
         cmps_parameter: 'Info 3: Título',
         cmps_description: 'Título del tercer bloque informativo.',
@@ -460,7 +512,7 @@ export class CompanySettingsComponent implements OnInit {
       },
       {
         cmp_uuid: this.cmp_uuid,
-        cmps_uuid: '25',
+        cmps_uuid: '29',
         cmps_key: 'HOME_INFO_BLOCK_3_DESC',
         cmps_parameter: 'Info 3: Descripción',
         cmps_description: 'Descripción del tercer bloque informativo.',
@@ -473,7 +525,7 @@ export class CompanySettingsComponent implements OnInit {
       },
       {
         cmp_uuid: this.cmp_uuid,
-        cmps_uuid: '26',
+        cmps_uuid: '30',
         cmps_key: 'HOME_INFO_BLOCK_3_ICON',
         cmps_parameter: 'Info 3: Icono',
         cmps_description: 'Icono de Ant Design para el bloque 3.',
