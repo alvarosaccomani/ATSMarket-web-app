@@ -16,6 +16,7 @@ import { NzMessageModule, NzMessageService } from 'ng-zorro-antd/message';
 import { NzAlertModule } from 'ng-zorro-antd/alert';
 import { NzTagModule } from 'ng-zorro-antd/tag';
 import { NzDividerModule } from 'ng-zorro-antd/divider';
+import { NzButtonModule } from 'ng-zorro-antd/button';
 
 // Services
 import { SessionService } from '@services/session.service';
@@ -59,7 +60,8 @@ export interface CategoryPerformance {
     NzMessageModule,
     NzAlertModule,
     NzTagModule,
-    NzDividerModule
+    NzDividerModule,
+    NzButtonModule
   ],
   templateUrl: './analytics.component.html',
   styleUrl: './analytics.component.scss'
@@ -917,6 +919,103 @@ export class AnalyticsComponent implements OnInit, AfterViewInit, OnDestroy {
     };
 
     this.wmsStockChartInstance.setOption(option);
+  }
+
+  public exportFinancialsToExcel(): void {
+    const escapeCSV = (val: any): string => {
+      if (val === null || val === undefined) return '';
+      let str = String(val).trim();
+      str = str.replace(/"/g, '""');
+      if (str.includes(';') || str.includes('\n') || str.includes('\r') || str.includes('"')) {
+        return `"${str}"`;
+      }
+      return str;
+    };
+
+    const csvRows = [
+      'sep=;',
+      'REPORT DE RENDIMIENTO FINANCIERO Y VENTAS',
+      `Fecha de Generación: ${new Date().toLocaleString('es-AR')}`,
+      '',
+      '=== RESUMEN DE INDICADORES CLAVE (KPIs) ===',
+      'KPI;Valor',
+      `Ingresos Brutos;$${this.kpiRevenue.toFixed(2)}`,
+      `Pedidos Finalizados;${this.kpiOrders}`,
+      `Ticket Promedio;$${this.kpiTicket.toFixed(2)}`,
+      `Clientes Compradores;${this.kpiCustomers}`,
+      '',
+      '=== TOP 5 PRODUCTOS MÁS VENDIDOS ===',
+      'Producto;SKU;Categoría;Unidades Vendidas;Ingresos Generados',
+    ];
+
+    this.topProducts.forEach(p => {
+      csvRows.push([
+        escapeCSV(p.name),
+        escapeCSV(p.sku),
+        escapeCSV(p.category),
+        p.salesVolume,
+        `$${p.revenue.toFixed(2)}`
+      ].join(';'));
+    });
+
+    csvRows.push(
+      '',
+      '=== ANÁLISIS DE RENTABILIDAD Y MÁRGENES ===',
+      'Producto;SKU;Costo Proveedor;Precio Venta;Margen %;Ganancia Neta'
+    );
+
+    this.profitabilityList.forEach(item => {
+      csvRows.push([
+        escapeCSV(item.name),
+        escapeCSV(item.sku),
+        `$${item.cost.toFixed(2)}`,
+        `$${item.price.toFixed(2)}`,
+        `${item.marginPercent}%`,
+        `$${item.profit.toFixed(2)}`
+      ].join(';'));
+    });
+
+    csvRows.push(
+      '',
+      '=== DISTRIBUCIÓN DE STOCK EN DEPÓSITOS (WMS) ===',
+      'Depósito;Stock Físico (Unidades)'
+    );
+
+    this.warehouseStockMix.forEach(w => {
+      csvRows.push([
+        escapeCSV(w.name),
+        w.stock
+      ].join(';'));
+    });
+
+    csvRows.push(
+      '',
+      '=== MÉTRICAS ADICIONALES DE INVENTARIO ===',
+      'KPI;Valor',
+      `Stock Total Físico;${this.totalStockItems} unidades`,
+      `Tasa de Rotación Mensual;${this.turnoverRate}x`
+    );
+
+    const csvString = csvRows.join('\r\n');
+    const blob = new Blob(['\uFEFF' + csvString], { type: 'text/csv;charset=utf-8;' });
+
+    const link = document.createElement('a');
+    if (link.download !== undefined) {
+      const url = URL.createObjectURL(blob);
+      const formattedDate = new Date().toISOString().slice(0, 10);
+      const safeStoreName = (this._sessionService.getCompany()?.cmp_name || 'mi_comercio')
+        .replace(/[^a-z0-9]/gi, '_').toLowerCase();
+      link.setAttribute('href', url);
+      link.setAttribute('download', `reporte_financiero_${safeStoreName}_${formattedDate}.csv`);
+      link.style.visibility = 'hidden';
+      document.body.appendChild(link);
+      link.click();
+      document.body.removeChild(link);
+    }
+  }
+
+  public exportToPdf(): void {
+    window.print();
   }
 }
 
