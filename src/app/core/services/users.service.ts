@@ -26,6 +26,13 @@ export class UsersService {
     return this._http.post(environment.apiUrl + 'forgot-password', params, {headers:headers});
   }
 
+  public resetPassword(payload: any): Observable<any> {
+    let params = JSON.stringify(payload);
+    let headers = new HttpHeaders().set('content-type','application/json');
+
+    return this._http.post(environment.apiUrl + 'reset-password', params, {headers:headers});
+  }
+
   public login(user: any, gettoken: string | null = null): Observable<any> {
     if (gettoken != null) {
       user.gettoken = gettoken;
