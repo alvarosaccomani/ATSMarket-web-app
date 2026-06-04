@@ -19,6 +19,13 @@ export class UsersService {
     return this._http.post(environment.apiUrl + 'register', params, {headers:headers});
   }
 
+  public confirmAccount(token: string): Observable<any> {
+    let params = JSON.stringify({ token: token });
+    let headers = new HttpHeaders().set('content-type','application/json');
+
+    return this._http.post(environment.apiUrl + 'confirm-account', params, {headers:headers});
+  }
+
   public forgotPassword(usr_email: string): Observable<any> {
     let params = JSON.stringify({ usr_email: usr_email });
     let headers = new HttpHeaders().set('content-type','application/json');
