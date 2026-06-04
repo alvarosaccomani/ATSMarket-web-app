@@ -1,1 +1,89 @@
-<p>register works!</p>
+<div class="register-wrapper">
+    <div class="register-content">
+
+        <nz-card class="register-card">
+            <div class="register-header">
+                <h2>Crear Cuenta</h2>
+                <p>Completa tus datos para registrarte en la plataforma</p>
+            </div>
+
+            <form nz-form [formGroup]="validateForm" (ngSubmit)="submitForm()">
+
+                <!-- Nombre -->
+                <nz-form-item>
+                    <nz-form-control nzErrorTip="El nombre es obligatorio (mínimo 2 caracteres)">
+                        <nz-input-group nzPrefixIcon="user" style="width: 100%;">
+                            <input type="text" nz-input formControlName="usr_name" placeholder="Nombre" />
+                        </nz-input-group>
+                    </nz-form-control>
+                </nz-form-item>
+
+                <!-- Apellido -->
+                <nz-form-item>
+                    <nz-form-control nzErrorTip="El apellido es obligatorio (mínimo 2 caracteres)">
+                        <nz-input-group nzPrefixIcon="user" style="width: 100%;">
+                            <input type="text" nz-input formControlName="usr_surname" placeholder="Apellido" />
+                        </nz-input-group>
+                    </nz-form-control>
+                </nz-form-item>
+
+                <!-- Nickname (Usuario) -->
+                <nz-form-item>
+                    <nz-form-control nzErrorTip="El nombre de usuario es obligatorio (mínimo 3 caracteres)">
+                        <nz-input-group nzPrefixIcon="idcard" style="width: 100%;">
+                            <input type="text" nz-input formControlName="usr_nick" placeholder="Nombre de usuario" />
+                        </nz-input-group>
+                    </nz-form-control>
+                </nz-form-item>
+
+                <!-- Email -->
+                <nz-form-item>
+                    <nz-form-control nzErrorTip="Por favor ingresa un email válido">
+                        <nz-input-group nzPrefixIcon="mail" style="width: 100%;">
+                            <input type="email" nz-input formControlName="usr_email" placeholder="Correo Electrónico" />
+                        </nz-input-group>
+                    </nz-form-control>
+                </nz-form-item>
+
+                <!-- Contraseña -->
+                <nz-form-item>
+                    <nz-form-control nzErrorTip="La contraseña es requerida (mínimo 6 caracteres)">
+                        <nz-input-group nzPrefixIcon="lock" style="width: 100%;">
+                            <input type="password" nz-input formControlName="usr_password" (ngModelChange)="updateConfirmValidator()" placeholder="Contraseña" />
+                        </nz-input-group>
+                    </nz-form-control>
+                </nz-form-item>
+
+                <!-- Confirmar Contraseña -->
+                <nz-form-item>
+                    <nz-form-control [nzErrorTip]="confirmErrorTpl">
+                        <nz-input-group nzPrefixIcon="lock" style="width: 100%;">
+                            <input type="password" nz-input formControlName="confirmPassword" placeholder="Confirmar Contraseña" />
+                        </nz-input-group>
+                        <ng-template #confirmErrorTpl let-control>
+                            @if (control.hasError('required')) {
+                                Por favor confirma tu contraseña
+                            } @else if (control.hasError('confirm')) {
+                                Las contraseñas no coinciden
+                            }
+                        </ng-template>
+                    </nz-form-control>
+                </nz-form-item>
+
+                <!-- Botón de Registro -->
+                <nz-form-item style="margin-top: 24px;">
+                    <nz-form-control>
+                        <button nz-button nzType="primary" nzBlock [nzLoading]="isSubmitting">
+                            Registrarse
+                        </button>
+                    </nz-form-control>
+                </nz-form-item>
+
+                <div class="login-link">
+                    ¿Ya tienes una cuenta? <a [routerLink]="['/auth/login']">Inicia Sesión</a>
+                </div>
+            </form>
+        </nz-card>
+
+    </div>
+</div>
