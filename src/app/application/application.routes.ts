@@ -17,6 +17,7 @@ import { GlobalMaterialsComponent } from './global-materials/global-materials.co
 import { GlobalMaterialComponent } from './global-material/global-material.component';
 import { SuperAdminComponent } from './super-admin/super-admin.component';
 import { ItemsComponent } from './items/items.component';
+import { CategoriesComponent } from './categories/categories.component';
 import { MaterialsComponent } from './materials/materials.component';
 import { MaterialComponent } from './material/material.component';
 import { WarehousesComponent } from './warehouses/warehouses.component';
@@ -60,6 +61,7 @@ export const APPLICATION_ROUTES: Routes = [
             { path: 'global-material/:gmat_uuid', component: GlobalMaterialComponent, canActivate: [merchantGuard] },
             { path: 'super-admin', component: SuperAdminComponent, canActivate: [superAdminGuard] },
             { path: 'items', component: ItemsComponent, canActivate: [merchantGuard] },
+            { path: 'categories', component: CategoriesComponent, canActivate: [merchantGuard] },
             { path: 'materials', component: MaterialsComponent, canActivate: [merchantGuard] },
             { path: 'material/:mat_uuid', component: MaterialComponent, canActivate: [merchantGuard] },
             { path: 'warehouses', component: WarehousesComponent, canActivate: [merchantGuard] },
