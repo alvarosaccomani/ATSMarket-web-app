@@ -1,1 +1,205 @@
-<p>categories works!</p>
+<div class="categories-dashboard-wrapper">
+    <div class="dashboard-header">
+        <div class="header-titles">
+            <h1 class="page-title">Maestro de Categorías</h1>
+            <p class="page-subtitle">Administra las categorías de productos correspondientes a cada rubro de tu comercio.</p>
+        </div>
+
+        <div class="header-actions">
+            <!-- SELECTOR DE RUBRO (LOCAL ITEM) -->
+            <span style="font-weight: 600; margin-right: 8px; color: #595959;">Rubro:</span>
+            <nz-select 
+                [(ngModel)]="selectedItmUuid" 
+                (ngModelChange)="onItemChange($event)" 
+                nzPlaceHolder="Seleccionar Rubro..." 
+                nzSize="large" 
+                style="width: 250px; margin-right: 16px;">
+                <nz-option *ngFor="let item of itemsList" [nzLabel]="item.itm_name" [nzValue]="item.itm_uuid"></nz-option>
+            </nz-select>
+
+            <nz-input-group [nzPrefix]="prefixIconSearch" nzSize="large" style="width: 280px; margin-right: 16px;">
+                <input type="text" nz-input placeholder="Buscar por nombre o descripción..." 
+                    (input)="onSearch(txtSearch.value)" #txtSearch />
+            </nz-input-group>
+
+            <button 
+                nz-button 
+                nzType="primary" 
+                nzSize="large" 
+                [disabled]="!selectedItmUuid"
+                (click)="openCreateDrawer()">
+                <span nz-icon nzType="plus"></span> Agregar Categoría
+            </button>
+
+            <ng-template #prefixIconSearch>
+                <span nz-icon nzType="search"></span>
+            </ng-template>
+        </div>
+    </div>
+
+    <!-- MAIN CATEGORIES CARD AND TABLE -->
+    <nz-card class="premium-card" [nzBordered]="false">
+        <nz-spin [nzSpinning]="isLoading && !isDrawerVisible">
+            <nz-table 
+                #categoriesTable 
+                [nzData]="(filteredCategories$ | async) || []" 
+                nzSize="middle" 
+                [nzPageSize]="20"
+                [nzScroll]="{ y: 'calc(100vh - 310px)' }">
+                <thead>
+                    <tr>
+                        <th nzWidth="40%">Nombre de la Categoría</th>
+                        <th nzWidth="25%">Clasificación Global</th>
+                        <th nzWidth="20%">Fecha Registro</th>
+                        <th nzWidth="15%" nzAlign="right">Acciones</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    <tr *ngFor="let data of categoriesTable.data" class="clickable-row" (click)="openCategoryDetail(data)">
+                        <td>
+                            <div class="category-cell">
+                                <nz-avatar nzIcon="tags"
+                                    [nzSrc]="'https://api.dicebear.com/7.x/initials/svg?seed=' + data.cat_name"
+                                    style="background-color: #e6f7ff; border: 1px solid #91d5ff; color: #1890ff;"></nz-avatar>
+                                <div class="category-info">
+                                    <span class="category-name">{{ data.cat_name }}</span>
+                                    <span class="category-uuid">REF: {{ data.cat_uuid.substring(0,8) }}</span>
+                                </div>
+                            </div>
+                        </td>
+                        <td>
+                            <nz-tag [nzColor]="data.gcat_uuid ? 'blue' : 'default'">
+                                {{ getGlobalCategoryName(data.gcat_uuid) }}
+                            </nz-tag>
+                        </td>
+                        <td>
+                            <span class="date-cell">{{ data.cat_createdat | date:'dd/MM/yyyy' }}</span>
+                        </td>
+                        <td nzAlign="right" (click)="$event.stopPropagation()">
+                            <button nz-button nzType="link" (click)="openCategoryDetail(data)">Ver Ficha</button>
+                        </td>
+                    </tr>
+                    <tr *ngIf="categoriesTable.data.length === 0 && selectedItmUuid">
+                        <td colspan="4" style="text-align: center; padding: 48px; color: #bfbfbf;">
+                            <span nz-icon nzType="info-circle" style="font-size: 24px; margin-bottom: 8px; display: block;"></span>
+                            No hay categorías cargadas en este rubro. Haz clic en "Agregar Categoría" para comenzar.
+                        </td>
+                    </tr>
+                    <tr *ngIf="!selectedItmUuid">
+                        <td colspan="4" style="text-align: center; padding: 48px; color: #bfbfbf;">
+                            <span nz-icon nzType="shop" style="font-size: 24px; margin-bottom: 8px; display: block;"></span>
+                            Selecciona un rubro arriba para visualizar sus categorías.
+                        </td>
+                    </tr>
+                </tbody>
+            </nz-table>
+        </nz-spin>
+    </nz-card>
+</div>
+
+<!-- DRAWER: VER / CREAR / EDITAR CATEGORÍA -->
+<nz-drawer 
+    [nzVisible]="isDrawerVisible" 
+    nzPlacement="right" 
+    [nzTitle]="drawerTitle" 
+    [nzWidth]="'500px'" 
+    (nzOnClose)="closeDrawer()">
+    <ng-container *nzDrawerContent>
+        <nz-spin [nzSpinning]="isLoading">
+            <div class="drawer-content-wrapper">
+                
+                <!-- MODO VISTA DETALLADA -->
+                <div *ngIf="selectedCategory && !isEditing" class="view-mode-container">
+                    <div class="profile-header">
+                        <nz-avatar [nzSize]="64" nzIcon="tags" style="background-color: #e6f7ff; border: 1px solid #91d5ff; color: #1890ff;"></nz-avatar>
+                        <div class="profile-header-info">
+                            <h2>{{ selectedCategory.cat_name }}</h2>
+                            <span style="color: #8c8c8c;">ID: {{ selectedCategory.cat_uuid }}</span>
+                        </div>
+                    </div>
+
+                    <nz-divider></nz-divider>
+
+                    <nz-descriptions nzTitle="Información de la Categoría" [nzColumn]="1" nzSize="small">
+                        <nz-descriptions-item nzTitle="Nombre">{{ selectedCategory.cat_name }}</nz-descriptions-item>
+                        <nz-descriptions-item nzTitle="Descripción">
+                            {{ selectedCategory.cat_description || 'Sin descripción detallada.' }}
+                        </nz-descriptions-item>
+                        <nz-descriptions-item nzTitle="Clasificación Global Relacionada">
+                            <nz-tag nzColor="blue">{{ getGlobalCategoryName(selectedCategory.gcat_uuid) }}</nz-tag>
+                        </nz-descriptions-item>
+                    </nz-descriptions>
+
+                    <nz-divider></nz-divider>
+
+                    <nz-descriptions nzTitle="Auditoría" [nzColumn]="1" nzSize="small">
+                        <nz-descriptions-item nzTitle="Creado">{{ selectedCategory.cat_createdat | date:'medium' }}</nz-descriptions-item>
+                        <nz-descriptions-item nzTitle="Última Modificación">{{ selectedCategory.cat_updatedat | date:'medium' }}</nz-descriptions-item>
+                    </nz-descriptions>
+
+                    <div style="margin-top: 32px; display: flex; gap: 8px;">
+                        <button nz-button nzType="primary" nzBlock (click)="enableEditing()">
+                            <span nz-icon nzType="edit"></span> Editar
+                        </button>
+                        <button nz-button nzDanger nzBlock (click)="onDeleteCategory(selectedCategory)">
+                            <span nz-icon nzType="delete"></span> Eliminar
+                        </button>
+                    </div>
+                </div>
+
+                <!-- MODO FORMULARIO (EDICIÓN Y CREACIÓN) -->
+                <form *ngIf="isEditing" [formGroup]="categoryForm" (ngSubmit)="onSave()" nz-form nzLayout="vertical">
+                    <div class="form-mode-container">
+                        <div class="profile-header">
+                            <nz-avatar [nzSize]="64" nzIcon="form" style="background-color: #f9f0ff; border: 1px solid #d3adf7; color: #722ed1;"></nz-avatar>
+                            <div class="profile-header-info">
+                                <h2>{{ selectedCategory ? 'Editar Categoría' : 'Nueva Categoría' }}</h2>
+                                <p style="color: #8c8c8c; margin: 0; font-size: 13px;">Completá los datos de la categoría para el catálogo.</p>
+                            </div>
+                        </div>
+
+                        <nz-divider></nz-divider>
+
+                        <!-- MAPEO A CATEGORÍA GLOBAL -->
+                        <nz-form-item>
+                            <nz-form-label nzRequired nzFor="gcat_uuid" style="font-weight: 600;">Categoría Global (Mapeo Marketplace)</nz-form-label>
+                            <nz-form-control nzErrorTip="Seleccionar la categoría global es obligatorio para el mapeo.">
+                                <nz-select formControlName="gcat_uuid" id="gcat_uuid" placeholder="Selecciona la categoría del marketplace..." nzShowSearch nzSize="large">
+                                    <nz-option *ngFor="let gcat of globalCategories" [nzLabel]="gcat.gcat_name" [nzValue]="gcat.gcat_uuid"></nz-option>
+                                </nz-select>
+                            </nz-form-control>
+                        </nz-form-item>
+
+                        <nz-form-item>
+                            <nz-form-label nzRequired nzFor="cat_name" style="font-weight: 600;">Nombre de la Categoría</nz-form-label>
+                            <nz-form-control nzErrorTip="El nombre es obligatorio y debe tener al menos 2 caracteres.">
+                                <input nz-input formControlName="cat_name" id="cat_name" placeholder="Ej: Remeras, Pantalones, Accesorios..." nzSize="large" />
+                            </nz-form-control>
+                        </nz-form-item>
+
+                        <nz-form-item>
+                            <nz-form-label nzFor="cat_description" style="font-weight: 600;">Descripción</nz-form-label>
+                            <nz-form-control>
+                                <textarea nz-input formControlName="cat_description" id="cat_description" placeholder="Detalla qué tipos de productos integran esta categoría..." [nzAutosize]="{ minRows: 4, maxRows: 6 }"></textarea>
+                            </nz-form-control>
+                        </nz-form-item>
+
+                        <div style="margin-top: 32px; display: flex; gap: 8px;">
+                            <button nz-button nzType="primary" nzBlock type="submit" [nzLoading]="isLoading">
+                                <span nz-icon nzType="save"></span> Guardar
+                            </button>
+                            <button nz-button nzType="default" nzBlock type="button" (click)="selectedCategory ? (isEditing = false) : closeDrawer()">
+                                Cancelar
+                            </button>
+                        </div>
+                    </div>
+                </form>
+
+            </div>
+        </nz-spin>
+    </ng-container>
+
+    <ng-template #drawerTitle>
+        {{ selectedCategory ? (isEditing ? 'Editar Categoría' : 'Ficha Técnica de Categoría') : 'Agregar Nueva Categoría' }}
+    </ng-template>
+</nz-drawer>
