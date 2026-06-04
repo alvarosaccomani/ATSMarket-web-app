@@ -1,6 +1,7 @@
 export interface ItemInterface {
     cmp_uuid: string;
     itm_uuid: string;
+    gitm_uuid: string;
     itm_name: string;
     itm_description: string;
     itm_createdat: Date;
