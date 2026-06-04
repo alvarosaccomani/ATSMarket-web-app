@@ -1,1 +1,50 @@
-<p>account-confirmed works!</p>
+<div class="account-confirmed-wrapper">
+    <div class="account-confirmed-content">
+
+        <nz-card class="account-confirmed-card">
+            
+            @if (isLoading) {
+                <div class="loading-state">
+                    <nz-spin nzSimple nzSize="large"></nz-spin>
+                    <h3>Verificando tu cuenta</h3>
+                    <p>Por favor espera un momento mientras validamos tus datos...</p>
+                </div>
+            } @else if (isConfirmed) {
+                <div class="success-state">
+                    <div class="status-icon-wrapper success">
+                        <span nz-icon nzType="check-circle" nzTheme="outline" class="status-icon"></span>
+                    </div>
+                    <h2>¡Cuenta Activada!</h2>
+                    <div class="message-body">
+                        <p>
+                            Tu dirección de correo electrónico ha sido confirmada con éxito. 
+                            Tu cuenta ya está completamente activa y lista para usar.
+                        </p>
+                    </div>
+                    <div class="actions">
+                        <button nz-button nzType="primary" nzBlock routerLink="/auth/login" nzSize="large">
+                            Iniciar Sesión
+                        </button>
+                    </div>
+                </div>
+            } @else {
+                <div class="error-state">
+                    <div class="status-icon-wrapper error">
+                        <span nz-icon nzType="close-circle" nzTheme="outline" class="status-icon"></span>
+                    </div>
+                    <h2>Error de Confirmación</h2>
+                    <div class="message-body error-desc">
+                        <p>{{ errorMessage }}</p>
+                    </div>
+                    <div class="actions">
+                        <button nz-button nzType="primary" nzBlock routerLink="/auth/login" nzSize="large">
+                            Volver al Inicio de Sesión
+                        </button>
+                    </div>
+                </div>
+            }
+
+        </nz-card>
+
+    </div>
+</div>

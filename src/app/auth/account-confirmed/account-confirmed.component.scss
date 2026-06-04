@@ -1,0 +1,99 @@
+.account-confirmed-wrapper {
+    background: linear-gradient(135deg, #f5f7fa 0%, #c3cfe2 100%);
+    min-height: 100vh;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    padding: 20px;
+}
+
+.account-confirmed-content {
+    width: 100%;
+    display: flex;
+    justify-content: center;
+}
+
+.account-confirmed-card {
+    width: 100%;
+    max-width: 460px;
+    min-width: 300px;
+    border-radius: 12px;
+    box-shadow: 0 10px 30px rgba(0, 0, 0, 0.1);
+    text-align: center;
+    padding: 24px;
+}
+
+.loading-state {
+    padding: 24px 0;
+    
+    h3 {
+        margin-top: 20px;
+        font-size: 18px;
+        color: #262626;
+        font-weight: 600;
+    }
+    
+    p {
+        color: #8c8c8c;
+        font-size: 14px;
+    }
+}
+
+.status-icon-wrapper {
+    width: 72px;
+    height: 72px;
+    border-radius: 50%;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    margin: 0 auto 20px;
+    
+    .status-icon {
+        font-size: 40px;
+    }
+    
+    &.success {
+        background-color: rgba(82, 196, 26, 0.1);
+        color: #52c41a;
+    }
+    
+    &.error {
+        background-color: rgba(245, 34, 45, 0.1);
+        color: #f5222d;
+    }
+}
+
+h2 {
+    margin: 0;
+    color: #1f1f1f;
+    font-size: 24px;
+    font-weight: 600;
+}
+
+.message-body {
+    background-color: #fafafa;
+    border: 1px solid #f0f0f0;
+    border-radius: 8px;
+    padding: 16px 20px;
+    margin: 20px 0 24px;
+    text-align: left;
+    
+    p {
+        color: #595959;
+        font-size: 14px;
+        line-height: 1.6;
+        margin: 0;
+    }
+    
+    &.error-desc {
+        background-color: rgba(245, 34, 45, 0.02);
+        border-color: rgba(245, 34, 45, 0.1);
+        p {
+            color: #f5222d;
+        }
+    }
+}
+
+.actions {
+    margin-top: 24px;
+}
