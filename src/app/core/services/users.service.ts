@@ -12,6 +12,17 @@ export class UsersService {
     private _http: HttpClient
   ) { }
 
+  public singup(user: any): Observable<any> {
+    let params = JSON.stringify(user);
+    let headers = new HttpHeaders().set('content-type','application/json');
+
+    return this._http.post(environment.apiUrl + 'register', params, {headers:headers});
+  }
+
+  public signup(user: any): Observable<any> {
+    return this.singup(user);
+  }
+
   public login(user: any, gettoken: string | null = null): Observable<any> {
     if (gettoken != null) {
       user.gettoken = gettoken;
