@@ -256,8 +256,7 @@
                                 <span nz-icon nzType="bank" nzTheme="outline" class="pay-icon"></span>
                                 <div class="pay-text">
                                     <h3>Transferencia Bancaria Directa</h3>
-                                    <p>Depositá los fondos directamente a nuestra caja corporativa. Ideal para ventas
-                                        B2B.</p>
+                                    <p>Depositá los fondos directamente a nuestra caja corporativa. Ideal para ventas B2B.</p>
                                 </div>
                             </div>
                         </label>
@@ -268,28 +267,27 @@
                                 nzDescription="CBU: 014000000000123456789 (Titular: ATSMarket SA) | Alias: ATS.VENTAS"></nz-alert>
 
                             <div style="margin-top: 24px;">
-                                <label style="display: block; font-weight: 500; margin-bottom: 8px;">Obligatorio: N° de
-                                    Comprobante u Operación del banco</label>
+                                <label style="display: block; font-weight: 500; margin-bottom: 8px;">Obligatorio: N° de Comprobante u Operación del banco</label>
                                 <input nz-input [(ngModel)]="transactionId" placeholder="Ej: 99482103" nzSize="large" />
                             </div>
                         </div>
 
-                        <nz-divider></nz-divider>
+                        <nz-divider *ngIf="isStripeAvailable || isMercadoPagoAvailable"></nz-divider>
 
-                        <!-- Opción Tarjeta MercadoPago -->
-                        <label nz-radio nzValue="card" class="payment-radio-box"
-                            [class.active-box]="paymentMethod === 'card'">
+                        <!-- Opción Tarjeta Stripe -->
+                        <label nz-radio nzValue="stripe" class="payment-radio-box"
+                            [class.active-box]="paymentMethod === 'stripe'" *ngIf="isStripeAvailable">
                             <div class="radio-content">
                                 <span nz-icon nzType="credit-card" nzTheme="outline" class="pay-icon"></span>
                                 <div class="pay-text">
-                                    <h3>Tarjetas de Crédito / Débito (Pasarela Online)</h3>
-                                    <p>Acreditación instantánea de alta seguridad con encriptación SSL de 256 bits.</p>
+                                    <h3>Tarjeta de Crédito / Débito (Vía Stripe)</h3>
+                                    <p>Acreditación internacional instantánea y segura. Acepta Visa, Mastercard y Amex.</p>
                                 </div>
                             </div>
                         </label>
 
-                        <!-- Extra Form para Tarjeta Interactiva 3D -->
-                        <div class="card-details-wrapper" *ngIf="paymentMethod === 'card'" style="margin-top: 16px; padding: 20px; background: rgba(255,255,255,0.6); border: 1px dashed #d9d9d9; border-radius: 12px;">
+                        <!-- Extra Form para Tarjeta Interactiva 3D (Stripe) -->
+                        <div class="card-details-wrapper" *ngIf="paymentMethod === 'stripe'" style="margin-top: 16px; padding: 20px; background: rgba(255,255,255,0.6); border: 1px dashed #d9d9d9; border-radius: 12px;">
                             <!-- Contenedor 3D de la tarjeta virtual -->
                             <div class="credit-card-container">
                                 <div class="credit-card" [class.flipped]="isCardFlipped">
@@ -299,11 +297,9 @@
                                         <div class="card-glass-shine"></div>
                                         <div class="card-row-top">
                                             <div class="card-chip"></div>
-                                            <!-- Marca dinámica -->
                                             <div class="card-brand-logo" [class]="cardBrand"></div>
                                         </div>
                                         
-                                        <!-- Número de tarjeta interactivo Display -->
                                         <div class="card-number-display">
                                             {{ cardNumber || '•••• •••• •••• ••••' }}
                                         </div>
@@ -329,7 +325,7 @@
                                             <div class="card-cvv-display">{{ cardCvv || '•••' }}</div>
                                         </div>
                                         <div class="card-back-info">
-                                            <p>Esta tarjeta es virtual y de uso exclusivo en ATSMarket. Acreditación procesada en canal seguro de alta encriptación.</p>
+                                            <p>Esta tarjeta es virtual y de uso exclusivo en ATSMarket. Acreditación procesada bajo protocolos Stripe SSL.</p>
                                         </div>
                                     </div>
                                     
@@ -374,18 +370,171 @@
                                 </div>
                                 
                                 <div style="margin-top: 16px;">
-                                    <nz-alert nzType="warning" nzShowIcon nzMessage="Simulador de Pagos Activo"
-                                        nzDescription="Podés utilizar números ficticios para testear. Para simular un rechazo por fondos insuficientes, ingresá una tarjeta terminada en 4444.">
+                                    <nz-alert nzType="warning" nzShowIcon nzMessage="Simulador de Stripe Activo"
+                                        nzDescription="Podés utilizar números ficticios para probar. Si ingresás una tarjeta finalizada en 4444 la operación se simulará como declinada.">
                                     </nz-alert>
                                 </div>
                             </div>
                         </div>
 
+                        <nz-divider *ngIf="isStripeAvailable && isMercadoPagoAvailable"></nz-divider>
+
+                        <!-- Opción Mercado Pago -->
+                        <label nz-radio nzValue="mercadopago" class="payment-radio-box"
+                            [class.active-box]="paymentMethod === 'mercadopago'" *ngIf="isMercadoPagoAvailable">
+                            <div class="radio-content">
+                                <span nz-icon nzType="wallet" nzTheme="outline" class="pay-icon" style="color: #009ee3;"></span>
+                                <div class="pay-text">
+                                    <h3>Mercado Pago (Dinero en Cuenta o Tarjeta)</h3>
+                                    <p>Pagá con saldo de tu cuenta de Mercado Pago o tarjetas locales. Acreditación inmediata regional.</p>
+                                </div>
+                            </div>
+                        </label>
+
+                        <!-- Extra Form para Mercado Pago -->
+                        <div class="mp-details-wrapper" *ngIf="paymentMethod === 'mercadopago'" style="margin-top: 16px; padding: 20px; background: rgba(0, 158, 227, 0.04); border: 1px dashed #009ee3; border-radius: 12px;">
+                            <div class="mp-promo-box" style="display: flex; align-items: center; gap: 12px; margin-bottom: 12px;">
+                                <div class="mp-brand-badge" style="width: 36px; height: 36px; border-radius: 50%; background: #009ee3; display: flex; align-items: center; justify-content: center; color: #fff;">
+                                    <span nz-icon nzType="wallet" nzTheme="fill" style="font-size: 18px;"></span>
+                                </div>
+                                <div style="text-align: left;">
+                                    <h4 style="margin: 0; font-weight: 700; color: #003058;">Billetera Mercado Pago</h4>
+                                    <p style="margin: 0; font-size: 11px; color: #64748b;">Dinero en cuenta o tus tarjetas guardadas.</p>
+                                </div>
+                            </div>
+                            <nz-alert nzType="info" nzMessage="Cobro en Billetera Segura"
+                                nzDescription="Al presionar Pagar se desplegará el modal seguro de Mercado Pago para autenticarte y autorizar los fondos."></nz-alert>
+                        </div>
+
                     </nz-radio-group>
 
+                    <!-- ====== MODAL SIMULADO DE MERCADO PAGO ====== -->
+                    <nz-modal
+                      [(nzVisible)]="isMpModalVisible"
+                      [nzTitle]="mpModalTitle"
+                      [nzFooter]="null"
+                      (nzOnCancel)="closeMpModal()"
+                      [nzWidth]="420"
+                      [nzCentered]="true"
+                      [nzMaskClosable]="false"
+                      class="mp-simulated-modal"
+                    >
+                      <ng-template #mpModalTitle>
+                        <div style="display: flex; align-items: center; gap: 8px;">
+                          <span nz-icon nzType="wallet" nzTheme="fill" style="color: #009ee3; font-size: 20px;"></span>
+                          <span style="font-weight: 800; color: #003058; font-size: 16px; letter-spacing: -0.3px;">mercado pago</span>
+                        </div>
+                      </ng-template>
+
+                      <div class="mp-modal-body" *ngIf="isMpModalVisible" style="padding: 12px 4px;">
+                        <!-- PASO 1: INGRESAR EMAIL -->
+                        <div class="mp-step-container" *ngIf="mpStep === 1">
+                          <div style="text-align: center; margin-bottom: 24px;">
+                            <h3 style="font-weight: 700; color: #1e293b; margin-bottom: 4px;">Iniciá sesión en Mercado Pago</h3>
+                            <p style="color: #64748b; font-size: 13px; margin: 0;">Ingresá tu correo para ingresar a tu billetera</p>
+                          </div>
+
+                          <div style="margin-bottom: 24px;">
+                            <label style="display: block; font-weight: 600; margin-bottom: 8px; color: #475569; font-size: 12.5px;">E-mail o teléfono</label>
+                            <input nz-input [(ngModel)]="mpEmail" placeholder="ejemplo@correo.com" nzSize="large" [disabled]="mpProcessing" style="border-radius: 6px;" />
+                          </div>
+
+                          <button nz-button nzType="primary" nzSize="large" nzBlock 
+                                  style="background-color: #009ee3; border-color: #009ee3; font-weight: 700; height: 46px; border-radius: 6px; font-size: 15px;"
+                                  [nzLoading]="mpProcessing" (click)="submitMpEmail()">
+                            Siguiente
+                          </button>
+                        </div>
+
+                        <!-- PASO 2: SELECCIONAR MEDIO DE PAGO / CARTERA -->
+                        <div class="mp-step-container" *ngIf="mpStep === 2">
+                          <div style="text-align: center; margin-bottom: 20px;">
+                            <p style="color: #64748b; font-size: 12.5px; margin-bottom: 4px;">Pagarás a <strong style="color: #0f172a;">ATSMarket</strong></p>
+                            <h2 style="font-weight: 900; color: #0f172a; margin: 0; font-size: 26px;">${{ totalFinal | number:'1.2-2' }}</h2>
+                          </div>
+
+                          <nz-divider style="margin: 16px 0;"></nz-divider>
+
+                          <h4 style="font-weight: 700; color: #334155; margin-bottom: 12px; text-align: left; font-size: 13.5px;">¿Cómo querés pagar?</h4>
+
+                          <div class="mp-wallet-options" style="display: flex; flex-direction: column; gap: 12px; margin-bottom: 24px;">
+                            
+                            <!-- Dinero en cuenta -->
+                            <div class="mp-wallet-option-box" 
+                                 [class.active-mp-option]="mpCardSelected === 'balance'"
+                                 (click)="mpCardSelected = 'balance'"
+                                 style="border: 2px solid #e2e8f0; border-radius: 8px; padding: 14px; display: flex; align-items: center; justify-content: space-between; cursor: pointer; transition: all 0.2s;"
+                                 [style.border-color]="mpCardSelected === 'balance' ? '#009ee3' : '#e2e8f0'"
+                                 [style.background-color]="mpCardSelected === 'balance' ? 'rgba(0,158,227,0.02)' : '#fff'">
+                              <div style="display: flex; align-items: center; gap: 12px; flex: 1;">
+                                <span nz-icon nzType="wallet" nzTheme="outline" style="font-size: 22px; color: #22c55e;"></span>
+                                <div style="text-align: left;">
+                                  <span style="font-weight: 700; display: block; color: #1e293b; font-size: 13.5px;">Dinero en cuenta</span>
+                                  <span style="font-size: 11.5px; color: #64748b;">Saldo disponible: $150.000,00</span>
+                                </div>
+                              </div>
+                              <span nz-icon nzType="check-circle" nzTheme="fill" style="color: #009ee3; font-size: 18px;" *ngIf="mpCardSelected === 'balance'"></span>
+                            </div>
+
+                            <!-- Tarjeta Visa -->
+                            <div class="mp-wallet-option-box" 
+                                 [class.active-mp-option]="mpCardSelected === 'visa'"
+                                 (click)="mpCardSelected = 'visa'"
+                                 style="border: 2px solid #e2e8f0; border-radius: 8px; padding: 14px; display: flex; align-items: center; justify-content: space-between; cursor: pointer; transition: all 0.2s;"
+                                 [style.border-color]="mpCardSelected === 'visa' ? '#009ee3' : '#e2e8f0'"
+                                 [style.background-color]="mpCardSelected === 'visa' ? 'rgba(0,158,227,0.02)' : '#fff'">
+                              <div style="display: flex; align-items: center; gap: 12px; flex: 1;">
+                                <span nz-icon nzType="credit-card" nzTheme="outline" style="font-size: 22px; color: #3b82f6;"></span>
+                                <div style="text-align: left;">
+                                  <span style="font-weight: 700; display: block; color: #1e293b; font-size: 13.5px;">Visa Débito **** 4321</span>
+                                  <span style="font-size: 11.5px; color: #64748b;">Banco Galicia</span>
+                                </div>
+                              </div>
+                              <span nz-icon nzType="check-circle" nzTheme="fill" style="color: #009ee3; font-size: 18px;" *ngIf="mpCardSelected === 'visa'"></span>
+                            </div>
+
+                            <!-- Tarjeta Mastercard -->
+                            <div class="mp-wallet-option-box" 
+                                 [class.active-mp-option]="mpCardSelected === 'master'"
+                                 (click)="mpCardSelected = 'master'"
+                                 style="border: 2px solid #e2e8f0; border-radius: 8px; padding: 14px; display: flex; align-items: center; justify-content: space-between; cursor: pointer; transition: all 0.2s;"
+                                 [style.border-color]="mpCardSelected === 'master' ? '#009ee3' : '#e2e8f0'"
+                                 [style.background-color]="mpCardSelected === 'master' ? 'rgba(0,158,227,0.02)' : '#fff'">
+                              <div style="display: flex; align-items: center; gap: 12px; flex: 1;">
+                                <span nz-icon nzType="credit-card" nzTheme="outline" style="font-size: 22px; color: #ec4899;"></span>
+                                <div style="text-align: left;">
+                                  <span style="font-weight: 700; display: block; color: #1e293b; font-size: 13.5px;">Mastercard Crédito **** 8899</span>
+                                  <span style="font-size: 11.5px; color: #64748b;">Banco BBVA</span>
+                                </div>
+                              </div>
+                              <span nz-icon nzType="check-circle" nzTheme="fill" style="color: #009ee3; font-size: 18px;" *ngIf="mpCardSelected === 'master'"></span>
+                            </div>
+
+                          </div>
+
+                          <button nz-button nzType="primary" nzSize="large" nzBlock 
+                                  style="background-color: #009ee3; border-color: #009ee3; font-weight: 700; height: 46px; border-radius: 6px; font-size: 15px;"
+                                  [nzLoading]="mpProcessing" (click)="submitMpPayment()">
+                            Pagar ${{ totalFinal | number:'1.2-2' }}
+                          </button>
+                          
+                          <p style="margin: 14px 0 0 0; text-align: center; font-size: 11px; color: #94a3b8;">
+                            🔒 Conexión segura homologada por Mercado Pago.
+                          </p>
+                        </div>
+
+                        <!-- PASO 3: PROCESANDO / SPINNER -->
+                        <div class="mp-step-container" *ngIf="mpStep === 3" style="text-align: center; padding: 40px 10px;">
+                          <nz-spin nzSimple nzSize="large" style="margin-bottom: 24px; display: block;"></nz-spin>
+                          <h3 style="font-weight: 700; color: #1e293b; margin-bottom: 8px; font-size: 16px;">Procesando tu pago...</h3>
+                          <p style="color: #64748b; font-size: 12.5px; margin: 0; line-height: 1.4;">Por favor, no cierres esta ventana. Estamos validando la transacción con la entidad correspondiente.</p>
+                        </div>
+
+                      </div>
+                    </nz-modal>
+
                     <div style="margin-top: 32px; display: flex; gap: 16px;">
-                        <button nz-button nzType="default" nzSize="large" (click)="goToShippingStep()">Volver a
-                            Envío</button>
+                        <button nz-button nzType="default" nzSize="large" (click)="goToShippingStep()">Volver a Envío</button>
                         <button nz-button nzType="primary" nzSize="large" style="flex: 1;"
                             [nzLoading]="isProcessingPayment" (click)="submitOrderPayment()">
                             ✅ Pagar Total (${{ totalFinal | number:'1.2-2' }})
@@ -485,7 +634,7 @@
 </div>
 
 <!-- ====== OVERLAY GLOBAL DE PROCESAMIENTO DE PAGO SEGURO ====== -->
-<div class="payment-processing-overlay" *ngIf="isProcessingPayment && paymentMethod === 'card'">
+<div class="payment-processing-overlay" *ngIf="isProcessingPayment && (paymentMethod === 'stripe' || paymentMethod === 'mercadopago')">
     <div class="overlay-glass-card">
         <div class="pulsing-shield-wrapper">
             <div class="glowing-ring"></div>

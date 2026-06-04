@@ -51,6 +51,7 @@ import { NzMessageService } from 'ng-zorro-antd/message';
 import { NzAlertModule } from 'ng-zorro-antd/alert';
 import { NzSelectModule } from 'ng-zorro-antd/select';
 import { NzSpinModule } from 'ng-zorro-antd/spin';
+import { NzModalModule } from 'ng-zorro-antd/modal';
 
 @Component({
   selector: 'app-checkout',
@@ -70,7 +71,8 @@ import { NzSpinModule } from 'ng-zorro-antd/spin';
     NzDividerModule,
     NzAlertModule,
     NzSelectModule,
-    NzSpinModule
+    NzSpinModule,
+    NzModalModule
   ],
   templateUrl: './checkout.component.html',
   styleUrl: './checkout.component.scss'
@@ -99,10 +101,23 @@ export class CheckoutComponent implements OnInit, OnDestroy {
   public currentStep = 1; // 0 = Carrito(router), 1 = Envío, 2 = Pago, 3 = Confirmación
 
   // Pago
-  public paymentMethod: 'transfer' | 'card' = 'transfer';
+  public paymentMethod: 'transfer' | 'stripe' | 'mercadopago' = 'transfer';
   public transactionId: string = '';
   public isProcessingPayment = false;
   public generatedOrderNumber: number = 0;
+
+  // Pasarelas Disponibles (Configuradas por el Comercio)
+  public isStripeAvailable = false;
+  public isMercadoPagoAvailable = false;
+  public stripePublicKey = '';
+  public mpPublicKey = '';
+
+  // Simulación de Flujo Mercado Pago
+  public isMpModalVisible = false;
+  public mpStep = 1; // 1: Login, 2: Cartera/Dinero en cuenta, 3: Aprobación
+  public mpEmail = '';
+  public mpCardSelected: 'balance' | 'visa' | 'master' = 'balance';
+  public mpProcessing = false;
 
   // Simulación de Tarjeta Premium
   public cardName: string = '';
@@ -442,6 +457,7 @@ export class CheckoutComponent implements OnInit, OnDestroy {
           }
         });
         this.recalculateGrandTotal();
+        this.checkPaymentGateways();
       });
     } else {
       this.storesInOrder.forEach(g => {
@@ -451,6 +467,7 @@ export class CheckoutComponent implements OnInit, OnDestroy {
         }
       });
       this.recalculateGrandTotal();
+      this.checkPaymentGateways();
     }
   }
 
@@ -844,7 +861,7 @@ export class CheckoutComponent implements OnInit, OnDestroy {
       return;
     }
 
-    if (this.paymentMethod === 'card') {
+    if (this.paymentMethod === 'stripe') {
       if (!this.cardNumber.trim() || this.cardNumber.replace(/\s/g, '').length < 15) {
         this.message.error('Debés ingresar un número de tarjeta válido.');
         return;
@@ -932,8 +949,11 @@ export class CheckoutComponent implements OnInit, OnDestroy {
               `Lo sentimos, no hay stock suficiente para completar tu pedido: ${names}. Por favor, reduce la cantidad antes de intentar pagar.`
             );
           } else {
-            if (this.paymentMethod === 'card') {
+            if (this.paymentMethod === 'stripe') {
               this.processCardPaymentSimulation(identity);
+            } else if (this.paymentMethod === 'mercadopago') {
+              this.isProcessingPayment = false; // El modal maneja su propio cargador
+              this.openMercadoPagoSimulation(identity);
             } else {
               this.saveOrderAfterStockCheck(identity);
             }
@@ -941,16 +961,22 @@ export class CheckoutComponent implements OnInit, OnDestroy {
         },
         error: (err) => {
           console.warn('Fallo en checkStock preventivo, procediendo con guardado ordinario (fallback):', err);
-          if (this.paymentMethod === 'card') {
+          if (this.paymentMethod === 'stripe') {
             this.processCardPaymentSimulation(identity);
+          } else if (this.paymentMethod === 'mercadopago') {
+            this.isProcessingPayment = false;
+            this.openMercadoPagoSimulation(identity);
           } else {
             this.saveOrderAfterStockCheck(identity);
           }
         }
       });
     } else {
-      if (this.paymentMethod === 'card') {
+      if (this.paymentMethod === 'stripe') {
         this.processCardPaymentSimulation(identity);
+      } else if (this.paymentMethod === 'mercadopago') {
+        this.isProcessingPayment = false;
+        this.openMercadoPagoSimulation(identity);
       } else {
         this.saveOrderAfterStockCheck(identity);
       }
@@ -1013,8 +1039,12 @@ export class CheckoutComponent implements OnInit, OnDestroy {
       let notes = '';
       if (this.paymentMethod === 'transfer') {
         notes = `[Sub-Pedido de Carrito Multi-Tienda] | [Envío: ${methodText} ($${g.shippingCost})] | Método de pago: Transferencia Bancaria. Comprobante: ${this.transactionId}`;
+      } else if (this.paymentMethod === 'stripe') {
+        notes = `[Sub-Pedido de Carrito Multi-Tienda] | [Envío: ${methodText} ($${g.shippingCost})] | Método de pago: Tarjeta de Crédito (Stripe) (**** ${last4}). Transacción: ${mockTxId}`;
       } else {
-        notes = `[Sub-Pedido de Carrito Multi-Tienda] | [Envío: ${methodText} ($${g.shippingCost})] | Método de pago: Tarjeta (${this.cardBrand.toUpperCase()} **** ${last4}). Transacción: ${mockTxId}`;
+        const mpTx = 'mp_tx_' + Math.random().toString(36).substring(2, 10).toUpperCase();
+        const paySource = this.mpCardSelected === 'balance' ? 'Dinero en Cuenta' : this.mpCardSelected === 'visa' ? 'Tarjeta Visa' : 'Tarjeta Mastercard';
+        notes = `[Sub-Pedido de Carrito Multi-Tienda] | [Envío: ${methodText} ($${g.shippingCost})] | Método de pago: Mercado Pago (${paySource}). Transacción: ${mpTx}`;
       }
 
       let trackingNumber = '';
@@ -1141,5 +1171,136 @@ export class CheckoutComponent implements OnInit, OnDestroy {
         console.error('Error general en saveOrder forkJoin:', err);
       }
     });
+  }
+
+  // --- INTEGRACIÓN MULTI-PASARELA DE PAGOS ---
+
+  public checkPaymentGateways(): void {
+    let stripeEnabled = false;
+    let mpEnabled = false;
+    let stripePk = '';
+    let mpPk = '';
+
+    this.storesInOrder.forEach(g => {
+      const settings = g.settings || {};
+      if (settings['PAYMENT_STRIPE_ENABLE'] === true || settings['PAYMENT_STRIPE_ENABLE'] === 'true') {
+        stripeEnabled = true;
+        stripePk = settings['PAYMENT_STRIPE_PUBLIC_KEY'] || 'pk_test_51P_mock_stripe_pk_12345';
+      }
+      if (settings['PAYMENT_MERCADO_PAGO_ENABLE'] === true || settings['PAYMENT_MERCADO_PAGO_ENABLE'] === 'true') {
+        mpEnabled = true;
+        mpPk = settings['PAYMENT_MERCADO_PAGO_PUBLIC_KEY'] || 'APP_USR-mock-mp-pk-987654321';
+      }
+    });
+
+    this.isStripeAvailable = stripeEnabled;
+    this.isMercadoPagoAvailable = mpEnabled;
+    this.stripePublicKey = stripePk;
+    this.mpPublicKey = mpPk;
+
+    // Inicializar SDKs oficiales si están activos
+    if (this.isStripeAvailable && this.stripePublicKey) {
+      this.initStripe(this.stripePublicKey);
+    }
+    if (this.isMercadoPagoAvailable && this.mpPublicKey) {
+      this.initMercadoPago(this.mpPublicKey);
+    }
+
+    // Fallback de selección del método si el activo queda deshabilitado
+    if (this.paymentMethod === 'stripe' && !this.isStripeAvailable) {
+      this.paymentMethod = this.isMercadoPagoAvailable ? 'mercadopago' : 'transfer';
+    } else if (this.paymentMethod === 'mercadopago' && !this.isMercadoPagoAvailable) {
+      this.paymentMethod = this.isStripeAvailable ? 'stripe' : 'transfer';
+    }
+  }
+
+  private loadScript(src: string): Promise<void> {
+    return new Promise((resolve, reject) => {
+      if (document.querySelector(`script[src="${src}"]`)) {
+        resolve();
+        return;
+      }
+      const script = document.createElement('script');
+      script.src = src;
+      script.onload = () => resolve();
+      script.onerror = (err) => reject(err);
+      document.body.appendChild(script);
+    });
+  }
+
+  private initStripe(publicKey: string): void {
+    if (publicKey && !publicKey.includes('mock')) {
+      this.loadScript('https://js.stripe.com/v3/').then(() => {
+        try {
+          const stripe = (window as any).Stripe(publicKey);
+          console.log('🔌 Stripe JS SDK cargado e inicializado exitosamente.');
+        } catch (err) {
+          console.warn('Fallo al inicializar Stripe con clave real. Usando fallback de simulación.', err);
+        }
+      }).catch(err => {
+        console.warn('No se pudo inyectar el script de Stripe. Operando localmente.', err);
+      });
+    } else {
+      console.info('🔌 Stripe operando en Modo Sandbox local.');
+    }
+  }
+
+  private initMercadoPago(publicKey: string): void {
+    if (publicKey && !publicKey.includes('mock')) {
+      this.loadScript('https://sdk.mercadopago.com/js/v2').then(() => {
+        try {
+          const mp = new (window as any).MercadoPago(publicKey);
+          console.log('🔌 Mercado Pago SDK v2 cargado e inicializado exitosamente.');
+        } catch (err) {
+          console.warn('Fallo al inicializar Mercado Pago con clave real. Usando fallback de simulación.', err);
+        }
+      }).catch(err => {
+        console.warn('No se pudo inyectar el script de Mercado Pago. Operando localmente.', err);
+      });
+    } else {
+      console.info('🔌 Mercado Pago operando en Modo Sandbox local.');
+    }
+  }
+
+  public openMercadoPagoSimulation(identity: any): void {
+    this.mpStep = 1;
+    this.mpEmail = '';
+    this.mpProcessing = false;
+    this.mpCardSelected = 'balance';
+    this.isMpModalVisible = true;
+  }
+
+  public closeMpModal(): void {
+    this.isMpModalVisible = false;
+  }
+
+  public submitMpEmail(): void {
+    if (!this.mpEmail || !this.mpEmail.includes('@')) {
+      this.message.error('Por favor, ingresá un correo electrónico válido.');
+      return;
+    }
+    this.mpProcessing = true;
+    setTimeout(() => {
+      this.mpProcessing = false;
+      this.mpStep = 2;
+    }, 1000);
+  }
+
+  public submitMpPayment(): void {
+    this.mpProcessing = true;
+    this.mpStep = 3;
+    
+    setTimeout(() => {
+      this.mpProcessing = false;
+      this.isMpModalVisible = false;
+      
+      this.isProcessingPayment = true;
+      this.processingMessage = '🚀 Pago aprobado vía Mercado Pago. Guardando orden de compra...';
+      
+      const identity = this._sessionService.getIdentity();
+      setTimeout(() => {
+        this.saveOrderAfterStockCheck(identity);
+      }, 1000);
+    }, 2000);
   }
 }
