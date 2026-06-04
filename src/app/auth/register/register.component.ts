@@ -80,8 +80,9 @@ export class RegisterComponent implements OnInit {
           if (response && response.success === false) {
             this.message.error(response.message || 'Error al registrar el usuario');
           } else {
-            this.message.success('🎉 ¡Registro completado con éxito! Por favor inicia sesión.');
-            this._router.navigate(['/auth/login']);
+            const email = this.validateForm.get('usr_email')?.value || '';
+            this.message.success('🎉 ¡Registro completado con éxito!');
+            this._router.navigate(['/auth/account-created', email]);
           }
         },
         error: (error) => {
