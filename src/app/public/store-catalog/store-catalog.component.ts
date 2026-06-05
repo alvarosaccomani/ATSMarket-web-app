@@ -22,6 +22,8 @@ import { NzPaginationModule } from 'ng-zorro-antd/pagination';
 
 // DIRECTIVAS
 import { ImagePreloadDirective } from '@directives/image-preload.directive';
+import { Subject } from 'rxjs';
+import { debounceTime, distinctUntilChanged } from 'rxjs/operators';
 
 import { ProductVariationInterface } from '@interfaces/product-variation';
 import { CompanyInterface } from '@interfaces/company';
@@ -72,6 +74,9 @@ export class StoreCatalogComponent implements OnInit {
   public priceRange: [number, number] = [0, 50000];
   public drawerVisible: boolean = false;
 
+  private originalProducts: ProductVariationInterface[] = [];
+  private searchSubject = new Subject<string>();
+
   // Variables de Paginación
   public currentPage: number = 1;
   public pageSize: number = 12;
@@ -98,6 +103,17 @@ export class StoreCatalogComponent implements OnInit {
       this.companieslug = params.get('slug') || '';
     });
 
+    this.searchSubject.pipe(
+      debounceTime(400),
+      distinctUntilChanged()
+    ).subscribe(term => {
+      this.router.navigate([], {
+        relativeTo: this.route,
+        queryParams: { search: term || null },
+        queryParamsHandling: 'merge'
+      });
+    });
+
     // Suscribirse a la tienda activa
     this._storeContext.activeStore$.subscribe(store => {
       if (store) {
@@ -110,7 +126,9 @@ export class StoreCatalogComponent implements OnInit {
     this.route.queryParams.subscribe(params => {
       this.searchTerm = params['search'] || '';
       this.selectedCategory = params['category'] || null;
-      this.applyFilters();
+      if (this.store) {
+        this.executeSearch();
+      }
     });
 
     // Suscribirse a las configuraciones
@@ -144,11 +162,37 @@ export class StoreCatalogComponent implements OnInit {
     this.productsVariationsService.getProductsVariations(cmp_uuid, '', this.companieslug)
       .subscribe((products: any) => {
         this.allStoreProducts = products.data || [];
+        this.originalProducts = [...this.allStoreProducts];
         this.initializeFilters(this.allStoreProducts);
-        this.applyFilters();
+        this.executeSearch();
       }, (error: any) => {
         console.error('Error al cargar productos:', error);
       });
+  }
+
+  public onSearchInput(): void {
+    this.searchSubject.next(this.searchTerm);
+  }
+
+  public executeSearch(): void {
+    if (!this.store) return;
+
+    if (this.searchTerm) {
+      this.productsVariationsService.searchVariations(this.searchTerm, this.store.cmp_uuid).subscribe({
+        next: (res: any) => {
+          this.allStoreProducts = res.data || [];
+          this.applyFilters();
+        },
+        error: (err) => {
+          console.error('Error buscando variaciones de la tienda:', err);
+          this.allStoreProducts = [];
+          this.applyFilters();
+        }
+      });
+    } else {
+      this.allStoreProducts = this.originalProducts;
+      this.applyFilters();
+    }
   }
 
   public initializeFilters(products: ProductVariationInterface[]): void {

@@ -25,7 +25,7 @@
                 <div class="filter-group" style="margin-top: 24px;">
                     <h4 class="filter-subtitle">Buscar en Tienda</h4>
                     <nz-input-group [nzPrefix]="'search'">
-                        <input type="text" nz-input [(ngModel)]="searchTerm" (ngModelChange)="applyFilters()"
+                        <input type="text" nz-input [(ngModel)]="searchTerm" (ngModelChange)="onSearchInput()"
                             placeholder="Ej: Medalla, Luján..." nzSize="large" />
                     </nz-input-group>
                 </div>
@@ -159,7 +159,7 @@
                     <div class="filter-group">
                         <h4 class="filter-subtitle">Buscar en Tienda</h4>
                         <nz-input-group [nzPrefix]="'search'">
-                            <input type="text" nz-input [(ngModel)]="searchTerm" (ngModelChange)="applyFilters()"
+                            <input type="text" nz-input [(ngModel)]="searchTerm" (ngModelChange)="onSearchInput()"
                                 placeholder="Buscar artículo..." nzSize="large" />
                         </nz-input-group>
                     </div>
