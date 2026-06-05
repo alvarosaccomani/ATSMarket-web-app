@@ -18,6 +18,7 @@ import { NzTypographyModule } from 'ng-zorro-antd/typography';
 // SERVICIOS Y MODELOS
 import { CompaniesService } from '@services/companies.service';
 import { ProductsService } from '@services/products.service';
+import { StoreContextService } from '@services/store-context.service';
 import { CompanyInterface } from '@interfaces/company';
 import { GlobalItemInterface } from '@interfaces/global-item';
 import { GlobalItemsService } from '@services/global-items.service';
@@ -44,7 +45,7 @@ import { GlobalCategoryInterface } from '@interfaces/global-category';
   templateUrl: './market-home.component.html',
   styleUrl: './market-home.component.scss'
 })
-export class MarketHomeComponent {
+export class MarketHomeComponent implements OnInit {
 
   public isLoadingFeaturedStores: boolean = true;
   public featuredStores: CompanyInterface[] = [];
@@ -66,10 +67,13 @@ export class MarketHomeComponent {
     private _globalCategoriesService: GlobalCategoriesService,
     private companiesService: CompaniesService,
     private productsService: ProductsService,
+    private storeContext: StoreContextService,
     private router: Router
   ) { }
 
   ngOnInit(): void {
+    // Limpiar tienda activa al volver al home del marketplace
+    this.storeContext.clearStore();
 
     this.getGlobalItems();
     this.getGlobalCategories();

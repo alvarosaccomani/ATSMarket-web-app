@@ -34,18 +34,25 @@ export class PublicLayoutComponent implements OnInit {
   }
 
   ngOnInit(): void {
-    // Escuchar cambios en la ruta para detectar el slug
+    // 1. Detectar y aplicar el contexto de la ruta actual de forma inmediata al iniciar
+    this.detectAndApplyRouteContext();
+
+    // 2. Escuchar cambios en la ruta para futuras navegaciones
     this.router.events.pipe(
       filter(event => event instanceof NavigationEnd)
     ).subscribe(() => {
-      const slug = this.getSlugFromRoute(this.route.snapshot);
-      if (slug) {
-        this.storeContext.setStoreBySlug(slug).subscribe();
-      } else {
-        // Si no hay slug (ej: market-home), limpiamos el contexto o dejamos el por defecto
-        this.storeContext.clearStore();
-      }
+      this.detectAndApplyRouteContext();
     });
+  }
+
+  private detectAndApplyRouteContext(): void {
+    const slug = this.getSlugFromRoute(this.router.routerState.snapshot.root);
+    if (slug) {
+      this.storeContext.setStoreBySlug(slug).subscribe();
+    } else {
+      // Si no hay slug (ej: market-home), limpiamos el contexto o dejamos el por defecto
+      this.storeContext.clearStore();
+    }
   }
 
   /**

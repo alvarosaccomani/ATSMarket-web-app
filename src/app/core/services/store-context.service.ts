@@ -32,6 +32,13 @@ export class StoreContextService {
 
   private getStoredStore(): CompanyInterface | null {
     try {
+      // Si la URL actual no corresponde a una tienda, no cargamos el contexto del localStorage
+      const path = window.location.pathname;
+      if (!path.includes('/store-catalog') && !path.includes('/home-store')) {
+        localStorage.removeItem('ats_active_store');
+        return null;
+      }
+
       const stored = localStorage.getItem('ats_active_store');
       return stored ? JSON.parse(stored) : null;
     } catch (e) {
@@ -175,8 +182,8 @@ export class StoreContextService {
     this._activeStore.next(null);
     localStorage.removeItem('ats_active_store');
     this._storeSettings.next({});
-    // Resetear el color primario al valor por defecto al salir de una tienda
-    document.documentElement.style.removeProperty('--ant-primary-color');
-    document.documentElement.style.removeProperty('--navbar-background-color');
+    // Resetear el color primario y navbar al valor por defecto
+    document.documentElement.style.setProperty('--ant-primary-color', '#1890ff');
+    document.documentElement.style.setProperty('--navbar-background-color', '#001529');
   }
 }
