@@ -61,4 +61,19 @@ export class ProductVariationsService {
 
     return this._http.get<any>(`${environment.apiUrl}check-stock/${cmp_uuid}/${pro_uuid}/${prov_uuid}`, { headers, params });
   }
+
+  /**
+   * Realiza la búsqueda de variaciones de productos por consulta (y opcionalmente por compañía).
+   * @param query Término de búsqueda.
+   * @param companyUuid ID opcional de la tienda para restringir la búsqueda.
+   * @returns Observable con los resultados.
+   */
+  public searchVariations(query: string, companyUuid?: string): Observable<ProductVariationResults> {
+    const headers = new HttpHeaders().set('content-type', 'application/json');
+    let params = new HttpParams().set('query', query);
+    if (companyUuid) {
+      params = params.set('companyUuid', companyUuid);
+    }
+    return this._http.get<ProductVariationResults>(`${environment.apiUrl}products-variations-search`, { headers, params });
+  }
 }
