@@ -71,8 +71,7 @@ export class CatalogComponent implements OnInit {
   public selectedGlobalItem: string | null = null;
   public selectedCategory: string | null = null;
   
-  public materialOptions: string[] = [];
-  public selectedMaterials: string[] = [];
+  public materialOptions: { label: string, value: string, checked: boolean }[] = [];
   public priceRange: [number, number] = [0, 50000];
   public drawerVisible = false;
 
@@ -139,7 +138,11 @@ export class CatalogComponent implements OnInit {
 
         // 3. Cargar opciones de Materiales
         if (res.materials && res.materials.success) {
-          this.materialOptions = res.materials.data.map((m: any) => m.gmat_name);
+          this.materialOptions = res.materials.data.map((m: any) => ({
+            label: m.gmat_name,
+            value: m.gmat_uuid,
+            checked: false
+          }));
         }
 
         // 3. Mapear productos a variaciones de forma segura
@@ -249,8 +252,12 @@ export class CatalogComponent implements OnInit {
       result = result.filter(p => (p as any).itm_uuid === this.selectedGlobalItem);
     }
 
-    if (this.selectedMaterials.length > 0) {
-      // result = result.filter(p => this.selectedMaterials.includes(p.material));
+    const selectedMaterialIds = this.materialOptions
+      .filter(m => m.checked)
+      .map(m => m.value);
+
+    if (selectedMaterialIds.length > 0) {
+      result = result.filter((p: any) => selectedMaterialIds.includes(p.gmat_uuid));
     }
 
     // Filtrar por rango

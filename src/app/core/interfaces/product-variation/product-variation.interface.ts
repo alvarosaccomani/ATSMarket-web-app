@@ -20,4 +20,7 @@ export interface ProductVariationInterface {
     prov_updatedat: Date;
     cmp_name?: string;
     pro_name?: string;
+    mat_uuid?: string;
+    gmat_uuid?: string;
+    gmat_name?: string;
 }
