@@ -1,4 +1,4 @@
-import { Component, OnInit } from '@angular/core';
+import { Component, OnInit, ElementRef, ViewChild } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { FormsModule } from '@angular/forms';
 import { finalize } from 'rxjs/operators';
@@ -19,6 +19,7 @@ import { NzTypographyModule } from 'ng-zorro-antd/typography';
 import { CompaniesService } from '@services/companies.service';
 import { ProductsService } from '@services/products.service';
 import { StoreContextService } from '@services/store-context.service';
+import { ProductVariationsService } from '@services/product-variations.service';
 import { CompanyInterface } from '@interfaces/company';
 import { GlobalItemInterface } from '@interfaces/global-item';
 import { GlobalItemsService } from '@services/global-items.service';
@@ -51,6 +52,8 @@ export class MarketHomeComponent implements OnInit {
   public featuredStores: CompanyInterface[] = [];
   public productosGlobales: ProductVariationInterface[] = [];
 
+  @ViewChild('carouselTrack', { static: false }) carouselTrack!: ElementRef;
+
   // Filtros a nivel SISTEMA
   public searchGlobal: string = '';
   public itemSelected: string | null = null;
@@ -67,6 +70,7 @@ export class MarketHomeComponent implements OnInit {
     private _globalCategoriesService: GlobalCategoriesService,
     private companiesService: CompaniesService,
     private productsService: ProductsService,
+    private productVariationsService: ProductVariationsService,
     private storeContext: StoreContextService,
     private router: Router
   ) { }
@@ -81,9 +85,17 @@ export class MarketHomeComponent implements OnInit {
     // 1. Cargar tiendas destacadas
     this.getFeaturedCompanies();
 
-    // 2. Cargar productos más vendidos de todo el sistema
-    this.productsService.getFeaturedProducts(8).subscribe((prods: any) => {
-      this.productosGlobales = prods.data;
+    // 2. Cargar productos tendencia reales de todo el sistema
+    this.productVariationsService.searchVariations('').subscribe({
+      next: (res: any) => {
+        if (res.success && res.data) {
+          // Tomar los primeros 8 productos tendencia
+          this.productosGlobales = res.data.slice(0, 8);
+        }
+      },
+      error: (err) => {
+        console.error('Error cargando productos tendencia:', err);
+      }
     });
   }
 
@@ -162,6 +174,53 @@ export class MarketHomeComponent implements OnInit {
 
   public goToStore(slug: string): void {
     this.router.navigate(['/public/home-store', slug]);
+  }
+
+  public openProductDetail(producto: ProductVariationInterface): void {
+    // Buscar la compañía por ID para obtener su slug e ir a la ruta contextual del catálogo
+    this.companiesService.getCompanyById(producto.cmp_uuid).subscribe({
+      next: (res: any) => {
+        const company = res?.data;
+        const slug = company?.cmp_slug || 'catalog';
+        this.router.navigate(['/public/store-catalog', slug, 'product', producto.prov_uuid]);
+      },
+      error: () => {
+        // Fallback si falla la llamada
+        this.router.navigate(['/public/store-catalog', 'catalog', 'product', producto.prov_uuid]);
+      }
+    });
+  }
+
+  public scrollCarousel(direction: number): void {
+    if (this.carouselTrack) {
+      const track = this.carouselTrack.nativeElement;
+      const scrollAmount = track.clientWidth * 0.8; // Desplazar el 80% del ancho visible
+      
+      const currentScroll = track.scrollLeft;
+      const maxScroll = track.scrollWidth - track.clientWidth;
+
+      // Si se desplaza a la derecha y está en el extremo final, vuelve al inicio
+      if (direction === 1 && currentScroll >= maxScroll - 10) {
+        track.scrollTo({
+          left: 0,
+          behavior: 'smooth'
+        });
+      }
+      // Si se desplaza a la izquierda y está en el extremo inicial, va al final
+      else if (direction === -1 && currentScroll <= 10) {
+        track.scrollTo({
+          left: maxScroll,
+          behavior: 'smooth'
+        });
+      }
+      // Desplazamiento estándar intermedio
+      else {
+        track.scrollBy({
+          left: direction * scrollAmount,
+          behavior: 'smooth'
+        });
+      }
+    }
   }
 
 }

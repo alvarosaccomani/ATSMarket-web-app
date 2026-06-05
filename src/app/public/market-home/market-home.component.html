@@ -60,21 +60,53 @@
         </div>
     </section>
 
-    <section class="section-padding bg-light">
+    <section class="section-padding bg-light trending-carousel-section">
         <h2 nz-typography>Productos Tendencia</h2>
-        <div nz-row [nzGutter]="[16, 16]">
-            <div nz-col [nzXs]="12" [nzSm]="12" [nzMd]="6" [nzLg]="6" *ngFor="let prod of productosGlobales">
-                <nz-card [nzCover]="coverTemplate" [nzHoverable]="true" [nzActions]="[actionView]">
-                    <nz-card-meta [nzTitle]="prod.prov_name"
-                        [nzDescription]="'Vendido por: Tienda ' + prod.prov_uuid"></nz-card-meta>
-                    <ng-template #coverTemplate>
-                        <img class="prod-img" [alt]="prod.prov_name" [src]="prod.prov_image" />
-                    </ng-template>
-                    <ng-template #actionView>
-                        <span class="price-tag">${{ prod.prov_suggestedminimumsellingprice }}</span>
-                    </ng-template>
-                </nz-card>
+        
+        <div class="carousel-wrapper">
+            <!-- Botón Izquierdo -->
+            <button class="carousel-btn prev" (click)="scrollCarousel(-1)">
+                <span nz-icon nzType="left" nzTheme="outline"></span>
+            </button>
+            
+            <!-- Contenedor del Carrusel -->
+            <div class="carousel-track" #carouselTrack>
+                <div class="carousel-item-card" *ngFor="let prod of productosGlobales">
+                    <nz-card [nzCover]="coverTemplate" [nzHoverable]="true" class="premium-product-card" [nzBodyStyle]="{ padding: '16px' }">
+                        <ng-template #coverTemplate>
+                            <div class="card-image-wrapper" (click)="openProductDetail(prod)" style="cursor: pointer;">
+                                <img [alt]="prod.prov_name" [src]="prod.prov_image ? prod.prov_image : 'https://placehold.co/400x400/eeeeee/8c8c8c?text=Sin+Foto'" />
+                            </div>
+                        </ng-template>
+                        <nz-card-meta [nzTitle]="prod.prov_name"
+                            [nzDescription]="'Vendido por: ' + (prod.cmp_name || 'Tienda ' + prod.cmp_uuid)" (click)="openProductDetail(prod)" style="cursor: pointer;"></nz-card-meta>
+                        
+                        <div class="product-pricing" style="margin-top: 12px; display: flex; align-items: center; justify-content: space-between;">
+                            <span class="price-tag">${{ prod.prov_suggestedminimumsellingprice | number:'1.2-2' }}</span>
+                            
+                            <span *ngIf="prod.prov_reviewscount && prod.prov_reviewscount > 0" style="font-size: 12px; font-weight: 600; color: #fa8c16; display: flex; align-items: center; gap: 4px;">
+                                <span nz-icon nzType="star" nzTheme="fill"></span> 
+                                {{ prod.prov_averagerating || 0 }} 
+                                <span style="color: #8c8c8c; font-weight: 500; font-size: 11px;">({{ prod.prov_reviewscount }})</span>
+                            </span>
+                            <span *ngIf="!prod.prov_reviewscount || prod.prov_reviewscount === 0" style="font-size: 11px; font-weight: 600; color: #8c8c8c; background: #f5f5f5; padding: 2px 6px; border-radius: 4px;">
+                                Nuevo
+                            </span>
+                        </div>
+
+                        <div class="product-actions" style="margin-top: 16px; display: flex; gap: 8px;">
+                            <button nz-button nzType="default" (click)="openProductDetail(prod)" style="flex: 1;">
+                                Detalles
+                            </button>
+                        </div>
+                    </nz-card>
+                </div>
             </div>
+            
+            <!-- Botón Derecho -->
+            <button class="carousel-btn next" (click)="scrollCarousel(1)">
+                <span nz-icon nzType="right" nzTheme="outline"></span>
+            </button>
         </div>
     </section>
 </div>
