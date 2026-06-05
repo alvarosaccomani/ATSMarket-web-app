@@ -27,6 +27,7 @@ import { ProductVariationsService } from '@services/product-variations.service';
 import { CompaniesService } from '@services/companies.service';
 import { GlobalItemsService } from '@services/global-items.service';
 import { GlobalCategoriesService } from '@services/global-categories.service';
+import { GlobalMaterialsService } from '@services/global-materials.service';
 
 @Component({
   selector: 'app-catalog',
@@ -70,7 +71,7 @@ export class CatalogComponent implements OnInit {
   public selectedGlobalItem: string | null = null;
   public selectedCategory: string | null = null;
   
-  public materialOptions = ['Resina', 'Madera', 'Plata 925', 'Metal', 'Otro'];
+  public materialOptions: string[] = [];
   public selectedMaterials: string[] = [];
   public priceRange: [number, number] = [0, 50000];
   public drawerVisible = false;
@@ -89,6 +90,7 @@ export class CatalogComponent implements OnInit {
     private companiesService: CompaniesService,
     private globalItemsService: GlobalItemsService,
     private globalCategoriesService: GlobalCategoriesService,
+    private _globalMaterialsService: GlobalMaterialsService,
     private message: NzMessageService
   ) { }
 
@@ -115,6 +117,7 @@ export class CatalogComponent implements OnInit {
     forkJoin({
       items: this.globalItemsService.getGlobalItems(),
       categories: this.globalCategoriesService.getGlobalCategories(),
+      materials: this._globalMaterialsService.getGlobalMaterials(),
       products: products$
     }).subscribe({
       next: (res: any) => {
@@ -132,6 +135,11 @@ export class CatalogComponent implements OnInit {
             { label: 'Todas las Categorías', value: null },
             ...res.categories.data.map((c: any) => ({ label: c.gcat_name, value: c.gcat_uuid }))
           ];
+        }
+
+        // 3. Cargar opciones de Materiales
+        if (res.materials && res.materials.success) {
+          this.materialOptions = res.materials.data.map((m: any) => m.gmat_name);
         }
 
         // 3. Mapear productos a variaciones de forma segura
