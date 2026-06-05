@@ -110,7 +110,7 @@ export class CatalogComponent implements OnInit {
     // 2. Determinar el observable de productos/variaciones inicial
     const products$ = initialSearch
       ? this.productVariationsService.searchVariations(initialSearch)
-      : this.productService.getProducts('');
+      : this.productVariationsService.searchVariations('');
 
     forkJoin({
       items: this.globalItemsService.getGlobalItems(),
@@ -205,25 +205,9 @@ export class CatalogComponent implements OnInit {
     } else {
       if (this.originalProducts.length === 0) {
         // Carga diferida (lazy load) del catálogo completo si no se cargó al inicio
-        this.productService.getProducts('').subscribe({
+        this.productVariationsService.searchVariations('').subscribe({
           next: (res: any) => {
-            const rawData = res.data || res || [];
-            let variations: ProductVariationInterface[] = [];
-            if (Array.isArray(rawData)) {
-              rawData.forEach((prod: any) => {
-                if (prod.productVariations && Array.isArray(prod.productVariations)) {
-                  prod.productVariations.forEach((v: any) => {
-                    variations.push({
-                      ...v,
-                      cat_uuid: prod.cat_uuid,
-                      itm_uuid: prod.itm_uuid,
-                      pro_name: prod.pro_name
-                    });
-                  });
-                }
-              });
-            }
-            this.originalProducts = variations;
+            this.originalProducts = res.data || res || [];
             this.allProducts = this.originalProducts;
             this.applyFilters();
           },

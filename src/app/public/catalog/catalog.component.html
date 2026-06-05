@@ -108,6 +108,12 @@
                         [nzDescription]="'Ref: ' + (producto.prov_sku || 'N/A')" (click)="openProductDetail(producto)" style="cursor: pointer;">
                     </nz-card-meta>
 
+                    <!-- Vendido por: Nombre Tienda -->
+                    <div class="product-seller" style="margin-top: 8px; font-size: 13px; color: #8c8c8c; display: flex; align-items: center; gap: 6px;">
+                        <span nz-icon nzType="shop" nzTheme="outline" style="font-size: 14px;"></span>
+                        <span>Vendido por: <strong>{{ producto.cmp_name || 'Tienda ' + producto.cmp_uuid }}</strong></span>
+                    </div>
+
                     <div class="product-pricing" style="margin-top: 12px; display: flex; align-items: center; justify-content: space-between;">
                         <span class="price-tag">${{ producto.prov_suggestedminimumsellingprice | number:'1.2-2' }}</span>
                         
