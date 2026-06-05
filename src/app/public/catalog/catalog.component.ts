@@ -18,10 +18,12 @@ import { NzPaginationModule } from 'ng-zorro-antd/pagination';
 import { NzMessageModule, NzMessageService } from 'ng-zorro-antd/message';
 import { NzTagModule } from 'ng-zorro-antd/tag';
 
-import { forkJoin } from 'rxjs';
+import { forkJoin, Subject } from 'rxjs';
+import { debounceTime, distinctUntilChanged } from 'rxjs/operators';
 import { ProductVariationInterface } from '@interfaces/product-variation';
 import { CartService } from '@services/cart.service';
 import { ProductsService } from '@services/products.service';
+import { ProductVariationsService } from '@services/product-variations.service';
 import { CompaniesService } from '@services/companies.service';
 import { GlobalItemsService } from '@services/global-items.service';
 import { GlobalCategoriesService } from '@services/global-categories.service';
@@ -58,6 +60,9 @@ export class CatalogComponent implements OnInit {
 
   public searchTerm: string = '';
   
+  private originalProducts: ProductVariationInterface[] = [];
+  private searchSubject = new Subject<string>();
+  
   // Opciones de rubros y categorías dinámicas
   public itemOptions: { label: string, value: string | null }[] = [{ label: 'Todos los Rubros', value: null }];
   public categoryOptions: { label: string, value: string | null }[] = [{ label: 'Todas las Categorías', value: null }];
@@ -80,6 +85,7 @@ export class CatalogComponent implements OnInit {
     private router: Router,
     private cartService: CartService,
     private productService: ProductsService,
+    private productVariationsService: ProductVariationsService,
     private companiesService: CompaniesService,
     private globalItemsService: GlobalItemsService,
     private globalCategoriesService: GlobalCategoriesService,
@@ -87,10 +93,29 @@ export class CatalogComponent implements OnInit {
   ) { }
 
   ngOnInit(): void {
+    this.searchSubject.pipe(
+      debounceTime(400),
+      distinctUntilChanged()
+    ).subscribe(term => {
+      this.router.navigate([], {
+        relativeTo: this.route,
+        queryParams: { search: term || null },
+        queryParamsHandling: 'merge'
+      });
+    });
+
+    // 1. Verificar si ya existe un término de búsqueda en la URL
+    const initialSearch = this.route.snapshot.queryParams['search'] || '';
+
+    // 2. Determinar el observable de productos/variaciones inicial
+    const products$ = initialSearch
+      ? this.productVariationsService.searchVariations(initialSearch)
+      : this.productService.getProducts('');
+
     forkJoin({
       items: this.globalItemsService.getGlobalItems(),
       categories: this.globalCategoriesService.getGlobalCategories(),
-      products: this.productService.getProducts('')
+      products: products$
     }).subscribe({
       next: (res: any) => {
         // 1. Cargar opciones de Rubros
@@ -132,6 +157,11 @@ export class CatalogComponent implements OnInit {
         }
         this.allProducts = variations;
 
+        // Solo guardamos originalProducts si no venía un término inicial de búsqueda
+        if (!initialSearch) {
+          this.originalProducts = variations;
+        }
+
         // Ajustar rango de precios dinámico
         if (this.allProducts.length > 0) {
           const precios = this.allProducts.map(p => p.prov_suggestedminimumsellingprice);
@@ -145,7 +175,7 @@ export class CatalogComponent implements OnInit {
           this.searchTerm = params['search'] || '';
           this.selectedCategory = params['category'] || null;
           this.selectedGlobalItem = params['item'] || null;
-          this.applyFilters();
+          this.executeSearch();
         });
       },
       error: (err) => {
@@ -153,6 +183,59 @@ export class CatalogComponent implements OnInit {
         this.message.error('Ocurrió un error al cargar el catálogo de productos.');
       }
     });
+  }
+
+  public onSearchInput(): void {
+    this.searchSubject.next(this.searchTerm);
+  }
+
+  public executeSearch(): void {
+    if (this.searchTerm) {
+      this.productVariationsService.searchVariations(this.searchTerm).subscribe({
+        next: (res: any) => {
+          this.allProducts = res.data || [];
+          this.applyFilters();
+        },
+        error: (err) => {
+          console.error('Error buscando variaciones:', err);
+          this.allProducts = [];
+          this.applyFilters();
+        }
+      });
+    } else {
+      if (this.originalProducts.length === 0) {
+        // Carga diferida (lazy load) del catálogo completo si no se cargó al inicio
+        this.productService.getProducts('').subscribe({
+          next: (res: any) => {
+            const rawData = res.data || res || [];
+            let variations: ProductVariationInterface[] = [];
+            if (Array.isArray(rawData)) {
+              rawData.forEach((prod: any) => {
+                if (prod.productVariations && Array.isArray(prod.productVariations)) {
+                  prod.productVariations.forEach((v: any) => {
+                    variations.push({
+                      ...v,
+                      cat_uuid: prod.cat_uuid,
+                      itm_uuid: prod.itm_uuid,
+                      pro_name: prod.pro_name
+                    });
+                  });
+                }
+              });
+            }
+            this.originalProducts = variations;
+            this.allProducts = this.originalProducts;
+            this.applyFilters();
+          },
+          error: (err) => {
+            console.error('Error cargando catálogo original:', err);
+          }
+        });
+      } else {
+        this.allProducts = this.originalProducts;
+        this.applyFilters();
+      }
+    }
   }
 
   public applyFilters(): void {
