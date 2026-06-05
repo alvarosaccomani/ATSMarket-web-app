@@ -18,4 +18,6 @@ export interface ProductVariationInterface {
     prov_reviewscount?: number;
     prov_createdat: Date;
     prov_updatedat: Date;
+    cmp_name?: string;
+    pro_name?: string;
 }
