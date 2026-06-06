@@ -60,6 +60,17 @@ export class ProductsService {
     return this._http.put(`${environment.apiUrl}product/${product.cmp_uuid}/${product.pro_uuid}`, params, { headers: headers });
   }
 
+  /**
+   * Guardar múltiples productos en lote.
+   * @param products Array de productos a crear o actualizar.
+   * @returns Observable de la respuesta.
+   */
+  public saveProductsBulk(products: any[]): Observable<any> {
+    const payload = { products };
+    const headers = new HttpHeaders().set('content-type', 'application/json');
+    return this._http.post(`${environment.apiUrl}products/bulk`, JSON.stringify(payload), { headers });
+  }
+
   // Datos simulados para 'productsData'
   private productsData: any[] = [
     {
