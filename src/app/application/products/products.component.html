@@ -12,6 +12,10 @@
                     (input)="onSearch(txtSearch.value)" #txtSearch />
             </nz-input-group>
 
+            <button nz-button nzType="default" nzSize="large" (click)="openBulkImportModal()" style="margin-right: 8px;">
+                <span nz-icon nzType="upload"></span> Importación Masiva
+            </button>
+
             <button nz-button nzType="primary" nzSize="large" (click)="abrirModalNuevo()">
                 <span nz-icon nzType="plus"></span> Nuevo Producto
             </button>
@@ -219,3 +223,259 @@
         Detalle de Producto Maestro
     </ng-template>
 </nz-drawer>
+
+<!-- MODAL DE IMPORTACIÓN MASIVA -->
+<nz-modal
+    [(nzVisible)]="isBulkImportModalVisible"
+    nzTitle="Importación Masiva de Productos"
+    [nzFooter]="null"
+    (nzOnCancel)="closeBulkImportModal()"
+    nzWidth="820px">
+    
+    <ng-container *nzModalContent>
+        <div class="bulk-import-wizard">
+            
+            <!-- STEPS VISUAL TIMELINE -->
+            <div class="steps-timeline" style="display: flex; justify-content: space-around; margin-bottom: 24px; border-bottom: 1px solid #f0f0f0; padding-bottom: 16px;">
+                <div class="step-indicator" [class.active]="importStep === 1" [class.completed]="importStep > 1">
+                    <span class="step-num">1</span>
+                    <span class="step-label">Cargar Datos</span>
+                </div>
+                <div class="step-indicator" [class.active]="importStep === 2" [class.completed]="importStep > 2">
+                    <span class="step-num">2</span>
+                    <span class="step-label">Validar y Previsualizar</span>
+                </div>
+                <div class="step-indicator" [class.active]="importStep === 3">
+                    <span class="step-num">3</span>
+                    <span class="step-label">Importando...</span>
+                </div>
+            </div>
+
+            <!-- PASO 1: CARGAR DATOS -->
+            <div *ngIf="importStep === 1" class="wizard-step step-load">
+                <div style="background: rgba(24, 144, 255, 0.04); padding: 16px; border-radius: 12px; border: 1px solid rgba(24, 144, 255, 0.12); margin-bottom: 20px;">
+                    <h4 style="font-weight: 700; color: #1890ff; margin-bottom: 8px;">📋 Instrucciones de Importación</h4>
+                    <p style="font-size: 13px; margin-bottom: 6px; color: #595959;">
+                        Puedes importar productos simples o agrupados por variantes. Para asociar variantes a un mismo producto maestro, repite el mismo <strong>Código de Producto</strong> en varias filas.
+                    </p>
+                    <p style="font-size: 13px; margin-bottom: 12px; color: #595959;">
+                        <strong>Columnas recomendadas (en orden):</strong> Código Maestro | Nombre Producto | Descripción | Rubro de Producto | Categoría | SKU Variante | Nombre Variante | Material | Color | Tamaño | Precio Venta | Stock Inicial | Imagen URL
+                    </p>
+                    <div style="display: flex; gap: 8px; flex-wrap: wrap; align-items: center; border-top: 1px dashed rgba(24, 144, 255, 0.2); padding-top: 8px; margin-top: 8px;">
+                        <span style="font-size: 12.5px; color: #595959; font-weight: 600;">Descargar plantillas de ejemplo:</span>
+                        <button nz-button nzType="link" (click)="downloadTemplate('excel')" style="padding: 0 4px; height: auto; font-size: 12.5px;">
+                            <span nz-icon nzType="download"></span> Plantilla Excel
+                        </button>
+                        <span style="color: #d9d9d9;">|</span>
+                        <button nz-button nzType="link" (click)="downloadTemplate('csv')" style="padding: 0 4px; height: auto; font-size: 12.5px;">
+                            <span nz-icon nzType="download"></span> Plantilla CSV
+                        </button>
+                    </div>
+                </div>
+
+                <!-- Selector de método -->
+                <div style="margin-bottom: 16px; display: flex; align-items: center; gap: 16px;">
+                    <label style="font-weight: 600; color: #262626;">Método de Entrada:</label>
+                    <nz-select [(ngModel)]="importMethod" style="width: 320px;">
+                        <nz-option nzValue="excel" nzLabel="📋 Copiar y Pegar desde Excel / Sheets"></nz-option>
+                        <nz-option nzValue="csv" nzLabel="📥 Cargar Archivo CSV (.csv)"></nz-option>
+                    </nz-select>
+                </div>
+
+                <!-- Entrada Excel (Textarea) -->
+                <div *ngIf="importMethod === 'excel'" class="input-area excel-paste">
+                    <p style="font-size: 12.5px; color: #8c8c8c; margin-bottom: 8px;">
+                        Selecciona y copia las filas de tu planilla (incluyendo o no la fila de cabecera) y pégalas en el cuadro inferior:
+                    </p>
+                    <textarea nz-input [(ngModel)]="pastedText" placeholder="Pegue aquí las celdas de Excel... (Separadas por tabulaciones)" [nzAutosize]="{ minRows: 8, maxRows: 12 }" style="font-family: monospace; font-size: 12px;"></textarea>
+                </div>
+
+                <!-- Entrada CSV (Archivo) -->
+                <div *ngIf="importMethod === 'csv'" class="input-area csv-upload" style="border: 2px dashed #1890ff; border-radius: 12px; padding: 40px; text-align: center; background: rgba(24, 144, 255, 0.01); transition: border-color 0.3s; cursor: pointer;" (click)="fileInput.click()">
+                    <input type="file" #fileInput (change)="handleFileSelect($event)" accept=".csv" style="display: none;" />
+                    <span nz-icon nzType="inbox" style="font-size: 40px; color: #1890ff; margin-bottom: 12px; display: block;"></span>
+                    <span style="font-weight: 600; font-size: 14px; display: block; margin-bottom: 6px; color: #262626;">Haz clic para buscar o arrastra tu archivo CSV para cargarlo</span>
+                    <span style="font-size: 12px; color: #8c8c8c; display: block;">Codificación sugerida: UTF-8. Separador sugerido: punto y coma (;) o coma (,)</span>
+                    <div *ngIf="pastedText" style="margin-top: 16px;">
+                        <nz-tag nzColor="green"><span nz-icon nzType="check"></span> Archivo leído con éxito</nz-tag>
+                    </div>
+                </div>
+
+                <div style="margin-top: 24px; text-align: right;">
+                    <button nz-button nzType="default" (click)="closeBulkImportModal()" style="margin-right: 8px;">Cancelar</button>
+                    <button nz-button nzType="primary" (click)="parseAndValidateData()" [disabled]="!pastedText.trim()">Procesar y Validar Datos</button>
+                </div>
+            </div>
+
+            <!-- PASO 2: PREVISUALIZAR Y VALIDAR -->
+            <div *ngIf="importStep === 2" class="wizard-step step-preview">
+                <p style="font-size: 13.5px; color: #595959; margin-bottom: 14px;">
+                    A continuación se listan las filas leídas. Corrige los datos con advertencias/errores marcados en rojo antes de proceder.
+                </p>
+
+                <!-- ALERTA DE MATERIALES FALTANTES -->
+                <div *ngIf="getMissingMaterials().length > 0" class="missing-materials-banner" style="background: rgba(250, 173, 20, 0.05); border: 1px solid #ffe58f; padding: 16px; border-radius: 12px; margin-bottom: 20px;">
+                    <h4 style="color: #d46b08; font-weight: 700; margin-bottom: 8px; display: flex; align-items: center; gap: 8px;">
+                        <span nz-icon nzType="warning" nzTheme="fill" style="color: #faad14;"></span> Materiales Faltantes Detectados
+                    </h4>
+                    <p style="font-size: 13px; color: #595959; margin-bottom: 12px;">
+                        Los siguientes materiales especificados en tu archivo no existen en la tienda. Debes crearlos asociándolos a un material global:
+                    </p>
+                    
+                    <div *ngFor="let materialName of getMissingMaterials()" style="display: flex; align-items: center; gap: 12px; margin-bottom: 8px; flex-wrap: wrap; background: #fff; padding: 8px 12px; border-radius: 8px; border: 1px solid #f0f0f0;">
+                        <nz-tag nzColor="orange" style="font-weight: 600; font-size: 12px; margin: 0;">{{ materialName }}</nz-tag>
+                        <span style="font-size: 12.5px; color: #8c8c8c;">➔ Material Global:</span>
+                        <nz-select [(ngModel)]="missingMaterialMappings[materialName]" style="width: 280px;" nzSize="small" nzShowSearch nzPlaceHolder="Seleccionar Material Global">
+                            <nz-option *ngFor="let gMat of globalMaterials" [nzValue]="gMat.gmat_uuid" [nzLabel]="gMat.gmat_name"></nz-option>
+                        </nz-select>
+                        <button nz-button nzType="primary" nzSize="small" [nzLoading]="isCreatingMaterial[materialName]" (click)="createMissingMaterial(materialName)" [disabled]="!missingMaterialMappings[materialName]">
+                            Crear e Integrar
+                        </button>
+                    </div>
+                </div>
+
+                <!-- ALERTA DE RUBROS FALTANTES -->
+                <div *ngIf="getMissingItems().length > 0" class="missing-items-banner" style="background: rgba(250, 173, 20, 0.05); border: 1px solid #ffe58f; padding: 16px; border-radius: 12px; margin-bottom: 20px;">
+                    <h4 style="color: #d46b08; font-weight: 700; margin-bottom: 8px; display: flex; align-items: center; gap: 8px;">
+                        <span nz-icon nzType="warning" nzTheme="fill" style="color: #faad14;"></span> Rubros Faltantes Detectados
+                    </h4>
+                    <p style="font-size: 13px; color: #595959; margin-bottom: 12px;">
+                        Los siguientes rubros especificados en tu archivo no existen en la tienda. Debes crearlos asociándolos a un rubro global para poder validar las categorías y continuar con la importación:
+                    </p>
+                    
+                    <div *ngFor="let itemName of getMissingItems()" style="display: flex; align-items: center; gap: 12px; margin-bottom: 8px; flex-wrap: wrap; background: #fff; padding: 8px 12px; border-radius: 8px; border: 1px solid #f0f0f0;">
+                        <nz-tag nzColor="orange" style="font-weight: 600; font-size: 12px; margin: 0;">{{ itemName }}</nz-tag>
+                        <span style="font-size: 12.5px; color: #8c8c8c;">➔ Rubro Global:</span>
+                        <nz-select [(ngModel)]="missingItemMappings[itemName]" style="width: 280px;" nzSize="small" nzShowSearch nzPlaceHolder="Seleccionar Rubro Global">
+                            <nz-option *ngFor="let gItem of globalItems" [nzValue]="gItem.gitm_uuid" [nzLabel]="gItem.gitm_name"></nz-option>
+                        </nz-select>
+                        <button nz-button nzType="primary" nzSize="small" [nzLoading]="isCreatingItem[itemName]" (click)="createMissingItem(itemName)" [disabled]="!missingItemMappings[itemName]">
+                            Crear e Integrar
+                        </button>
+                    </div>
+                </div>
+
+                <!-- ALERTA DE CATEGORÍAS FALTANTES -->
+                <div *ngIf="getMissingItems().length === 0 && getMissingCategories().length > 0" class="missing-categories-banner" style="background: rgba(250, 173, 20, 0.05); border: 1px solid #ffe58f; padding: 16px; border-radius: 12px; margin-bottom: 20px;">
+                    <h4 style="color: #d46b08; font-weight: 700; margin-bottom: 8px; display: flex; align-items: center; gap: 8px;">
+                        <span nz-icon nzType="warning" nzTheme="fill" style="color: #faad14;"></span> Categorías Faltantes Detectadas
+                    </h4>
+                    <p style="font-size: 13px; color: #595959; margin-bottom: 12px;">
+                        Las siguientes categorías especificadas en tu archivo no existen en la tienda. Asócialas a una categoría global bajo su rubro correspondiente para crearlas automáticamente:
+                    </p>
+                    
+                    <div *ngFor="let missing of getMissingCategories()" style="display: flex; align-items: center; gap: 12px; margin-bottom: 8px; flex-wrap: wrap; background: #fff; padding: 8px 12px; border-radius: 8px; border: 1px solid #f0f0f0;">
+                        <span style="font-size: 12.5px; color: #595959;">En rubro <strong>{{ missing.itmName }}</strong>: </span>
+                        <nz-tag nzColor="orange" style="font-weight: 600; font-size: 12px; margin: 0;">{{ missing.catName }}</nz-tag>
+                        <span style="font-size: 12.5px; color: #8c8c8c;">➔ Categoría Global:</span>
+                        <nz-select [(ngModel)]="missingCategoryMappings[missing.catName]" style="width: 280px;" nzSize="small" nzShowSearch nzPlaceHolder="Seleccionar Categoría Global">
+                            <nz-option *ngFor="let gCat of globalCategories" [nzValue]="gCat.gcat_uuid" [nzLabel]="gCat.gcat_name"></nz-option>
+                        </nz-select>
+                        <button nz-button nzType="primary" nzSize="small" [nzLoading]="isCreatingCategory[missing.catName]" (click)="createMissingCategory(missing.catName, missing.itmName)" [disabled]="!missingCategoryMappings[missing.catName]">
+                            Crear e Integrar
+                        </button>
+                    </div>
+                </div>
+
+                <div class="table-scroll-wrapper" style="max-height: 380px; overflow-y: auto; border: 1px solid #f0f0f0; border-radius: 12px;">
+                    <table style="width: 100%; border-collapse: collapse; font-size: 12px; text-align: left;" class="preview-grid-table">
+                        <thead>
+                            <tr style="background: #fafafa; border-bottom: 1px solid #f0f0f0;">
+                                <th style="padding: 10px; width: 60px;">Fila</th>
+                                <th style="padding: 10px;">Código</th>
+                                <th style="padding: 10px;">Producto Maestro</th>
+                                <th style="padding: 10px;">Rubro</th>
+                                <th style="padding: 10px;">Categoría</th>
+                                <th style="padding: 10px;">SKU Variante</th>
+                                <th style="padding: 10px;">Variante</th>
+                                <th style="padding: 10px;">Material</th>
+                                <th style="padding: 10px;">Color</th>
+                                <th style="padding: 10px;">Tamaño</th>
+                                <th style="padding: 10px; text-align: right;">Precio</th>
+                                <th style="padding: 10px; text-align: center;">Stock</th>
+                                <th style="padding: 10px; width: 180px;">Estado / Errores</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            <tr *ngFor="let p of parsedProducts" style="border-bottom: 1px solid #f5f5f5;" [style.background]="p.errors.length > 0 ? 'rgba(255, 77, 79, 0.03)' : '#fff'">
+                                <td style="padding: 10px; font-weight: bold; color: #8c8c8c;">#{{ p.rowNumber }}</td>
+                                <td style="padding: 10px;">{{ p.pro_code }}</td>
+                                <td style="padding: 10px; font-weight: 600;">{{ p.pro_name }}</td>
+                                <td style="padding: 10px;">
+                                    <nz-tag [nzColor]="p.itm_uuid ? 'purple' : 'red'">
+                                        {{ p.item_name || 'Desconocido' }}
+                                    </nz-tag>
+                                </td>
+                                <td style="padding: 10px;">
+                                    <nz-tag [nzColor]="p.cat_uuid ? 'blue' : 'red'">
+                                        {{ p.category_name || 'Desconocido' }}
+                                    </nz-tag>
+                                </td>
+                                <td style="padding: 10px; font-family: monospace;">{{ p.prov_sku }}</td>
+                                <td style="padding: 10px;">{{ p.prov_name }}</td>
+                                <td style="padding: 10px;">
+                                    <nz-tag *ngIf="p.material_name" [nzColor]="p.mat_uuid ? 'cyan' : 'red'">
+                                        {{ p.material_name }}
+                                    </nz-tag>
+                                    <span *ngIf="!p.material_name" style="color: #bfbfbf;">—</span>
+                                </td>
+                                <td style="padding: 10px;">
+                                    <span *ngIf="p.prov_color">{{ p.prov_color }}</span>
+                                    <span *ngIf="!p.prov_color" style="color: #bfbfbf;">—</span>
+                                </td>
+                                <td style="padding: 10px;">
+                                    <span *ngIf="p.prov_size">{{ p.prov_size }}</span>
+                                    <span *ngIf="!p.prov_size" style="color: #bfbfbf;">—</span>
+                                </td>
+                                <td style="padding: 10px; text-align: right; font-weight: 600;">${{ p.price | number:'1.2-2' }}</td>
+                                <td style="padding: 10px; text-align: center;">
+                                    <nz-tag [nzColor]="p.stock > 0 ? 'green' : 'orange'">{{ p.stock }} un</nz-tag>
+                                </td>
+                                <td style="padding: 10px; color: #ff4d4f;">
+                                    <div *ngFor="let err of p.errors" style="font-size: 10.5px; display: flex; gap: 4px; align-items: baseline;">
+                                        <span nz-icon nzType="close-circle" nzTheme="fill" style="color: #ff4d4f; font-size: 11px;"></span> <span>{{ err }}</span>
+                                    </div>
+                                    <span *ngIf="p.errors.length === 0" style="color: #52c41a; font-weight: bold; display: flex; align-items: center; gap: 4px;">
+                                        <span nz-icon nzType="check-circle" nzTheme="fill" style="color: #52c41a;"></span> Listo para Cargar
+                                    </span>
+                                </td>
+                            </tr>
+                        </tbody>
+                    </table>
+                </div>
+
+                <div style="margin-top: 24px; display: flex; justify-content: space-between; align-items: center;">
+                    <div>
+                        <span style="font-size: 13px; color: #595959;">Total de variantes procesadas: <strong>{{ parsedProducts.length }}</strong></span>
+                    </div>
+                    <div>
+                        <button nz-button nzType="default" (click)="importStep = 1" style="margin-right: 8px;">Volver</button>
+                        <button nz-button nzType="primary" (click)="startImport()" [disabled]="hasErrors">Confirmar e Importar</button>
+                    </div>
+                </div>
+            </div>
+
+            <!-- PASO 3: PROGRESO Y LOGS -->
+            <div *ngIf="importStep === 3" class="wizard-step step-progress">
+                <div style="text-align: center; margin-bottom: 24px;">
+                    <nz-progress [nzPercent]="importProgress" nzType="circle" [nzWidth]="100" [nzStrokeColor]="{ '0%': '#108ee9', '100%': '#87d068' }"></nz-progress>
+                    <h3 style="margin-top: 16px; font-weight: 700; color: #262626;">
+                        {{ isImporting ? 'Creando productos y variantes...' : '¡Importación finalizada con éxito!' }}
+                    </h3>
+                    <p style="color: #8c8c8c;">Progreso total: {{ importProgress }}%</p>
+                </div>
+
+                <div class="log-console-container" style="background: #1e1e1e; border-radius: 12px; padding: 16px; height: 200px; overflow-y: auto; font-family: monospace; font-size: 11px; color: #a3be8c; display: flex; flex-direction: column; gap: 6px; box-shadow: inset 0 2px 8px rgba(0,0,0,0.5);">
+                    <div *ngFor="let log of importLog" [style.color]="log.includes('✗') ? '#ff4d4f' : log.includes('⚠️') ? '#faad14' : log.includes('===') ? '#1890ff' : '#52c41a'">
+                        {{ log }}
+                    </div>
+                </div>
+
+                <div style="margin-top: 24px; text-align: right;" *ngIf="!isImporting">
+                    <button nz-button nzType="primary" (click)="closeBulkImportModal()">Finalizar y Cerrar</button>
+                </div>
+            </div>
+
+        </div>
+    </ng-container>
+</nz-modal>
