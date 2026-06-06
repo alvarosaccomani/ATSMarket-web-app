@@ -17,6 +17,9 @@ export const errorInterceptor: HttpInterceptorFn = (req, next) => {
 
   return next(req).pipe(
     catchError((error) => {
+      console.log('[errorInterceptor] Caught HTTP Error:', error.status, error.url);
+      console.log('[errorInterceptor] Error details:', JSON.stringify(error.error, null, 2));
+
       if ([401, 403].includes(error.status)) {
         // Guardar la URL actual de destino para retorno
         const currentUrl = router.url;
