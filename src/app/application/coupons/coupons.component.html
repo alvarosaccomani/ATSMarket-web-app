@@ -1,1 +1,226 @@
-<p>coupons works!</p>
+<div class="coupons-dashboard-wrapper">
+  <div class="dashboard-header">
+    <div class="header-titles">
+      <h1 class="page-title">Cupones de Descuento</h1>
+      <p class="page-subtitle">Administrá los códigos de descuento, límites de uso y fechas de validez para tu tienda.</p>
+    </div>
+
+    <div class="header-actions">
+      <nz-input-group [nzPrefix]="prefixIconSearch" nzSize="large" style="width: 300px; margin-right: 16px;">
+        <input type="text" nz-input placeholder="Filtrar por código (Ej: PROMO15)..." 
+          (input)="onSearch(txtSearch.value)" #txtSearch />
+      </nz-input-group>
+
+      <button nz-button nzType="primary" nzSize="large" (click)="openCreateDrawer()" style="border-radius: 6px; font-weight: 550; display: flex; align-items: center; gap: 8px;">
+        <span nz-icon nzType="plus"></span> Crear Cupón
+      </button>
+
+      <ng-template #prefixIconSearch>
+        <span nz-icon nzType="search"></span>
+      </ng-template>
+    </div>
+  </div>
+
+  <!-- MAIN COUPONS CARD AND TABLE -->
+  <nz-card class="premium-card" [nzBordered]="false">
+    <nz-table 
+      #basicTable 
+      [nzData]="(filteredCoupons$ | async) || []" 
+      [nzLoading]="isLoading" 
+      nzSize="middle" 
+      [nzPageSize]="20"
+      [nzScroll]="{ y: 'calc(100vh - 310px)' }">
+      <thead>
+        <tr>
+          <th nzWidth="20%">Código</th>
+          <th nzWidth="15%">Tipo</th>
+          <th nzWidth="15%">Valor Descuento</th>
+          <th nzWidth="15%">Compra Mínima</th>
+          <th nzWidth="15%">Vigencia</th>
+          <th nzWidth="10%" style="text-align: center;">Usos (Cant. / Límite)</th>
+          <th nzWidth="10%" style="text-align: center;">Estado</th>
+        </tr>
+      </thead>
+      <tbody>
+        <tr *ngFor="let data of basicTable.data" class="clickable-row" (click)="openCouponDetail(data)">
+          <td>
+            <strong style="color: #1890ff; font-family: monospace; font-size: 14px;">{{ data.cou_code }}</strong>
+          </td>
+          <td>
+            <nz-tag [nzColor]="data.cou_type === 'PERCENTAGE' ? 'cyan' : 'blue'">
+              {{ data.cou_type === 'PERCENTAGE' ? 'Porcentual (%)' : 'Monto Fijo ($)' }}
+            </nz-tag>
+          </td>
+          <td>
+            <strong style="font-size: 14px;">
+              {{ data.cou_type === 'PERCENTAGE' ? (data.cou_value + '%') : ('$' + (data.cou_value | number:'1.2-2')) }}
+            </strong>
+          </td>
+          <td>${{ data.cou_minpurchase | number:'1.2-2' }}</td>
+          <td style="font-size: 12px; color: #595959;">
+            {{ data.cou_startdate | date:'dd/MM/yyyy' }} al {{ data.cou_enddate | date:'dd/MM/yyyy' }}
+          </td>
+          <td style="text-align: center;">
+            <span style="font-weight: 600;">{{ data.cou_usedcount || 0 }}</span> / 
+            <span style="color: #8c8c8c;">{{ data.cou_limit >= 99999 ? '∞' : data.cou_limit }}</span>
+          </td>
+          <td style="text-align: center;">
+            <nz-tag [nzColor]="data.cou_active ? 'green' : 'red'">
+              {{ data.cou_active ? 'Activo' : 'Inactivo' }}
+            </nz-tag>
+          </td>
+        </tr>
+      </tbody>
+    </nz-table>
+  </nz-card>
+</div>
+
+<!-- Drawer para Detalle y Formulario -->
+<nz-drawer
+  [nzVisible]="isDrawerVisible"
+  nzPlacement="right"
+  [nzTitle]="isEditing ? (selectedCoupon ? 'Editar Cupón' : 'Nuevo Cupón') : 'Ficha de Cupón'"
+  [nzWidth]="480"
+  (nzOnClose)="closeDrawer()"
+>
+  <ng-container *nzDrawerContent>
+    <!-- MODO VISTA -->
+    <div *ngIf="!isEditing && selectedCoupon">
+      <nz-descriptions nzTitle="Datos Generales" [nzColumn]="1" nzBordered>
+        <nz-descriptions-item nzTitle="Código del Cupón">
+          <strong style="font-family: monospace; font-size: 16px; color: #1890ff;">{{ selectedCoupon.cou_code }}</strong>
+        </nz-descriptions-item>
+        <nz-descriptions-item nzTitle="Tipo de Descuento">
+          <nz-tag [nzColor]="selectedCoupon.cou_type === 'PERCENTAGE' ? 'cyan' : 'blue'">
+            {{ selectedCoupon.cou_type === 'PERCENTAGE' ? 'Porcentual' : 'Fijo' }}
+          </nz-tag>
+        </nz-descriptions-item>
+        <nz-descriptions-item nzTitle="Valor del Descuento">
+          <strong>{{ selectedCoupon.cou_type === 'PERCENTAGE' ? (selectedCoupon.cou_value + '%') : ('$' + (selectedCoupon.cou_value | number:'1.2-2')) }}</strong>
+        </nz-descriptions-item>
+        <nz-descriptions-item nzTitle="Compra Mínima Requerida">
+          ${{ selectedCoupon.cou_minpurchase | number:'1.2-2' }}
+        </nz-descriptions-item>
+        <nz-descriptions-item nzTitle="Descuento Máximo Tope" *ngIf="selectedCoupon.cou_type === 'PERCENTAGE'">
+          {{ selectedCoupon.cou_maxdiscount > 0 ? ('$' + (selectedCoupon.cou_maxdiscount | number:'1.2-2')) : 'Sin Tope' }}
+        </nz-descriptions-item>
+        <nz-descriptions-item nzTitle="Límite Total de Usos">
+          {{ selectedCoupon.cou_limit >= 99999 ? 'Ilimitados' : selectedCoupon.cou_limit }} usos
+        </nz-descriptions-item>
+        <nz-descriptions-item nzTitle="Usos Registrados">
+          {{ selectedCoupon.cou_usedcount || 0 }} usos realizados
+        </nz-descriptions-item>
+        <nz-descriptions-item nzTitle="Fecha de Inicio">
+          {{ selectedCoupon.cou_startdate | date:'dd/MM/yyyy' }}
+        </nz-descriptions-item>
+        <nz-descriptions-item nzTitle="Fecha de Vencimiento">
+          {{ selectedCoupon.cou_enddate | date:'dd/MM/yyyy' }}
+        </nz-descriptions-item>
+        <nz-descriptions-item nzTitle="Estado del Cupón">
+          <nz-tag [nzColor]="selectedCoupon.cou_active ? 'green' : 'red'">
+            {{ selectedCoupon.cou_active ? 'Habilitado' : 'Deshabilitado' }}
+          </nz-tag>
+        </nz-descriptions-item>
+      </nz-descriptions>
+
+      <nz-divider></nz-divider>
+
+      <div style="display: flex; gap: 12px; justify-content: flex-end;">
+        <button nz-button nzType="dashed" nzDanger (click)="onDeleteCoupon(selectedCoupon)" [nzLoading]="isLoading" style="border-radius: 6px; font-weight: 550;">
+          <span nz-icon nzType="delete"></span> Eliminar
+        </button>
+        <button nz-button nzType="primary" (click)="enableEditing()" style="border-radius: 6px; font-weight: 550;">
+          <span nz-icon nzType="edit"></span> Editar Datos
+        </button>
+      </div>
+    </div>
+
+    <!-- MODO EDICIÓN / ALTA -->
+    <form [formGroup]="couponForm" *ngIf="isEditing" (ngSubmit)="onSave()" nz-form nzLayout="vertical">
+      <nz-form-item>
+        <nz-form-label nzRequired>Código del Cupón</nz-form-label>
+        <nz-form-control nzErrorTip="Código obligatorio (letras y números únicamente)">
+          <input nz-input formControlName="cou_code" placeholder="Ej: DESCUENTO15" style="text-transform: uppercase; font-family: monospace; font-weight: 600;" />
+        </nz-form-control>
+      </nz-form-item>
+
+      <div style="display: flex; gap: 16px;">
+        <nz-form-item style="flex: 1;">
+          <nz-form-label nzRequired>Tipo Descuento</nz-form-label>
+          <nz-form-control>
+            <nz-select formControlName="cou_type">
+              <nz-option nzValue="PERCENTAGE" nzLabel="Porcentaje (%)"></nz-option>
+              <nz-option nzValue="FIXED" nzLabel="Monto Fijo ($)"></nz-option>
+            </nz-select>
+          </nz-form-control>
+        </nz-form-item>
+
+        <nz-form-item style="flex: 1;">
+          <nz-form-label nzRequired>Valor</nz-form-label>
+          <nz-form-control nzErrorTip="Requerido (mayor a 0)">
+            <nz-input-number formControlName="cou_value" [nzMin]="0.01" style="width: 100%; border-radius: 6px;"></nz-input-number>
+          </nz-form-control>
+        </nz-form-item>
+      </div>
+
+      <div style="display: flex; gap: 16px;">
+        <nz-form-item style="flex: 1;">
+          <nz-form-label nzRequired>Compra Mínima ($)</nz-form-label>
+          <nz-form-control nzErrorTip="Mínimo 0">
+            <nz-input-number formControlName="cou_minpurchase" [nzMin]="0" style="width: 100%; border-radius: 6px;"></nz-input-number>
+          </nz-form-control>
+        </nz-form-item>
+
+        <nz-form-item style="flex: 1;" *ngIf="couponForm.get('cou_type')?.value === 'PERCENTAGE'">
+          <nz-form-label>Monto Máx Descuento ($)</nz-form-label>
+          <nz-form-control nzErrorTip="Mínimo 0">
+            <nz-input-number formControlName="cou_maxdiscount" [nzMin]="0" placeholder="Sin límite" style="width: 100%; border-radius: 6px;"></nz-input-number>
+          </nz-form-control>
+        </nz-form-item>
+      </div>
+
+      <div style="display: flex; gap: 16px;">
+        <nz-form-item style="flex: 1;">
+          <nz-form-label nzRequired>Fecha Inicio</nz-form-label>
+          <nz-form-control nzErrorTip="Fecha requerida">
+            <nz-date-picker formControlName="cou_startdate" nzFormat="dd/MM/yyyy" style="width: 100%; border-radius: 6px;"></nz-date-picker>
+          </nz-form-control>
+        </nz-form-item>
+
+        <nz-form-item style="flex: 1;">
+          <nz-form-label nzRequired>Fecha Vencimiento</nz-form-label>
+          <nz-form-control nzErrorTip="Fecha requerida">
+            <nz-date-picker formControlName="cou_enddate" nzFormat="dd/MM/yyyy" style="width: 100%; border-radius: 6px;"></nz-date-picker>
+          </nz-form-control>
+        </nz-form-item>
+      </div>
+
+      <div style="display: flex; gap: 16px; align-items: center; margin-top: 8px;">
+        <nz-form-item style="flex: 1; margin: 0;">
+          <nz-form-label nzRequired>Límite Usos Totales</nz-form-label>
+          <nz-form-control nzErrorTip="Mínimo 1 uso">
+            <nz-input-number formControlName="cou_limit" [nzMin]="1" style="width: 100%; border-radius: 6px;"></nz-input-number>
+          </nz-form-control>
+        </nz-form-item>
+
+        <nz-form-item style="flex: 1; display: flex; flex-direction: column; align-items: flex-start; justify-content: center; margin: 0;">
+          <nz-form-label style="margin-bottom: 8px;">Estado Cupón</nz-form-label>
+          <nz-form-control>
+            <nz-switch formControlName="cou_active" nzCheckedChildren="Activo" nzUnCheckedChildren="Inactivo"></nz-switch>
+          </nz-form-control>
+        </nz-form-item>
+      </div>
+
+      <nz-divider></nz-divider>
+
+      <div style="display: flex; gap: 12px; justify-content: flex-end;">
+        <button nz-button type="button" (click)="closeDrawer()" style="border-radius: 6px; font-weight: 550;">
+          Cancelar
+        </button>
+        <button nz-button nzType="primary" type="submit" [nzLoading]="isLoading" style="border-radius: 6px; font-weight: 550;">
+          Guardar Cupón
+        </button>
+      </div>
+    </form>
+  </ng-container>
+</nz-drawer>
