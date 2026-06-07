@@ -137,8 +137,33 @@
                                     <span style="display: block; font-weight: 600; font-size: 13px; color: #262626;">${{ item.subtotal | number:'1.2-2' }}</span>
                                 </div>
                             </div>
-                            <div style="text-align: right; padding-top: 8px; font-weight: 600; font-size: 14px; color: #262626;">
-                                Subtotal Tienda: <span style="font-size: 15px; color: var(--ant-primary-color);">${{ g.subtotal | number:'1.2-2' }}</span>
+                            <!-- Sección de Cupón de Descuento por Tienda -->
+                            <div class="coupon-group-section" style="margin-top: 12px; padding: 12px; background: rgba(24, 144, 255, 0.03); border: 1px dashed #d9d9d9; border-radius: 6px; text-align: left;">
+                                <div style="font-size: 11.5px; font-weight: 700; color: #595959; margin-bottom: 6px; display: flex; align-items: center; gap: 6px;">
+                                    <span nz-icon nzType="gift" nzTheme="outline" style="color: #1890ff; font-size: 14px;"></span>
+                                    ¿Tenés un cupón de descuento para esta tienda?
+                                </div>
+                                <div style="display: flex; gap: 8px;">
+                                    <input nz-input [(ngModel)]="g.couponCodeInput" placeholder="Ej: DESCUENTO10" nzSize="small" [disabled]="g.appliedCoupon" style="text-transform: uppercase; border-radius: 4px; flex: 1; font-weight: 600;" />
+                                    <button nz-button nzType="primary" nzSize="small" *ngIf="!g.appliedCoupon" (click)="applyCouponToStore(g)" style="border-radius: 4px; font-weight: 500;">Aplicar</button>
+                                    <button nz-button nzType="dashed" nzDanger nzSize="small" *ngIf="g.appliedCoupon" (click)="removeCouponFromStore(g)" style="border-radius: 4px; font-weight: 500;">Remover</button>
+                                </div>
+                                <div *ngIf="g.couponError" style="font-size: 11px; color: #ff4d4f; margin-top: 4px; font-weight: 500; display: flex; align-items: center; gap: 4px;">
+                                    <span nz-icon nzType="close-circle" nzTheme="fill"></span>
+                                    {{ g.couponError }}
+                                </div>
+                                <div *ngIf="g.appliedCoupon" style="font-size: 11px; color: #52c41a; margin-top: 4px; font-weight: 500; display: flex; align-items: center; gap: 4px;">
+                                    <span nz-icon nzType="check-circle" nzTheme="fill"></span>
+                                    ¡Cupón aplicado! Descuento: <strong>-${{ g.couponDiscount | number:'1.2-2' }}</strong> 
+                                    <span *ngIf="g.appliedCoupon.cou_type === 'PERCENTAGE'">({{ g.appliedCoupon.cou_value }}%)</span>
+                                </div>
+                            </div>
+
+                            <div style="text-align: right; padding-top: 12px; font-weight: 600; font-size: 14px; color: #262626; border-top: 1px solid #f0f0f0; margin-top: 8px;">
+                                <div *ngIf="g.couponDiscount && g.couponDiscount > 0" style="font-size: 12px; color: #8c8c8c; font-weight: 500; text-decoration: line-through; margin-bottom: 2px;">
+                                    Subtotal: ${{ g.subtotal | number:'1.2-2' }}
+                                </div>
+                                Subtotal Tienda: <span style="font-size: 15px; color: var(--ant-primary-color);">${{ (g.subtotal - (g.couponDiscount || 0)) | number:'1.2-2' }}</span>
                             </div>
                         </div>
 
@@ -560,11 +585,15 @@
                                 <div *ngFor="let g of storesInOrder" style="display: flex; flex-direction: column; gap: 4px; margin-bottom: 8px; padding-bottom: 8px; border-bottom: 1px dashed #e8e8e8; font-size: 12px;">
                                     <div style="display: flex; justify-content: space-between; font-weight: 600; color: #262626;">
                                         <span>{{ g.company?.cmp_name || 'Tienda' }}</span>
-                                        <span>${{ (g.subtotal + g.shippingCost) | number:'1.2-2' }}</span>
+                                        <span>${{ (g.subtotal + g.shippingCost - (g.couponDiscount || 0)) | number:'1.2-2' }}</span>
                                     </div>
                                     <div style="display: flex; justify-content: space-between; font-size: 11px; color: #8c8c8c; padding-left: 8px;">
                                         <span>Subtotal:</span>
                                         <span>${{ g.subtotal | number:'1.2-2' }}</span>
+                                    </div>
+                                    <div *ngIf="g.couponDiscount && g.couponDiscount > 0" style="display: flex; justify-content: space-between; font-size: 11px; color: #52c41a; padding-left: 8px; font-weight: 550;">
+                                        <span>Descuento ({{ g.appliedCoupon?.cou_code }}):</span>
+                                        <span>-${{ g.couponDiscount | number:'1.2-2' }}</span>
                                     </div>
                                     <div style="display: flex; justify-content: space-between; font-size: 11px; color: #8c8c8c; padding-left: 8px;">
                                         <span>Envío ({{ g.shippingMethod | uppercase }}):</span>

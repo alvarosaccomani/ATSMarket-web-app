@@ -19,6 +19,7 @@ import { InventoryStocksService } from '../../core/services/inventory-stocks.ser
 import { WebSocketNotificationService } from '../../core/services/web-socket-notification.service';
 import { CompaniesService } from '../../core/services/companies.service';
 import { CompaniesSettingsService } from '../../core/services/companies-settings.service';
+import { CouponsService } from '../../core/services/coupons.service';
 import { CompanyInterface } from '../../core/interfaces/company/company.interface';
 import { CartItemInterface } from '../../core/interfaces/cart-item.interface';
 
@@ -37,6 +38,10 @@ export interface StoreOrderGroup {
   trackingNumber?: string;
   generatedOrderNumber?: number;
   orderUuid?: string;
+  couponCodeInput?: string;
+  appliedCoupon?: any;
+  couponDiscount?: number;
+  couponError?: string;
 }
 
 import { NzFormModule } from 'ng-zorro-antd/form';
@@ -223,7 +228,8 @@ export class CheckoutComponent implements OnInit, OnDestroy {
     private _inventoryStocksService: InventoryStocksService,
     private _notificationService: WebSocketNotificationService,
     private companiesService: CompaniesService,
-    private companiesSettingsService: CompaniesSettingsService
+    private companiesSettingsService: CompaniesSettingsService,
+    private couponsService: CouponsService
   ) { }
 
   ngOnInit(): void {
@@ -409,7 +415,11 @@ export class CheckoutComponent implements OnInit, OnDestroy {
           isLocalDeliveryAvailable: false,
           shippingCost: 0,
           postalOptions: [],
-          isCalculatingShipping: false
+          isCalculatingShipping: false,
+          couponCodeInput: '',
+          appliedCoupon: null,
+          couponDiscount: 0,
+          couponError: ''
         };
         newStoresList.push(newGroup);
 
@@ -672,7 +682,50 @@ export class CheckoutComponent implements OnInit, OnDestroy {
   public recalculateGrandTotal(): void {
     this.totalSubtotal = this.storesInOrder.reduce((sum, g) => sum + g.subtotal, 0);
     this.shippingCost = this.storesInOrder.reduce((sum, g) => sum + g.shippingCost, 0);
-    this.totalFinal = this.totalSubtotal + this.shippingCost;
+    const totalCouponDiscount = this.storesInOrder.reduce((sum, g) => sum + (g.couponDiscount || 0), 0);
+    this.totalFinal = this.totalSubtotal + this.shippingCost - totalCouponDiscount;
+  }
+
+  public applyCouponToStore(g: StoreOrderGroup): void {
+    if (!g.couponCodeInput || !g.couponCodeInput.trim()) {
+      g.couponError = 'Ingresá un código de cupón válido.';
+      return;
+    }
+
+    const couponCode = g.couponCodeInput.trim();
+    g.couponError = '';
+    this.couponsService.validateCoupon(g.cmp_uuid, couponCode, g.subtotal).subscribe({
+      next: (res: any) => {
+        if (res && res.success && res.data) {
+          g.appliedCoupon = res.data.coupon;
+          g.couponDiscount = res.data.discount;
+          g.couponError = '';
+          this.message.success(`Cupón ${couponCode.toUpperCase()} aplicado con éxito.`);
+          this.recalculateGrandTotal();
+        } else {
+          g.couponError = res.message || 'El cupón no es válido.';
+          g.appliedCoupon = null;
+          g.couponDiscount = 0;
+          this.recalculateGrandTotal();
+        }
+      },
+      error: (err: any) => {
+        console.error('Error validating coupon:', err);
+        g.couponError = err.error?.error || err.error?.message || 'Error al validar el cupón.';
+        g.appliedCoupon = null;
+        g.couponDiscount = 0;
+        this.recalculateGrandTotal();
+      }
+    });
+  }
+
+  public removeCouponFromStore(g: StoreOrderGroup): void {
+    g.appliedCoupon = null;
+    g.couponDiscount = 0;
+    g.couponCodeInput = '';
+    g.couponError = '';
+    this.message.info('Cupón removido.');
+    this.recalculateGrandTotal();
   }
 
   public detectCurrentLocation(): void {
@@ -1079,10 +1132,13 @@ export class CheckoutComponent implements OnInit, OnDestroy {
         ord_ordernumber: storeOrderNumber,
         ords_uuid: this.paymentMethod === 'transfer' ? 'PENDING' : 'PROCESSING',
         ord_date: new Date(),
+        cou_uuid: g.appliedCoupon ? g.appliedCoupon.cou_uuid : null,
+        ord_couponcode: g.appliedCoupon ? g.appliedCoupon.cou_code : null,
+        ord_discountamount: g.couponDiscount || 0,
         ord_subtotal: g.subtotal,
         ord_shippingcost: g.shippingCost,
         ord_tax: 0,
-        ord_total: g.subtotal + g.shippingCost,
+        ord_total: g.subtotal + g.shippingCost - (g.couponDiscount || 0),
         ord_customernotes: notes,
         ord_trackingnumber: trackingNumber,
         orderDetails: orderDetails
