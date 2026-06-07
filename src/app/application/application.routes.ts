@@ -33,6 +33,7 @@ import { SupplierComponent } from './supplier/supplier.component';
 import { AnalyticsComponent } from './analytics/analytics.component';
 import { FinancesComponent } from './finances/finances.component';
 import { AddressesComponent } from './addresses/addresses.component';
+import { CouponsComponent } from './coupons/coupons.component';
 
 import { authGuard } from '@guards/auth.guard';
 import { superAdminGuard } from '@guards/super-admin.guard';
@@ -66,6 +67,7 @@ export const APPLICATION_ROUTES: Routes = [
             { path: 'material/:mat_uuid', component: MaterialComponent, canActivate: [merchantGuard] },
             { path: 'warehouses', component: WarehousesComponent, canActivate: [merchantGuard] },
             { path: 'products', component: ProductsComponent, canActivate: [merchantGuard] },
+            { path: 'coupons', component: CouponsComponent, canActivate: [merchantGuard] },
             { path: 'product/:pro_uuid', component: ProductComponent, canActivate: [merchantGuard] },
             { path: 'product-variation/:pro_uuid/:prov_uuid', component: ProductVariationComponent, canActivate: [merchantGuard] },
             { path: 'inventory-audit', component: InventoryAuditComponent, canActivate: [merchantGuard] },
