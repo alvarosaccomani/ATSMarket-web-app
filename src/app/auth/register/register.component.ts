@@ -12,7 +12,7 @@ import { NzInputModule } from 'ng-zorro-antd/input';
 import { NzMessageModule, NzMessageService } from 'ng-zorro-antd/message';
 import { NzIconModule } from 'ng-zorro-antd/icon';
 
-import { UsersService } from '@services/users.service';
+import { AuthService } from '@services/auth.service';
 
 @Component({
   selector: 'app-register',
@@ -40,7 +40,7 @@ export class RegisterComponent implements OnInit {
     private fb: FormBuilder,
     private message: NzMessageService,
     private _router: Router,
-    private _usersService: UsersService
+    private _authService: AuthService
   ) { }
 
   ngOnInit(): void {
@@ -74,7 +74,7 @@ export class RegisterComponent implements OnInit {
       // Clonamos el objeto del formulario y eliminamos confirmPassword
       const { confirmPassword, ...userPayload } = this.validateForm.value;
 
-      this._usersService.singup(userPayload).subscribe({
+      this._authService.singup(userPayload).subscribe({
         next: (response) => {
           this.isSubmitting = false;
           if (response && response.success === false) {
