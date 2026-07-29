@@ -7,6 +7,7 @@ import { AccountCreatedComponent } from './account-created/account-created.compo
 import { AccountConfirmedComponent } from './account-confirmed/account-confirmed.component';
 import { ForgotPasswordComponent } from './forgot-password/forgot-password.component';
 import { ResetPasswordComponent } from './reset-password/reset-password.component';
+import { SsoCallbackComponent } from './sso-callback/sso-callback.component';
 import { unauthGuard } from '@guards/unauth.guard';
 
 export const AUTH_ROUTES: Routes = [
@@ -20,7 +21,8 @@ export const AUTH_ROUTES: Routes = [
             { path: 'account-created/:usr_email', component: AccountCreatedComponent },
             { path: 'account-confirmed/:usr_ConfirmationToken', component: AccountConfirmedComponent },
             { path: 'forgot-password', component: ForgotPasswordComponent },
-            { path: 'reset-password/:usr_ResetPasswordToken', component: ResetPasswordComponent }
+            { path: 'reset-password/:usr_ResetPasswordToken', component: ResetPasswordComponent },
+            { path: 'sso', component: SsoCallbackComponent }
         ]
     }
 ];
