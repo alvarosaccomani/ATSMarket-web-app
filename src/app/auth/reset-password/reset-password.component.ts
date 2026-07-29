@@ -13,7 +13,7 @@ import { NzMessageModule, NzMessageService } from 'ng-zorro-antd/message';
 import { NzIconModule } from 'ng-zorro-antd/icon';
 import { NzAlertModule } from 'ng-zorro-antd/alert';
 
-import { UsersService } from '@services/users.service';
+import { AuthService } from '@services/auth.service';
 
 @Component({
   selector: 'app-reset-password',
@@ -45,7 +45,7 @@ export class ResetPasswordComponent implements OnInit {
     private message: NzMessageService,
     private _router: Router,
     private _route: ActivatedRoute,
-    private _usersService: UsersService
+    private _authService: AuthService
   ) { }
 
   ngOnInit(): void {
@@ -94,7 +94,7 @@ export class ResetPasswordComponent implements OnInit {
         usr_password: this.validateForm.value.usr_password // para soportar ambos formatos
       };
 
-      this._usersService.resetPassword(payload).subscribe({
+      this._authService.resetPassword(payload).subscribe({
         next: (response) => {
           this.isSubmitting = false;
           if (response && response.success === false) {
