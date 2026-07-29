@@ -13,7 +13,7 @@ import { NzMessageModule, NzMessageService } from 'ng-zorro-antd/message';
 import { NzIconModule } from 'ng-zorro-antd/icon';
 import { NzAlertModule } from 'ng-zorro-antd/alert';
 
-import { UsersService } from '@services/users.service';
+import { AuthService } from '@services/auth.service';
 
 @Component({
   selector: 'app-forgot-password',
@@ -43,7 +43,7 @@ export class ForgotPasswordComponent implements OnInit {
   constructor(
     private fb: FormBuilder,
     private message: NzMessageService,
-    private _usersService: UsersService
+    private _authService: AuthService
   ) { }
 
   ngOnInit(): void {
@@ -57,7 +57,7 @@ export class ForgotPasswordComponent implements OnInit {
       this.isSubmitting = true;
       const emailValue = this.validateForm.value;
 
-      this._usersService.forgotPassword(emailValue.usr_email).subscribe({
+      this._authService.forgotPassword(emailValue.usr_email).subscribe({
         next: (response) => {
           this.isSubmitting = false;
           if (response && response.success === false) {
