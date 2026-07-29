@@ -13,7 +13,7 @@ import { NzMessageModule, NzMessageService } from 'ng-zorro-antd/message';
 import { NzIconModule } from 'ng-zorro-antd/icon';
 
 import { SessionService } from '@services/session.service';
-import { UsersService } from '@services/users.service';
+import { AuthService } from '@services/auth.service';
 
 @Component({
   selector: 'app-login',
@@ -44,13 +44,25 @@ export class LoginComponent implements OnInit {
     private _router: Router,
     private _route: ActivatedRoute,
     private _sessionService: SessionService,
-    private _usersService: UsersService
+    private _authService: AuthService
   ) { }
 
   ngOnInit(): void {
+    this.checkAppConfig();
     this.validateForm = this.fb.group({
       usr_user: [null, [Validators.required]],
       usr_password: [null, [Validators.required]]
+    });
+  }
+
+  private checkAppConfig(): void {
+    this._authService.getAppConfig().subscribe({
+      next: (data: any) => {
+        if (data.success && data.app_login_mode === 'central' && data.central_login_url) {
+          window.location.href = data.central_login_url;
+        }
+      },
+      error: (err) => console.error('Error al obtener la configuración SSO:', err)
     });
   }
 
@@ -58,28 +70,32 @@ export class LoginComponent implements OnInit {
     if (this.validateForm.valid) {
       this.isSubmitting = true;
 
-      this._usersService.login(this.validateForm.value).subscribe(
-        response => {
+      this._authService.login(this.validateForm.value).subscribe({
+        next: (response: any) => {
           this.identity = response.data;
           if (!this.identity || !this.identity.usr_uuid) {
             this.message.error('error');
           } else {
             //persist user data
             this._sessionService.setIdentity(JSON.stringify(this.identity));
+
+            // Enviar evento de login exitoso al Kernel Central
+            this._authService.logAuth(this.identity.usr_uuid, 'Market').subscribe({
+              error: (err: any) => console.error('Error al enviar log a Central:', err)
+            });
+
             //get token
             this.getToken();
           }
           this.isSubmitting = false;
         },
-        error => {
+        error: (err: any) => {
           this.isSubmitting = false;
-          let errorMessage = <any>error;
-          console.log(errorMessage);
-          if (errorMessage != null) {
-            this.message.error(errorMessage.error.error);
-          }
+          console.error(err);
+          const errMsg = err.error?.error || err.error?.message || 'Error de conexión con el servidor';
+          this.message.error(errMsg);
         }
-      )
+      });
     } else {
       Object.values(this.validateForm.controls).forEach(control => {
         if (control.invalid) {
@@ -91,8 +107,8 @@ export class LoginComponent implements OnInit {
   }
 
   private getToken(): void {
-    this._usersService.login(this.validateForm.value, 'true').subscribe(
-      response => {
+    this._authService.login(this.validateForm.value, 'true').subscribe({
+      next: (response: any) => {
         this.token = response.data.token;
         if (this.token.length <= 0) {
           this.message.error('error');
@@ -104,13 +120,11 @@ export class LoginComponent implements OnInit {
           this._router.navigateByUrl(returnUrl);
         }
       },
-      error => {
-        let errorMessage = <any>error;
-        console.log(errorMessage);
-        if (errorMessage != null) {
-          this.message.error(errorMessage.error.error);
-        }
+      error: (err: any) => {
+        console.error(err);
+        const errMsg = err.error?.error || err.error?.message || 'Error de conexión con el servidor';
+        this.message.error(errMsg);
       }
-    )
+    });
   }
 }
