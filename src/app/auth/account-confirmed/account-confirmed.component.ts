@@ -9,7 +9,7 @@ import { NzIconModule } from 'ng-zorro-antd/icon';
 import { NzAlertModule } from 'ng-zorro-antd/alert';
 import { NzSpinModule } from 'ng-zorro-antd/spin';
 
-import { UsersService } from '@services/users.service';
+import { AuthService } from '@services/auth.service';
 
 @Component({
   selector: 'app-account-confirmed',
@@ -34,7 +34,7 @@ export class AccountConfirmedComponent implements OnInit {
 
   constructor(
     private _route: ActivatedRoute,
-    private _usersService: UsersService
+    private _authService: AuthService
   ) { }
 
   ngOnInit(): void {
@@ -51,7 +51,7 @@ export class AccountConfirmedComponent implements OnInit {
 
   private confirmEmail(token: string): void {
     this.isLoading = true;
-    this._usersService.confirmAccount(token).subscribe({
+    this._authService.confirmAccount(token).subscribe({
       next: (response) => {
         this.isLoading = false;
         if (response && response.success === false) {
