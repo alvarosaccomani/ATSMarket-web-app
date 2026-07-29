@@ -1,1 +1,25 @@
-<p>sso-callback works!</p>
+<div class="sso-callback-container">
+  <div class="card" [ngClass]="status">
+    <!-- Loading State -->
+    @if (status === 'loading') {
+      <div class="spinner"></div>
+      <h2>Iniciando Sesión...</h2>
+      <p>Estamos verificando tus credenciales con el Kernel Central. Por favor, aguardá un instante.</p>
+    }
+
+    <!-- Success State -->
+    @if (status === 'success') {
+      <div class="success-icon">✓</div>
+      <h2>¡Acceso Concedido!</h2>
+      <p>Sesión verificada de forma unificada. Redirigiendo a tu panel de control...</p>
+    }
+
+    <!-- Error State -->
+    @if (status === 'error') {
+      <div class="error-icon">✗</div>
+      <h2>Error de Autenticación</h2>
+      <p class="error-msg">{{ errorMessage }}</p>
+      <button class="btn-retry" (click)="retryLogin()">Volver a Intentarlo</button>
+    }
+  </div>
+</div>
