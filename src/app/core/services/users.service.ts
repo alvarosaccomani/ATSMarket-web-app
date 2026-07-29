@@ -12,45 +12,6 @@ export class UsersService {
     private _http: HttpClient
   ) { }
 
-  public singup(user: any): Observable<any> {
-    let params = JSON.stringify(user);
-    let headers = new HttpHeaders().set('content-type','application/json');
-
-    return this._http.post(environment.apiUrl + 'register', params, {headers:headers});
-  }
-
-  public confirmAccount(token: string): Observable<any> {
-    let params = JSON.stringify({ token: token });
-    let headers = new HttpHeaders().set('content-type','application/json');
-
-    return this._http.post(environment.apiUrl + 'confirm-account', params, {headers:headers});
-  }
-
-  public forgotPassword(usr_email: string): Observable<any> {
-    let params = JSON.stringify({ usr_email: usr_email });
-    let headers = new HttpHeaders().set('content-type','application/json');
-
-    return this._http.post(environment.apiUrl + 'forgot-password', params, {headers:headers});
-  }
-
-  public resetPassword(payload: any): Observable<any> {
-    let params = JSON.stringify(payload);
-    let headers = new HttpHeaders().set('content-type','application/json');
-
-    return this._http.post(environment.apiUrl + 'reset-password', params, {headers:headers});
-  }
-
-  public login(user: any, gettoken: string | null = null): Observable<any> {
-    if (gettoken != null) {
-      user.gettoken = gettoken;
-    }
-
-    let params = JSON.stringify(user);
-    let headers = new HttpHeaders().set('content-type', 'application/json');
-
-    return this._http.post(environment.apiUrl + 'login', params, { headers: headers });
-  }
-
   public getUsers(filter: string = '', page: number = 1, perPage: number = 100): Observable<any> {
     const headers = new HttpHeaders().set('content-type', 'application/json');
 
