@@ -11,7 +11,8 @@ export class AuthService {
   constructor(private _http: HttpClient) { }
 
   public singup(user: any): Observable<any> {
-    const params = JSON.stringify(user);
+    const userWithApp = { ...user, app_cod: 'Market' };
+    const params = JSON.stringify(userWithApp);
     const headers = new HttpHeaders().set('content-type', 'application/json');
     return this._http.post(`${environment.apiUrl}register`, params, { headers });
   }
@@ -32,7 +33,7 @@ export class AuthService {
   }
 
   public forgotPassword(usr_email: string): Observable<any> {
-    const params = JSON.stringify({ usr_email });
+    const params = JSON.stringify({ usr_email, app_cod: 'Market' });
     const headers = new HttpHeaders().set('content-type', 'application/json');
     return this._http.post(`${environment.apiUrl}forgot-password`, params, { headers });
   }
