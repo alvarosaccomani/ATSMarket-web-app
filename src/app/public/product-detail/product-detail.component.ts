@@ -16,6 +16,7 @@ import { NzTagModule } from 'ng-zorro-antd/tag';
 import { NzSpinModule } from 'ng-zorro-antd/spin';
 import { NzEmptyModule } from 'ng-zorro-antd/empty';
 import { NzInputModule } from 'ng-zorro-antd/input';
+import { NzToolTipModule } from 'ng-zorro-antd/tooltip';
 
 import { ProductVariationInterface } from '@interfaces/product-variation';
 import { CartService } from '@services/cart.service';
@@ -47,7 +48,8 @@ import { ProductVariationReviewInterface } from '@interfaces/product-variation-r
     NzTagModule,
     NzSpinModule,
     NzEmptyModule,
-    NzInputModule
+    NzInputModule,
+    NzToolTipModule
   ],
   templateUrl: './product-detail.component.html',
   styleUrl: './product-detail.component.scss'
@@ -284,6 +286,56 @@ export class ProductDetailComponent implements OnInit {
     const element = document.querySelector('.detail-price-box');
     if (element) {
       element.scrollIntoView({ behavior: 'smooth', block: 'center' });
+    }
+  }
+
+  public getProductUrl(): string {
+    return window.location.href;
+  }
+
+  public shareOnWhatsApp(): void {
+    if (!this.producto) return;
+    const url = encodeURIComponent(this.getProductUrl());
+    const text = encodeURIComponent(`¡Mirá este producto en ATS Market! ${this.producto.prov_name} - `);
+    window.open(`https://api.whatsapp.com/send?text=${text}${url}`, '_blank');
+  }
+
+  public shareOnFacebook(): void {
+    const url = encodeURIComponent(this.getProductUrl());
+    window.open(`https://www.facebook.com/sharer/sharer.php?u=${url}`, '_blank');
+  }
+
+  public copyToClipboard(): void {
+    const url = this.getProductUrl();
+    navigator.clipboard.writeText(url).then(() => {
+      this.message.success('¡Enlace copiado al portapapeles! Listo para compartir en Instagram o redes.');
+    }).catch(err => {
+      console.error('Error al copiar el enlace:', err);
+      this.message.error('No se pudo copiar el enlace automáticamente.');
+    });
+  }
+
+  public shareGeneral(): void {
+    if (!this.producto) return;
+    const url = this.getProductUrl();
+    const title = this.producto.prov_name;
+    const text = this.producto.prov_description || 'Detalle del producto en ATS Market';
+
+    if (navigator.share) {
+      navigator.share({
+        title,
+        text,
+        url
+      }).then(() => {
+        console.info('Compartido con éxito');
+      }).catch(err => {
+        if (err.name !== 'AbortError') {
+          console.error('Error al compartir nativamente:', err);
+          this.copyToClipboard();
+        }
+      });
+    } else {
+      this.copyToClipboard();
     }
   }
 }
