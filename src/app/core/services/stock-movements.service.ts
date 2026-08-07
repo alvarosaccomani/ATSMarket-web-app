@@ -185,4 +185,25 @@ export class StockMovementsService {
       })
     );
   }
+
+  /**
+   * Registra un ajuste de stock unificado y transaccional en el backend.
+   */
+  public registerStockAdjustment(adjustmentData: {
+    cmp_uuid: string;
+    pro_uuid: string;
+    prov_uuid: string;
+    war_uuid: string;
+    warl_uuid: string;
+    usr_uuid: string | null;
+    tsmo_uuid: string;
+    smo_quantity: number;
+    smo_previousstock: number;
+    smo_currentstock: number;
+    smo_reason: string;
+  }): Observable<any> {
+    const headers = new HttpHeaders().set('content-type', 'application/json');
+    return this._http.post(`${environment.apiUrl}stock-movement/adjust`, adjustmentData, { headers });
+  }
 }
+
