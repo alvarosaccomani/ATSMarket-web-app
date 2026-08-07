@@ -31,6 +31,39 @@
     }
 }
 
+.premium-filter-bar {
+    display: flex;
+    align-items: center;
+    gap: 16px;
+    background: #ffffff;
+    padding: 16px 24px;
+    border-radius: 12px;
+    box-shadow: 0 4px 24px rgba(0, 0, 0, 0.02);
+    margin-bottom: 24px;
+    border: 1px solid #f0f0f0;
+    flex-wrap: wrap;
+
+    .filter-item {
+        display: flex;
+        flex-direction: column;
+        gap: 6px;
+        flex: 1;
+        min-width: 200px;
+
+        .filter-label {
+            font-size: 13px;
+            font-weight: 500;
+            color: #8c8c8c;
+            text-transform: uppercase;
+            letter-spacing: 0.5px;
+        }
+
+        nz-select {
+            width: 100%;
+        }
+    }
+}
+
 .premium-card {
     border-radius: 12px;
     box-shadow: 0 4px 24px rgba(0, 0, 0, 0.04);

@@ -26,6 +26,46 @@
         </div>
     </div>
 
+    <!-- PREMIUM FILTER BAR -->
+    <div class="premium-filter-bar">
+        <!-- Rubro Filter -->
+        <div class="filter-item">
+            <span class="filter-label">Rubro</span>
+            <nz-select [(ngModel)]="tempSelectedItem" (ngModelChange)="onTempItemChange($event)" nzShowSearch nzAllowClear nzPlaceHolder="Todos los rubros" nzSize="large">
+                <nz-option *ngFor="let itm of shopItems" [nzValue]="itm.itm_uuid" [nzLabel]="itm.itm_name"></nz-option>
+            </nz-select>
+        </div>
+
+        <!-- Categoría Filter -->
+        <div class="filter-item">
+            <span class="filter-label">Categoría</span>
+            <nz-select [(ngModel)]="tempSelectedCategory" nzShowSearch nzAllowClear nzPlaceHolder="Todas las categorías" nzSize="large" [nzDisabled]="!tempSelectedItem">
+                <nz-option *ngFor="let cat of filteredCategoriesForDropdown" [nzValue]="cat.cat_uuid" [nzLabel]="cat.cat_name"></nz-option>
+            </nz-select>
+        </div>
+
+        <!-- Estado de Stock Filter -->
+        <div class="filter-item">
+            <span class="filter-label">Estado de Stock</span>
+            <nz-select [(ngModel)]="tempStockStatus" nzSize="large">
+                <nz-option nzValue="ALL" nzLabel="Todos los estados"></nz-option>
+                <nz-option nzValue="IN_STOCK" nzLabel="Con Stock"></nz-option>
+                <nz-option nzValue="OUT_OF_STOCK" nzLabel="Sin Stock"></nz-option>
+                <nz-option nzValue="LOW_STOCK" nzLabel="Bajo Stock"></nz-option>
+            </nz-select>
+        </div>
+
+        <!-- Botones de Acción -->
+        <div style="display: flex; gap: 8px; align-self: flex-end; margin-bottom: 2px;">
+            <button nz-button nzType="primary" nzSize="large" (click)="applyFilters()" style="border-radius: 8px;">
+                <span nz-icon nzType="filter"></span> Filtrar
+            </button>
+            <button nz-button nzType="default" nzSize="large" (click)="resetFilters()" style="border-radius: 8px;">
+                <span nz-icon nzType="reload"></span> Limpiar
+            </button>
+        </div>
+    </div>
+
     <!-- MAIN PRODUCTS TABLE -->
     <nz-card class="premium-card" [nzBordered]="false">
         
@@ -44,9 +84,15 @@
             #productsTable 
             [nzData]="(filteredProducts$ | async) || []" 
             nzSize="middle" 
-            [nzPageSize]="20"
+            [nzPageIndex]="pageIndex"
+            [nzPageSize]="pageSize"
+            [nzTotal]="totalProducts"
+            [nzFrontPagination]="false"
+            [nzShowSizeChanger]="true"
+            (nzPageIndexChange)="onPageIndexChange($event)"
+            (nzPageSizeChange)="onPageSizeChange($event)"
             [nzLoading]="isFetching"
-            [nzScroll]="{ y: 'calc(100vh - 310px)' }"
+            [nzScroll]="{ y: 'calc(100vh - 380px)' }"
             *ngIf="(filteredProducts$ | async)?.length! > 0 || isFetching">
             <thead>
                 <tr>

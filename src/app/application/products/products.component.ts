@@ -74,6 +74,24 @@ export class ProductsComponent implements OnInit {
   
   public isFetching: boolean = true;
 
+  public pageIndex: number = 1;
+  public pageSize: number = 20;
+  public totalProducts: number = 0;
+  public selectedItem: string = '';
+  public selectedCategory: string = '';
+  public stockStatus: string = 'ALL';
+  public tempSelectedItem: string = '';
+  public tempSelectedCategory: string = '';
+  public tempStockStatus: string = 'ALL';
+  public filteredCategoriesForDropdown: any[] = [];
+  
+  // BehaviorSubjects to control reactively
+  private pageIndex$ = new BehaviorSubject<number>(1);
+  private pageSize$ = new BehaviorSubject<number>(20);
+  private selectedItem$ = new BehaviorSubject<string>('');
+  private selectedCategory$ = new BehaviorSubject<string>('');
+  private stockStatus$ = new BehaviorSubject<string>('ALL');
+
   // Drawer Control
   public selectedProduct: ProductInterface | null = null;
   public isDrawerVisible = false;
@@ -130,42 +148,93 @@ export class ProductsComponent implements OnInit {
   ngOnInit(): void {
     const company = this._sessionService.getCompany();
     this.activeCompanyUuid = company.cmp_uuid;
-    this.getProducts(this.activeCompanyUuid);
     this.preloadCategoriesMap(this.activeCompanyUuid);
 
-    // Búsqueda reactiva
+    // Búsqueda y filtrado reactivo
     this.filteredProducts$ = combineLatest([
-      this.productsSubject$.asObservable(),
-      this.searchTerm$.asObservable()
+      this.pageIndex$.asObservable(),
+      this.pageSize$.asObservable(),
+      this.searchTerm$.asObservable(),
+      this.selectedItem$.asObservable(),
+      this.selectedCategory$.asObservable(),
+      this.stockStatus$.asObservable()
     ]).pipe(
-      map(([products, term]) => {
-        if (!term.trim()) return products;
-        const lowTerm = term.toLowerCase();
-        return products.filter(p => 
-          p.pro_name.toLowerCase().includes(lowTerm) || 
-          p.pro_code.toLowerCase().includes(lowTerm)
+      switchMap(([page, perPage, term, itmUuid, catUuid, status]) => {
+        this.isFetching = true;
+        const filters: any = {};
+        if (term.trim()) filters.search = term;
+        if (itmUuid) filters.itm_uuid = itmUuid;
+        if (catUuid) filters.cat_uuid = catUuid;
+        if (status && status !== 'ALL') filters.stockStatus = status;
+
+        return this._productService.getProducts(this.activeCompanyUuid, page, perPage, filters).pipe(
+          catchError((err) => {
+            console.error('Error fetching filtered products', err);
+            this._messageService.error('Error', 'No se pudieron cargar los productos.');
+            return of({ data: [], total: 0 } as any);
+          })
         );
+      }),
+      map((res: any) => {
+        this.isFetching = false;
+        this.totalProducts = res.total || 0;
+        this.pageIndex = res.page || 1;
+        this.pageSize = res.perPage || 20;
+        const data = res.data || [];
+        this.productsSubject$.next(data);
+        return data;
       })
     );
   }
 
   public getProducts(cmp_uuid: string): void {
-    this.isFetching = true;
-    this._productService.getProducts(cmp_uuid).subscribe({
-      next: (res: any) => {
-        this.productsSubject$.next(res.data || []);
-        this.isFetching = false;
-      },
-      error: (error) => {
-        console.error('Error fetching products', error);
-        this.isFetching = false;
-        this._messageService.error('Error', 'No se pudieron cargar los productos.');
-      }
-    });
+    this.pageIndex$.next(this.pageIndex);
   }
 
   public onSearch(term: string): void {
     this.searchTerm$.next(term);
+    this.pageIndex$.next(1);
+  }
+
+  public onTempItemChange(itmUuid: string): void {
+    this.tempSelectedItem = itmUuid;
+    this.tempSelectedCategory = '';
+    this.filteredCategoriesForDropdown = [];
+    if (itmUuid) {
+      this._categoriesService.getCategories(this.activeCompanyUuid, itmUuid).subscribe({
+        next: (res: any) => this.filteredCategoriesForDropdown = res.data || [],
+        error: () => this.filteredCategoriesForDropdown = []
+      });
+    }
+  }
+
+  public applyFilters(): void {
+    this.selectedItem = this.tempSelectedItem;
+    this.selectedCategory = this.tempSelectedCategory;
+    this.stockStatus = this.tempStockStatus;
+
+    this.selectedItem$.next(this.tempSelectedItem);
+    this.selectedCategory$.next(this.tempSelectedCategory);
+    this.stockStatus$.next(this.tempStockStatus);
+    this.pageIndex$.next(1);
+  }
+
+  public resetFilters(): void {
+    this.tempSelectedItem = '';
+    this.tempSelectedCategory = '';
+    this.tempStockStatus = 'ALL';
+    this.filteredCategoriesForDropdown = [];
+
+    this.applyFilters();
+  }
+
+  public onPageIndexChange(page: number): void {
+    this.pageIndex$.next(page);
+  }
+
+  public onPageSizeChange(size: number): void {
+    this.pageSize$.next(size);
+    this.pageIndex$.next(1);
   }
 
   public openQuickDetail(product: ProductInterface): void {
