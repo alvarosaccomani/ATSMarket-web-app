@@ -73,6 +73,7 @@ export class ProductDetailComponent implements OnInit {
   public isSubmittingReview = false;
   public isVerifiedBuyer = false;
   public activeCustomer: any = null;
+  public isFlipped = false;
 
   constructor(
     private route: ActivatedRoute,
@@ -364,6 +365,27 @@ export class ProductDetailComponent implements OnInit {
     } else {
       this.copyToClipboard();
     }
+  }
+
+  public toggleFlip(event?: Event): void {
+    if (event) {
+      event.stopPropagation();
+      event.preventDefault();
+    }
+    this.isFlipped = !this.isFlipped;
+  }
+
+  public getQrCodeUrl(): string {
+    const url = this.getProductUrl('qr');
+    return `https://api.qrserver.com/v1/create-qr-code/?size=200x200&data=${encodeURIComponent(url)}`;
+  }
+
+  public shareOnPinterest(): void {
+    if (!this.producto) return;
+    const url = encodeURIComponent(this.getProductUrl('pinterest'));
+    const media = encodeURIComponent(this.producto.prov_image || 'https://placehold.co/400x400/eeeeee/8c8c8c?text=Sin+Foto');
+    const desc = encodeURIComponent(`¡Mirá este producto en ATS Market! ${this.producto.prov_name} - ${this.producto.prov_description || ''}`);
+    window.open(`https://pinterest.com/pin/create/button/?url=${url}&media=${media}&description=${desc}`, '_blank');
   }
 
   private updateMetaTags(producto: ProductVariationInterface): void {

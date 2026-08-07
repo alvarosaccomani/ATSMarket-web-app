@@ -27,9 +27,26 @@
             
             <!-- Columna Izquierda: Imagen y Ficha -->
             <div nz-col [nzXs]="24" [nzMd]="10" class="detail-left-col">
-                <div class="detail-image-card">
-                    <img [src]="producto.prov_image ? producto.prov_image : 'https://placehold.co/400x400/eeeeee/8c8c8c?text=Sin+Foto'" 
-                        [alt]="producto.prov_name" class="detail-main-img" />
+                <div class="detail-image-card-container">
+                    <div class="detail-image-card" [class.is-flipped]="isFlipped">
+                        <!-- CARA DELANTERA: Imagen del producto -->
+                        <div class="card-face card-front">
+                            <img [src]="producto.prov_image ? producto.prov_image : 'https://placehold.co/400x400/eeeeee/8c8c8c?text=Sin+Foto'" 
+                                [alt]="producto.prov_name" class="detail-main-img" />
+                        </div>
+                        <!-- CARA TRASERA: Código QR -->
+                        <div class="card-face card-back">
+                            <div class="qr-container">
+                                <h5>Escanear Producto</h5>
+                                <div class="qr-code-wrapper">
+                                    <img *ngIf="isFlipped" [src]="getQrCodeUrl()" alt="Código QR del Producto" class="qr-code-img" />
+                                </div>
+                                <button nz-button nzType="text" (click)="toggleFlip($event)" class="close-qr-btn">
+                                    <span nz-icon nzType="arrow-left" nzTheme="outline"></span> Volver a la foto
+                                </button>
+                            </div>
+                        </div>
+                    </div>
                 </div>
                 <div class="product-metadata-box">
                     <div style="display: flex; justify-content: space-between; margin-bottom: 8px; font-size: 13px;">
@@ -80,6 +97,12 @@
                         </button>
                         <button nz-button nzType="default" (click)="shareOnTelegram()" class="share-btn telegram" nz-tooltip nzTooltipTitle="Compartir en Telegram">
                             <span nz-icon nzType="send" nzTheme="outline"></span>
+                        </button>
+                        <button nz-button nzType="default" (click)="shareOnPinterest()" class="share-btn pinterest" nz-tooltip nzTooltipTitle="Guardar en Pinterest">
+                            <span nz-icon nzType="pinterest" nzTheme="outline"></span>
+                        </button>
+                        <button nz-button nzType="default" (click)="toggleFlip($event)" class="share-btn qrcode-btn" nz-tooltip nzTooltipTitle="Mostrar Código QR">
+                            <span nz-icon nzType="qrcode" nzTheme="outline"></span>
                         </button>
                         <button nz-button nzType="default" (click)="copyToClipboard()" class="share-btn instagram-copy" nz-tooltip nzTooltipTitle="Copiar enlace (Instagram)">
                             <span nz-icon nzType="link" nzTheme="outline"></span>
