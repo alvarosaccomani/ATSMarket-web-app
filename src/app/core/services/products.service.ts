@@ -18,11 +18,27 @@ export class ProductsService {
    * En una aplicación real, aquí usarías this.http.get<IProduct[]>('URL_DE_TU_API').
    * @returns Observable de un array de productos.
    */
-  public getProducts(cmp_uuid: string): Observable<ProductResults> {
+  public getProducts(
+    cmp_uuid: string,
+    page?: number,
+    perPage?: number,
+    filters?: {
+      itm_uuid?: string;
+      cat_uuid?: string;
+      stockStatus?: string;
+      search?: string;
+    }
+  ): Observable<ProductResults> {
     const headers = new HttpHeaders().set('content-type', 'application/json');
-
     let params = new HttpParams();
-
+    if (page !== undefined) params = params.set('page', page.toString());
+    if (perPage !== undefined) params = params.set('perPage', perPage.toString());
+    if (filters) {
+      if (filters.itm_uuid) params = params.set('itm_uuid', filters.itm_uuid);
+      if (filters.cat_uuid) params = params.set('cat_uuid', filters.cat_uuid);
+      if (filters.stockStatus) params = params.set('stockStatus', filters.stockStatus);
+      if (filters.search) params = params.set('search', filters.search);
+    }
     return this._http.get<ProductResults>(`${environment.apiUrl}products/${cmp_uuid}`, { headers, params });
   }
 
