@@ -380,69 +380,39 @@ export class InventoryAuditComponent implements OnInit {
         }
         const currentStock = previousStock + delta;
 
-        const payload: Partial<StockMovementInterface> & { war_uuid?: string; warl_uuid?: string } = {
+        const payload = {
           cmp_uuid: this.activeCmpUuid,
           pro_uuid: formVal.pro_uuid,
           prov_uuid: formVal.prov_uuid,
           war_uuid: formVal.war_uuid,
           warl_uuid: formVal.warl_uuid,
           usr_uuid: this._sessionService.getIdentity()?.usr_uuid || null,
-          ord_uuid: null,
           tsmo_uuid: formVal.tsmo_uuid,
-          smo_quantity: formVal.smo_quantity,
+          smo_quantity: Number(formVal.smo_quantity),
           smo_previousstock: previousStock,
           smo_currentstock: currentStock,
           smo_reason: formVal.smo_reason
         };
 
-        this._stockMovementsService.saveStockMovement(payload).subscribe({
+        this._stockMovementsService.registerStockAdjustment(payload).subscribe({
           next: (res) => {
-            // Sincronizar el stock del depósito físico mediante InventoryStocksService (POST si es nuevo, PUT si ya existía)
-            const syncObservable = matchingStock 
-              ? this._inventoryStocksService.updateWarehouseStock(
-                  this.activeCmpUuid,
-                  formVal.pro_uuid,
-                  formVal.prov_uuid,
-                  formVal.war_uuid,
-                  formVal.warl_uuid,
-                  currentStock
-                )
-              : this._inventoryStocksService.saveWarehouseStock({
-                  cmp_uuid: this.activeCmpUuid,
-                  pro_uuid: formVal.pro_uuid,
-                  prov_uuid: formVal.prov_uuid,
-                  war_uuid: formVal.war_uuid,
-                  warl_uuid: formVal.warl_uuid,
-                  ist_quanty: currentStock,
-                  ist_quantyreserved: 0
-                });
+            console.log('Stock del depósito físico sincronizado con éxito (transaccional).');
+            
+            this.isSavingAdjustment = false;
+            this.isAdjustmentModalVisible = false;
 
-            syncObservable.subscribe({
-              next: () => {
-                console.log('Stock del depósito físico sincronizado con éxito.');
-                
-                this.isSavingAdjustment = false;
-                this.isAdjustmentModalVisible = false;
+            // Modificar stock en local de forma simulada para actualizar la vista
+            // El stock global es el stock actual acumulado de la variación
+            let newGlobalStock = (variationItem.prov.prov_stock || 0) + delta;
+            variationItem.prov.prov_stock = newGlobalStock;
 
-                // Modificar stock en local de forma simulada para actualizar la vista
-                // El stock global es el stock actual acumulado de la variación
-                let newGlobalStock = (variationItem.prov.prov_stock || 0) + delta;
-                variationItem.prov.prov_stock = newGlobalStock;
-
-                this._messageService.success('Ajuste Registrado', 'El movimiento de inventario fue guardado y el stock del depósito actualizado.');
-                this.loadData(); // Recargar bitácora y recalcular KPIs una vez que impactó el stock
-              },
-              error: (err) => {
-                console.warn('Fallo al actualizar stock del depósito físico:', err);
-                this.isSavingAdjustment = false;
-                this._messageService.error('Error', 'Ocurrió un inconveniente al sincronizar el stock del depósito físico.');
-              }
-            });
+            this._messageService.success('Ajuste Registrado', 'El movimiento de inventario fue guardado y el stock del depósito actualizado.');
+            this.loadData(); // Recargar bitácora y recalcular KPIs una vez que impactó el stock
           },
           error: (err) => {
-            console.error('Error al guardar movimiento de stock:', err);
+            console.error('Error al registrar ajuste de stock transaccional:', err);
             this.isSavingAdjustment = false;
-            this._messageService.error('Error', 'Ocurrió un inconveniente al guardar el movimiento en el servidor.');
+            this._messageService.error('Error', 'Ocurrió un inconveniente al guardar el ajuste de stock de forma transaccional.');
           }
         });
       },
