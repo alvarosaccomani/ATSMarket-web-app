@@ -2,6 +2,7 @@ import { Component, OnInit } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { FormsModule, ReactiveFormsModule } from '@angular/forms';
 import { ActivatedRoute, Router, RouterModule } from '@angular/router';
+import { Title, Meta } from '@angular/platform-browser';
 import { NzLayoutModule } from 'ng-zorro-antd/layout';
 import { NzGridModule } from 'ng-zorro-antd/grid';
 import { NzCardModule } from 'ng-zorro-antd/card';
@@ -82,7 +83,9 @@ export class ProductDetailComponent implements OnInit {
     private _ordersService: OrdersService,
     private _storeContext: StoreContextService,
     private _reviewsService: ProductVariationReviewsService,
-    private message: NzMessageService
+    private message: NzMessageService,
+    private titleService: Title,
+    private metaService: Meta
   ) { }
 
   ngOnInit(): void {
@@ -123,6 +126,7 @@ export class ProductDetailComponent implements OnInit {
           
           if (found) {
             this.producto = found;
+            this.updateMetaTags(found);
             this.loadProductReviews(this.productId);
             
             // Validar si es comprador verificado
@@ -289,24 +293,47 @@ export class ProductDetailComponent implements OnInit {
     }
   }
 
-  public getProductUrl(): string {
-    return window.location.href;
+  public getProductUrl(medium?: string): string {
+    let url = window.location.href;
+    try {
+      const urlObj = new URL(url);
+      urlObj.searchParams.delete('utm_source');
+      urlObj.searchParams.delete('utm_medium');
+      urlObj.searchParams.delete('utm_campaign');
+      
+      if (medium) {
+        urlObj.searchParams.set('utm_source', 'user_share');
+        urlObj.searchParams.set('utm_medium', medium);
+        urlObj.searchParams.set('utm_campaign', 'product_detail');
+      }
+      return urlObj.toString();
+    } catch (e) {
+      console.error('Error parsing URL:', e);
+      return url;
+    }
   }
 
   public shareOnWhatsApp(): void {
     if (!this.producto) return;
-    const url = encodeURIComponent(this.getProductUrl());
+    const url = encodeURIComponent(this.getProductUrl('whatsapp'));
     const text = encodeURIComponent(`¡Mirá este producto en ATS Market! ${this.producto.prov_name} - `);
     window.open(`https://api.whatsapp.com/send?text=${text}${url}`, '_blank');
   }
 
   public shareOnFacebook(): void {
-    const url = encodeURIComponent(this.getProductUrl());
+    const url = encodeURIComponent(this.getProductUrl('facebook'));
     window.open(`https://www.facebook.com/sharer/sharer.php?u=${url}`, '_blank');
   }
 
+  public shareOnTelegram(): void {
+    if (!this.producto) return;
+    const url = encodeURIComponent(this.getProductUrl('telegram'));
+    const text = encodeURIComponent(`¡Mirá este producto en ATS Market! ${this.producto.prov_name}`);
+    window.open(`https://t.me/share/url?url=${url}&text=${text}`, '_blank');
+  }
+
   public copyToClipboard(): void {
-    const url = this.getProductUrl();
+    const url = this.getProductUrl('clipboard');
     navigator.clipboard.writeText(url).then(() => {
       this.message.success('¡Enlace copiado al portapapeles! Listo para compartir en Instagram o redes.');
     }).catch(err => {
@@ -317,7 +344,7 @@ export class ProductDetailComponent implements OnInit {
 
   public shareGeneral(): void {
     if (!this.producto) return;
-    const url = this.getProductUrl();
+    const url = this.getProductUrl('general');
     const title = this.producto.prov_name;
     const text = this.producto.prov_description || 'Detalle del producto en ATS Market';
 
@@ -337,5 +364,30 @@ export class ProductDetailComponent implements OnInit {
     } else {
       this.copyToClipboard();
     }
+  }
+
+  private updateMetaTags(producto: ProductVariationInterface): void {
+    if (!producto) return;
+    
+    // Titulo de la página
+    this.titleService.setTitle(`${producto.prov_name} | ATS Market`);
+
+    // Descripción clásica
+    const desc = producto.prov_description || 'Detalle del producto en ATS Market. Elaborado artesanalmente bajo estándares premium de la marca.';
+    this.metaService.updateTag({ name: 'description', content: desc });
+
+    // Open Graph (WhatsApp, Facebook, etc.)
+    const pageUrl = this.getProductUrl();
+    this.metaService.updateTag({ property: 'og:title', content: producto.prov_name });
+    this.metaService.updateTag({ property: 'og:description', content: desc });
+    this.metaService.updateTag({ property: 'og:image', content: producto.prov_image || 'https://placehold.co/400x400/eeeeee/8c8c8c?text=Sin+Foto' });
+    this.metaService.updateTag({ property: 'og:url', content: pageUrl });
+    this.metaService.updateTag({ property: 'og:type', content: 'product' });
+
+    // Twitter Cards
+    this.metaService.updateTag({ name: 'twitter:card', content: 'summary_large_image' });
+    this.metaService.updateTag({ name: 'twitter:title', content: producto.prov_name });
+    this.metaService.updateTag({ name: 'twitter:description', content: desc });
+    this.metaService.updateTag({ name: 'twitter:image', content: producto.prov_image || 'https://placehold.co/400x400/eeeeee/8c8c8c?text=Sin+Foto' });
   }
 }

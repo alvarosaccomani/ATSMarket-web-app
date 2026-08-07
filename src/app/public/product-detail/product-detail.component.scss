@@ -503,6 +503,18 @@
         }
       }
 
+      &.telegram {
+        border-color: rgba(0, 136, 204, 0.2) !important;
+        color: #0088cc;
+
+        &:hover {
+          background-color: #0088cc !important;
+          color: #ffffff !important;
+          border-color: #0088cc !important;
+          box-shadow: 0 4px 12px rgba(0, 136, 204, 0.3);
+        }
+      }
+
       &.instagram-copy {
         border-color: rgba(225, 48, 108, 0.2) !important;
         color: #E1306C;
