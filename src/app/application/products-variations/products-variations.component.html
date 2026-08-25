@@ -1,1 +1,122 @@
-<p>products-variations works!</p>
+<div class="products-dashboard-wrapper">
+
+    <div class="dashboard-header">
+        <div class="header-titles">
+            <h1 class="page-title">Presentaciones de Productos</h1>
+            <p class="page-subtitle">Administra y exporta las variaciones (SKUs) y precios del catálogo de tu tienda.</p>
+        </div>
+
+        <div class="header-actions">
+            <nz-input-group [nzPrefix]="prefixIconSearch" nzSize="large" style="width: 320px; margin-right: 16px;">
+                <input type="text" nz-input placeholder="Buscar por SKU, nombre, talle, color o producto..." 
+                    [(ngModel)]="searchTerm" (ngModelChange)="applyFilters()" />
+            </nz-input-group>
+
+            <button nz-button nzType="primary" nzSize="large" (click)="exportToCsv()" [disabled]="filteredVariations.length === 0">
+                <span nz-icon nzType="download"></span> Exportar Lista (CSV)
+            </button>
+
+            <ng-template #prefixIconSearch>
+                <span nz-icon nzType="search"></span>
+            </ng-template>
+        </div>
+    </div>
+
+    <!-- PREMIUM FILTER BAR -->
+    <div class="premium-filter-bar">
+        <!-- Estado de Stock Filter -->
+        <div class="filter-item">
+            <span class="filter-label">Estado de Stock</span>
+            <nz-select [(ngModel)]="stockStatus" (ngModelChange)="applyFilters()" nzSize="large" style="width: 260px;">
+                <nz-option nzValue="ALL" nzLabel="Todos los estados"></nz-option>
+                <nz-option nzValue="IN_STOCK" nzLabel="Con Stock"></nz-option>
+                <nz-option nzValue="OUT_OF_STOCK" nzLabel="Sin Stock"></nz-option>
+            </nz-select>
+        </div>
+
+        <!-- Botones de Acción -->
+        <div style="display: flex; gap: 8px; align-self: flex-end; margin-bottom: 2px;">
+            <button nz-button nzType="default" nzSize="large" (click)="resetFilters()" style="border-radius: 8px;">
+                <span nz-icon nzType="reload"></span> Limpiar
+            </button>
+        </div>
+    </div>
+
+    <!-- MAIN PRODUCTS TABLE -->
+    <nz-card class="premium-card" [nzBordered]="false">
+        
+        <!-- EMPTY STATE -->
+        <div class="empty-state" *ngIf="filteredVariations.length === 0 && !isFetching">
+            <nz-empty nzNotFoundImage="https://gw.alipayobjects.com/zos/antfincdn/ZHrcdLPrvN/empty.svg"
+                nzNotFoundContent="No se encontraron presentaciones que coincidan con la búsqueda.">
+            </nz-empty>
+        </div>
+
+        <!-- TABLE -->
+        <nz-table 
+            #variationsTable 
+            [nzData]="filteredVariations" 
+            nzSize="middle" 
+            [(nzPageIndex)]="pageIndex"
+            [(nzPageSize)]="pageSize"
+            [nzLoading]="isFetching"
+            [nzScroll]="{ x: '1000px', y: 'calc(100vh - 380px)' }"
+            *ngIf="filteredVariations.length > 0 || isFetching">
+            <thead>
+                <tr>
+                    <th nzWidth="80px">Imagen</th>
+                    <th nzWidth="150px">SKU</th>
+                    <th nzWidth="220px">Presentación</th>
+                    <th nzWidth="220px">Producto Maestro</th>
+                    <th nzWidth="150px">Material</th>
+                    <th nzWidth="150px">Color / Talle</th>
+                    <th nzWidth="140px" nzAlign="right">Precio Sugerido</th>
+                    <th nzWidth="120px" nzAlign="center">Stock</th>
+                    <th nzWidth="100px" nzAlign="right">Acciones</th>
+                </tr>
+            </thead>
+            <tbody>
+                <tr *ngFor="let data of variationsTable.data" class="clickable-row" (click)="editVariation(data)">
+                    <td>
+                        <div class="product-cell">
+                            <nz-avatar nzIcon="picture"
+                                [nzSrc]="data.prov_image || 'https://api.dicebear.com/7.x/shapes/svg?seed=' + data.prov_name"
+                                style="background-color: #f7f9fc; border: 1px solid #d9d9d9;"></nz-avatar>
+                        </div>
+                    </td>
+                    <td>
+                        <span class="sku-cell">{{ data.prov_sku || 'N/A' }}</span>
+                    </td>
+                    <td>
+                        <span style="font-weight: 500; color: #262626; font-size: 15px;">{{ data.prov_name }}</span>
+                    </td>
+                    <td>
+                        <span style="color: #595959; font-size: 14px;">{{ data.pro_name || 'N/A' }}</span>
+                    </td>
+                    <td>{{ data.gmat_name || 'N/A' }}</td>
+                    <td>
+                        <div style="display: flex; gap: 4px; flex-wrap: wrap;">
+                            <nz-tag *ngIf="data.prov_color" nzColor="blue">{{ data.prov_color }}</nz-tag>
+                            <nz-tag *ngIf="data.prov_size" nzColor="purple">{{ data.prov_size }}</nz-tag>
+                            <span *ngIf="!data.prov_color && !data.prov_size">-</span>
+                        </div>
+                    </td>
+                    <td nzAlign="right" style="font-weight: 600; color: #1890ff; font-size: 15px;">
+                        $ {{ data.prov_suggestedminimumsellingprice | number:'1.2-2' }}
+                    </td>
+                    <td nzAlign="center">
+                        <nz-tag [nzColor]="data.prov_stock > 0 ? 'green' : 'red'">
+                            {{ data.prov_stock > 0 ? data.prov_stock + ' un' : 'Sin Stock' }}
+                        </nz-tag>
+                    </td>
+                    <td nzAlign="right" (click)="$event.stopPropagation()">
+                        <button nz-button nzType="text" nzShape="circle" nzTooltipTitle="Editar" nz-tooltip
+                            (click)="editVariation(data)">
+                            <span nz-icon nzType="edit" style="color: #1890ff; font-size: 16px;"></span>
+                        </button>
+                    </td>
+                </tr>
+            </tbody>
+        </nz-table>
+    </nz-card>
+</div>
