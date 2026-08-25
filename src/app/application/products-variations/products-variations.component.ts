@@ -318,12 +318,13 @@ export class ProductsVariationsComponent implements OnInit {
 
       if (this.pdfIncludeContact || (this.pdfIncludeQr && companySlug)) {
         // Reservar espacio dibujando una caja sutil
+        const boxHeight = this.pdfIncludeContact ? 32 : 26;
         doc.setFillColor(250, 250, 250);
         doc.setDrawColor(230, 230, 230);
-        doc.roundedRect(14, 45, 182, 35, 3, 3, 'FD');
+        doc.roundedRect(14, 45, 182, boxHeight, 3, 3, 'FD');
 
         let textX = 20;
-        let textY = 53;
+        let textY = 52;
 
         if (this.pdfIncludeContact) {
           doc.setTextColor(80, 80, 80);
@@ -347,14 +348,28 @@ export class ProductsVariationsComponent implements OnInit {
           if (!companyEmail && !companyPhone) {
             doc.text('No se registra información de contacto pública.', textX, textY + lineOffset);
           }
+        } else if (this.pdfIncludeQr && companySlug) {
+          // Llenar el vacío izquierdo si el contacto está desactivado pero el QR sí está
+          doc.setTextColor(80, 80, 80);
+          doc.setFont('helvetica', 'bold');
+          doc.setFontSize(10);
+          doc.text('COMPRÁ ONLINE EN NUESTRO MARKET:', textX, textY);
+
+          doc.setFont('helvetica', 'normal');
+          doc.setFontSize(9);
+          doc.setTextColor(120, 120, 120);
+          
+          const infoText = 'Escaneá el código QR de la derecha con tu celular para acceder a nuestro catálogo digital completo, ver stock actualizado en tiempo real y realizar tu pedido directamente.';
+          const splitInfo = doc.splitTextToSize(infoText, 135);
+          doc.text(splitInfo, textX, textY + 6);
         }
 
         // Agregar QR de Compras Online
         if (this.pdfIncludeQr && companySlug) {
           const marketLink = `${window.location.origin}/home-store/${companySlug}`;
-          const qrSize = 25;
+          const qrSize = this.pdfIncludeContact ? 25 : 20;
           const qrX = 165;
-          const qrY = 48;
+          const qrY = this.pdfIncludeContact ? 48 : 47;
 
           try {
             const qrApiUrl = `https://api.qrserver.com/v1/create-qr-code/?size=150x150&data=${encodeURIComponent(marketLink)}`;
@@ -363,7 +378,7 @@ export class ProductsVariationsComponent implements OnInit {
             
             // Texto debajo del QR
             doc.setFont('helvetica', 'bold');
-            doc.setFontSize(7.5);
+            doc.setFontSize(7);
             doc.setTextColor(120, 120, 120);
             doc.text('ESCANEA PARA COMPRAR', qrX - 2, qrY + qrSize + 4);
           } catch (qrErr) {
@@ -371,7 +386,7 @@ export class ProductsVariationsComponent implements OnInit {
           }
         }
 
-        startY = 88;
+        startY = 45 + boxHeight + 8;
       }
 
       // 3. GENERAR TABLA DE PRECIOS
@@ -381,9 +396,10 @@ export class ProductsVariationsComponent implements OnInit {
       }
 
       const tableRows = this.filteredVariations.map(v => {
+        const productName = v.pro_name ? `${v.pro_name} - ${v.prov_name}` : v.prov_name;
         const row = [
           v.prov_sku || '-',
-          `${v.pro_name || ''} - ${v.prov_name || ''}`.trim(),
+          productName.trim(),
           v.gmat_name || '-',
           [v.prov_color, v.prov_size].filter(Boolean).join(' / ') || '-',
           `$ ${v.prov_suggestedminimumsellingprice.toLocaleString('es-AR', { minimumFractionDigits: 2, maximumFractionDigits: 2 })}`
@@ -400,7 +416,7 @@ export class ProductsVariationsComponent implements OnInit {
         startY: startY,
         theme: 'striped',
         headStyles: {
-          fillColor: [24, 144, 255], // Azul brillante corporativo ATS
+          fillColor: [38, 38, 38], // Gris antracita sofisticado (#262626) para un look premium
           textColor: [255, 255, 255],
           fontStyle: 'bold',
           fontSize: 10
