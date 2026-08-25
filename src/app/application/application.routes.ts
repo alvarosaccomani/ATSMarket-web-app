@@ -22,6 +22,7 @@ import { MaterialsComponent } from './materials/materials.component';
 import { MaterialComponent } from './material/material.component';
 import { WarehousesComponent } from './warehouses/warehouses.component';
 import { ProductsComponent } from './products/products.component';
+import { ProductsVariationsComponent } from './products-variations/products-variations.component';
 import { ProductComponent } from './product/product.component';
 import { ProductVariationComponent } from './product-variation/product-variation.component';
 import { InventoryAuditComponent } from './inventory-audit/inventory-audit.component';
@@ -67,6 +68,7 @@ export const APPLICATION_ROUTES: Routes = [
             { path: 'material/:mat_uuid', component: MaterialComponent, canActivate: [merchantGuard] },
             { path: 'warehouses', component: WarehousesComponent, canActivate: [merchantGuard] },
             { path: 'products', component: ProductsComponent, canActivate: [merchantGuard] },
+            { path: 'products-variations', component: ProductsVariationsComponent, canActivate: [merchantGuard] },
             { path: 'coupons', component: CouponsComponent, canActivate: [merchantGuard] },
             { path: 'product/:pro_uuid', component: ProductComponent, canActivate: [merchantGuard] },
             { path: 'product-variation/:pro_uuid/:prov_uuid', component: ProductVariationComponent, canActivate: [merchantGuard] },
