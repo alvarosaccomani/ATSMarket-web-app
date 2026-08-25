@@ -47,10 +47,44 @@
 
                 <!-- Contraseña -->
                 <nz-form-item>
-                    <nz-form-control nzErrorTip="La contraseña es requerida (mínimo 6 caracteres)">
-                        <nz-input-group nzPrefixIcon="lock" style="width: 100%;">
-                            <input type="password" nz-input formControlName="usr_password" (ngModelChange)="updateConfirmValidator()" placeholder="Contraseña" />
+                    <nz-form-control nzErrorTip="Mínimo 8 caracteres (debe incluir mayúscula, minúscula, número y carácter especial)">
+                        <nz-input-group nzPrefixIcon="lock" [nzSuffix]="suffixTemplate" style="width: 100%;">
+                            <input [type]="showPassword ? 'text' : 'password'" nz-input formControlName="usr_password" 
+                                   (focus)="onFocus()" (blur)="onBlur()" (ngModelChange)="updateConfirmValidator()" placeholder="Contraseña" />
                         </nz-input-group>
+                        <ng-template #suffixTemplate>
+                            <span nz-icon [nzType]="showPassword ? 'eye-invisible' : 'eye'" (click)="togglePasswordVisibility()" style="cursor: pointer; color: #8c8c8c;"></span>
+                        </ng-template>
+
+                        <div class="password-toolbar">
+                            <div class="progress-bar"
+                                 [style.width]="progressWidth + '%'"
+                                 [style.backgroundColor]="barColor">
+                            </div>
+                        </div>
+
+                        <div *ngIf="isFocused || (validateForm.get('usr_password')?.value && validateForm.get('usr_password')?.value.length > 0)" class="validation-messages">
+                            <span [class.valid]="hasUpperCase" class="requirement-item">
+                                <span nz-icon [nzType]="hasUpperCase ? 'check-circle' : 'exclamation-circle'"></span>
+                                Debe contener una letra mayúscula
+                            </span>
+                            <span [class.valid]="hasLowerCase" class="requirement-item">
+                                <span nz-icon [nzType]="hasLowerCase ? 'check-circle' : 'exclamation-circle'"></span>
+                                Debe contener una letra minúscula
+                            </span>
+                            <span [class.valid]="hasNumber" class="requirement-item">
+                                <span nz-icon [nzType]="hasNumber ? 'check-circle' : 'exclamation-circle'"></span>
+                                Debe contener un número
+                            </span>
+                            <span [class.valid]="hasSpecialChar" class="requirement-item">
+                                <span nz-icon [nzType]="hasSpecialChar ? 'check-circle' : 'exclamation-circle'"></span>
+                                Debe contener un carácter especial
+                            </span>
+                            <span [class.valid]="isValidLength" class="requirement-item">
+                                <span nz-icon [nzType]="isValidLength ? 'check-circle' : 'exclamation-circle'"></span>
+                                Debe tener al menos 8 caracteres
+                            </span>
+                        </div>
                     </nz-form-control>
                 </nz-form-item>
 

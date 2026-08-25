@@ -55,3 +55,48 @@ a {
         color: #40a9ff;
     }
 }
+
+.password-toolbar {
+  width: 100%;
+  height: 6px;
+  background-color: #f0f0f0;
+  border-radius: 3px;
+  overflow: hidden;
+  margin-top: 10px;
+  margin-bottom: 10px;
+
+  .progress-bar {
+    height: 100%;
+    transition: width 0.3s ease, background-color 0.3s ease;
+  }
+}
+
+.validation-messages {
+  display: flex;
+  flex-direction: column;
+  gap: 5px;
+  margin-top: 10px;
+
+  .requirement-item {
+    font-size: 0.85rem;
+    color: #bfbfbf;
+    display: flex;
+    align-items: center;
+    gap: 6px;
+    transition: color 0.25s ease;
+
+    .anticon {
+      font-size: 0.9rem;
+      color: #bfbfbf;
+      transition: color 0.25s ease;
+    }
+
+    &.valid {
+      color: #52c41a;
+
+      .anticon {
+        color: #52c41a;
+      }
+    }
+  }
+}

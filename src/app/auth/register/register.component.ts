@@ -1,7 +1,7 @@
 import { Component, OnInit } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { Router, RouterLink } from '@angular/router';
-import { FormBuilder, FormGroup, ReactiveFormsModule, Validators, AbstractControl } from '@angular/forms';
+import { FormBuilder, FormGroup, ReactiveFormsModule, Validators, AbstractControl, ValidationErrors } from '@angular/forms';
 
 // Imports de Ng-Zorro (necesarios para standalone)
 import { NzButtonModule } from 'ng-zorro-antd/button';
@@ -36,6 +36,17 @@ export class RegisterComponent implements OnInit {
   validateForm!: FormGroup;
   isSubmitting = false;
 
+  // Estados para feedback visual de contraseña
+  showPassword = false;
+  hasUpperCase = false;
+  hasLowerCase = false;
+  hasNumber = false;
+  hasSpecialChar = false;
+  isValidLength = false;
+  progressWidth = 0;
+  barColor = '#dc3545';
+  isFocused = false;
+
   constructor(
     private fb: FormBuilder,
     private message: NzMessageService,
@@ -49,10 +60,69 @@ export class RegisterComponent implements OnInit {
       usr_surname: [null, [Validators.required, Validators.minLength(2)]],
       usr_nick: [null, [Validators.required, Validators.minLength(3)]],
       usr_email: [null, [Validators.required, Validators.email]],
-      usr_password: [null, [Validators.required, Validators.minLength(6)]],
+      usr_password: [null, [Validators.required, this.passwordStrengthValidator]],
       confirmPassword: [null, [Validators.required, this.confirmationValidator]]
     });
+
+    // Suscripción reactiva para validar la fuerza de la contraseña en tiempo real
+    this.validateForm.get('usr_password')?.valueChanges.subscribe(value => {
+      this.validatePassword(value);
+    });
   }
+
+  public togglePasswordVisibility(): void {
+    this.showPassword = !this.showPassword;
+  }
+
+  public onFocus(): void {
+    this.isFocused = true;
+  }
+
+  public onBlur(): void {
+    this.isFocused = false;
+  }
+
+  public validatePassword(value: string): void {
+    const password = value || '';
+    this.hasUpperCase = /[A-Z]/.test(password);
+    this.hasLowerCase = /[a-z]/.test(password);
+    this.hasNumber = /[0-9]/.test(password);
+    this.hasSpecialChar = /[!@#$%^&*(),.?":{}|<>]/.test(password);
+    this.isValidLength = password.length >= 8;
+
+    const totalCriteria = 5;
+    const fulfilledCriteria =
+      (this.hasUpperCase ? 1 : 0) +
+      (this.hasLowerCase ? 1 : 0) +
+      (this.hasNumber ? 1 : 0) +
+      (this.hasSpecialChar ? 1 : 0) +
+      (this.isValidLength ? 1 : 0);
+
+    this.progressWidth = (fulfilledCriteria / totalCriteria) * 100;
+
+    if (this.progressWidth >= 100) {
+      this.barColor = '#28a745'; // Verde
+    } else if (this.progressWidth >= 60) {
+      this.barColor = '#ffc107'; // Amarillo
+    } else {
+      this.barColor = '#dc3545'; // Rojo
+    }
+  }
+
+  public passwordStrengthValidator = (control: AbstractControl): ValidationErrors | null => {
+    const value = control.value;
+    if (!value) {
+      return null;
+    }
+    const hasUpperCase = /[A-Z]/.test(value);
+    const hasLowerCase = /[a-z]/.test(value);
+    const hasNumber = /[0-9]/.test(value);
+    const hasSpecialChar = /[!@#$%^&*(),.?":{}|<>]/.test(value);
+    const isValidLength = value.length >= 8;
+
+    const passwordValid = hasUpperCase && hasLowerCase && hasNumber && hasSpecialChar && isValidLength;
+    return !passwordValid ? { passwordStrength: true } : null;
+  };
 
   updateConfirmValidator(): void {
     Promise.resolve().then(() => this.validateForm.controls['confirmPassword'].updateValueAndValidity());
