@@ -12,8 +12,8 @@
                     [(ngModel)]="searchTerm" (ngModelChange)="applyFilters()" />
             </nz-input-group>
 
-            <button nz-button nzType="primary" nzSize="large" (click)="exportToCsv()" [disabled]="filteredVariations.length === 0">
-                <span nz-icon nzType="download"></span> Exportar Lista (CSV)
+            <button nz-button nzType="primary" nzSize="large" (click)="openExportModal()">
+                <span nz-icon nzType="download"></span> Exportar Catálogo
             </button>
 
             <ng-template #prefixIconSearch>
@@ -120,3 +120,53 @@
         </nz-table>
     </nz-card>
 </div>
+
+<!-- MODAL DE CONFIGURACIÓN DE EXPORTACIÓN -->
+<nz-modal
+    [(nzVisible)]="isExportModalVisible"
+    nzTitle="Configurar Exportación de Catálogo"
+    [nzFooter]="modalFooter"
+    (nzOnCancel)="isExportModalVisible = false"
+    nzWidth="500px">
+    
+    <ng-container *nzModalContent>
+        <div class="export-config-form" style="display: flex; flex-direction: column; gap: 16px; padding: 8px 0;">
+            <div>
+                <span style="display: block; font-weight: 600; color: #262626; margin-bottom: 8px;">Formato de Archivo:</span>
+                <nz-select [(ngModel)]="exportType" nzSize="large" style="width: 100%;">
+                    <nz-option nzValue="PDF" nzLabel="📄 Documento PDF (Lista de Precios Comercial)"></nz-option>
+                    <nz-option nzValue="CSV" nzLabel="📊 Hoja de Cálculo CSV (Para Excel / Hojas de Cálculo)"></nz-option>
+                </nz-select>
+            </div>
+
+            <!-- PDF OPTIONS -->
+            <div *ngIf="exportType === 'PDF'" style="border-top: 1px solid #f0f0f0; padding-top: 16px; display: flex; flex-direction: column; gap: 12px;">
+                <span style="display: block; font-weight: 600; color: #262626; margin-bottom: 4px;">Configuración del PDF:</span>
+                
+                <label nz-checkbox [(ngModel)]="pdfShowAvailability">
+                    Mostrar columna "Estado de disponibilidad" (Disponible / Agotado)
+                </label>
+                
+                <label nz-checkbox [(ngModel)]="pdfIncludeContact">
+                    Incluir contacto de la Tienda (Email y Teléfono)
+                </label>
+                
+                <label nz-checkbox [(ngModel)]="pdfIncludeQr" [nzDisabled]="!activeCompany?.cmp_slug">
+                    Incluir código QR con enlace de compra al Market
+                </label>
+            </div>
+            
+            <!-- CSV OPTIONS -->
+            <div *ngIf="exportType === 'CSV'" style="border-top: 1px solid #f0f0f0; padding-top: 16px; color: #8c8c8c; font-size: 13px;">
+                Se exportará un archivo CSV codificado con UTF-8 BOM y delimitador de punto y coma (;) compatible con Microsoft Excel.
+            </div>
+        </div>
+    </ng-container>
+
+    <ng-template #modalFooter>
+        <button nz-button nzType="default" (click)="isExportModalVisible = false">Cancelar</button>
+        <button nz-button nzType="primary" [nzLoading]="isGeneratingPdf" (click)="confirmExport()">
+            <span nz-icon nzType="download"></span> Exportar ahora
+        </button>
+    </ng-template>
+</nz-modal>

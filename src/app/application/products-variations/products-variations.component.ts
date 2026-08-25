@@ -15,11 +15,16 @@ import { NzInputModule } from 'ng-zorro-antd/input';
 import { NzAvatarModule } from 'ng-zorro-antd/avatar';
 import { NzSpinModule } from 'ng-zorro-antd/spin';
 import { NzSelectModule } from 'ng-zorro-antd/select';
+import { NzModalModule } from 'ng-zorro-antd/modal';
+import { NzCheckboxModule } from 'ng-zorro-antd/checkbox';
 
 import { ProductVariationInterface } from '@interfaces/product-variation';
 import { ProductVariationsService } from '@services/product-variations.service';
 import { SessionService } from '@services/session.service';
 import { MessageService } from '@services/message.service';
+
+import { jsPDF } from 'jspdf';
+import autoTable from 'jspdf-autotable';
 
 @Component({
   selector: 'app-products-variations',
@@ -38,13 +43,16 @@ import { MessageService } from '@services/message.service';
     NzInputModule,
     NzAvatarModule,
     NzSpinModule,
-    NzSelectModule
+    NzSelectModule,
+    NzModalModule,
+    NzCheckboxModule
   ],
   templateUrl: './products-variations.component.html',
   styleUrl: './products-variations.component.scss'
 })
 export class ProductsVariationsComponent implements OnInit {
 
+  public activeCompany: any = null;
   public activeCompanyUuid: string = '';
   public variations: ProductVariationInterface[] = [];
   public filteredVariations: ProductVariationInterface[] = [];
@@ -54,6 +62,16 @@ export class ProductsVariationsComponent implements OnInit {
   public stockStatus: 'ALL' | 'IN_STOCK' | 'OUT_OF_STOCK' = 'ALL';
   public pageIndex: number = 1;
   public pageSize: number = 20;
+
+  // Export State
+  public isExportModalVisible: boolean = false;
+  public exportType: 'CSV' | 'PDF' = 'PDF';
+  
+  // PDF configurations
+  public pdfShowAvailability: boolean = true;
+  public pdfIncludeContact: boolean = true;
+  public pdfIncludeQr: boolean = true;
+  public isGeneratingPdf: boolean = false;
 
   constructor(
     private _router: Router,
@@ -65,6 +83,7 @@ export class ProductsVariationsComponent implements OnInit {
   ngOnInit(): void {
     const company = this._sessionService.getCompany();
     if (company && company.cmp_uuid) {
+      this.activeCompany = company;
       this.activeCompanyUuid = company.cmp_uuid;
       this.loadVariations();
     } else {
@@ -134,6 +153,19 @@ export class ProductsVariationsComponent implements OnInit {
     }
   }
 
+  public openExportModal(): void {
+    this.isExportModalVisible = true;
+  }
+
+  public confirmExport(): void {
+    if (this.exportType === 'PDF') {
+      this.exportToPdf();
+    } else {
+      this.exportToCsv();
+      this.isExportModalVisible = false;
+    }
+  }
+
   public exportToCsv(): void {
     if (this.filteredVariations.length === 0) {
       this._messageService.warning('Advertencia', 'No hay datos en la lista para exportar.');
@@ -190,5 +222,209 @@ export class ProductsVariationsComponent implements OnInit {
       return `"${escaped}"`;
     }
     return escaped;
+  }
+
+  private getBase64ImageFromUrl(imageUrl: string): Promise<string> {
+    return new Promise((resolve, reject) => {
+      const img = new Image();
+      img.setAttribute('crossOrigin', 'anonymous');
+      img.onload = () => {
+        const canvas = document.createElement('canvas');
+        canvas.width = img.width;
+        canvas.height = img.height;
+        const ctx = canvas.getContext('2d');
+        if (ctx) {
+          ctx.drawImage(img, 0, 0);
+          const dataURL = canvas.toDataURL('image/png');
+          resolve(dataURL);
+        } else {
+          reject(new Error('Failed to get 2D context'));
+        }
+      };
+      img.onerror = (err) => {
+        reject(err);
+      };
+      img.src = imageUrl;
+    });
+  }
+
+  public async exportToPdf(): Promise<void> {
+    if (this.filteredVariations.length === 0) {
+      this._messageService.warning('Advertencia', 'No hay datos en la lista para exportar.');
+      return;
+    }
+
+    this.isGeneratingPdf = true;
+    try {
+      const doc = new jsPDF({
+        orientation: 'portrait',
+        unit: 'mm',
+        format: 'a4'
+      });
+
+      const companyName = this.activeCompany?.cmp_name || 'Mi Comercio';
+      const companyEmail = this.activeCompany?.cmp_email || '';
+      const companyPhone = this.activeCompany?.cmp_phone || '';
+      const companySlug = this.activeCompany?.cmp_slug || '';
+
+      // 1. DIBUJAR CABECERA (Header)
+      doc.setFillColor(31, 31, 31); // Color gris oscuro premium
+      doc.rect(0, 0, 210, 40, 'F');
+
+      // Título Tienda
+      doc.setTextColor(255, 255, 255);
+      doc.setFont('helvetica', 'bold');
+      doc.setFontSize(22);
+      doc.text(companyName.toUpperCase(), 14, 18);
+
+      // Subtítulo
+      doc.setFont('helvetica', 'normal');
+      doc.setFontSize(11);
+      doc.setTextColor(200, 200, 200);
+      doc.text('CATÁLOGO DE PRECIOS OFICIAL', 14, 25);
+
+      // Fecha
+      const today = new Date().toLocaleDateString('es-AR', {
+        day: '2-digit',
+        month: '2-digit',
+        year: 'numeric',
+        hour: '2-digit',
+        minute: '2-digit'
+      });
+      doc.setFontSize(9);
+      doc.setTextColor(160, 160, 160);
+      doc.text(`Generado el: ${today}`, 14, 32);
+
+      // 2. DETALLES DE CONTACTO Y CÓDIGO QR
+      let startY = 48;
+
+      if (this.pdfIncludeContact || (this.pdfIncludeQr && companySlug)) {
+        // Reservar espacio dibujando una caja sutil
+        doc.setFillColor(250, 250, 250);
+        doc.setDrawColor(230, 230, 230);
+        doc.roundedRect(14, 45, 182, 35, 3, 3, 'FD');
+
+        let textX = 20;
+        let textY = 53;
+
+        if (this.pdfIncludeContact) {
+          doc.setTextColor(80, 80, 80);
+          doc.setFont('helvetica', 'bold');
+          doc.setFontSize(10);
+          doc.text('INFORMACIÓN DE CONTACTO:', textX, textY);
+          
+          doc.setFont('helvetica', 'normal');
+          doc.setFontSize(9.5);
+          doc.setTextColor(100, 100, 100);
+          
+          let lineOffset = 6;
+          if (companyEmail) {
+            doc.text(`Email: ${companyEmail}`, textX, textY + lineOffset);
+            lineOffset += 5;
+          }
+          if (companyPhone) {
+            doc.text(`Teléfono: ${companyPhone}`, textX, textY + lineOffset);
+            lineOffset += 5;
+          }
+          if (!companyEmail && !companyPhone) {
+            doc.text('No se registra información de contacto pública.', textX, textY + lineOffset);
+          }
+        }
+
+        // Agregar QR de Compras Online
+        if (this.pdfIncludeQr && companySlug) {
+          const marketLink = `${window.location.origin}/home-store/${companySlug}`;
+          const qrSize = 25;
+          const qrX = 165;
+          const qrY = 48;
+
+          try {
+            const qrApiUrl = `https://api.qrserver.com/v1/create-qr-code/?size=150x150&data=${encodeURIComponent(marketLink)}`;
+            const qrBase64 = await this.getBase64ImageFromUrl(qrApiUrl);
+            doc.addImage(qrBase64, 'PNG', qrX, qrY, qrSize, qrSize);
+            
+            // Texto debajo del QR
+            doc.setFont('helvetica', 'bold');
+            doc.setFontSize(7.5);
+            doc.setTextColor(120, 120, 120);
+            doc.text('ESCANEA PARA COMPRAR', qrX - 2, qrY + qrSize + 4);
+          } catch (qrErr) {
+            console.error('Error cargando QR para PDF:', qrErr);
+          }
+        }
+
+        startY = 88;
+      }
+
+      // 3. GENERAR TABLA DE PRECIOS
+      const tableHeaders = ['SKU', 'Producto / Presentación', 'Material', 'Color / Talle', 'Precio'];
+      if (this.pdfShowAvailability) {
+        tableHeaders.push('Estado');
+      }
+
+      const tableRows = this.filteredVariations.map(v => {
+        const row = [
+          v.prov_sku || '-',
+          `${v.pro_name || ''} - ${v.prov_name || ''}`.trim(),
+          v.gmat_name || '-',
+          [v.prov_color, v.prov_size].filter(Boolean).join(' / ') || '-',
+          `$ ${v.prov_suggestedminimumsellingprice.toLocaleString('es-AR', { minimumFractionDigits: 2, maximumFractionDigits: 2 })}`
+        ];
+        if (this.pdfShowAvailability) {
+          row.push(v.prov_stock > 0 ? 'Disponible' : 'Agotado');
+        }
+        return row;
+      });
+
+      autoTable(doc, {
+        head: [tableHeaders],
+        body: tableRows,
+        startY: startY,
+        theme: 'striped',
+        headStyles: {
+          fillColor: [24, 144, 255], // Azul brillante corporativo ATS
+          textColor: [255, 255, 255],
+          fontStyle: 'bold',
+          fontSize: 10
+        },
+        bodyStyles: {
+          fontSize: 9,
+          textColor: [50, 50, 50]
+        },
+        columnStyles: {
+          0: { cellWidth: 32 }, // SKU
+          1: { cellWidth: 'auto' }, // Producto
+          2: { cellWidth: 28 }, // Material
+          3: { cellWidth: 28 }, // Color/Talle
+          4: { cellWidth: 28, halign: 'right' }, // Precio
+          5: { cellWidth: 25, halign: 'center' } // Estado (si está presente)
+        },
+        margin: { left: 14, right: 14 },
+        didDrawPage: (data) => {
+          // Footer de página
+          doc.setFont('helvetica', 'normal');
+          doc.setFontSize(8);
+          doc.setTextColor(150, 150, 150);
+          
+          // Izquierda
+          doc.text('Generado automáticamente por ATS Market', 14, 287);
+          
+          // Derecha
+          doc.text(`Página ${data.pageNumber}`, 180, 287);
+        }
+      });
+
+      // Guardar archivo
+      const formattedDate = new Date().toISOString().slice(0, 10);
+      doc.save(`lista_precios_${companyName.toLowerCase().replace(/\s+/g, '_')}_${formattedDate}.pdf`);
+      
+      this._messageService.success('Exportación Exitosa', 'El PDF de precios se ha descargado correctamente.');
+      this.isExportModalVisible = false;
+    } catch (err) {
+      console.error('Error al generar PDF:', err);
+      this._messageService.error('Error', 'No se pudo generar el documento PDF.');
+    } finally {
+      this.isGeneratingPdf = false;
+    }
   }
 }
