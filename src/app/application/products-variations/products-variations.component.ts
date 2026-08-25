@@ -22,6 +22,7 @@ import { ProductVariationInterface } from '@interfaces/product-variation';
 import { ProductVariationsService } from '@services/product-variations.service';
 import { SessionService } from '@services/session.service';
 import { MessageService } from '@services/message.service';
+import { CompaniesService } from '@services/companies.service';
 
 import { jsPDF } from 'jspdf';
 import autoTable from 'jspdf-autotable';
@@ -77,7 +78,8 @@ export class ProductsVariationsComponent implements OnInit {
     private _router: Router,
     private _sessionService: SessionService,
     private _productVariationsService: ProductVariationsService,
-    private _messageService: MessageService
+    private _messageService: MessageService,
+    private _companiesService: CompaniesService
   ) { }
 
   ngOnInit(): void {
@@ -86,10 +88,26 @@ export class ProductsVariationsComponent implements OnInit {
       this.activeCompany = company;
       this.activeCompanyUuid = company.cmp_uuid;
       this.loadVariations();
+      this.loadFullCompanyDetails();
     } else {
       this.isFetching = false;
       this._messageService.error('Error', 'No se encontró una tienda activa en la sesión.');
     }
+  }
+
+  public loadFullCompanyDetails(): void {
+    this._companiesService.getCompanyById(this.activeCompanyUuid).subscribe({
+      next: (res: any) => {
+        if (res && res.data) {
+          const fullCompany = Array.isArray(res.data) ? res.data[0] : res.data;
+          this.activeCompany = { ...this.activeCompany, ...fullCompany };
+          console.log('Información completa de la tienda cargada:', this.activeCompany);
+        }
+      },
+      error: (err) => {
+        console.error('Error al cargar detalles completos de la tienda:', err);
+      }
+    });
   }
 
   public loadVariations(): void {

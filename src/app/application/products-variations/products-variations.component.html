@@ -148,7 +148,7 @@
                 </label>
                 
                 <label nz-checkbox [(ngModel)]="pdfIncludeContact">
-                    Incluir contacto de la Tienda (Email y Teléfono)
+                    Incluir contacto de la Tienda (Email: {{ activeCompany?.cmp_email || 'N/A' }}, Tel: {{ activeCompany?.cmp_phone || 'N/A' }})
                 </label>
                 
                 <label nz-checkbox [(ngModel)]="pdfIncludeQr" [nzDisabled]="!activeCompany?.cmp_slug">
