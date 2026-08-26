@@ -127,7 +127,7 @@
     nzTitle="Configurar Exportación de Catálogo"
     [nzFooter]="modalFooter"
     (nzOnCancel)="isExportModalVisible = false"
-    nzWidth="500px">
+    nzWidth="540px">
     
     <ng-container *nzModalContent>
         <div class="export-config-form" style="display: flex; flex-direction: column; gap: 16px; padding: 8px 0;">
@@ -139,21 +139,107 @@
                 </nz-select>
             </div>
 
+            <!-- TEMPLATE SELECTOR -->
+            <div *ngIf="exportType === 'PDF'" style="background-color: #f9f9f9; padding: 12px; border-radius: 8px; border: 1px dashed #d9d9d9;">
+                <span style="display: block; font-weight: 600; color: #262626; margin-bottom: 8px;">Plantilla de Reporte:</span>
+                
+                <div *ngIf="!isCreatingNewTemplate" style="display: flex; gap: 8px; align-items: center;">
+                    <nz-select [(ngModel)]="selectedTemplateId" (ngModelChange)="onTemplateChange($event)" style="flex: 1;" nzSize="large">
+                        <nz-option *ngFor="let t of reportTemplates" [nzValue]="t.id" [nzLabel]="t.name"></nz-option>
+                    </nz-select>
+                    <button nz-button nzType="default" nzSize="large" (click)="enableCreateTemplateMode()" nzTooltipTitle="Nueva plantilla" nz-tooltip>
+                        <span nz-icon nzType="plus"></span>
+                    </button>
+                    <button nz-button nzType="default" nzDanger nzSize="large" (click)="deleteActiveTemplate()" [disabled]="reportTemplates.length <= 1" nzTooltipTitle="Eliminar plantilla" nz-tooltip>
+                        <span nz-icon nzType="delete"></span>
+                    </button>
+                </div>
+
+                <!-- Create Inline Form -->
+                <div *ngIf="isCreatingNewTemplate" style="display: flex; flex-direction: column; gap: 8px;">
+                    <input nz-input placeholder="Nombre de la nueva plantilla (ej: Catálogo Mayorista)" [(ngModel)]="newTemplateName" nzSize="large" />
+                    <div style="display: flex; gap: 8px; justify-content: flex-end;">
+                        <button nz-button nzType="text" nzSize="small" (click)="cancelCreateTemplate()">Cancelar</button>
+                        <button nz-button nzType="primary" nzSize="small" (click)="confirmCreateTemplate()">Crear</button>
+                    </div>
+                </div>
+            </div>
+
             <!-- PDF OPTIONS -->
-            <div *ngIf="exportType === 'PDF'" style="border-top: 1px solid #f0f0f0; padding-top: 16px; display: flex; flex-direction: column; gap: 12px;">
-                <span style="display: block; font-weight: 600; color: #262626; margin-bottom: 4px;">Configuración del PDF:</span>
-                
-                <label nz-checkbox [(ngModel)]="pdfShowAvailability">
-                    Mostrar columna "Estado de disponibilidad" (Disponible / Agotado)
-                </label>
-                
-                <label nz-checkbox [(ngModel)]="pdfIncludeContact">
-                    Incluir contacto de la Tienda (Email: {{ activeCompany?.cmp_email || 'N/A' }}, Tel: {{ activeCompany?.cmp_phone || 'N/A' }})
-                </label>
-                
-                <label nz-checkbox [(ngModel)]="pdfIncludeQr" [nzDisabled]="!activeCompany?.cmp_slug">
-                    Incluir código QR con enlace de compra al Market
-                </label>
+            <div *ngIf="exportType === 'PDF' && activeTemplate" style="border-top: 1px solid #f0f0f0; padding-top: 16px; display: flex; flex-direction: column; gap: 12px;">
+                <div>
+                    <span style="display: block; font-weight: 600; color: #262626; margin-bottom: 4px;">Título del PDF:</span>
+                    <input nz-input [(ngModel)]="activeTemplate.title" placeholder="Ej: CATÁLOGO DE PRECIOS" nzSize="large" />
+                </div>
+
+                <div>
+                    <span style="display: block; font-weight: 600; color: #262626; margin-bottom: 4px;">Formato de Fecha y Hora en Cabecera:</span>
+                    <nz-select [(ngModel)]="activeTemplate.dateFormat" style="width: 100%;">
+                        <nz-option nzValue="full" nzLabel="Fecha y Hora Completa"></nz-option>
+                        <nz-option nzValue="date" nzLabel="Solo Fecha"></nz-option>
+                        <nz-option nzValue="none" nzLabel="No mostrar fecha/hora"></nz-option>
+                    </nz-select>
+                </div>
+
+                <div *ngIf="activeTemplate.dateFormat === 'full'">
+                    <span style="display: block; font-weight: 600; color: #262626; margin-bottom: 4px;">Formato de Hora:</span>
+                    <nz-select [(ngModel)]="activeTemplate.timeFormat" style="width: 100%;">
+                        <nz-option nzValue="12h" nzLabel="12 Horas (a. m. / p. m. - ej: 08:17 p. m.)"></nz-option>
+                        <nz-option nzValue="24h" nzLabel="24 Horas (ej: 20:17)"></nz-option>
+                    </nz-select>
+                </div>
+
+                <div>
+                    <span style="display: block; font-weight: 600; color: #262626; margin-bottom: 8px;">Renombrar Columnas:</span>
+                    <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 8px;">
+                        <div>
+                            <span style="font-size: 12px; color: #8c8c8c; display: block; margin-bottom: 2px;">Columna SKU:</span>
+                            <input nz-input [(ngModel)]="activeTemplate.columns.sku" nzSize="default" />
+                        </div>
+                        <div>
+                            <span style="font-size: 12px; color: #8c8c8c; display: block; margin-bottom: 2px;">Columna Producto:</span>
+                            <input nz-input [(ngModel)]="activeTemplate.columns.product" nzSize="default" />
+                        </div>
+                        <div *ngIf="activeTemplate.showMaterial">
+                            <span style="font-size: 12px; color: #8c8c8c; display: block; margin-bottom: 2px;">Columna Material:</span>
+                            <input nz-input [(ngModel)]="activeTemplate.columns.material" nzSize="default" />
+                        </div>
+                        <div>
+                            <span style="font-size: 12px; color: #8c8c8c; display: block; margin-bottom: 2px;">Columna Color/Talle:</span>
+                            <input nz-input [(ngModel)]="activeTemplate.columns.specs" nzSize="default" />
+                        </div>
+                        <div>
+                            <span style="font-size: 12px; color: #8c8c8c; display: block; margin-bottom: 2px;">Columna Precio:</span>
+                            <input nz-input [(ngModel)]="activeTemplate.columns.price" nzSize="default" />
+                        </div>
+                        <div *ngIf="activeTemplate.showAvailability">
+                            <span style="font-size: 12px; color: #8c8c8c; display: block; margin-bottom: 2px;">Columna Disponibilidad:</span>
+                            <input nz-input [(ngModel)]="activeTemplate.columns.status" nzSize="default" />
+                        </div>
+                    </div>
+                </div>
+
+                <div style="display: flex; flex-direction: column; gap: 8px; margin-top: 4px;">
+                    <label nz-checkbox [(ngModel)]="activeTemplate.showAvailability">
+                        Mostrar columna "Disponibilidad" (Disponible / Agotado)
+                    </label>
+
+                    <label nz-checkbox [(ngModel)]="activeTemplate.showMaterial">
+                        Mostrar columna "Material"
+                    </label>
+
+                    <label nz-checkbox [(ngModel)]="activeTemplate.showZeroPriceItems">
+                        Mostrar artículos con precio $0 o sin precio cargado
+                    </label>
+                    
+                    <label nz-checkbox [(ngModel)]="activeTemplate.includeContact">
+                        Incluir contacto de la Tienda (Email: {{ activeCompany?.cmp_email || 'N/A' }}, Tel: {{ activeCompany?.cmp_phone || 'N/A' }})
+                    </label>
+                    
+                    <label nz-checkbox [(ngModel)]="activeTemplate.includeQr" [nzDisabled]="!activeCompany?.cmp_slug">
+                        Incluir código QR con enlace de compra al Market
+                    </label>
+                </div>
             </div>
             
             <!-- CSV OPTIONS -->
@@ -165,6 +251,9 @@
 
     <ng-template #modalFooter>
         <button nz-button nzType="default" (click)="isExportModalVisible = false">Cancelar</button>
+        <button *ngIf="exportType === 'PDF'" nz-button nzType="dashed" [nzLoading]="isGeneratingPdf" (click)="saveReportTemplates()" style="border-color: #1890ff; color: #1890ff;">
+            <span nz-icon nzType="save"></span> Guardar Plantillas
+        </button>
         <button nz-button nzType="primary" [nzLoading]="isGeneratingPdf" (click)="confirmExport()">
             <span nz-icon nzType="download"></span> Exportar ahora
         </button>

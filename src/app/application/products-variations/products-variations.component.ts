@@ -60,31 +60,25 @@ export class ProductsVariationsComponent implements OnInit {
   public filteredVariations: ProductVariationInterface[] = [];
   public isFetching: boolean = true;
 
-  // PDF configuration settings
-  public pdfSettings = {
-    title: 'CATÁLOGO DE PRECIOS OFICIAL',
-    sku: 'SKU',
-    product: 'Producto / Presentación',
-    material: 'Material',
-    specs: 'Color / Talle',
-    price: 'Precio',
-    status: 'Estado'
-  };
-
   public searchTerm: string = '';
   public stockStatus: 'ALL' | 'IN_STOCK' | 'OUT_OF_STOCK' = 'ALL';
   public pageIndex: number = 1;
   public pageSize: number = 20;
 
-  // Export State
+  // Export Modal State
   public isExportModalVisible: boolean = false;
   public exportType: 'CSV' | 'PDF' = 'PDF';
-  
-  // PDF configurations
-  public pdfShowAvailability: boolean = true;
-  public pdfIncludeContact: boolean = true;
-  public pdfIncludeQr: boolean = true;
   public isGeneratingPdf: boolean = false;
+
+  // Report Templates State
+  public reportTemplates: any[] = [];
+  public selectedTemplateId: string = 'default';
+  public activeTemplate: any = null;
+  private _rawReportsSetting: any = null;
+
+  // Inline template creation
+  public isCreatingNewTemplate: boolean = false;
+  public newTemplateName: string = '';
 
   constructor(
     private _router: Router,
@@ -113,25 +107,169 @@ export class ProductsVariationsComponent implements OnInit {
     this._settingsService.getCompaniesSettings(this.activeCompanyUuid).subscribe({
       next: (res: any) => {
         const dbSettings: any[] = res?.data || [];
-        const mappings: { [key: string]: string } = {
-          'PDF_REPORT_TITLE': 'title',
-          'PDF_COLUMN_SKU': 'sku',
-          'PDF_COLUMN_PRODUCT': 'product',
-          'PDF_COLUMN_MATERIAL': 'material',
-          'PDF_COLUMN_SPECS': 'specs',
-          'PDF_COLUMN_PRICE': 'price',
-          'PDF_COLUMN_STATUS': 'status'
-        };
-        dbSettings.forEach(s => {
-          const key = mappings[s.cmps_key];
-          if (key && s.cmps_value) {
-            (this.pdfSettings as any)[key] = s.cmps_value;
+        this._rawReportsSetting = dbSettings.find(s => s.cmps_key === 'PDF_REPORTS_CONFIG');
+        
+        let parsed: any[] = [];
+        if (this._rawReportsSetting && this._rawReportsSetting.cmps_value) {
+          try {
+            parsed = JSON.parse(this._rawReportsSetting.cmps_value);
+          } catch (e) {
+            console.error('Error al parsear PDF_REPORTS_CONFIG:', e);
           }
-        });
-        console.log('Configuraciones de PDF cargadas:', this.pdfSettings);
+        }
+
+        // Inicializar con plantilla por defecto si está vacía
+        if (!Array.isArray(parsed) || parsed.length === 0) {
+          parsed = [this.getDefaultTemplate()];
+        }
+
+        this.reportTemplates = parsed;
+        this.selectedTemplateId = this.reportTemplates[0].id;
+        this.activeTemplate = this.reportTemplates[0];
+        console.log('Plantillas de reportes cargadas:', this.reportTemplates);
       },
       error: (err) => {
-        console.error('Error al cargar configuraciones de PDF:', err);
+        console.error('Error al cargar configuraciones de reportes:', err);
+        this.reportTemplates = [this.getDefaultTemplate()];
+        this.selectedTemplateId = 'default';
+        this.activeTemplate = this.reportTemplates[0];
+      }
+    });
+  }
+
+  public getDefaultTemplate() {
+    return {
+      id: 'default',
+      name: 'Lista de Precios Principal',
+      title: 'CATÁLOGO DE PRECIOS OFICIAL',
+      includeContact: true,
+      includeQr: true,
+      showAvailability: true,
+      showMaterial: true,
+      showZeroPriceItems: true,
+      dateFormat: 'full',
+      timeFormat: '12h',
+      columns: {
+        sku: 'SKU',
+        product: 'Producto / Presentación',
+        material: 'Material',
+        specs: 'Color / Talle',
+        price: 'Precio',
+        status: 'Estado'
+      }
+    };
+  }
+
+  public onTemplateChange(id: string): void {
+    const found = this.reportTemplates.find(t => t.id === id);
+    if (found) {
+      this.activeTemplate = found;
+    }
+  }
+
+  public enableCreateTemplateMode(): void {
+    this.isCreatingNewTemplate = true;
+    this.newTemplateName = '';
+  }
+
+  public cancelCreateTemplate(): void {
+    this.isCreatingNewTemplate = false;
+    this.newTemplateName = '';
+  }
+
+  public confirmCreateTemplate(): void {
+    const name = this.newTemplateName.trim();
+    if (!name) {
+      this._messageService.warning('Advertencia', 'El nombre de la plantilla no puede estar vacío.');
+      return;
+    }
+
+    const newId = 'template_' + Date.now();
+    const newTemp = {
+      id: newId,
+      name: name,
+      title: name.toUpperCase(),
+      includeContact: this.activeTemplate?.includeContact ?? true,
+      includeQr: this.activeTemplate?.includeQr ?? true,
+      showAvailability: this.activeTemplate?.showAvailability ?? true,
+      showMaterial: this.activeTemplate?.showMaterial ?? true,
+      showZeroPriceItems: this.activeTemplate?.showZeroPriceItems ?? true,
+      dateFormat: this.activeTemplate?.dateFormat ?? 'full',
+      timeFormat: this.activeTemplate?.timeFormat ?? '12h',
+      columns: { ...this.activeTemplate?.columns || this.getDefaultTemplate().columns }
+    };
+
+    this.reportTemplates.push(newTemp);
+    this.selectedTemplateId = newId;
+    this.activeTemplate = newTemp;
+    this.isCreatingNewTemplate = false;
+    this.newTemplateName = '';
+    this._messageService.success('Plantilla Creada', `Se creó la plantilla "${name}". Recordá guardar tus configuraciones.`);
+  }
+
+  public deleteActiveTemplate(): void {
+    if (this.reportTemplates.length <= 1) {
+      this._messageService.warning('Advertencia', 'Tenés que conservar al menos una plantilla de reporte.');
+      return;
+    }
+
+    const name = this.activeTemplate?.name || 'la plantilla actual';
+    this._messageService.confirm(
+      '¿Eliminar Plantilla?',
+      `¿Deseas eliminar la plantilla "${name}"? Esta acción se guardará de forma permanente al presionar "Guardar Cambios".`,
+      () => {
+        const index = this.reportTemplates.findIndex(t => t.id === this.selectedTemplateId);
+        if (index > -1) {
+          this.reportTemplates.splice(index, 1);
+          this.selectedTemplateId = this.reportTemplates[0].id;
+          this.activeTemplate = this.reportTemplates[0];
+          this._messageService.info('Plantilla Eliminada', `Se eliminó la plantilla de la lista.`);
+        }
+      }
+    );
+  }
+
+  public saveReportTemplates(): void {
+    if (!this._rawReportsSetting) {
+      this._rawReportsSetting = {
+        cmp_uuid: this.activeCompanyUuid,
+        cmps_key: 'PDF_REPORTS_CONFIG',
+        cmps_parameter: 'Configuración de Reportes PDF',
+        cmps_description: 'Almacena de manera interna las plantillas de catálogos y listas de precios en formato PDF configuradas por el comercio.',
+        cmps_datatype: 'string',
+        cmps_group: 'Reportes PDF',
+        cmps_options: '',
+        cmps_createdat: new Date()
+      };
+    }
+
+    this._rawReportsSetting.cmps_value = JSON.stringify(this.reportTemplates);
+    this._rawReportsSetting.cmps_updatedat = new Date();
+    
+    const isNew = !this._rawReportsSetting.cmps_uuid || this._rawReportsSetting.cmps_uuid.length < 5;
+
+    const payload = { ...this._rawReportsSetting };
+    let request$;
+    if (isNew) {
+      delete payload.cmps_uuid;
+      request$ = this._settingsService.saveCompanySetting(payload);
+    } else {
+      request$ = this._settingsService.updateCompanySetting(payload);
+    }
+
+    this.isGeneratingPdf = true;
+    request$.subscribe({
+      next: (res: any) => {
+        if (res && res.data) {
+          this._rawReportsSetting = res.data;
+        }
+        this.isGeneratingPdf = false;
+        this._messageService.success('Configuraciones Guardadas', 'Las plantillas se guardaron de forma permanente.');
+      },
+      error: (err) => {
+        console.error('Error al guardar plantillas:', err);
+        this.isGeneratingPdf = false;
+        this._messageService.error('Error', 'No se pudieron guardar las configuraciones de reportes.');
       }
     });
   }
@@ -177,11 +315,9 @@ export class ProductsVariationsComponent implements OnInit {
     const normalizedFilter = this.removeAccents(rawFilter);
 
     this.filteredVariations = this.variations.filter(v => {
-      // Filtro de Stock
       if (this.stockStatus === 'IN_STOCK' && v.prov_stock <= 0) return false;
       if (this.stockStatus === 'OUT_OF_STOCK' && v.prov_stock > 0) return false;
 
-      // Filtro de Texto (SKU, nombre de variación, nombre del producto)
       if (!normalizedFilter) return true;
 
       const varName = this.removeAccents(v.prov_name.toLowerCase());
@@ -195,7 +331,7 @@ export class ProductsVariationsComponent implements OnInit {
              prodCode.includes(normalizedFilter);
     });
 
-    this.pageIndex = 1; // Resetear paginación al filtrar
+    this.pageIndex = 1;
   }
 
   public resetFilters(): void {
@@ -231,7 +367,6 @@ export class ProductsVariationsComponent implements OnInit {
       return;
     }
 
-    // Cabeceras
     const headers = [
       'SKU',
       'Presentacion',
@@ -243,7 +378,6 @@ export class ProductsVariationsComponent implements OnInit {
       'Stock'
     ];
 
-    // Mapear filas
     const rows = this.filteredVariations.map(v => [
       v.prov_sku || '',
       v.prov_name || '',
@@ -255,13 +389,11 @@ export class ProductsVariationsComponent implements OnInit {
       v.prov_stock || 0
     ]);
 
-    // Convertir a CSV delimitado por punto y coma (apropiado para Excel en español)
     const separator = ';';
     const csvContent = 'sep=;\r\n' + 
       headers.map(h => this.escapeCSVField(h)).join(separator) + '\r\n' +
       rows.map(row => row.map(field => this.escapeCSVField(field.toString())).join(separator)).join('\r\n');
 
-    // Descarga
     const blob = new Blob(['\uFEFF' + csvContent], { type: 'text/csv;charset=utf-8;' });
     const url = URL.createObjectURL(blob);
     const link = document.createElement('a');
@@ -313,6 +445,9 @@ export class ProductsVariationsComponent implements OnInit {
       return;
     }
 
+    const template = this.activeTemplate || this.getDefaultTemplate();
+    const cols = template.columns || this.getDefaultTemplate().columns;
+
     this.isGeneratingPdf = true;
     try {
       const doc = new jsPDF({
@@ -327,7 +462,7 @@ export class ProductsVariationsComponent implements OnInit {
       const companySlug = this.activeCompany?.cmp_slug || '';
 
       // 1. DIBUJAR CABECERA (Header)
-      doc.setFillColor(31, 31, 31); // Color gris oscuro premium
+      doc.setFillColor(31, 31, 31);
       doc.rect(0, 0, 210, 40, 'F');
 
       // Título Tienda
@@ -340,26 +475,41 @@ export class ProductsVariationsComponent implements OnInit {
       doc.setFont('helvetica', 'normal');
       doc.setFontSize(11);
       doc.setTextColor(200, 200, 200);
-      doc.text(this.pdfSettings.title.toUpperCase(), 14, 25);
+      doc.text((template.title || 'CATÁLOGO DE PRECIOS OFICIAL').toUpperCase(), 14, 25);
 
       // Fecha
-      const today = new Date().toLocaleDateString('es-AR', {
-        day: '2-digit',
-        month: '2-digit',
-        year: 'numeric',
-        hour: '2-digit',
-        minute: '2-digit'
-      });
-      doc.setFontSize(9);
-      doc.setTextColor(160, 160, 160);
-      doc.text(`Generado el: ${today}`, 14, 32);
+      let dateString = '';
+      if (template.dateFormat === 'full') {
+        const use12h = template.timeFormat !== '24h';
+        const today = new Date().toLocaleDateString('es-AR', {
+          day: '2-digit',
+          month: '2-digit',
+          year: 'numeric',
+          hour: '2-digit',
+          minute: '2-digit',
+          hour12: use12h
+        });
+        dateString = `Generado el: ${today}`;
+      } else if (template.dateFormat === 'date') {
+        const today = new Date().toLocaleDateString('es-AR', {
+          day: '2-digit',
+          month: '2-digit',
+          year: 'numeric'
+        });
+        dateString = `Generado el: ${today}`;
+      }
+
+      if (dateString) {
+        doc.setFontSize(9);
+        doc.setTextColor(160, 160, 160);
+        doc.text(dateString, 14, 32);
+      }
 
       // 2. DETALLES DE CONTACTO Y CÓDIGO QR
       let startY = 48;
 
-      if (this.pdfIncludeContact || (this.pdfIncludeQr && companySlug)) {
-        // Reservar espacio dibujando una caja sutil
-        const boxHeight = this.pdfIncludeContact ? 32 : 26;
+      if (template.includeContact || (template.includeQr && companySlug)) {
+        const boxHeight = template.includeContact ? 32 : 26;
         doc.setFillColor(250, 250, 250);
         doc.setDrawColor(230, 230, 230);
         doc.roundedRect(14, 45, 182, boxHeight, 3, 3, 'FD');
@@ -367,7 +517,7 @@ export class ProductsVariationsComponent implements OnInit {
         let textX = 20;
         let textY = 52;
 
-        if (this.pdfIncludeContact) {
+        if (template.includeContact) {
           doc.setTextColor(80, 80, 80);
           doc.setFont('helvetica', 'bold');
           doc.setFontSize(10);
@@ -389,8 +539,7 @@ export class ProductsVariationsComponent implements OnInit {
           if (!companyEmail && !companyPhone) {
             doc.text('No se registra información de contacto pública.', textX, textY + lineOffset);
           }
-        } else if (this.pdfIncludeQr && companySlug) {
-          // Llenar el vacío izquierdo si el contacto está desactivado pero el QR sí está
+        } else if (template.includeQr && companySlug) {
           doc.setTextColor(80, 80, 80);
           doc.setFont('helvetica', 'bold');
           doc.setFontSize(10);
@@ -406,18 +555,17 @@ export class ProductsVariationsComponent implements OnInit {
         }
 
         // Agregar QR de Compras Online
-        if (this.pdfIncludeQr && companySlug) {
+        if (template.includeQr && companySlug) {
           const marketLink = `${window.location.origin}/home-store/${companySlug}`;
-          const qrSize = this.pdfIncludeContact ? 25 : 20;
+          const qrSize = template.includeContact ? 25 : 20;
           const qrX = 165;
-          const qrY = this.pdfIncludeContact ? 48 : 47;
+          const qrY = template.includeContact ? 48 : 47;
 
           try {
             const qrApiUrl = `https://api.qrserver.com/v1/create-qr-code/?size=150x150&data=${encodeURIComponent(marketLink)}`;
             const qrBase64 = await this.getBase64ImageFromUrl(qrApiUrl);
             doc.addImage(qrBase64, 'PNG', qrX, qrY, qrSize, qrSize);
             
-            // Texto debajo del QR
             doc.setFont('helvetica', 'bold');
             doc.setFontSize(7);
             doc.setTextColor(120, 120, 120);
@@ -432,30 +580,61 @@ export class ProductsVariationsComponent implements OnInit {
 
       // 3. GENERAR TABLA DE PRECIOS
       const tableHeaders = [
-        this.pdfSettings.sku,
-        this.pdfSettings.product,
-        this.pdfSettings.material,
-        this.pdfSettings.specs,
-        this.pdfSettings.price
+        cols.sku || 'SKU',
+        cols.product || 'Producto / Presentación'
       ];
-      if (this.pdfShowAvailability) {
-        tableHeaders.push(this.pdfSettings.status);
+      if (template.showMaterial !== false) {
+        tableHeaders.push(cols.material || 'Material');
+      }
+      tableHeaders.push(cols.specs || 'Color / Talle');
+      tableHeaders.push(cols.price || 'Precio');
+      if (template.showAvailability) {
+        tableHeaders.push(cols.status || 'Estado');
       }
 
-      const tableRows = this.filteredVariations.map(v => {
+      let variationsToExport = this.filteredVariations;
+      if (template.showZeroPriceItems === false) {
+        variationsToExport = variationsToExport.filter(v => {
+          const price = v.prov_suggestedminimumsellingprice;
+          return price !== null && price !== undefined && price > 0;
+        });
+      }
+
+      const tableRows = variationsToExport.map(v => {
         const productName = v.pro_name ? `${v.pro_name} - ${v.prov_name}` : v.prov_name;
         const row = [
           v.prov_sku || '-',
-          productName.trim(),
-          v.gmat_name || '-',
-          [v.prov_color, v.prov_size].filter(Boolean).join(' / ') || '-',
-          `$ ${v.prov_suggestedminimumsellingprice.toLocaleString('es-AR', { minimumFractionDigits: 2, maximumFractionDigits: 2 })}`
+          productName.trim()
         ];
-        if (this.pdfShowAvailability) {
+        if (template.showMaterial !== false) {
+          row.push(v.gmat_name || '-');
+        }
+        row.push([v.prov_color, v.prov_size].filter(Boolean).join(' / ') || '-');
+        row.push(`$ ${v.prov_suggestedminimumsellingprice.toLocaleString('es-AR', { minimumFractionDigits: 2, maximumFractionDigits: 2 })}`);
+        if (template.showAvailability) {
           row.push(v.prov_stock > 0 ? 'Disponible' : 'Agotado');
         }
         return row;
       });
+
+      const dynamicColumnStyles: any = {};
+      let colIdx = 0;
+      // SKU
+      dynamicColumnStyles[colIdx++] = { cellWidth: 32 };
+      // Producto
+      dynamicColumnStyles[colIdx++] = { cellWidth: 'auto' };
+      // Material
+      if (template.showMaterial !== false) {
+        dynamicColumnStyles[colIdx++] = { cellWidth: 28 };
+      }
+      // Color/Talle (Specs)
+      dynamicColumnStyles[colIdx++] = { cellWidth: 28 };
+      // Precio (Alineación derecha)
+      dynamicColumnStyles[colIdx++] = { cellWidth: 28, halign: 'right' };
+      // Estado (si está, alineación centro)
+      if (template.showAvailability) {
+        dynamicColumnStyles[colIdx++] = { cellWidth: 25, halign: 'center' };
+      }
 
       autoTable(doc, {
         head: [tableHeaders],
@@ -463,7 +642,7 @@ export class ProductsVariationsComponent implements OnInit {
         startY: startY,
         theme: 'striped',
         headStyles: {
-          fillColor: [38, 38, 38], // Gris antracita sofisticado (#262626) para un look premium
+          fillColor: [38, 38, 38], // Gris antracita sofisticado
           textColor: [255, 255, 255],
           fontStyle: 'bold',
           fontSize: 10
@@ -472,30 +651,17 @@ export class ProductsVariationsComponent implements OnInit {
           fontSize: 9,
           textColor: [50, 50, 50]
         },
-        columnStyles: {
-          0: { cellWidth: 32 }, // SKU
-          1: { cellWidth: 'auto' }, // Producto
-          2: { cellWidth: 28 }, // Material
-          3: { cellWidth: 28 }, // Color/Talle
-          4: { cellWidth: 28, halign: 'right' }, // Precio
-          5: { cellWidth: 25, halign: 'center' } // Estado (si está presente)
-        },
+        columnStyles: dynamicColumnStyles,
         margin: { left: 14, right: 14 },
         didDrawPage: (data) => {
-          // Footer de página
           doc.setFont('helvetica', 'normal');
           doc.setFontSize(8);
           doc.setTextColor(150, 150, 150);
-          
-          // Izquierda
           doc.text('Generado automáticamente por ATS Market', 14, 287);
-          
-          // Derecha
           doc.text(`Página ${data.pageNumber}`, 180, 287);
         }
       });
 
-      // Guardar archivo
       const formattedDate = new Date().toISOString().slice(0, 10);
       doc.save(`lista_precios_${companyName.toLowerCase().replace(/\s+/g, '_')}_${formattedDate}.pdf`);
       
