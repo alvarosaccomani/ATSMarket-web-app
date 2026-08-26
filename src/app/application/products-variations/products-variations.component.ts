@@ -23,6 +23,7 @@ import { ProductVariationsService } from '@services/product-variations.service';
 import { SessionService } from '@services/session.service';
 import { MessageService } from '@services/message.service';
 import { CompaniesService } from '@services/companies.service';
+import { CompaniesSettingsService } from '@services/companies-settings.service';
 
 import { jsPDF } from 'jspdf';
 import autoTable from 'jspdf-autotable';
@@ -59,6 +60,17 @@ export class ProductsVariationsComponent implements OnInit {
   public filteredVariations: ProductVariationInterface[] = [];
   public isFetching: boolean = true;
 
+  // PDF configuration settings
+  public pdfSettings = {
+    title: 'CATÁLOGO DE PRECIOS OFICIAL',
+    sku: 'SKU',
+    product: 'Producto / Presentación',
+    material: 'Material',
+    specs: 'Color / Talle',
+    price: 'Precio',
+    status: 'Estado'
+  };
+
   public searchTerm: string = '';
   public stockStatus: 'ALL' | 'IN_STOCK' | 'OUT_OF_STOCK' = 'ALL';
   public pageIndex: number = 1;
@@ -79,7 +91,8 @@ export class ProductsVariationsComponent implements OnInit {
     private _sessionService: SessionService,
     private _productVariationsService: ProductVariationsService,
     private _messageService: MessageService,
-    private _companiesService: CompaniesService
+    private _companiesService: CompaniesService,
+    private _settingsService: CompaniesSettingsService
   ) { }
 
   ngOnInit(): void {
@@ -89,10 +102,38 @@ export class ProductsVariationsComponent implements OnInit {
       this.activeCompanyUuid = company.cmp_uuid;
       this.loadVariations();
       this.loadFullCompanyDetails();
+      this.loadCompanySettings();
     } else {
       this.isFetching = false;
       this._messageService.error('Error', 'No se encontró una tienda activa en la sesión.');
     }
+  }
+
+  public loadCompanySettings(): void {
+    this._settingsService.getCompaniesSettings(this.activeCompanyUuid).subscribe({
+      next: (res: any) => {
+        const dbSettings: any[] = res?.data || [];
+        const mappings: { [key: string]: string } = {
+          'PDF_REPORT_TITLE': 'title',
+          'PDF_COLUMN_SKU': 'sku',
+          'PDF_COLUMN_PRODUCT': 'product',
+          'PDF_COLUMN_MATERIAL': 'material',
+          'PDF_COLUMN_SPECS': 'specs',
+          'PDF_COLUMN_PRICE': 'price',
+          'PDF_COLUMN_STATUS': 'status'
+        };
+        dbSettings.forEach(s => {
+          const key = mappings[s.cmps_key];
+          if (key && s.cmps_value) {
+            (this.pdfSettings as any)[key] = s.cmps_value;
+          }
+        });
+        console.log('Configuraciones de PDF cargadas:', this.pdfSettings);
+      },
+      error: (err) => {
+        console.error('Error al cargar configuraciones de PDF:', err);
+      }
+    });
   }
 
   public loadFullCompanyDetails(): void {
@@ -299,7 +340,7 @@ export class ProductsVariationsComponent implements OnInit {
       doc.setFont('helvetica', 'normal');
       doc.setFontSize(11);
       doc.setTextColor(200, 200, 200);
-      doc.text('CATÁLOGO DE PRECIOS OFICIAL', 14, 25);
+      doc.text(this.pdfSettings.title.toUpperCase(), 14, 25);
 
       // Fecha
       const today = new Date().toLocaleDateString('es-AR', {
@@ -390,9 +431,15 @@ export class ProductsVariationsComponent implements OnInit {
       }
 
       // 3. GENERAR TABLA DE PRECIOS
-      const tableHeaders = ['SKU', 'Producto / Presentación', 'Material', 'Color / Talle', 'Precio'];
+      const tableHeaders = [
+        this.pdfSettings.sku,
+        this.pdfSettings.product,
+        this.pdfSettings.material,
+        this.pdfSettings.specs,
+        this.pdfSettings.price
+      ];
       if (this.pdfShowAvailability) {
-        tableHeaders.push('Estado');
+        tableHeaders.push(this.pdfSettings.status);
       }
 
       const tableRows = this.filteredVariations.map(v => {
