@@ -123,6 +123,13 @@ export class ProductsVariationsComponent implements OnInit {
           parsed = [this.getDefaultTemplate()];
         }
 
+        // Asegurar retrocompatibilidad para el color
+        parsed.forEach(t => {
+          if (!t.primaryColor) {
+            t.primaryColor = this.activeCompany?.cmp_primarycolor || '#262626';
+          }
+        });
+
         this.reportTemplates = parsed;
         this.selectedTemplateId = this.reportTemplates[0].id;
         this.activeTemplate = this.reportTemplates[0];
@@ -281,12 +288,36 @@ export class ProductsVariationsComponent implements OnInit {
           const fullCompany = Array.isArray(res.data) ? res.data[0] : res.data;
           this.activeCompany = { ...this.activeCompany, ...fullCompany };
           console.log('Información completa de la tienda cargada:', this.activeCompany);
+          
+          // Parchear color institucional por defecto a las plantillas si no lo tienen seteado
+          if (this.reportTemplates && this.reportTemplates.length > 0) {
+            this.reportTemplates.forEach(t => {
+              if (!t.primaryColor || t.primaryColor === '#262626') {
+                t.primaryColor = this.activeCompany?.cmp_primarycolor || '#262626';
+              }
+            });
+            if (this.activeTemplate && (!this.activeTemplate.primaryColor || this.activeTemplate.primaryColor === '#262626')) {
+              this.activeTemplate.primaryColor = this.activeCompany?.cmp_primarycolor || '#262626';
+            }
+          }
         }
       },
       error: (err) => {
         console.error('Error al cargar detalles completos de la tienda:', err);
       }
     });
+  }
+
+  public hexToRgb(hex: string): [number, number, number] {
+    hex = hex.replace(/^#/, '');
+    const num = parseInt(hex, 16);
+    const r = (num >> 16) & 255;
+    const g = (num >> 8) & 255;
+    const b = num & 255;
+    if (isNaN(r) || isNaN(g) || isNaN(b)) {
+      return [38, 38, 38];
+    }
+    return [r, g, b];
   }
 
   public loadVariations(): void {
@@ -462,7 +493,8 @@ export class ProductsVariationsComponent implements OnInit {
       const companySlug = this.activeCompany?.cmp_slug || '';
 
       // 1. DIBUJAR CABECERA (Header)
-      doc.setFillColor(31, 31, 31);
+      const headerColor = this.hexToRgb(template.primaryColor || '#1f1f1f');
+      doc.setFillColor(headerColor[0], headerColor[1], headerColor[2]);
       doc.rect(0, 0, 210, 40, 'F');
 
       // Título Tienda
@@ -642,7 +674,7 @@ export class ProductsVariationsComponent implements OnInit {
         startY: startY,
         theme: 'striped',
         headStyles: {
-          fillColor: [38, 38, 38], // Gris antracita sofisticado
+          fillColor: this.hexToRgb(template.primaryColor || '#262626'),
           textColor: [255, 255, 255],
           fontStyle: 'bold',
           fontSize: 10
