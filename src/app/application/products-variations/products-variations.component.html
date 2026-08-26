@@ -195,6 +195,11 @@
                     <span style="font-family: monospace; color: #595959; font-weight: 600; font-size: 14px;">{{ activeTemplate.primaryColor | uppercase }}</span>
                 </div>
 
+                <div *ngIf="activeTemplate.includeQr && activeCompany?.cmp_slug">
+                    <span style="display: block; font-weight: 600; color: #262626; margin-bottom: 4px;">Etiqueta del Código QR:</span>
+                    <input nz-input [(ngModel)]="activeTemplate.qrLabel" placeholder="Ej: ESCANEA PARA COMPRAR" nzSize="large" />
+                </div>
+
                 <div>
                     <span style="display: block; font-weight: 600; color: #262626; margin-bottom: 8px;">Renombrar Columnas:</span>
                     <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 8px;">

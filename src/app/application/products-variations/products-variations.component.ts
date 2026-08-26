@@ -123,10 +123,13 @@ export class ProductsVariationsComponent implements OnInit {
           parsed = [this.getDefaultTemplate()];
         }
 
-        // Asegurar retrocompatibilidad para el color
+        // Asegurar retrocompatibilidad para el color y la etiqueta del QR
         parsed.forEach(t => {
           if (!t.primaryColor) {
             t.primaryColor = this.activeCompany?.cmp_primarycolor || '#262626';
+          }
+          if (!t.qrLabel) {
+            t.qrLabel = 'ESCANEA PARA COMPRAR';
           }
         });
 
@@ -156,6 +159,8 @@ export class ProductsVariationsComponent implements OnInit {
       showZeroPriceItems: true,
       dateFormat: 'full',
       timeFormat: '12h',
+      primaryColor: this.activeCompany?.cmp_primarycolor || '#262626',
+      qrLabel: 'ESCANEA PARA COMPRAR',
       columns: {
         sku: 'SKU',
         product: 'Producto / Presentación',
@@ -203,6 +208,8 @@ export class ProductsVariationsComponent implements OnInit {
       showZeroPriceItems: this.activeTemplate?.showZeroPriceItems ?? true,
       dateFormat: this.activeTemplate?.dateFormat ?? 'full',
       timeFormat: this.activeTemplate?.timeFormat ?? '12h',
+      primaryColor: this.activeTemplate?.primaryColor || this.activeCompany?.cmp_primarycolor || '#262626',
+      qrLabel: this.activeTemplate?.qrLabel ?? 'ESCANEA PARA COMPRAR',
       columns: { ...this.activeTemplate?.columns || this.getDefaultTemplate().columns }
     };
 
@@ -541,7 +548,28 @@ export class ProductsVariationsComponent implements OnInit {
       let startY = 48;
 
       if (template.includeContact || (template.includeQr && companySlug)) {
-        const boxHeight = template.includeContact ? 32 : 26;
+        let contactLines: string[] = [];
+        if (template.includeContact) {
+          if (companyEmail) contactLines.push(`Email: ${companyEmail}`);
+          if (companyPhone) contactLines.push(`Teléfono: ${companyPhone}`);
+          if (this.activeCompany?.cmp_whatsapp) contactLines.push(`WhatsApp: ${this.activeCompany.cmp_whatsapp}`);
+          if (this.activeCompany?.cmp_instagram) contactLines.push(`Instagram: ${this.activeCompany.cmp_instagram}`);
+          if (this.activeCompany?.cmp_facebook) contactLines.push(`Facebook: ${this.activeCompany.cmp_facebook}`);
+          if (contactLines.length === 0) {
+            contactLines.push('No se registra información de contacto pública.');
+          }
+        }
+
+        const hasQr = template.includeQr && companySlug;
+        const numLines = contactLines.length;
+        
+        let boxHeight = 26;
+        if (template.includeContact) {
+          boxHeight = Math.max(15 + numLines * 5, hasQr ? 32 : 26);
+        } else if (hasQr) {
+          boxHeight = 26;
+        }
+
         doc.setFillColor(250, 250, 250);
         doc.setDrawColor(230, 230, 230);
         doc.roundedRect(14, 45, 182, boxHeight, 3, 3, 'FD');
@@ -560,17 +588,10 @@ export class ProductsVariationsComponent implements OnInit {
           doc.setTextColor(100, 100, 100);
           
           let lineOffset = 6;
-          if (companyEmail) {
-            doc.text(`Email: ${companyEmail}`, textX, textY + lineOffset);
+          contactLines.forEach(line => {
+            doc.text(line, textX, textY + lineOffset);
             lineOffset += 5;
-          }
-          if (companyPhone) {
-            doc.text(`Teléfono: ${companyPhone}`, textX, textY + lineOffset);
-            lineOffset += 5;
-          }
-          if (!companyEmail && !companyPhone) {
-            doc.text('No se registra información de contacto pública.', textX, textY + lineOffset);
-          }
+          });
         } else if (template.includeQr && companySlug) {
           doc.setTextColor(80, 80, 80);
           doc.setFont('helvetica', 'bold');
@@ -591,7 +612,10 @@ export class ProductsVariationsComponent implements OnInit {
           const marketLink = `${window.location.origin}/home-store/${companySlug}`;
           const qrSize = template.includeContact ? 25 : 20;
           const qrX = 165;
-          const qrY = template.includeContact ? 48 : 47;
+          
+          // Centrar el QR verticalmente en el boxHeight
+          const qrSpaceRequired = qrSize + 4; // QR + label padding
+          const qrY = 45 + (boxHeight - qrSpaceRequired) / 2;
 
           try {
             const qrApiUrl = `https://api.qrserver.com/v1/create-qr-code/?size=150x150&data=${encodeURIComponent(marketLink)}`;
@@ -601,7 +625,7 @@ export class ProductsVariationsComponent implements OnInit {
             doc.setFont('helvetica', 'bold');
             doc.setFontSize(7);
             doc.setTextColor(120, 120, 120);
-            doc.text('ESCANEA PARA COMPRAR', qrX - 2, qrY + qrSize + 4);
+            doc.text((template.qrLabel || 'ESCANEA PARA COMPRAR').toUpperCase(), qrX - 2, qrY + qrSize + 4);
           } catch (qrErr) {
             console.error('Error cargando QR para PDF:', qrErr);
           }
