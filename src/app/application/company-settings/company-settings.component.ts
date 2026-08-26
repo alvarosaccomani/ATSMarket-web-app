@@ -536,6 +536,97 @@ export class CompanySettingsComponent implements OnInit {
         cmps_updatedat: new Date(),
         cmps_createdat: new Date()
       },
+      {
+        cmp_uuid: this.cmp_uuid,
+        cmps_uuid: '31',
+        cmps_key: 'PDF_REPORT_TITLE',
+        cmps_parameter: 'Título del Catálogo PDF',
+        cmps_description: 'Título principal que aparece destacado en el encabezado de tus catálogos y listas de precios exportadas en PDF.',
+        cmps_datatype: 'string',
+        cmps_value: 'CATÁLOGO DE PRECIOS OFICIAL',
+        cmps_group: 'Reportes PDF',
+        cmps_options: '',
+        cmps_updatedat: new Date(),
+        cmps_createdat: new Date()
+      },
+      {
+        cmp_uuid: this.cmp_uuid,
+        cmps_uuid: '32',
+        cmps_key: 'PDF_COLUMN_SKU',
+        cmps_parameter: 'Etiqueta Columna SKU',
+        cmps_description: 'Nombre o cabecera que se mostrará para la columna de los códigos SKU.',
+        cmps_datatype: 'string',
+        cmps_value: 'SKU',
+        cmps_group: 'Reportes PDF',
+        cmps_options: '',
+        cmps_updatedat: new Date(),
+        cmps_createdat: new Date()
+      },
+      {
+        cmp_uuid: this.cmp_uuid,
+        cmps_uuid: '33',
+        cmps_key: 'PDF_COLUMN_PRODUCT',
+        cmps_parameter: 'Etiqueta Columna Producto',
+        cmps_description: 'Nombre o cabecera que se mostrará para la columna del nombre del producto o presentación.',
+        cmps_datatype: 'string',
+        cmps_value: 'Producto / Presentación',
+        cmps_group: 'Reportes PDF',
+        cmps_options: '',
+        cmps_updatedat: new Date(),
+        cmps_createdat: new Date()
+      },
+      {
+        cmp_uuid: this.cmp_uuid,
+        cmps_uuid: '34',
+        cmps_key: 'PDF_COLUMN_MATERIAL',
+        cmps_parameter: 'Etiqueta Columna Material',
+        cmps_description: 'Nombre o cabecera que se mostrará para la columna de materiales.',
+        cmps_datatype: 'string',
+        cmps_value: 'Material',
+        cmps_group: 'Reportes PDF',
+        cmps_options: '',
+        cmps_updatedat: new Date(),
+        cmps_createdat: new Date()
+      },
+      {
+        cmp_uuid: this.cmp_uuid,
+        cmps_uuid: '35',
+        cmps_key: 'PDF_COLUMN_SPECS',
+        cmps_parameter: 'Etiqueta Columna Color/Talle',
+        cmps_description: 'Nombre o cabecera que se mostrará para la columna de detalles físicos (colores y medidas).',
+        cmps_datatype: 'string',
+        cmps_value: 'Color / Talle',
+        cmps_group: 'Reportes PDF',
+        cmps_options: '',
+        cmps_updatedat: new Date(),
+        cmps_createdat: new Date()
+      },
+      {
+        cmp_uuid: this.cmp_uuid,
+        cmps_uuid: '36',
+        cmps_key: 'PDF_COLUMN_PRICE',
+        cmps_parameter: 'Etiqueta Columna Precio',
+        cmps_description: 'Nombre o cabecera que se mostrará para la columna del precio de venta.',
+        cmps_datatype: 'string',
+        cmps_value: 'Precio',
+        cmps_group: 'Reportes PDF',
+        cmps_options: '',
+        cmps_updatedat: new Date(),
+        cmps_createdat: new Date()
+      },
+      {
+        cmp_uuid: this.cmp_uuid,
+        cmps_uuid: '37',
+        cmps_key: 'PDF_COLUMN_STATUS',
+        cmps_parameter: 'Etiqueta Columna Estado',
+        cmps_description: 'Nombre o cabecera que se mostrará para la columna de disponibilidad de stock.',
+        cmps_datatype: 'string',
+        cmps_value: 'Estado',
+        cmps_group: 'Reportes PDF',
+        cmps_options: '',
+        cmps_updatedat: new Date(),
+        cmps_createdat: new Date()
+      }
     ];
   }
 
