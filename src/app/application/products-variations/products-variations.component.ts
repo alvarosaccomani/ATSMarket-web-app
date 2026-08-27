@@ -123,10 +123,13 @@ export class ProductsVariationsComponent implements OnInit {
           parsed = [this.getDefaultTemplate()];
         }
 
-        // Asegurar retrocompatibilidad para el color y la etiqueta del QR
+        // Asegurar retrocompatibilidad para el color, texto y la etiqueta del QR
         parsed.forEach(t => {
           if (!t.primaryColor) {
             t.primaryColor = this.activeCompany?.cmp_primarycolor || '#262626';
+          }
+          if (!t.textColor) {
+            t.textColor = '#ffffff';
           }
           if (!t.qrLabel) {
             t.qrLabel = 'ESCANEA PARA COMPRAR';
@@ -160,6 +163,7 @@ export class ProductsVariationsComponent implements OnInit {
       dateFormat: 'full',
       timeFormat: '12h',
       primaryColor: this.activeCompany?.cmp_primarycolor || '#262626',
+      textColor: '#ffffff',
       qrLabel: 'ESCANEA PARA COMPRAR',
       columns: {
         sku: 'SKU',
@@ -209,6 +213,7 @@ export class ProductsVariationsComponent implements OnInit {
       dateFormat: this.activeTemplate?.dateFormat ?? 'full',
       timeFormat: this.activeTemplate?.timeFormat ?? '12h',
       primaryColor: this.activeTemplate?.primaryColor || this.activeCompany?.cmp_primarycolor || '#262626',
+      textColor: this.activeTemplate?.textColor ?? '#ffffff',
       qrLabel: this.activeTemplate?.qrLabel ?? 'ESCANEA PARA COMPRAR',
       columns: { ...this.activeTemplate?.columns || this.getDefaultTemplate().columns }
     };
@@ -504,8 +509,10 @@ export class ProductsVariationsComponent implements OnInit {
       doc.setFillColor(headerColor[0], headerColor[1], headerColor[2]);
       doc.rect(0, 0, 210, 40, 'F');
 
+      const txtColor = this.hexToRgb(template.textColor || '#ffffff');
+
       // Título Tienda
-      doc.setTextColor(255, 255, 255);
+      doc.setTextColor(txtColor[0], txtColor[1], txtColor[2]);
       doc.setFont('helvetica', 'bold');
       doc.setFontSize(22);
       doc.text(companyName.toUpperCase(), 14, 18);
@@ -513,7 +520,11 @@ export class ProductsVariationsComponent implements OnInit {
       // Subtítulo
       doc.setFont('helvetica', 'normal');
       doc.setFontSize(11);
-      doc.setTextColor(200, 200, 200);
+      if (template.textColor === '#ffffff') {
+        doc.setTextColor(200, 200, 200);
+      } else {
+        doc.setTextColor(txtColor[0], txtColor[1], txtColor[2]);
+      }
       doc.text((template.title || 'CATÁLOGO DE PRECIOS OFICIAL').toUpperCase(), 14, 25);
 
       // Fecha
@@ -540,7 +551,11 @@ export class ProductsVariationsComponent implements OnInit {
 
       if (dateString) {
         doc.setFontSize(9);
-        doc.setTextColor(160, 160, 160);
+        if (template.textColor === '#ffffff') {
+          doc.setTextColor(160, 160, 160);
+        } else {
+          doc.setTextColor(txtColor[0], txtColor[1], txtColor[2]);
+        }
         doc.text(dateString, 14, 32);
       }
 
@@ -699,7 +714,7 @@ export class ProductsVariationsComponent implements OnInit {
         theme: 'striped',
         headStyles: {
           fillColor: this.hexToRgb(template.primaryColor || '#262626'),
-          textColor: [255, 255, 255],
+          textColor: this.hexToRgb(template.textColor || '#ffffff'),
           fontStyle: 'bold',
           fontSize: 10
         },
