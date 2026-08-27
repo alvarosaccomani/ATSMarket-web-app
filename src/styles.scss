@@ -1,6 +1,10 @@
+:root {
+    --ant-primary-color: #1890ff;
+    --navbar-background-color: #001529;
+}
+
 /* Tematización Dinámica Scoped para la Tienda */
 .store-context {
-    --ant-primary-color: #1890ff; /* Valor por defecto dentro del contexto */
 
     /* Overrides para usar la variable dinámica solo aquí */
     .ant-btn-primary {
