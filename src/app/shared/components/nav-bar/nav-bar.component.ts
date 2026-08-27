@@ -119,7 +119,7 @@ export class NavBarComponent implements OnInit {
 
   private updateNavbarColor(): void {
     const customColor = this._storeContext.getSetting('THEME_NAVBAR_COLOR');
-    this.navbarColor = customColor || '#001529';
+    this.navbarColor = customColor || this.activeStore?.cmp_primarycolor || '#001529';
   }
 
   // Ejecuta la búsqueda desde el navbar
