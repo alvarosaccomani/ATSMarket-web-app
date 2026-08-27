@@ -99,6 +99,7 @@ export class ProductVariationComponent implements OnInit {
       prov_sku: [{ value: 'ROS-PL-L', disabled: true }],
       prov_name: ['', Validators.required],
       prov_description: [''],
+      prov_image: [''],
       markup_percentage: [50, [Validators.required]], // Ganancia global de la variación
       costsPerSupplier: this.fb.array([])
     });
@@ -288,8 +289,19 @@ export class ProductVariationComponent implements OnInit {
             prov_sku: productVariationData.prov_sku,
             prov_name: productVariationData.prov_name,
             prov_description: productVariationData.prov_description,
+            prov_image: productVariationData.prov_image,
             markup_percentage: productVariationData.markup_percentage || 50
           });
+
+          // Inicializar miniatura si existe
+          if (productVariationData.prov_image) {
+            this.fileList = [{
+              uid: '-1',
+              name: 'imagen.webp',
+              status: 'done',
+              url: productVariationData.prov_image
+            }];
+          }
 
           // Repoblar costos por proveedor
           const variationsCosts = productVariationData.costsPerSupplier || [];
@@ -392,10 +404,73 @@ export class ProductVariationComponent implements OnInit {
     }
   }
 
+  private compressAndResizeImage(file: File): Promise<string> {
+    return new Promise((resolve, reject) => {
+      const reader = new FileReader();
+      reader.onload = (event: any) => {
+        const img = new Image();
+        img.onload = () => {
+          const canvas = document.createElement('canvas');
+          const MAX_WIDTH = 800;
+          const MAX_HEIGHT = 800;
+          let width = img.width;
+          let height = img.height;
+
+          if (width > height) {
+            if (width > MAX_WIDTH) {
+              height *= MAX_WIDTH / width;
+              width = MAX_WIDTH;
+            }
+          } else {
+            if (height > MAX_HEIGHT) {
+              width *= MAX_HEIGHT / height;
+              height = MAX_HEIGHT;
+            }
+          }
+
+          canvas.width = width;
+          canvas.height = height;
+
+          const ctx = canvas.getContext('2d');
+          if (ctx) {
+            ctx.drawImage(img, 0, 0, width, height);
+            resolve(canvas.toDataURL('image/webp', 0.80));
+          } else {
+            reject('No se pudo obtener contexto 2D del canvas');
+          }
+        };
+        img.onerror = err => reject(err);
+        img.src = event.target.result;
+      };
+      reader.onerror = err => reject(err);
+      reader.readAsDataURL(file);
+    });
+  }
+
   // Upload Logic
   public beforeUpload = (file: NzUploadFile): boolean => {
-    this.fileList = [file];
+    const rawFile = file.originFileObj || (file as any);
+    if (rawFile) {
+      this.compressAndResizeImage(rawFile).then(base64 => {
+        this.productVariationForm.patchValue({ prov_image: base64 });
+        this.fileList = [{
+          uid: file.uid,
+          name: file.name,
+          status: 'done',
+          url: base64
+        }];
+      }).catch(err => {
+        console.error('Error al procesar la imagen de la variante:', err);
+        this._messageService.error('Error', 'No se pudo procesar la imagen de la variante.');
+      });
+    }
     return false;
+  };
+
+  public onRemoveImage = (): boolean => {
+    this.productVariationForm.patchValue({ prov_image: '' });
+    this.fileList = [];
+    return true;
   };
 
   public formatterPercent = (value: number): string => `${value} %`;
