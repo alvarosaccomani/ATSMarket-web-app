@@ -165,7 +165,7 @@
                     <div style="margin-bottom: 24px;">
                         <p style="font-weight: 500; margin-bottom: 8px;">Logo de la Tienda</p>
                         <nz-upload nzType="drag" [nzMultiple]="false" [(nzFileList)]="logoFileList"
-                            [nzBeforeUpload]="beforeUploadLogo">
+                            [nzBeforeUpload]="beforeUploadLogo" [nzRemove]="onRemoveLogo">
                             <p class="ant-upload-drag-icon">
                                 <span nz-icon nzType="picture"></span>
                             </p>
@@ -177,7 +177,7 @@
                     <div>
                         <p style="font-weight: 500; margin-bottom: 8px;">Banner Principal (Opcional)</p>
                         <nz-upload nzType="drag" [nzMultiple]="false" [(nzFileList)]="bannerFileList"
-                            [nzBeforeUpload]="beforeUploadBanner">
+                            [nzBeforeUpload]="beforeUploadBanner" [nzRemove]="onRemoveBanner">
                             <p class="ant-upload-drag-icon">
                                 <span nz-icon nzType="bg-colors"></span>
                             </p>

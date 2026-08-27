@@ -73,6 +73,8 @@ export class CompanyComponent implements OnInit {
       cmp_email: ['', [Validators.email]],
       cmp_description: [''],
       cmp_status: ['active', Validators.required],
+      cmp_logo: [''],
+      cmp_banner: [''],
       // Nuevos campos migrados desde settings
       cmp_currency: ['ARS', Validators.required],
       cmp_whatsapp: [''],
@@ -99,13 +101,74 @@ export class CompanyComponent implements OnInit {
     });
   }
 
+  private compressAndResizeImage(file: File): Promise<string> {
+    return new Promise((resolve, reject) => {
+      const reader = new FileReader();
+      reader.onload = (event: any) => {
+        const img = new Image();
+        img.onload = () => {
+          const canvas = document.createElement('canvas');
+          const MAX_WIDTH = 800;
+          const MAX_HEIGHT = 800;
+          let width = img.width;
+          let height = img.height;
+
+          if (width > height) {
+            if (width > MAX_WIDTH) {
+              height *= MAX_WIDTH / width;
+              width = MAX_WIDTH;
+            }
+          } else {
+            if (height > MAX_HEIGHT) {
+              width *= MAX_HEIGHT / height;
+              height = MAX_HEIGHT;
+            }
+          }
+
+          canvas.width = width;
+          canvas.height = height;
+
+          const ctx = canvas.getContext('2d');
+          if (ctx) {
+            ctx.drawImage(img, 0, 0, width, height);
+            resolve(canvas.toDataURL('image/webp', 0.80));
+          } else {
+            reject('No se pudo obtener contexto 2D del canvas');
+          }
+        };
+        img.onerror = err => reject(err);
+        img.src = event.target.result;
+      };
+      reader.onerror = err => reject(err);
+      reader.readAsDataURL(file);
+    });
+  }
+
   private getCompanyById(cmp_uuid: string): void {
     this.isLoading = true;
     this._companiesService.getCompanyById(cmp_uuid).subscribe({
       next: (res) => {
         if (res.data) {
-          const company = res.data;
+          const company: any = Array.isArray(res.data) ? res.data[0] : res.data;
           this.companyForm.patchValue(company);
+
+          // Inicializar miniaturas si existen
+          if (company.cmp_logo) {
+            this.logoFileList = [{
+              uid: '-1',
+              name: 'logo.webp',
+              status: 'done',
+              url: company.cmp_logo
+            }];
+          }
+          if (company.cmp_banner) {
+            this.bannerFileList = [{
+              uid: '-2',
+              name: 'banner.webp',
+              status: 'done',
+              url: company.cmp_banner
+            }];
+          }
         }
         this.isLoading = false;
       },
@@ -117,13 +180,53 @@ export class CompanyComponent implements OnInit {
   }
 
   public beforeUploadLogo = (file: NzUploadFile): boolean => {
-    this.logoFileList = [file];
+    const rawFile = file.originFileObj || (file as any);
+    if (rawFile) {
+      this.compressAndResizeImage(rawFile).then(base64 => {
+        this.companyForm.patchValue({ cmp_logo: base64 });
+        this.logoFileList = [{
+          uid: file.uid,
+          name: file.name,
+          status: 'done',
+          url: base64
+        }];
+      }).catch(err => {
+        console.error('Error al procesar el logo:', err);
+        this._messageService.error('Error', 'No se pudo procesar la imagen del logo.');
+      });
+    }
     return false;
   };
 
+  public onRemoveLogo = (): boolean => {
+    this.companyForm.patchValue({ cmp_logo: '' });
+    this.logoFileList = [];
+    return true;
+  };
+
   public beforeUploadBanner = (file: NzUploadFile): boolean => {
-    this.bannerFileList = [file];
+    const rawFile = file.originFileObj || (file as any);
+    if (rawFile) {
+      this.compressAndResizeImage(rawFile).then(base64 => {
+        this.companyForm.patchValue({ cmp_banner: base64 });
+        this.bannerFileList = [{
+          uid: file.uid,
+          name: file.name,
+          status: 'done',
+          url: base64
+        }];
+      }).catch(err => {
+        console.error('Error al procesar el banner:', err);
+        this._messageService.error('Error', 'No se pudo procesar la imagen del banner.');
+      });
+    }
     return false;
+  };
+
+  public onRemoveBanner = (): boolean => {
+    this.companyForm.patchValue({ cmp_banner: '' });
+    this.bannerFileList = [];
+    return true;
   };
 
   public onSave(): void {
