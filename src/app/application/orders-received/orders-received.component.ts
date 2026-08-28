@@ -14,6 +14,7 @@ import { NzAlertModule } from 'ng-zorro-antd/alert';
 import { NzInputModule } from 'ng-zorro-antd/input';
 import { NzProgressModule } from 'ng-zorro-antd/progress';
 import { NzModalModule } from 'ng-zorro-antd/modal';
+import { NzPopconfirmModule } from 'ng-zorro-antd/popconfirm';
 import { FormsModule } from '@angular/forms';
 import { BarcodeScannerComponent } from '../../shared/components/barcode-scanner/barcode-scanner.component';
 
@@ -21,6 +22,7 @@ import { Subject, Observable, forkJoin } from 'rxjs';
 import { takeUntil } from 'rxjs/operators';
 import { OrdersService } from '../../core/services/orders.service';
 import { SessionService } from '../../core/services/session.service';
+// Model interface including coupon updates
 import { OrderInterface } from '../../core/interfaces/order/order.interface';
 import { AddressesService } from '../../core/services/addresses.service';
 import { AddressInterface } from '../../core/interfaces/address/address.interface';
@@ -49,6 +51,7 @@ declare const L: any;
     NzInputModule,
     NzProgressModule,
     NzModalModule,
+    NzPopconfirmModule,
     BarcodeScannerComponent
   ],
   templateUrl: './orders-received.component.html',
@@ -266,6 +269,39 @@ export class OrdersReceivedComponent implements OnInit, OnDestroy {
         ntf_message: `Lamentablemente tu pago para el pedido #${order.ord_ordernumber} fue rechazado y la orden fue cancelada.`,
         ntf_type: 'error',
         ntf_actionurl: '/application/my-purchases'
+      });
+    }
+  }
+
+  public cancelOrder(order: OrderInterface): void {
+    if (order.cmp_uuid && order.ord_uuid) {
+      this._ordersService.changeOrderStatus(order.cmp_uuid, order.ord_uuid, 'CANCELLED').subscribe({
+        next: (res) => {
+          console.info('Orden cancelada en el servidor:', res);
+          const idx = this.allOrders.findIndex(o => o.ord_uuid === order.ord_uuid);
+          if (idx !== -1) {
+            this.allOrders[idx].ords_uuid = 'CANCELLED';
+            this.filterOrdersIntoTabs();
+            this.message.error(`Pedido #${order.ord_ordernumber} cancelado con éxito.`);
+            this.isDrawerVisible = false;
+
+            // Notificar en tiempo real al cliente
+            this._notificationService.broadcastOrderStatusUpdate(order.ord_uuid, 'CANCELLED');
+            this._notificationService.pushNotification({
+              usr_uuid: order.usr_uuid,
+              cus_uuid: order.cus_uuid,
+              cmp_uuid: order.cmp_uuid,
+              ntf_title: 'Pedido cancelado ❌',
+              ntf_message: `Tu pedido #${order.ord_ordernumber} fue cancelado por el comercio.`,
+              ntf_type: 'error',
+              ntf_actionurl: '/application/my-purchases'
+            });
+          }
+        },
+        error: (err) => {
+          console.error('Error al cancelar la orden en el servidor:', err);
+          this.message.error('No se pudo cancelar el pedido en el servidor.');
+        }
       });
     }
   }

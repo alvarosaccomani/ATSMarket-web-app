@@ -738,6 +738,17 @@
                         *ngIf="selectedOrder.ords_uuid === 'SHIPPED'" (click)="markAsDelivered(selectedOrder)">
                     🏁 Marcar como Entregado con Éxito
                 </button>
+
+                <!-- Cancelar pedido -->
+                <button nz-button nzType="primary" nzDanger nzBlock nzSize="large" 
+                        nz-popconfirm
+                        nzPopconfirmTitle="¿Estás seguro de que deseas cancelar este pedido? Se restablecerá el stock WMS."
+                        nzOkText="Sí, Cancelar"
+                        nzCancelText="No"
+                        (nzOnConfirm)="cancelOrder(selectedOrder)"
+                        style="border-radius: 8px; font-weight: 600; height: 44px; font-size: 15px; display: inline-flex; align-items: center; justify-content: center; gap: 8px;">
+                    ❌ Cancelar Pedido
+                </button>
             </div>
 
             <!-- SECCIÓN: PRODUCTOS DEL PEDIDO -->
@@ -762,9 +773,13 @@
                     <span>Monto de Compra:</span>
                     <span>${{ selectedOrder.ord_subtotal | number:'1.2-2' }}</span>
                 </div>
-                <div style="display: flex; justify-content: space-between; font-size: 13px; color: #8c8c8c; margin-bottom: 12px;">
+                <div style="display: flex; justify-content: space-between; font-size: 13px; color: #8c8c8c; margin-bottom: 6px;">
                     <span>Cargo de Envío:</span>
                     <span style="color: #1890ff; font-weight: 500;">${{ selectedOrder.ord_shippingcost | number:'1.2-2' }}</span>
+                </div>
+                <div *ngIf="selectedOrder.ord_couponcode" style="display: flex; justify-content: space-between; font-size: 13px; color: #52c41a; margin-bottom: 12px; font-weight: 500;">
+                    <span>Cupón Aplicado ({{ selectedOrder.ord_couponcode }}):</span>
+                    <span>-${{ selectedOrder.ord_discountamount | number:'1.2-2' }}</span>
                 </div>
                 <nz-divider style="margin: 8px 0;"></nz-divider>
                 <div class="order-grand-total" style="background-color: transparent; padding: 0; margin-top: 0;">
