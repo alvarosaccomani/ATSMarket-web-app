@@ -6,6 +6,7 @@ export interface CategoryInterface {
     gcat_uuid: string,
     cat_name: string,    
     cat_description: string,
+    gcat_image: string,
     cat_createdat: Date,
     cat_updatedat: Date
 }
