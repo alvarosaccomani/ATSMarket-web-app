@@ -17,10 +17,13 @@ export class CategoriesService {
    * Obtiene todas las categorias.
    * @returns Observable de un array de categorias.
    */
-  public getCategories(cmp_uuid: string, itm_uuid: string): Observable<CategoryResults> {
+  public getCategories(cmp_uuid: string, itm_uuid?: string): Observable<CategoryResults> {
     const headers = new HttpHeaders().set('content-type', 'application/json');
     let params = new HttpParams();
-    return this._http.get<CategoryResults>(`${environment.apiUrl}categories/${cmp_uuid}/${itm_uuid}`, { headers, params });
+    const url = itm_uuid 
+      ? `${environment.apiUrl}categories/${cmp_uuid}/${itm_uuid}`
+      : `${environment.apiUrl}categories/${cmp_uuid}`;
+    return this._http.get<CategoryResults>(url, { headers, params });
   }
 
   /**
