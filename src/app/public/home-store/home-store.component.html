@@ -151,5 +151,41 @@
                 </div>
             </div>
         </div>
+
+        <!-- Footer de la Tienda -->
+        <footer *ngIf="store" class="store-footer">
+            <nz-divider></nz-divider>
+            <div nz-row [nzGutter]="[32, 32]" style="padding: 40px 0;">
+                <div nz-col [nzXs]="24" [nzMd]="8" class="footer-col">
+                    <h3 class="footer-title">{{ store.cmp_name }}</h3>
+                    <p class="footer-desc">{{ store.cmp_description || 'Tu tienda oficial de confianza.' }}</p>
+                </div>
+                <div nz-col [nzXs]="24" [nzMd]="8" class="footer-col">
+                    <h3 class="footer-title">Contacto</h3>
+                    <ul class="footer-links">
+                        <li *ngIf="store.cmp_email"><span nz-icon nzType="mail"></span> {{ store.cmp_email }}</li>
+                        <li *ngIf="store.cmp_phone"><span nz-icon nzType="phone"></span> {{ store.cmp_phone }}</li>
+                        <li *ngIf="store.cmp_address"><span nz-icon nzType="environment"></span> {{ store.cmp_address }}</li>
+                    </ul>
+                </div>
+                <div nz-col [nzXs]="24" [nzMd]="8" class="footer-col">
+                    <h3 class="footer-title">Seguinos</h3>
+                    <div class="footer-social-row">
+                        <a *ngIf="store.cmp_whatsapp" [href]="'https://wa.me/' + store.cmp_whatsapp" target="_blank" class="footer-social-btn wa">
+                            <span nz-icon nzType="whatsapp"></span> WhatsApp
+                        </a>
+                        <a *ngIf="store.cmp_instagram" [href]="'https://instagram.com/' + store.cmp_instagram" target="_blank" class="footer-social-btn ig">
+                            <span nz-icon nzType="instagram"></span> Instagram
+                        </a>
+                        <a *ngIf="store.cmp_facebook" [href]="'https://facebook.com/' + store.cmp_facebook" target="_blank" class="footer-social-btn fb">
+                            <span nz-icon nzType="facebook"></span> Facebook
+                        </a>
+                    </div>
+                </div>
+            </div>
+            <div class="footer-copyright">
+                <p>© {{ store.cmp_name }} - Todos los derechos reservados. Powered by ATSMarket.</p>
+            </div>
+        </footer>
     </div>
 </nz-spin>

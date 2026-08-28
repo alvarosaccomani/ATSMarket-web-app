@@ -383,3 +383,103 @@
         margin-bottom: 20px;
     }
 }
+
+/* Premium Footer */
+.store-footer {
+    margin-top: 60px;
+    padding-bottom: 40px;
+
+    .footer-col {
+        display: flex;
+        flex-direction: column;
+        gap: 12px;
+    }
+
+    .footer-title {
+        font-size: 16px;
+        font-weight: 700;
+        color: #262626;
+        margin: 0;
+        text-transform: uppercase;
+        letter-spacing: 0.5px;
+    }
+
+    .footer-desc {
+        color: #8c8c8c;
+        font-size: 14px;
+        line-height: 1.6;
+        margin: 0;
+    }
+
+    .footer-links {
+        list-style: none;
+        padding: 0;
+        margin: 0;
+        display: flex;
+        flex-direction: column;
+        gap: 10px;
+        color: #595959;
+        font-size: 14px;
+
+        li {
+            display: flex;
+            align-items: center;
+            gap: 8px;
+        }
+    }
+
+    .footer-social-row {
+        display: flex;
+        flex-direction: column;
+        gap: 8px;
+
+        .footer-social-btn {
+            display: inline-flex;
+            align-items: center;
+            gap: 10px;
+            padding: 10px 16px;
+            border-radius: 8px;
+            background: #fafafa;
+            border: 1px solid #f0f0f0;
+            color: #595959;
+            font-size: 14px;
+            font-weight: 600;
+            text-decoration: none;
+            transition: all 0.3s cubic-bezier(0.25, 0.8, 0.25, 1);
+
+            &:hover {
+                transform: translateY(-2px);
+                background: #ffffff;
+                box-shadow: 0 4px 12px rgba(0, 0, 0, 0.05);
+
+                &.wa {
+                    color: #25d366;
+                    border-color: #25d366;
+                    background-color: rgba(37, 211, 102, 0.04);
+                }
+
+                &.ig {
+                    color: #e1306c;
+                    border-color: #e1306c;
+                    background-color: rgba(225, 48, 108, 0.04);
+                }
+
+                &.fb {
+                    color: #1877f2;
+                    border-color: #1877f2;
+                    background-color: rgba(24, 119, 242, 0.04);
+                }
+            }
+        }
+    }
+
+    .footer-copyright {
+        margin-top: 32px;
+        text-align: center;
+        border-top: 1px solid #f0f0f0;
+        padding-top: 24px;
+        color: #bfbfbf;
+        font-size: 13px;
+        font-weight: 500;
+    }
+}
