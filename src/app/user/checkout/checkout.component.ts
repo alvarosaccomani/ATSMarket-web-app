@@ -868,7 +868,7 @@ export class CheckoutComponent implements OnInit, OnDestroy {
 
   private proceedWithAddAddress(val: any, customer: any, saveToProfile: boolean = true): void {
     const newAddressData: Partial<AddressInterface> = {
-      cus_uuid: (customer && saveToProfile) ? customer.cus_uuid : 'guest-customer',
+      cus_uuid: (customer && saveToProfile) ? customer.cus_uuid : null,
       adr_alias: 'Mi Domicilio',
       adr_recipientname: customer ? customer.cus_fullname : `${val.nombre} ${val.apellido}`,
       adr_address: val.direccion,
@@ -1126,8 +1126,8 @@ export class CheckoutComponent implements OnInit, OnDestroy {
 
       const payload = {
         cmp_uuid: g.cmp_uuid,
-        usr_uuid: identity ? identity.usr_uuid : 'guest',
-        cus_uuid: customer ? customer.cus_uuid : 'guest-customer',
+        usr_uuid: identity ? identity.usr_uuid : null,
+        cus_uuid: customer ? customer.cus_uuid : null,
         adr_uuid: this.selectedAddressId,
         ord_ordernumber: storeOrderNumber,
         ords_uuid: this.paymentMethod === 'transfer' ? 'PENDING' : 'PROCESSING',
@@ -1152,7 +1152,7 @@ export class CheckoutComponent implements OnInit, OnDestroy {
           // Disparar la notificación en tiempo real para el comercio/vendedor
           this._notificationService.pushNotification({
             usr_uuid: 'vendor',
-            cus_uuid: customer ? customer.cus_uuid : 'guest-customer',
+            cus_uuid: customer ? customer.cus_uuid : null,
             cmp_uuid: g.cmp_uuid,
             ntf_title: '🛍️ ¡Nuevo pedido recibido!',
             ntf_message: `Has recibido el pedido #${storeOrderNumber} por un total de $${g.subtotal + g.shippingCost}.`,
