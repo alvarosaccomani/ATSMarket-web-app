@@ -36,11 +36,24 @@
             <div nz-row [nzGutter]="[24, 24]" *ngIf="categorias.length > 0">
                 <div nz-col [nzXs]="24" [nzSm]="12" [nzLg]="8" *ngFor="let cat of categorias">
                     <a [routerLink]="cat.link">
-                        <nz-card [nzHoverable]="true" class="category-card" [nzCover]="coverCatTemplate">
+                        <nz-card [nzHoverable]="true" class="premium-category-card" [nzCover]="coverCatTemplate">
                             <ng-template #coverCatTemplate>
-                                <img [alt]="cat.nombre" [src]="cat.imagenUrl" class="category-image" />
+                                <div class="category-image-wrapper">
+                                    <img [alt]="cat.nombre" 
+                                        [src]="cat.imagenUrl ? cat.imagenUrl : 'https://placehold.co/400x225/eeeeee/8c8c8c?text=Categor%C3%ADa'" 
+                                        class="category-card-image" />
+                                </div>
                             </ng-template>
-                            <nz-card-meta [nzTitle]="cat.nombre" [nzDescription]="cat.descripcion"></nz-card-meta>
+
+                            <div class="category-info">
+                                <h3 class="category-title">{{ cat.nombre }}</h3>
+                                <p class="category-desc">{{ cat.descripcion || 'Explorar productos de esta categoría.' }}</p>
+                            </div>
+
+                            <div class="category-footer">
+                                <span>Ver Colección</span>
+                                <span nz-icon nzType="arrow-right" class="category-card-arrow"></span>
+                            </div>
                         </nz-card>
                     </a>
                 </div>
