@@ -13,6 +13,7 @@ import { NzModalModule } from 'ng-zorro-antd/modal';
 import { NzGridModule } from 'ng-zorro-antd/grid';
 import { NzMessageService } from 'ng-zorro-antd/message';
 import { NzSpinModule } from 'ng-zorro-antd/spin';
+import { NzEmptyModule } from 'ng-zorro-antd/empty';
 
 import { ProductVariationInterface } from '@interfaces/product-variation';
 import { CategoryInterface } from '@interfaces/category.interface';
@@ -35,7 +36,8 @@ import { CompanyInterface } from '@interfaces/company';
     NzButtonModule,
     NzIconModule,
     NzModalModule,
-    NzSpinModule
+    NzSpinModule,
+    NzEmptyModule
   ],
   templateUrl: './home-store.component.html',
   styleUrl: './home-store.component.scss'
