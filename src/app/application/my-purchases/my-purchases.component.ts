@@ -24,6 +24,7 @@ import { WebSocketNotificationService } from '../../core/services/web-socket-not
 import { OrdersHistoryService } from '../../core/services/orders-history.service';
 import { ChatService } from '../../core/services/chat.service';
 import { ProductVariationReviewsService } from '../../core/services/product-variation-reviews.service';
+// Model interface including coupon updates
 import { OrderInterface } from '../../core/interfaces/order/order.interface';
 import { OrderHistoryInterface } from '../../core/interfaces/order-history/order-history.interface';
 import { MessageInterface } from '../../core/interfaces/message/message.interface';

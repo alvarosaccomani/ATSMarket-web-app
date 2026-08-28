@@ -20,6 +20,9 @@ export interface OrderInterface {
     ord_total: number;
     ord_customernotes: string;
     ord_trackingnumber: string;
+    cou_uuid?: string | null;
+    ord_couponcode?: string | null;
+    ord_discountamount?: number;
     ord_createdat: Date;
     ord_updatedat: Date;
     orderDetails?: OrderDetailInterface[];

@@ -222,6 +222,10 @@
                             <span class="price-value" *ngIf="order.ord_shippingcost > 0">+ ${{ order.ord_shippingcost | number:'1.2-2' }}</span>
                             <span class="price-value gratis" *ngIf="order.ord_shippingcost === 0">Gratis</span>
                         </div>
+                        <div class="price-row" *ngIf="order.ord_couponcode" style="color: #52c41a; font-weight: 500;">
+                            <span class="price-label">Cupón Aplicado ({{ order.ord_couponcode }})</span>
+                            <span class="price-value">-${{ order.ord_discountamount | number:'1.2-2' }}</span>
+                        </div>
                         <nz-divider style="margin: 8px 0;"></nz-divider>
                         <div class="price-row grand-total">
                             <span class="price-label">Total Abonado</span>
