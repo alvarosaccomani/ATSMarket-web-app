@@ -165,7 +165,11 @@
                     <ul class="footer-links">
                         <li *ngIf="store.cmp_email"><span nz-icon nzType="mail"></span> {{ store.cmp_email }}</li>
                         <li *ngIf="store.cmp_phone"><span nz-icon nzType="phone"></span> {{ store.cmp_phone }}</li>
-                        <li *ngIf="store.cmp_address"><span nz-icon nzType="environment"></span> {{ store.cmp_address }}</li>
+                        <li *ngIf="store.cmp_address">
+                            <a [href]="getGoogleMapsLink(store)" target="_blank" class="maps-link" style="color: inherit; text-decoration: none; display: inline-flex; align-items: center; gap: 8px; transition: color 0.3s ease;">
+                                <span nz-icon nzType="environment"></span> {{ store.cmp_address }}
+                            </a>
+                        </li>
                     </ul>
                 </div>
                 <div nz-col [nzXs]="24" [nzMd]="8" class="footer-col">

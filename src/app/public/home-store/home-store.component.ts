@@ -1,4 +1,5 @@
 import { Component } from '@angular/core';
+import { Title, Meta } from '@angular/platform-browser';
 import { CommonModule } from '@angular/common';
 import { ActivatedRoute, ParamMap, Router, RouterLink } from '@angular/router';
 import { switchMap } from 'rxjs/operators';
@@ -63,6 +64,8 @@ export class HomeStoreComponent {
     private _cartService: CartService,
     private _productVariationsService: ProductVariationsService,
     private _categoriesService: CategoriesService,
+    private titleService: Title,
+    private metaService: Meta,
     private message: NzMessageService
   ) { }
 
@@ -85,6 +88,13 @@ export class HomeStoreComponent {
     this._storeContext.activeStore$.subscribe(store => {
       if (store && store.cmp_uuid) {
         this.store = store; // Guardar referencia de la tienda activa
+        
+        // SEO: Configurar el título del documento y meta description dinámicamente
+        this.titleService.setTitle(`${store.cmp_name} | ATSMarket`);
+        if (store.cmp_description) {
+          this.metaService.updateTag({ name: 'description', content: store.cmp_description });
+        }
+
         this.loadProductosDestacados(store.cmp_uuid);
         this.loadCategoriasPrincipales(store.cmp_uuid);
       }
@@ -151,6 +161,13 @@ export class HomeStoreComponent {
 
   public goToStoreCatalog(): void {
     this.router.navigate(['/public/store-catalog', this.companieSlug]);
+  }
+
+  public getGoogleMapsLink(store: CompanyInterface): string {
+    if (store.cmp_lat && store.cmp_lng) {
+      return `https://www.google.com/maps/search/?api=1&query=${store.cmp_lat},${store.cmp_lng}`;
+    }
+    return `https://www.google.com/maps/search/?api=1&query=${encodeURIComponent(store.cmp_address)}`;
   }
 
   public openProductDetail(producto: ProductVariationInterface): void {
