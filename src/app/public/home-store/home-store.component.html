@@ -1,27 +1,31 @@
 <nz-spin [nzSpinning]="isSettingsLoading">
-    <div class="hero-section" *ngIf="getSetting('HOME_BANNER_SHOW', true)">
-        <nz-carousel [nzEffect]="'fade'" [nzDotPosition]="'bottom'" [nzAutoPlay]="true">
-
-            <div nz-carousel-content>
-                <div class="carousel-slide"
-                    [style.background-image]="'url(' + getSetting('HOME_BANNER_IMAGE', '/assets/img/lujan-hero.jpg') + ')'">
-                    <div class="slide-overlay">
-                        <h1>{{ getSetting('HOME_BANNER_TITLE', 'Santuario en tu Hogar') }}</h1>
-                        <p>{{ getSetting('HOME_BANNER_DESCRIPTION', 'Artículos de Fe y Devoción seleccionados desde Luján.') }}
-                        </p>
-                        <div class="banner-price-meta" *ngIf="getSetting('HOME_BANNER_PRICE', '')">
-                            <span class="banner-price-label">Desde</span>
-                            <span class="banner-price-value">{{ getSetting('CURRENCY', '$') }} {{ getSetting('HOME_BANNER_PRICE', '') }}</span>
-                        </div>
-                        <button nz-button nzType="primary" nzSize="large" (click)="goToStoreCatalog()">
-                            {{ getSetting('HOME_BANNER_BUTTON_TEXT', 'Explorar Catálogo') }} 
-                            <span nz-icon nzType="arrow-right"></span>
-                        </button>
+    <!-- Hero Banner Premium de la Tienda -->
+    <div *ngIf="store" class="store-hero-banner"
+        [ngStyle]="{'background-image': store.cmp_banner ? 'url(' + store.cmp_banner + ')' : 'none'}">
+        <div class="store-hero-overlay" *ngIf="store.cmp_banner"></div>
+        <div class="store-hero-content">
+            <div class="brand-card">
+                <img [src]="store.cmp_logo ? store.cmp_logo : 'https://placehold.co/150x150/eeeeee/8c8c8c?text=Logo'"
+                    [alt]="store.cmp_name" class="store-logo">
+                <div class="store-info">
+                    <h1 class="store-name">{{ store.cmp_name }}</h1>
+                    <p class="store-description">{{ store.cmp_description || 'Explora nuestro catálogo oficial.' }}</p>
+                    
+                    <!-- Redes Sociales Dinámicas -->
+                    <div class="store-socials" style="margin-top: 16px; display: flex; gap: 12px; justify-content: center;">
+                        <a *ngIf="store.cmp_whatsapp" [href]="'https://wa.me/' + store.cmp_whatsapp" target="_blank" class="social-icon wa" title="WhatsApp">
+                            <span nz-icon nzType="whatsapp" nzTheme="outline"></span>
+                        </a>
+                        <a *ngIf="store.cmp_instagram" [href]="'https://instagram.com/' + store.cmp_instagram" target="_blank" class="social-icon ig" title="Instagram">
+                            <span nz-icon nzType="instagram" nzTheme="outline"></span>
+                        </a>
+                        <a *ngIf="store.cmp_facebook" [href]="'https://facebook.com/' + store.cmp_facebook" target="_blank" class="social-icon fb" title="Facebook">
+                            <span nz-icon nzType="facebook" nzTheme="outline"></span>
+                        </a>
                     </div>
                 </div>
             </div>
-
-        </nz-carousel>
+        </div>
     </div>
 
     <div class="main-content-wrapper">

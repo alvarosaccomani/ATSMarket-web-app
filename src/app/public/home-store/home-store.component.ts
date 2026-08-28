@@ -20,6 +20,7 @@ import { StoreContextService } from '@services/store-context.service';
 import { CartService } from '@services/cart.service';
 import { ProductVariationsService } from '@services/product-variations.service';
 import { CategoriesService } from '@services/categories.service';
+import { CompanyInterface } from '@interfaces/company';
 
 @Component({
   selector: 'app-home',
@@ -47,6 +48,7 @@ export class HomeStoreComponent {
 
   // Propiedad para las categorías que se mostrarán en la grilla del Home
   public categorias: CategoryInterface[] = [];
+  public store: CompanyInterface | null = null;
 
   // Almacena las configuraciones de la tienda (clave: valor)
   public storeSettings: { [key: string]: any } = {};
@@ -80,6 +82,7 @@ export class HomeStoreComponent {
     // 1. Suscribirse reactivamente a la tienda activa para cargar sus productos destacados y categorías principales
     this._storeContext.activeStore$.subscribe(store => {
       if (store && store.cmp_uuid) {
+        this.store = store; // Guardar referencia de la tienda activa
         this.loadProductosDestacados(store.cmp_uuid);
         this.loadCategoriasPrincipales(store.cmp_uuid);
       }
