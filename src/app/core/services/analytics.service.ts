@@ -44,8 +44,12 @@ export class AnalyticsService {
   /**
    * Obtiene el resumen de analíticas consolidado para el vendedor.
    */
-  public getSummary(cmpUuid: string): Observable<any> {
+  public getSummary(cmpUuid: string, days: number = 7, provUuid?: string): Observable<any> {
     const headers = new HttpHeaders().set('content-type', 'application/json');
-    return this._http.get<any>(`${environment.apiUrl}analytics/summary/${cmpUuid}`, { headers });
+    let url = `${environment.apiUrl}analytics/summary/${cmpUuid}?days=${days}`;
+    if (provUuid) {
+      url += `&prov_uuid=${provUuid}`;
+    }
+    return this._http.get<any>(url, { headers });
   }
 }
