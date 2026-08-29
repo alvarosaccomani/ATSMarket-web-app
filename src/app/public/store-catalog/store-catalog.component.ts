@@ -32,6 +32,7 @@ import { ProductVariationsService } from '@services/product-variations.service';
 import { StoreContextService } from '@services/store-context.service';
 import { GlobalCategoriesService } from '@services/global-categories.service';
 import { GlobalMaterialsService } from '@services/global-materials.service';
+import { AnalyticsService } from '@services/analytics.service';
 
 @Component({
   selector: 'app-store',
@@ -94,7 +95,8 @@ export class StoreCatalogComponent implements OnInit {
     private cartService: CartService,
     private _globalCategoriesService: GlobalCategoriesService,
     private _globalMaterialsService: GlobalMaterialsService,
-    private message: NzMessageService
+    private message: NzMessageService,
+    private _analyticsService: AnalyticsService
   ) { }
 
   ngOnInit(): void {
@@ -256,6 +258,13 @@ export class StoreCatalogComponent implements OnInit {
 
   public agregarAlCarrito(producto: ProductVariationInterface): void {
     this.cartService.addToCart(producto, 1);
+
+    // Tracking: Registrar adición al carrito
+    if (this.store && this.store.cmp_uuid) {
+      this._analyticsService.trackEvent(this.store.cmp_uuid, 'ADD_TO_CART', producto.prov_uuid).subscribe({
+        error: (err) => console.error('Error tracking add to cart:', err)
+      });
+    }
   }
 
   public openDrawer(): void {
