@@ -26,6 +26,7 @@ import { SessionService } from '@services/session.service';
 import { OrdersService } from '@services/orders.service';
 import { StoreContextService } from '@services/store-context.service';
 import { ProductVariationReviewsService } from '@services/product-variation-reviews.service';
+import { AnalyticsService } from '@services/analytics.service';
 import { ProductVariationReviewInterface } from '@interfaces/product-variation-review';
 
 @Component({
@@ -86,7 +87,8 @@ export class ProductDetailComponent implements OnInit {
     private _reviewsService: ProductVariationReviewsService,
     private message: NzMessageService,
     private titleService: Title,
-    private metaService: Meta
+    private metaService: Meta,
+    private _analyticsService: AnalyticsService
   ) { }
 
   ngOnInit(): void {
@@ -127,6 +129,12 @@ export class ProductDetailComponent implements OnInit {
           
           if (found) {
             this.producto = found;
+            
+            // Tracking: Registrar vista del producto
+            this._analyticsService.trackEvent(cmp_uuid, 'PRODUCT_VIEW', this.productId).subscribe({
+              error: (err) => console.error('Error tracking product view:', err)
+            });
+
             this.updateMetaTags(found);
             this.loadProductReviews(this.productId);
             
