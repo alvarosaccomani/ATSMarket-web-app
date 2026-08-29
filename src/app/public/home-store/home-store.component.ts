@@ -22,6 +22,7 @@ import { StoreContextService } from '@services/store-context.service';
 import { CartService } from '@services/cart.service';
 import { ProductVariationsService } from '@services/product-variations.service';
 import { CategoriesService } from '@services/categories.service';
+import { AnalyticsService } from '@services/analytics.service';
 import { CompanyInterface } from '@interfaces/company';
 
 @Component({
@@ -66,6 +67,7 @@ export class HomeStoreComponent {
     private _categoriesService: CategoriesService,
     private titleService: Title,
     private metaService: Meta,
+    private _analyticsService: AnalyticsService,
     private message: NzMessageService
   ) { }
 
@@ -89,6 +91,11 @@ export class HomeStoreComponent {
       if (store && store.cmp_uuid) {
         this.store = store; // Guardar referencia de la tienda activa
         
+        // Tracking: Registrar visita a la tienda
+        this._analyticsService.trackEvent(store.cmp_uuid, 'PAGE_VIEW').subscribe({
+          error: (err) => console.error('Error tracking page view:', err)
+        });
+
         // SEO: Configurar el título del documento y meta description dinámicamente
         this.titleService.setTitle(`${store.cmp_name} | ATSMarket`);
         if (store.cmp_description) {
@@ -157,6 +164,13 @@ export class HomeStoreComponent {
     }
 
     this._cartService.addToCart(producto, 1);
+
+    // Tracking: Registrar adición al carrito
+    if (this.store && this.store.cmp_uuid) {
+      this._analyticsService.trackEvent(this.store.cmp_uuid, 'ADD_TO_CART', producto.prov_uuid).subscribe({
+        error: (err) => console.error('Error tracking add to cart:', err)
+      });
+    }
   }
 
   public goToStoreCatalog(): void {
