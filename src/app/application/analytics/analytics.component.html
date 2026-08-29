@@ -2,15 +2,27 @@
 
     <div class="dashboard-header" style="display: flex; justify-content: space-between; align-items: center; flex-wrap: wrap; gap: 16px;">
         <div class="header-titles">
-            <h1 class="page-title">Rendimiento y Analíticas</h1>
-            <p class="page-subtitle">Revisa las métricas clave y la distribución de ingresos del comercio activo.</p>
+            <h1 class="page-title" style="font-family: 'Outfit', sans-serif; font-weight: 700; font-size: 26px; margin: 0; color: #1e293b;">Rendimiento y Analíticas Avanzadas</h1>
+            <p class="page-subtitle" style="margin: 4px 0 0 0; color: #64748b; font-size: 14px;">Revisa las métricas clave de comportamiento, visitas geolocalizadas e inventario en tiempo real.</p>
         </div>
-        <div class="header-actions" style="display: flex; gap: 8px;" *ngIf="hasCompanyContext && !isLoading">
-            <button nz-button nzType="default" nzSize="large" class="export-btn excel-btn" (click)="exportFinancialsToExcel()">
-                <span nz-icon nzType="download"></span> Exportar Reporte Financiero (Excel)
+        <div class="header-actions" style="display: flex; align-items: center; gap: 10px; flex-wrap: wrap;" *ngIf="hasCompanyContext && !isLoading">
+            <!-- Selector de Rango Temporal -->
+            <nz-select [(ngModel)]="selectedDays" (ngModelChange)="loadRealAnalytics()" style="width: 145px; font-family: 'Inter', sans-serif;" nzSize="large">
+                <nz-option [nzValue]="7" nzLabel="Últimos 7 días"></nz-option>
+                <nz-option [nzValue]="30" nzLabel="Últimos 30 días"></nz-option>
+            </nz-select>
+
+            <!-- Selector de Producto Específico -->
+            <nz-select [(ngModel)]="selectedProductUuid" (ngModelChange)="loadRealAnalytics()" nzAllowClear nzPlaceHolder="Todos los productos" style="width: 250px; font-family: 'Inter', sans-serif;" nzSize="large">
+                <nz-option *ngFor="let item of allVariations" [nzValue]="item.prov_uuid" [nzLabel]="item.name"></nz-option>
+            </nz-select>
+
+            <!-- Acciones de Exportación -->
+            <button nz-button nzType="default" nzSize="large" class="export-btn excel-btn" (click)="exportFinancialsToExcel()" style="border-radius: 8px; font-weight: 600; display: inline-flex; align-items: center; gap: 6px;">
+                <span nz-icon nzType="download"></span> Excel
             </button>
-            <button nz-button nzType="default" nzSize="large" class="export-btn pdf-btn" (click)="exportToPdf()">
-                <span nz-icon nzType="file-pdf"></span> Imprimir Reporte de Rendimiento (PDF)
+            <button nz-button nzType="default" nzSize="large" class="export-btn pdf-btn" (click)="exportToPdf()" style="border-radius: 8px; font-weight: 600; display: inline-flex; align-items: center; gap: 6px;">
+                <span nz-icon nzType="file-pdf"></span> Imprimir
             </button>
         </div>
     </div>
@@ -23,28 +35,46 @@
         </nz-alert>
     </div>
 
-    <nz-spin [nzSpinning]="isLoading" nzTip="Calculando rendimiento comercial en caliente..." *ngIf="hasCompanyContext">
-        <!-- FILA 1: KPIs Principales -->
-        <div nz-row [nzGutter]="[16, 16]" class="kpi-row" style="margin-top: 20px;">
+    <nz-spin [nzSpinning]="isLoading" nzTip="Calculando analíticas y métricas de comportamiento en vivo..." *ngIf="hasCompanyContext">
+        
+        <!-- SECCIÓN 1: KPIs Transaccionales -->
+        <h3 style="font-family: 'Outfit', sans-serif; font-size: 15px; font-weight: 700; color: #475569; margin: 24px 0 10px 0; text-transform: uppercase; letter-spacing: 0.5px;">1. KPIs de Ventas y Facturación</h3>
+        <div nz-row [nzGutter]="[16, 16]" class="kpi-row">
 
             <div nz-col nzXs="24" nzSm="12" nzLg="6">
                 <nz-card class="premium-card kpi-card" [nzBordered]="false">
-                    <nz-statistic [nzValue]="kpiRevenue" [nzTitle]="'Ingresos Brutos'" [nzPrefix]="'$'"
+                    <nz-statistic [nzValue]="kpiRevenue" [nzTitle]="revenueTitleTpl" [nzPrefix]="'$'"
                         [nzValueTemplate]="revenueTemplate" [nzSuffix]="'ARS'">
                     </nz-statistic>
+                    <ng-template #revenueTitleTpl>
+                        <span style="display: inline-flex; align-items: center; gap: 6px;">
+                            Ingresos Brutos
+                            <span nz-tooltip nzTooltipTitle="Suma de facturación de órdenes en estado finalizado o pendiente de entrega (no canceladas)." style="cursor: help; display: inline-flex; align-items: center;">
+                                <span nz-icon nzType="info-circle" nzTheme="outline" style="color: #bfbfbf; font-size: 13px;"></span>
+                            </span>
+                        </span>
+                    </ng-template>
                     <ng-template #revenueTemplate let-value>
-                        <span style="color: #1890ff; font-weight: 600;">{{ value | number:'1.2-2' }}</span>
+                        <span style="color: #1890ff; font-weight: 600; font-family: 'Outfit', sans-serif;">{{ value | number:'1.2-2' }}</span>
                     </ng-template>
                     <div class="kpi-trend trend-up">
-                        <span nz-icon nzType="arrow-up"></span> Facturación Real
+                        <span nz-icon nzType="line-chart"></span> Facturación Real
                     </div>
                 </nz-card>
             </div>
 
             <div nz-col nzXs="24" nzSm="12" nzLg="6">
                 <nz-card class="premium-card kpi-card" [nzBordered]="false">
-                    <nz-statistic [nzValue]="kpiOrders" [nzTitle]="'Pedidos Finalizados'">
+                    <nz-statistic [nzValue]="kpiOrders" [nzTitle]="ordersTitleTpl">
                     </nz-statistic>
+                    <ng-template #ordersTitleTpl>
+                        <span style="display: inline-flex; align-items: center; gap: 6px;">
+                            Pedidos Realizados
+                            <span nz-tooltip nzTooltipTitle="Volumen físico total de órdenes ingresadas y confirmadas en el período." style="cursor: help; display: inline-flex; align-items: center;">
+                                <span nz-icon nzType="info-circle" nzTheme="outline" style="color: #bfbfbf; font-size: 13px;"></span>
+                            </span>
+                        </span>
+                    </ng-template>
                     <div class="kpi-trend trend-up">
                         <span nz-icon nzType="shopping" nzTheme="outline"></span> Órdenes no Canceladas
                     </div>
@@ -53,11 +83,19 @@
 
             <div nz-col nzXs="24" nzSm="12" nzLg="6">
                 <nz-card class="premium-card kpi-card" [nzBordered]="false">
-                    <nz-statistic [nzValue]="kpiTicket" [nzTitle]="'Ticket Promedio'" [nzPrefix]="'$'"
+                    <nz-statistic [nzValue]="kpiTicket" [nzTitle]="ticketTitleTpl" [nzPrefix]="'$'"
                         [nzValueTemplate]="ticketTemplate">
                     </nz-statistic>
+                    <ng-template #ticketTitleTpl>
+                        <span style="display: inline-flex; align-items: center; gap: 6px;">
+                            Ticket Promedio
+                            <span nz-tooltip nzTooltipTitle="Valor medio de compra por transacción (Ingresos totales / Pedidos realizados)." style="cursor: help; display: inline-flex; align-items: center;">
+                                <span nz-icon nzType="info-circle" nzTheme="outline" style="color: #bfbfbf; font-size: 13px;"></span>
+                            </span>
+                        </span>
+                    </ng-template>
                     <ng-template #ticketTemplate let-value>
-                        <span style="font-weight: 500;">{{ value | number:'1.2-2' }}</span>
+                        <span style="font-weight: 600; font-family: 'Outfit', sans-serif;">{{ value | number:'1.2-2' }}</span>
                     </ng-template>
                     <div class="kpi-trend trend-up">
                         <span nz-icon nzType="percentage" nzTheme="outline"></span> Valor Medio de Órdenes
@@ -67,8 +105,16 @@
 
             <div nz-col nzXs="24" nzSm="12" nzLg="6">
                 <nz-card class="premium-card kpi-card" [nzBordered]="false">
-                    <nz-statistic [nzValue]="kpiCustomers" [nzTitle]="'Clientes Compradores'">
+                    <nz-statistic [nzValue]="kpiCustomers" [nzTitle]="customersTitleTpl">
                     </nz-statistic>
+                    <ng-template #customersTitleTpl>
+                        <span style="display: inline-flex; align-items: center; gap: 6px;">
+                            Clientes Compradores
+                            <span nz-tooltip nzTooltipTitle="Cantidad de personas únicas que completaron una transacción utilizando un email o teléfono diferente." style="cursor: help; display: inline-flex; align-items: center;">
+                                <span nz-icon nzType="info-circle" nzTheme="outline" style="color: #bfbfbf; font-size: 13px;"></span>
+                            </span>
+                        </span>
+                    </ng-template>
                     <div class="kpi-trend trend-up">
                         <span nz-icon nzType="user" nzTheme="outline"></span> Compradores Únicos
                     </div>
@@ -76,57 +122,160 @@
             </div>
         </div>
 
-        <!-- FILA: Tráfico Web y Conversión -->
-        <div nz-row [nzGutter]="[16, 16]" class="kpi-row" style="margin-top: 20px;">
-            <div nz-col nzXs="24" nzSm="12" nzLg="6">
+        <!-- SECCIÓN 2: KPIs de Comportamiento y Tráfico Web -->
+        <h3 style="font-family: 'Outfit', sans-serif; font-size: 15px; font-weight: 700; color: #475569; margin: 24px 0 10px 0; text-transform: uppercase; letter-spacing: 0.5px;">2. KPIs de Tráfico Web y Engagement</h3>
+        <div nz-row [nzGutter]="[16, 16]" class="kpi-row">
+
+            <!-- Visitas -->
+            <div nz-col nzXs="24" nzSm="12" nzLg="4">
                 <nz-card class="premium-card kpi-card" [nzBordered]="false" style="background: linear-gradient(135deg, #f9f0ff 0%, #ffffff 100%);">
-                    <nz-statistic [nzValue]="totalPageViews" [nzTitle]="'Visitas a la Tienda'">
-                    </nz-statistic>
-                    <div class="kpi-trend" style="color: #722ed1; font-weight: 500;">
-                        <span nz-icon nzType="eye" nzTheme="outline"></span> Páginas Vistas
-                    </div>
-                </nz-card>
-            </div>
-            <div nz-col nzXs="24" nzSm="12" nzLg="6">
-                <nz-card class="premium-card kpi-card" [nzBordered]="false" style="background: linear-gradient(135deg, #e6f7ff 0%, #ffffff 100%);">
-                    <nz-statistic [nzValue]="totalProductViews" [nzTitle]="'Visitas a Productos'">
-                    </nz-statistic>
-                    <div class="kpi-trend" style="color: #1890ff; font-weight: 500;">
-                        <span nz-icon nzType="appstore" nzTheme="outline"></span> Fichas de Detalle
-                    </div>
-                </nz-card>
-            </div>
-            <div nz-col nzXs="24" nzSm="12" nzLg="6">
-                <nz-card class="premium-card kpi-card" [nzBordered]="false" style="background: linear-gradient(135deg, #fff7e6 0%, #ffffff 100%);">
-                    <nz-statistic [nzValue]="totalCartAdditions" [nzTitle]="'Intenciones de Compra'">
-                    </nz-statistic>
-                    <div class="kpi-trend" style="color: #fa8c16; font-weight: 500;">
-                        <span nz-icon nzType="shopping-cart" nzTheme="outline"></span> Clics en Carrito
-                    </div>
-                </nz-card>
-            </div>
-            <div nz-col nzXs="24" nzSm="12" nzLg="6">
-                <nz-card class="premium-card kpi-card" [nzBordered]="false" style="background: linear-gradient(135deg, #f6ffed 0%, #ffffff 100%);">
-                    <nz-statistic [nzValue]="webConversionRate" [nzTitle]="'Conversión de Visitas'" [nzSuffix]="'%'" [nzValueTemplate]="conversionTemplate">
-                    </nz-statistic>
-                    <ng-template #conversionTemplate let-value>
-                        <span style="color: #52c41a; font-weight: 600;">{{ value | number:'1.1-2' }}%</span>
+                    <nz-statistic [nzValue]="totalPageViews" [nzTitle]="pageViewsTitleTpl"></nz-statistic>
+                    <ng-template #pageViewsTitleTpl>
+                        <span style="display: inline-flex; align-items: center; gap: 6px;">
+                            Visitas a la Tienda
+                            <span nz-tooltip nzTooltipTitle="Cantidad total de páginas vistas por los usuarios en el e-commerce (excluye visitas del vendedor)." style="cursor: help; display: inline-flex; align-items: center;">
+                                <span nz-icon nzType="info-circle" nzTheme="outline" style="color: #bfbfbf; font-size: 13px;"></span>
+                            </span>
+                        </span>
                     </ng-template>
-                    <div class="kpi-trend" style="color: #52c41a; font-weight: 500;">
-                        <span nz-icon nzType="line-chart" nzTheme="outline"></span> Clics / Páginas Vistas
+                    <div style="display: flex; justify-content: space-between; align-items: center; margin-top: 10px;">
+                        <span style="font-size: 11px; color: #722ed1; font-weight: 500;">
+                            <span nz-icon nzType="eye" nzTheme="outline"></span> Páginas Vistas
+                        </span>
+                        <nz-tag [nzColor]="trends.pageViewsChange >= 0 ? 'success' : 'error'" style="font-weight: 600; border-radius: 4px; font-size: 10px; padding: 0 4px; line-height: 16px;">
+                            {{ trends.pageViewsChange >= 0 ? '+' : '' }}{{ trends.pageViewsChange }}%
+                        </nz-tag>
+                    </div>
+                </nz-card>
+            </div>
+
+            <!-- Fichas de Detalle -->
+            <div nz-col nzXs="24" nzSm="12" nzLg="4">
+                <nz-card class="premium-card kpi-card" [nzBordered]="false" style="background: linear-gradient(135deg, #e6f7ff 0%, #ffffff 100%);">
+                    <nz-statistic [nzValue]="totalProductViews" [nzTitle]="productViewsTitleTpl"></nz-statistic>
+                    <ng-template #productViewsTitleTpl>
+                        <span style="display: inline-flex; align-items: center; gap: 6px;">
+                            Vistas de Producto
+                            <span nz-tooltip nzTooltipTitle="Visualizaciones de fichas de detalle o perfiles específicos de productos en el catálogo." style="cursor: help; display: inline-flex; align-items: center;">
+                                <span nz-icon nzType="info-circle" nzTheme="outline" style="color: #bfbfbf; font-size: 13px;"></span>
+                            </span>
+                        </span>
+                    </ng-template>
+                    <div style="display: flex; justify-content: space-between; align-items: center; margin-top: 10px;">
+                        <span style="font-size: 11px; color: #1890ff; font-weight: 500;">
+                            <span nz-icon nzType="appstore" nzTheme="outline"></span> Fichas de Detalle
+                        </span>
+                        <nz-tag [nzColor]="trends.productViewsChange >= 0 ? 'success' : 'error'" style="font-weight: 600; border-radius: 4px; font-size: 10px; padding: 0 4px; line-height: 16px;">
+                            {{ trends.productViewsChange >= 0 ? '+' : '' }}{{ trends.productViewsChange }}%
+                        </nz-tag>
+                    </div>
+                </nz-card>
+            </div>
+
+            <!-- Clics en Carrito -->
+            <div nz-col nzXs="24" nzSm="12" nzLg="4">
+                <nz-card class="premium-card kpi-card" [nzBordered]="false" style="background: linear-gradient(135deg, #fff7e6 0%, #ffffff 100%);">
+                    <nz-statistic [nzValue]="totalCartAdditions" [nzTitle]="cartAdditionsTitleTpl"></nz-statistic>
+                    <ng-template #cartAdditionsTitleTpl>
+                        <span style="display: inline-flex; align-items: center; gap: 6px;">
+                            Agregados al Carrito
+                            <span nz-tooltip nzTooltipTitle="Cantidad de veces que los visitantes presionaron el botón 'Comprar/Agregar' desde las listas o la ficha." style="cursor: help; display: inline-flex; align-items: center;">
+                                <span nz-icon nzType="info-circle" nzTheme="outline" style="color: #bfbfbf; font-size: 13px;"></span>
+                            </span>
+                        </span>
+                    </ng-template>
+                    <div style="display: flex; justify-content: space-between; align-items: center; margin-top: 10px;">
+                        <span style="font-size: 11px; color: #fa8c16; font-weight: 500;">
+                            <span nz-icon nzType="shopping-cart" nzTheme="outline"></span> Clics en Agregar
+                        </span>
+                        <nz-tag [nzColor]="trends.cartAdditionsChange >= 0 ? 'success' : 'error'" style="font-weight: 600; border-radius: 4px; font-size: 10px; padding: 0 4px; line-height: 16px;">
+                            {{ trends.cartAdditionsChange >= 0 ? '+' : '' }}{{ trends.cartAdditionsChange }}%
+                        </nz-tag>
+                    </div>
+                </nz-card>
+            </div>
+
+            <!-- Conversión Web (CTR) -->
+            <div nz-col nzXs="24" nzSm="12" nzLg="4">
+                <nz-card class="premium-card kpi-card" [nzBordered]="false" style="background: linear-gradient(135deg, #f6ffed 0%, #ffffff 100%);">
+                    <nz-statistic [nzValue]="webConversionRate" [nzTitle]="conversionTitleTpl" [nzSuffix]="'%'" [nzValueTemplate]="conversionTemplate"></nz-statistic>
+                    <ng-template #conversionTitleTpl>
+                        <span style="display: inline-flex; align-items: center; gap: 6px;">
+                            Tasa de Conversión
+                            <span nz-tooltip nzTooltipTitle="Tasa de conversión de interés (Clicks en agregar al carrito / Visitas totales a la tienda) * 100." style="cursor: help; display: inline-flex; align-items: center;">
+                                <span nz-icon nzType="info-circle" nzTheme="outline" style="color: #bfbfbf; font-size: 13px;"></span>
+                            </span>
+                        </span>
+                    </ng-template>
+                    <ng-template #conversionTemplate let-value>
+                        <span style="color: #52c41a; font-weight: 600; font-family: 'Outfit', sans-serif;">{{ value | number:'1.1-2' }}%</span>
+                    </ng-template>
+                    <div style="display: flex; justify-content: space-between; align-items: center; margin-top: 10px;">
+                        <span style="font-size: 11px; color: #52c41a; font-weight: 500;">
+                            <span nz-icon nzType="percentage" nzTheme="outline"></span> Click Through Rate
+                        </span>
+                        <nz-tag [nzColor]="trends.conversionRateChange >= 0 ? 'success' : 'error'" style="font-weight: 600; border-radius: 4px; font-size: 10px; padding: 0 4px; line-height: 16px;">
+                            {{ trends.conversionRateChange >= 0 ? '+' : '' }}{{ trends.conversionRateChange }}%
+                        </nz-tag>
+                    </div>
+                </nz-card>
+            </div>
+
+            <!-- Tasa de Rebote (Bounce Rate) -->
+            <div nz-col nzXs="24" nzSm="12" nzLg="4">
+                <nz-card class="premium-card kpi-card" [nzBordered]="false" style="background: linear-gradient(135deg, #fff0f6 0%, #ffffff 100%);">
+                    <nz-statistic [nzValue]="kpiBounceRate" [nzTitle]="bounceTitleTpl" [nzSuffix]="'%'" [nzValueTemplate]="bounceTemplate"></nz-statistic>
+                    <ng-template #bounceTitleTpl>
+                        <span style="display: inline-flex; align-items: center; gap: 6px;">
+                            Tasa de Rebote
+                            <span nz-tooltip nzTooltipTitle="Porcentaje de visitantes únicos (por IP) que ingresaron al e-commerce y salieron sin generar ninguna interacción." style="cursor: help; display: inline-flex; align-items: center;">
+                                <span nz-icon nzType="info-circle" nzTheme="outline" style="color: #bfbfbf; font-size: 13px;"></span>
+                            </span>
+                        </span>
+                    </ng-template>
+                    <ng-template #bounceTemplate let-value>
+                        <span style="color: #f5222d; font-weight: 600; font-family: 'Outfit', sans-serif;">{{ value | number:'1.1-2' }}%</span>
+                    </ng-template>
+                    <div style="display: flex; justify-content: space-between; align-items: center; margin-top: 10px;">
+                        <span style="font-size: 11px; color: #eb2f96; font-weight: 500;">
+                            <span nz-icon nzType="logout" nzTheme="outline"></span> Rebotes Únicos
+                        </span>
+                        <nz-tag [nzColor]="trends.bounceRateChange <= 0 ? 'success' : 'error'" style="font-weight: 600; border-radius: 4px; font-size: 10px; padding: 0 4px; line-height: 16px;">
+                            {{ trends.bounceRateChange >= 0 ? '+' : '' }}{{ trends.bounceRateChange }}%
+                        </nz-tag>
+                    </div>
+                </nz-card>
+            </div>
+
+            <!-- Clientes Recurrentes -->
+            <div nz-col nzXs="24" nzSm="12" nzLg="4">
+                <nz-card class="premium-card kpi-card" [nzBordered]="false" style="background: linear-gradient(135deg, #e6fffb 0%, #ffffff 100%);">
+                    <nz-statistic [nzValue]="loyaltyPercentRecurrent" [nzTitle]="recurrentTitleTpl" [nzSuffix]="'%'" [nzValueTemplate]="recurrentTemplate"></nz-statistic>
+                    <ng-template #recurrentTitleTpl>
+                        <span style="display: inline-flex; align-items: center; gap: 6px;">
+                            Visitas Recurrentes
+                            <span nz-tooltip nzTooltipTitle="Porcentaje de IPs de clientes que visitaron la tienda en más de una ocasión o interactuaron activamente." style="cursor: help; display: inline-flex; align-items: center;">
+                                <span nz-icon nzType="info-circle" nzTheme="outline" style="color: #bfbfbf; font-size: 13px;"></span>
+                            </span>
+                        </span>
+                    </ng-template>
+                    <ng-template #recurrentTemplate let-value>
+                        <span style="color: #13c2c2; font-weight: 600; font-family: 'Outfit', sans-serif;">{{ value }}%</span>
+                    </ng-template>
+                    <div class="kpi-trend" style="color: #13c2c2; font-weight: 500; margin-top: 10px;">
+                        <span nz-icon nzType="sync" nzTheme="outline"></span> Retención de Tráfico
                     </div>
                 </nz-card>
             </div>
         </div>
 
-        <!-- FILA 2: Gráficos de Ingresos Brutos y Mix de Categorías -->
-        <div nz-row [nzGutter]="[16, 16]" class="charts-row" style="margin-top: 20px;">
-            
+        <!-- SECCIÓN 3: Gráficos de Evolución de Ingresos y Mix de Categorías -->
+        <div nz-row [nzGutter]="[16, 16]" class="charts-row" style="margin-top: 24px;">
             <!-- Evolución Temporal de Ingresos -->
             <div nz-col nzXs="24" nzLg="16">
                 <nz-card class="premium-card full-height-card" nzTitle="Evolución de Ingresos Brutos (Histórico)" [nzBordered]="false">
                     <div class="chart-wrapper">
-                        <div #revenueChart class="chart-container"></div>
+                        <div #revenueChart class="chart-container" style="height: 280px;"></div>
                         <div *ngIf="processedRevenues.length === 0" class="empty-chart-state">
                             <span nz-icon nzType="line-chart" style="font-size: 28px; margin-bottom: 8px; display: block;"></span>
                             Sin historial de ingresos para graficar
@@ -135,11 +284,11 @@
                 </nz-card>
             </div>
 
-            <!-- Mix de Categorías (Distribución de Ventas) -->
+            <!-- Mix de Categorías -->
             <div nz-col nzXs="24" nzLg="8">
                 <nz-card class="premium-card full-height-card" nzTitle="Mix de Categorías (Participación)" [nzBordered]="false">
                     <div class="chart-wrapper">
-                        <div #categoryChart class="chart-container"></div>
+                        <div #categoryChart class="chart-container" style="height: 280px;"></div>
                         <div *ngIf="categoryMix.length === 0" class="empty-chart-state">
                             <span nz-icon nzType="pie-chart" style="font-size: 28px; margin-bottom: 8px; display: block;"></span>
                             Sin datos de categorías
@@ -147,26 +296,20 @@
                     </div>
                 </nz-card>
             </div>
-
         </div>
 
-        <!-- FILA 3: Actividad Semanal de Pedidos y Ranking de Productos Estrella -->
+        <!-- SECCIÓN 4: Tráfico Semanal y Tabla de Ranking de Productos -->
         <div nz-row [nzGutter]="[16, 16]" class="charts-row" style="margin-top: 20px;">
-
             <!-- Actividad de Pedidos Semanales -->
             <div nz-col nzXs="24" nzLg="8">
-                <nz-card class="premium-card full-height-card" nzTitle="Actividad Semanal de Pedidos" [nzBordered]="false">
+                <nz-card class="premium-card full-height-card" nzTitle="Actividad Semanal de Pedidos vs. Tráfico" [nzBordered]="false">
                     <div class="chart-wrapper">
-                        <div #weeklyChart class="chart-container"></div>
-                        <div *ngIf="processedWeeklyOrders.length === 0" class="empty-chart-state">
-                            <span nz-icon nzType="bar-chart" style="font-size: 28px; margin-bottom: 8px; display: block;"></span>
-                            Sin actividad registrada
-                        </div>
+                        <div #weeklyChart class="chart-container" style="height: 280px;"></div>
                     </div>
                 </nz-card>
             </div>
 
-            <!-- Ranking de Productos Estrella (Tabla con Toggles) -->
+            <!-- Ranking de Productos Estrella -->
             <div nz-col nzXs="24" nzLg="16">
                 <nz-card class="premium-card full-height-card" [nzTitle]="cardTitleTemplate" [nzBordered]="false">
                     <ng-template #cardTitleTemplate>
@@ -185,7 +328,7 @@
                         </div>
                     </ng-template>
 
-                    <!-- Tabla de Más Vendidos (Ventas Reales) -->
+                    <!-- Tabla de Más Vendidos -->
                     <nz-table #topProductsTable [nzData]="topProducts" nzShowPagination="false" nzSize="middle" class="premium-table" *ngIf="activeTab === 'sales'">
                         <thead>
                             <tr>
@@ -209,15 +352,13 @@
                                     </div>
                                 </td>
                                 <td>
-                                    <span class="product-category">
-                                        <nz-tag nzColor="blue">{{ data.category }}</nz-tag>
-                                    </span>
+                                    <span class="product-category"><nz-tag nzColor="blue">{{ data.category }}</nz-tag></span>
                                 </td>
                                 <td style="text-align: center;">
                                     <span class="product-volume" style="font-weight: 600;">{{ data.salesVolume | number }}</span>
                                 </td>
                                 <td>
-                                    <span class="product-revenue" style="font-weight: 700; color: #52c41a;">${{ data.revenue | number:'1.2-2' }}</span>
+                                    <span class="product-revenue" style="font-weight: 700; color: #52c41a;">$ {{ data.revenue | number:'1.2-2' }}</span>
                                 </td>
                             </tr>
                             <tr *ngIf="topProducts.length === 0">
@@ -229,7 +370,7 @@
                         </tbody>
                     </nz-table>
 
-                    <!-- Tabla de Más Vistos (Visitas Reales) -->
+                    <!-- Tabla de Más Vistos -->
                     <nz-table #topViewedTable [nzData]="topViewedProductsList" nzShowPagination="false" nzSize="middle" class="premium-table" *ngIf="activeTab === 'views'">
                         <thead>
                             <tr>
@@ -253,9 +394,7 @@
                                     </div>
                                 </td>
                                 <td>
-                                    <span class="product-category">
-                                        <nz-tag nzColor="purple">{{ data.category }}</nz-tag>
-                                    </span>
+                                    <span class="product-category"><nz-tag nzColor="purple">{{ data.category }}</nz-tag></span>
                                 </td>
                                 <td style="text-align: center;">
                                     <span class="product-volume" style="font-weight: 700; color: #722ed1;">{{ data.views | number }}</span>
@@ -274,10 +413,9 @@
                     </nz-table>
                 </nz-card>
             </div>
-
         </div>
 
-        <!-- FILA 3.5: Geolocalización de Visitas -->
+        <!-- SECCIÓN 5: Geolocalización de Visitas -->
         <div nz-row [nzGutter]="[16, 16]" class="charts-row" style="margin-top: 20px;">
             <div nz-col nzXs="24" nzLg="24">
                 <nz-card class="premium-card" nzTitle="Geolocalización del Tráfico (Visitas por Ciudad/Provincia)" [nzBordered]="false">
@@ -292,14 +430,60 @@
             </div>
         </div>
 
-        <!-- FILA 4: Rentabilidad y Alertas de Stock WMS -->
-        <div nz-row [nzGutter]="[16, 16]" class="charts-row" style="margin-top: 20px; margin-bottom: 20px;">
+        <!-- SECCIÓN 6: Distribución Horaria, Fidelidad y Dispositivos de Origen -->
+        <div nz-row [nzGutter]="[16, 16]" class="charts-row" style="margin-top: 20px;">
+            
+            <!-- Curva Horas Pico -->
+            <div nz-col nzXs="24" nzLg="12">
+                <nz-card class="premium-card full-height-card" nzTitle="Distribución Temporal de Tráfico (Horas Pico)" [nzBordered]="false">
+                    <div class="chart-wrapper">
+                        <div #hourlyChart class="chart-container" style="height: 250px;"></div>
+                    </div>
+                </nz-card>
+            </div>
 
+            <!-- Dispositivos y Fidelidad -->
+            <div nz-col nzXs="24" nzLg="12">
+                <nz-card class="premium-card full-height-card" nzTitle="Análisis de Audiencia (Dispositivos y Retención)" [nzBordered]="false">
+                    <div nz-row [nzGutter]="[16, 16]" style="height: 100%;">
+                        
+                        <!-- Dispositivos -->
+                        <div nz-col nzSpan="12" style="text-align: center;">
+                            <h4 style="font-size: 13px; font-weight: 700; color: #475569; margin-bottom: 12px; font-family: 'Outfit', sans-serif;">Dispositivo de Acceso</h4>
+                            <div class="chart-wrapper" style="height: 160px; position: relative;">
+                                <div #deviceChart style="width: 100%; height: 100%;"></div>
+                            </div>
+                            <div style="display: flex; justify-content: center; gap: 14px; margin-top: 10px; font-size: 12px;">
+                                <span><span nz-icon nzType="mobile" style="color: #fa8c16;"></span> Celular: <b>{{ devicePercentMobile }}%</b></span>
+                                <span><span nz-icon nzType="desktop" style="color: #1890ff;"></span> PC: <b>{{ devicePercentDesktop }}%</b></span>
+                            </div>
+                        </div>
+
+                        <!-- Fidelidad -->
+                        <div nz-col nzSpan="12" style="text-align: center;">
+                            <h4 style="font-size: 13px; font-weight: 700; color: #475569; margin-bottom: 12px; font-family: 'Outfit', sans-serif;">Retención / Fidelidad</h4>
+                            <div class="chart-wrapper" style="height: 160px; position: relative;">
+                                <div #fidelityChart style="width: 100%; height: 100%;"></div>
+                            </div>
+                            <div style="display: flex; justify-content: center; gap: 14px; margin-top: 10px; font-size: 12px;">
+                                <span><span nz-icon nzType="user-add" style="color: #13c2c2;"></span> Nuevos: <b>{{ loyaltyPercentNew }}%</b></span>
+                                <span><span nz-icon nzType="sync" style="color: #722ed1;"></span> Recurrentes: <b>{{ loyaltyPercentRecurrent }}%</b></span>
+                            </div>
+                        </div>
+
+                    </div>
+                </nz-card>
+            </div>
+
+        </div>
+
+        <!-- SECCIÓN 7: Rentabilidad y Alertas de Stock WMS -->
+        <div nz-row [nzGutter]="[16, 16]" class="charts-row" style="margin-top: 20px; margin-bottom: 20px;">
             <!-- Margen de Ganancia y Rentabilidad -->
             <div nz-col nzXs="24" nzLg="12">
                 <nz-card class="premium-card full-height-card" nzTitle="Análisis de Rentabilidad (Costo vs. Venta)" [nzBordered]="false">
                     <div class="chart-wrapper">
-                        <div #profitabilityChart class="chart-container"></div>
+                        <div #profitabilityChart class="chart-container" style="height: 250px;"></div>
                         <div *ngIf="profitabilityList.length === 0" class="empty-chart-state">
                             <span nz-icon nzType="fund" style="font-size: 28px; margin-bottom: 8px; display: block;"></span>
                             Sin datos de costos/precios para comparar
@@ -308,17 +492,16 @@
                 </nz-card>
             </div>
 
-            <!-- Distribución de Stock y Alertas -->
+            <!-- Distribución de Stock WMS -->
             <div nz-col nzXs="24" nzLg="12">
                 <nz-card class="premium-card full-height-card" nzTitle="Inventario WMS y Tasa de Rotación" [nzBordered]="false">
                     <div style="display: flex; gap: 20px; height: 100%; flex-wrap: wrap;">
-                        
-                        <!-- Mini KPIs e Histograma WMS -->
+                        <!-- Mini KPIs WMS -->
                         <div style="flex: 1 1 200px; display: flex; flex-direction: column; gap: 14px;">
                             <div style="background: rgba(24, 144, 255, 0.05); padding: 12px; border-radius: 12px; border: 1px solid rgba(24, 144, 255, 0.1);">
                                 <span style="font-size: 11px; font-weight: 700; color: #1890ff; text-transform: uppercase; letter-spacing: 0.5px; display: block;">Rotación Mensual</span>
                                 <strong style="font-size: 20px; color: #1e293b; display: block; margin-top: 4px;">{{ turnoverRate }}x</strong>
-                                <span style="font-size: 11px; color: #64748b;">Rotaciones completas en 30 días</span>
+                                <span style="font-size: 11px; color: #64748b;">Rotaciones en 30 días</span>
                             </div>
                             <div style="background: rgba(82, 196, 26, 0.05); padding: 12px; border-radius: 12px; border: 1px solid rgba(82, 196, 26, 0.1);">
                                 <span style="font-size: 11px; font-weight: 700; color: #52c41a; text-transform: uppercase; letter-spacing: 0.5px; display: block;">Stock Total Físico</span>
@@ -358,11 +541,9 @@
                                 </div>
                             </div>
                         </div>
-
                     </div>
                 </nz-card>
             </div>
-
         </div>
 
     </nz-spin>
