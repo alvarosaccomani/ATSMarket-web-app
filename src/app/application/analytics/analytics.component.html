@@ -76,6 +76,49 @@
             </div>
         </div>
 
+        <!-- FILA: Tráfico Web y Conversión -->
+        <div nz-row [nzGutter]="[16, 16]" class="kpi-row" style="margin-top: 20px;">
+            <div nz-col nzXs="24" nzSm="12" nzLg="6">
+                <nz-card class="premium-card kpi-card" [nzBordered]="false" style="background: linear-gradient(135deg, #f9f0ff 0%, #ffffff 100%);">
+                    <nz-statistic [nzValue]="totalPageViews" [nzTitle]="'Visitas a la Tienda'">
+                    </nz-statistic>
+                    <div class="kpi-trend" style="color: #722ed1; font-weight: 500;">
+                        <span nz-icon nzType="eye" nzTheme="outline"></span> Páginas Vistas
+                    </div>
+                </nz-card>
+            </div>
+            <div nz-col nzXs="24" nzSm="12" nzLg="6">
+                <nz-card class="premium-card kpi-card" [nzBordered]="false" style="background: linear-gradient(135deg, #e6f7ff 0%, #ffffff 100%);">
+                    <nz-statistic [nzValue]="totalProductViews" [nzTitle]="'Visitas a Productos'">
+                    </nz-statistic>
+                    <div class="kpi-trend" style="color: #1890ff; font-weight: 500;">
+                        <span nz-icon nzType="appstore" nzTheme="outline"></span> Fichas de Detalle
+                    </div>
+                </nz-card>
+            </div>
+            <div nz-col nzXs="24" nzSm="12" nzLg="6">
+                <nz-card class="premium-card kpi-card" [nzBordered]="false" style="background: linear-gradient(135deg, #fff7e6 0%, #ffffff 100%);">
+                    <nz-statistic [nzValue]="totalCartAdditions" [nzTitle]="'Intenciones de Compra'">
+                    </nz-statistic>
+                    <div class="kpi-trend" style="color: #fa8c16; font-weight: 500;">
+                        <span nz-icon nzType="shopping-cart" nzTheme="outline"></span> Clics en Carrito
+                    </div>
+                </nz-card>
+            </div>
+            <div nz-col nzXs="24" nzSm="12" nzLg="6">
+                <nz-card class="premium-card kpi-card" [nzBordered]="false" style="background: linear-gradient(135deg, #f6ffed 0%, #ffffff 100%);">
+                    <nz-statistic [nzValue]="webConversionRate" [nzTitle]="'Conversión de Visitas'" [nzSuffix]="'%'" [nzValueTemplate]="conversionTemplate">
+                    </nz-statistic>
+                    <ng-template #conversionTemplate let-value>
+                        <span style="color: #52c41a; font-weight: 600;">{{ value | number:'1.1-2' }}%</span>
+                    </ng-template>
+                    <div class="kpi-trend" style="color: #52c41a; font-weight: 500;">
+                        <span nz-icon nzType="line-chart" nzTheme="outline"></span> Clics / Páginas Vistas
+                    </div>
+                </nz-card>
+            </div>
+        </div>
+
         <!-- FILA 2: Gráficos de Ingresos Brutos y Mix de Categorías -->
         <div nz-row [nzGutter]="[16, 16]" class="charts-row" style="margin-top: 20px;">
             
@@ -123,10 +166,27 @@
                 </nz-card>
             </div>
 
-            <!-- Ranking de Productos Estrella (Tabla) -->
+            <!-- Ranking de Productos Estrella (Tabla con Toggles) -->
             <div nz-col nzXs="24" nzLg="16">
-                <nz-card class="premium-card full-height-card" nzTitle="Ranking de Productos (Top 5 por Ventas)" [nzBordered]="false">
-                    <nz-table #topProductsTable [nzData]="topProducts" nzShowPagination="false" nzSize="middle" class="premium-table">
+                <nz-card class="premium-card full-height-card" [nzTitle]="cardTitleTemplate" [nzBordered]="false">
+                    <ng-template #cardTitleTemplate>
+                        <div style="display: flex; justify-content: space-between; align-items: center; width: 100%; flex-wrap: wrap; gap: 8px;">
+                            <span style="font-weight: 700; font-size: 15px; color: #1e293b; font-family: Outfit, sans-serif;">
+                                {{ activeTab === 'sales' ? 'Ranking de Productos (Top 5 por Ventas)' : 'Ranking de Productos (Top 5 por Visitas)' }}
+                            </span>
+                            <div style="display: flex; gap: 4px;">
+                                <button nz-button nzSize="small" [nzType]="activeTab === 'sales' ? 'primary' : 'default'" (click)="activeTab = 'sales'" style="border-radius: 6px;">
+                                    Más Vendidos
+                                </button>
+                                <button nz-button nzSize="small" [nzType]="activeTab === 'views' ? 'primary' : 'default'" (click)="activeTab = 'views'" style="border-radius: 6px;">
+                                    Más Vistos
+                                </button>
+                            </div>
+                        </div>
+                    </ng-template>
+
+                    <!-- Tabla de Más Vendidos (Ventas Reales) -->
+                    <nz-table #topProductsTable [nzData]="topProducts" nzShowPagination="false" nzSize="middle" class="premium-table" *ngIf="activeTab === 'sales'">
                         <thead>
                             <tr>
                                 <th nzWidth="40%">Producto Estrella</th>
@@ -168,9 +228,68 @@
                             </tr>
                         </tbody>
                     </nz-table>
+
+                    <!-- Tabla de Más Vistos (Visitas Reales) -->
+                    <nz-table #topViewedTable [nzData]="topViewedProductsList" nzShowPagination="false" nzSize="middle" class="premium-table" *ngIf="activeTab === 'views'">
+                        <thead>
+                            <tr>
+                                <th nzWidth="40%">Producto Estrella</th>
+                                <th nzWidth="20%">Rubro</th>
+                                <th nzWidth="20%" style="text-align: center;">Visualizaciones</th>
+                                <th nzWidth="20%">Interés</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            <tr *ngFor="let data of topViewedTable.data">
+                                <td>
+                                    <div class="product-cell" style="display: flex; align-items: center; gap: 12px;">
+                                        <nz-avatar nzShape="square"
+                                            [nzSrc]="'https://api.dicebear.com/7.x/identicon/svg?seed=' + data.sku"
+                                            style="background-color: #fafafa; border: 1px solid #e8e8e8;"></nz-avatar>
+                                        <div class="product-info" style="display: flex; flex-direction: column;">
+                                            <span class="product-name" style="font-weight: 600; color: #262626;">{{ data.name }}</span>
+                                            <span class="product-sku" style="font-size: 11px; color: #8c8c8c;">Cod: {{ data.sku }}</span>
+                                        </div>
+                                    </div>
+                                </td>
+                                <td>
+                                    <span class="product-category">
+                                        <nz-tag nzColor="purple">{{ data.category }}</nz-tag>
+                                    </span>
+                                </td>
+                                <td style="text-align: center;">
+                                    <span class="product-volume" style="font-weight: 700; color: #722ed1;">{{ data.views | number }}</span>
+                                </td>
+                                <td>
+                                    <nz-tag nzColor="success" style="font-weight: 500;">Muy Interesante</nz-tag>
+                                </td>
+                            </tr>
+                            <tr *ngIf="topViewedProductsList.length === 0">
+                                <td colspan="4" style="text-align: center; padding: 40px 0; color: #8c8c8c;">
+                                    <span nz-icon nzType="inbox" style="font-size: 28px; margin-bottom: 8px; display: block;"></span>
+                                    No se registraron visitas en el catálogo aún
+                                </td>
+                            </tr>
+                        </tbody>
+                    </nz-table>
                 </nz-card>
             </div>
 
+        </div>
+
+        <!-- FILA 3.5: Geolocalización de Visitas -->
+        <div nz-row [nzGutter]="[16, 16]" class="charts-row" style="margin-top: 20px;">
+            <div nz-col nzXs="24" nzLg="24">
+                <nz-card class="premium-card" nzTitle="Geolocalización del Tráfico (Visitas por Ciudad/Provincia)" [nzBordered]="false">
+                    <div class="chart-wrapper">
+                        <div #locationChart class="chart-container" style="height: 250px;"></div>
+                        <div *ngIf="topLocations.length === 0" class="empty-chart-state">
+                            <span nz-icon nzType="environment" style="font-size: 28px; margin-bottom: 8px; display: block;"></span>
+                            Sin datos geográficos para mapear
+                        </div>
+                    </div>
+                </nz-card>
+            </div>
         </div>
 
         <!-- FILA 4: Rentabilidad y Alertas de Stock WMS -->

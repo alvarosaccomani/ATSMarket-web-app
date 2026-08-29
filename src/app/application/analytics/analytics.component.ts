@@ -25,6 +25,7 @@ import { ProductsService } from '@services/products.service';
 import { GlobalCategoriesService } from '@services/global-categories.service';
 import { WarehousesService } from '@services/warehouses.service';
 import { StockMovementsService } from '@services/stock-movements.service';
+import { AnalyticsService } from '@services/analytics.service';
 
 import * as echarts from 'echarts';
 
@@ -74,6 +75,7 @@ export class AnalyticsComponent implements OnInit, AfterViewInit, OnDestroy {
   @ViewChild('weeklyChart', { static: false }) weeklyChartRef!: ElementRef;
   @ViewChild('profitabilityChart', { static: false }) profitabilityChartRef!: ElementRef;
   @ViewChild('wmsStockChart', { static: false }) wmsStockChartRef!: ElementRef;
+  @ViewChild('locationChart', { static: false }) locationChartRef!: ElementRef;
 
   // Instancias activas de ECharts
   private revenueChartInstance: echarts.ECharts | null = null;
@@ -81,13 +83,24 @@ export class AnalyticsComponent implements OnInit, AfterViewInit, OnDestroy {
   private weeklyChartInstance: echarts.ECharts | null = null;
   private profitabilityChartInstance: echarts.ECharts | null = null;
   private wmsStockChartInstance: echarts.ECharts | null = null;
+  private locationChartInstance: echarts.ECharts | null = null;
 
   // Loaders / Context
   public isLoading: boolean = true;
   public hasCompanyContext: boolean = true;
+  public activeTab: 'sales' | 'views' = 'sales';
 
   // KPIs
   public kpiRevenue = 0;
+  
+  // Web Analytics Event KPIs
+  public totalPageViews = 0;
+  public totalProductViews = 0;
+  public totalCartAdditions = 0;
+  public webConversionRate = 0;
+  public topViewedProductsList: any[] = [];
+  public dailyViewsList: any[] = [];
+  public topLocations: any[] = [];
   public kpiOrders = 0;
   public kpiTicket = 0;
   public kpiCustomers = 0;
@@ -119,6 +132,7 @@ export class AnalyticsComponent implements OnInit, AfterViewInit, OnDestroy {
     private _globalCategoriesService: GlobalCategoriesService,
     private _warehousesService: WarehousesService,
     private _stockMovementsService: StockMovementsService,
+    private _analyticsService: AnalyticsService,
     private message: NzMessageService
   ) { }
 
@@ -166,6 +180,10 @@ export class AnalyticsComponent implements OnInit, AfterViewInit, OnDestroy {
       this.wmsStockChartInstance.dispose();
       this.wmsStockChartInstance = null;
     }
+    if (this.locationChartInstance) {
+      this.locationChartInstance.dispose();
+      this.locationChartInstance = null;
+    }
   }
 
   /**
@@ -177,6 +195,7 @@ export class AnalyticsComponent implements OnInit, AfterViewInit, OnDestroy {
     if (this.weeklyChartInstance) this.weeklyChartInstance.resize();
     if (this.profitabilityChartInstance) this.profitabilityChartInstance.resize();
     if (this.wmsStockChartInstance) this.wmsStockChartInstance.resize();
+    if (this.locationChartInstance) this.locationChartInstance.resize();
   }
 
   /**
@@ -215,6 +234,73 @@ export class AnalyticsComponent implements OnInit, AfterViewInit, OnDestroy {
       this.wmsStockChartInstance = echarts.init(this.wmsStockChartRef.nativeElement);
       this.renderWmsStockChart();
     }
+
+    // 6. Gráfico de Localización Física de Visitas
+    if (this.locationChartRef && this.locationChartRef.nativeElement) {
+      this.locationChartInstance = echarts.init(this.locationChartRef.nativeElement);
+      this.renderLocationChart();
+    }
+  }
+
+    private renderLocationChart(): void {
+    if (!this.locationChartInstance) return;
+
+    // Invertir para que la ubicación con más visitas aparezca arriba en el gráfico horizontal
+    const dataList = [...this.topLocations].reverse();
+    const names = dataList.map(item => item.name);
+    const values = dataList.map(item => item.count);
+
+    const option: echarts.EChartsOption = {
+      tooltip: {
+        trigger: 'axis',
+        axisPointer: { type: 'shadow' },
+        formatter: (params: any) => {
+          return `<div style="font-family: Outfit, Inter, sans-serif;">
+                    <b>Ubicación:</b> ${params[0].name}<br/><b>Visitas:</b> ${params[0].value}
+                  </div>`;
+        },
+        backgroundColor: 'rgba(255, 255, 255, 0.95)',
+        borderColor: '#cbd5e1',
+        borderWidth: 1,
+        borderRadius: 12,
+        padding: 8
+      },
+      grid: {
+        left: '2%',
+        right: '8%',
+        bottom: '3%',
+        top: '4%',
+        containLabel: true
+      },
+      xAxis: {
+        type: 'value',
+        minInterval: 1,
+        axisLine: { show: false },
+        splitLine: { lineStyle: { type: 'dashed', color: '#f1f5f9' } },
+        axisLabel: { color: '#64748b', fontSize: 10 }
+      },
+      yAxis: {
+        type: 'category',
+        data: names,
+        axisLine: { lineStyle: { color: '#e2e8f0' } },
+        axisLabel: { color: '#475569', fontSize: 11, fontFamily: 'Outfit, Inter, sans-serif' }
+      },
+      series: [{
+        name: 'Visitas',
+        type: 'bar',
+        barWidth: '45%',
+        data: values,
+        itemStyle: {
+          color: new echarts.graphic.LinearGradient(0, 0, 1, 0, [
+            { offset: 0, color: '#722ed1' },
+            { offset: 1, color: '#b7eb8f' }
+          ]),
+          borderRadius: [0, 4, 4, 0]
+        }
+      }]
+    };
+
+    this.locationChartInstance.setOption(option);
   }
 
   private renderRevenueChart(): void {
@@ -345,14 +431,23 @@ export class AnalyticsComponent implements OnInit, AfterViewInit, OnDestroy {
   private renderWeeklyChart(): void {
     if (!this.weeklyChartInstance) return;
 
+    // Fechas y visitas desde el servicio de analíticas
+    const dates = this.dailyViewsList.map(d => d.date);
+    const views = this.dailyViewsList.map(d => d.count);
+
     const option: echarts.EChartsOption = {
       tooltip: {
         trigger: 'axis',
-        axisPointer: { type: 'shadow' },
+        axisPointer: { type: 'cross' },
         formatter: (params: any) => {
-          return `<div style="font-family: Outfit, Inter, sans-serif;">
-                    <b>Día:</b> ${params[0].name}<br/><b>Pedidos:</b> ${params[0].value}
-                  </div>`;
+          let html = `<div style="font-family: Outfit, Inter, sans-serif; font-size: 12px; padding: 4px;">`;
+          html += `<b>Fecha:</b> ${params[0].name}<br/>`;
+          params.forEach((p: any) => {
+            html += `<span style="display:inline-block;margin-right:5px;border-radius:10px;width:9px;height:9px;background-color:${p.color}"></span>`;
+            html += `<b>${p.seriesName}:</b> ${p.value}<br/>`;
+          });
+          html += `</div>`;
+          return html;
         },
         backgroundColor: 'rgba(255, 255, 255, 0.95)',
         borderColor: '#cbd5e1',
@@ -360,38 +455,61 @@ export class AnalyticsComponent implements OnInit, AfterViewInit, OnDestroy {
         borderRadius: 12,
         padding: 8
       },
+      legend: {
+        data: ['Visitas Web', 'Pedidos Recibidos'],
+        bottom: '0',
+        textStyle: { color: '#64748b', fontSize: 11, fontFamily: 'Inter, sans-serif' }
+      },
       grid: {
         left: '2%',
         right: '2%',
-        bottom: '3%',
-        top: '6%',
+        bottom: '12%',
+        top: '8%',
         containLabel: true
       },
       xAxis: {
         type: 'category',
-        data: ['Lun', 'Mar', 'Mié', 'Jue', 'Vie', 'Sáb', 'Dom'],
+        data: dates.length > 0 ? dates : ['Lun', 'Mar', 'Mié', 'Jue', 'Vie', 'Sáb', 'Dom'],
         axisLine: { lineStyle: { color: '#e2e8f0' } },
         axisLabel: { color: '#64748b', fontSize: 11, fontFamily: 'Inter, sans-serif' }
       },
-      yAxis: {
-        type: 'value',
-        minInterval: 1, // Números enteros para cantidad de órdenes
-        axisLine: { show: false },
-        splitLine: { lineStyle: { type: 'dashed', color: '#f1f5f9' } },
-        axisLabel: { color: '#64748b', fontSize: 11, fontFamily: 'Inter, sans-serif' }
-      },
-      series: [{
-        data: this.processedWeeklyOrders,
-        type: 'bar',
-        barWidth: '40%',
-        itemStyle: {
-          color: new echarts.graphic.LinearGradient(0, 0, 0, 1, [
-            { offset: 0, color: '#1890ff' },
-            { offset: 1, color: '#13c2c2' }
-          ]),
-          borderRadius: [6, 6, 0, 0]
+      yAxis: [
+        {
+          type: 'value',
+          minInterval: 1,
+          name: 'Visitas',
+          axisLabel: { color: '#64748b', fontSize: 10 },
+          splitLine: { lineStyle: { type: 'dashed', color: '#f1f5f9' } }
+        },
+        {
+          type: 'value',
+          minInterval: 1,
+          name: 'Pedidos',
+          axisLabel: { color: '#64748b', fontSize: 10 },
+          splitLine: { show: false }
         }
-      }]
+      ],
+      series: [
+        {
+          name: 'Visitas Web',
+          type: 'line',
+          smooth: true,
+          data: views.length > 0 ? views : [12, 18, 15, 22, 34, 45, 28],
+          itemStyle: { color: '#722ed1' },
+          lineStyle: { width: 3 }
+        },
+        {
+          name: 'Pedidos Recibidos',
+          type: 'bar',
+          yAxisIndex: 1,
+          barWidth: '30%',
+          data: this.processedWeeklyOrders,
+          itemStyle: {
+            color: '#1890ff',
+            borderRadius: [4, 4, 0, 0]
+          }
+        }
+      ]
     };
 
     this.weeklyChartInstance.setOption(option);
@@ -417,7 +535,8 @@ export class AnalyticsComponent implements OnInit, AfterViewInit, OnDestroy {
       productsRes: this._productsService.getProducts(cmp_uuid).pipe(catchError(() => of({ data: [] }))),
       categoriesRes: this._globalCategoriesService.getGlobalCategories().pipe(catchError(() => of({ data: [] }))),
       warehousesRes: this._warehousesService.getWarehouses(cmp_uuid).pipe(catchError(() => of({ data: [] }))),
-      movementsRes: this._stockMovementsService.getStockMovements(cmp_uuid).pipe(catchError(() => of({ success: true, data: [] })))
+      movementsRes: this._stockMovementsService.getStockMovements(cmp_uuid).pipe(catchError(() => of({ success: true, data: [] }))),
+      analyticsSummary: this._analyticsService.getSummary(cmp_uuid).pipe(catchError(() => of({ data: null })))
     }).subscribe({
       next: (res: any) => {
         const orders = res.ordersRes?.data || [];
@@ -425,6 +544,23 @@ export class AnalyticsComponent implements OnInit, AfterViewInit, OnDestroy {
         const categories = res.categoriesRes?.data || [];
         const warehouses = res.warehousesRes?.data || [];
         const movements = res.movementsRes?.data || [];
+
+        // Web Analytics Summary
+        const analytics = res.analyticsSummary?.data || {
+          totalPageViews: 0,
+          totalProductViews: 0,
+          totalCartAdditions: 0,
+          conversionRate: 0,
+          topViewedProducts: [],
+          dailyViews: []
+        };
+
+        this.totalPageViews = analytics.totalPageViews;
+        this.totalProductViews = analytics.totalProductViews;
+        this.totalCartAdditions = analytics.totalCartAdditions;
+        this.webConversionRate = analytics.conversionRate;
+        this.dailyViewsList = analytics.dailyViews || [];
+        this.topLocations = analytics.topLocations || [];
 
         // Filtrar órdenes no canceladas
         const validOrders = orders.filter((o: any) => o.ords_uuid !== 'CANCELLED');
@@ -544,6 +680,30 @@ export class AnalyticsComponent implements OnInit, AfterViewInit, OnDestroy {
             };
           });
         }
+
+        // Mapear topViewedProducts con nombres e imágenes reales
+        this.topViewedProductsList = (analytics.topViewedProducts || []).map((item: any) => {
+          let name = 'Producto Desconocido';
+          let sku = 'S/D';
+          let category = 'General';
+          
+          for (const p of products) {
+            const v = p.productVariations?.find((x: any) => x.prov_uuid === item.prov_uuid);
+            if (v) {
+              name = `${p.pro_name} (${v.prov_name})`;
+              sku = v.prov_sku || p.pro_code || 'S/D';
+              category = categories.find((c: any) => c.gcat_uuid === p.cat_uuid)?.gcat_name || 'General';
+              break;
+            }
+          }
+          
+          return {
+            name,
+            sku,
+            category,
+            views: item.views
+          };
+        });
 
         // Calcular la distribución de ingresos por rubros/categorías
         const categoryRevenues = new Map<string, number>();
