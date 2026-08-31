@@ -21,6 +21,7 @@ export class FavoritesService {
   private apiUrl = `${environment.apiUrl}favorites`;
   private favoritesSubject = new BehaviorSubject<string[]>([]);
   public favorites$ = this.favoritesSubject.asObservable();
+  public favoritesCount$ = this.favoritesSubject.asObservable().pipe(map(list => list ? list.length : 0));
 
   constructor(private http: HttpClient) { }
 
@@ -35,6 +36,16 @@ export class FavoritesService {
         this.favoritesSubject.next([]);
         return of([]);
       })
+    );
+  }
+
+  /**
+   * Obtiene la lista completa de favoritos poblada con detalles de variantes y tiendas.
+   */
+  public getFavoritesDetails(): Observable<any[]> {
+    return this.http.get<{ success: boolean; data: any[] }>(`${this.apiUrl}?details=true`).pipe(
+      map(res => res.success && res.data ? res.data : []),
+      catchError(() => of([]))
     );
   }
 
