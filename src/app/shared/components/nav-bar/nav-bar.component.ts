@@ -14,9 +14,14 @@ import { NzAvatarModule } from 'ng-zorro-antd/avatar';
 import { NzDropDownModule } from 'ng-zorro-antd/dropdown';
 import { NzButtonModule } from 'ng-zorro-antd/button';
 import { NzDividerModule } from 'ng-zorro-antd/divider';
+import { NzTagModule } from 'ng-zorro-antd/tag';
+import { NzSpinModule } from 'ng-zorro-antd/spin';
+import { NzEmptyModule } from 'ng-zorro-antd/empty';
+import { NzToolTipModule } from 'ng-zorro-antd/tooltip';
 
 import { CartItemInterface } from '@interfaces/cart-item.interface';
 import { CartService } from '@services/cart.service';
+import { FavoritesService } from '@services/favorites.service';
 import { SessionService } from '@services/session.service';
 import { StoreContextService } from '@services/store-context.service';
 import { WebSocketNotificationService } from '@services/web-socket-notification.service';
@@ -38,7 +43,11 @@ import { CompanyInterface } from '@interfaces/company';
     NzAvatarModule,
     NzDropDownModule,
     NzButtonModule,
-    NzDividerModule
+    NzDividerModule,
+    NzTagModule,
+    NzSpinModule,
+    NzEmptyModule,
+    NzToolTipModule
   ],
   templateUrl: './nav-bar.component.html',
   styleUrl: './nav-bar.component.scss'
@@ -48,6 +57,12 @@ export class NavBarComponent implements OnInit {
   public cartItemCount: number = 0;
   public cartItems$: Observable<CartItemInterface[]>;
   public drawerVisible: boolean = false;
+
+  // Favoritos
+  public favoritesCount$: Observable<number>;
+  public isFavoritesDrawerVisible: boolean = false;
+  public favoriteItemsDetails: any[] = [];
+  public isLoadingFavorites: boolean = false;
 
   // Usuario
   public userIdentity: any = null;
@@ -66,12 +81,14 @@ export class NavBarComponent implements OnInit {
 
   constructor(
     private cartService: CartService,
+    private _favoritesService: FavoritesService,
     private _sessionService: SessionService,
     private _router: Router,
     private _storeContext: StoreContextService,
     public notificationService: WebSocketNotificationService
   ) {
     this.cartItems$ = this.cartService.cartItems$;
+    this.favoritesCount$ = this._favoritesService.favoritesCount$;
     this.notifications$ = this.notificationService.notifications$;
     this.unreadCount$ = this.notificationService.unreadCount$;
   }
@@ -109,6 +126,72 @@ export class NavBarComponent implements OnInit {
       const tree = this._router.parseUrl(this._router.url);
       this.searchQuery = tree.queryParams['search'] || '';
     });
+    if (this.userIdentity) {
+      this._favoritesService.loadFavorites().subscribe();
+    }
+  }
+
+  // --- MÓDULO HÍBRIDO DE FAVORITOS ---
+  public openFavoritesDrawer(): void {
+    if (!this.userIdentity) {
+      this._router.navigate(['/auth/login']);
+      return;
+    }
+    this.isFavoritesDrawerVisible = true;
+    this.loadFavoritesDetails();
+  }
+
+  public closeFavoritesDrawer(): void {
+    this.isFavoritesDrawerVisible = false;
+  }
+
+  public loadFavoritesDetails(): void {
+    this.isLoadingFavorites = true;
+    this._favoritesService.getFavoritesDetails().subscribe({
+      next: (data) => {
+        this.favoriteItemsDetails = data || [];
+        this.isLoadingFavorites = false;
+      },
+      error: () => {
+        this.favoriteItemsDetails = [];
+        this.isLoadingFavorites = false;
+      }
+    });
+  }
+
+  public removeFavoriteFromDrawer(item: any): void {
+    this._favoritesService.removeFavorite(item.prov_uuid, item.cmp_uuid).subscribe({
+      next: () => {
+        this.favoriteItemsDetails = this.favoriteItemsDetails.filter(f => f.prov_uuid !== item.prov_uuid);
+      }
+    });
+  }
+
+  public addToCartFromFavorites(item: any): void {
+    const cartProduct = {
+      cmp_uuid: item.cmp_uuid,
+      pro_uuid: item.pro_uuid,
+      prov_uuid: item.prov_uuid,
+      prov_name: item.prov_name,
+      prov_sku: item.prov_sku,
+      prov_price: item.prov_suggestedminimumsellingprice,
+      prov_image: item.prov_image,
+      quantity: 1,
+      cmp_name: item.cmp_name
+    };
+    this.cartService.addToCart(cartProduct as any);
+  }
+
+  public goToProductDetail(item: any): void {
+    this.closeFavoritesDrawer();
+    if (item.cmp_slug) {
+      this._router.navigate(['/public/store-catalog', item.cmp_slug, 'product', item.prov_uuid]);
+    }
+  }
+
+  public goToMyFavoritesPage(): void {
+    this.closeFavoritesDrawer();
+    this._router.navigate(['/application/my-favorites']);
   }
 
   private updateLogo(): void {
