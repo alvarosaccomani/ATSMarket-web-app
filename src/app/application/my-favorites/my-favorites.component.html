@@ -1,1 +1,87 @@
-<p>my-favorites works!</p>
+<div class="my-favorites-container">
+    <div class="header-section">
+        <div class="header-titles">
+            <h1 class="page-title">
+                <span nz-icon nzType="heart" nzTheme="fill" style="color: #ff4d4f; margin-right: 8px;"></span>
+                Mis Productos Favoritos
+            </h1>
+            <p class="page-subtitle">Gestioná tus artículos guardados de todas las tiendas en un solo lugar.</p>
+        </div>
+
+        <div class="header-actions">
+            <nz-input-group [nzPrefix]="prefixIconSearch" nzSize="large" style="width: 300px;">
+                <input type="text" nz-input placeholder="Buscar en favoritos..." [(ngModel)]="searchTerm" (ngModelChange)="applyFilters()" />
+            </nz-input-group>
+            <ng-template #prefixIconSearch>
+                <span nz-icon nzType="search"></span>
+            </ng-template>
+        </div>
+    </div>
+
+    <!-- SPINNER CARGA -->
+    <div class="loading-wrapper" *ngIf="isLoading">
+        <nz-spin Simple nzSize="large"></nz-spin>
+        <p>Cargando tus productos favoritos...</p>
+    </div>
+
+    <!-- ESTADO VACÍO TOTAL -->
+    <div class="empty-state-card" *ngIf="!isLoading && favoriteItems.length === 0">
+        <nz-empty
+            nzNotFoundImage="https://gw.alipayobjects.com/zos/antfincdn/ZHrcdLPrvN/empty.svg"
+            nzNotFoundContent="Aún no tenés productos guardados en tus favoritos.">
+            <div nz-empty-footer>
+                <button nz-button nzType="primary" nzSize="large" (click)="goToCatalog()">
+                    <span nz-icon nzType="shopping"></span> Explorar Catálogo
+                </button>
+            </div>
+        </nz-empty>
+    </div>
+
+    <!-- ESTADO VACÍO POR FILTRO -->
+    <div class="empty-state-card" *ngIf="!isLoading && favoriteItems.length > 0 && filteredItems.length === 0">
+        <nz-empty nzNotFoundContent="No se encontraron productos coincidentes con tu búsqueda.">
+            <div nz-empty-footer>
+                <button nz-button nzType="default" (click)="searchTerm = ''; applyFilters()">Limpiar Filtro</button>
+            </div>
+        </nz-empty>
+    </div>
+
+    <!-- GRID DE PRODUCTOS FAVORITOS -->
+    <div class="favorites-grid" *ngIf="!isLoading && filteredItems.length > 0">
+        <div class="favorite-card-item" *ngFor="let item of filteredItems">
+            
+            <div class="card-image-wrapper">
+                <img [src]="item.prov_image || 'https://placehold.co/400x400?text=Foto'" [alt]="item.prov_name" (click)="goToProductDetail(item)" />
+                <button class="btn-remove-fav" (click)="removeFavorite(item)" nzTooltipTitle="Quitar de favoritos" nz-tooltip>
+                    <span nz-icon nzType="delete" style="color: #ff4d4f;"></span>
+                </button>
+            </div>
+
+            <div class="card-body-content">
+                <span class="store-badge" *ngIf="item.cmp_name">
+                    <span nz-icon nzType="shop" style="margin-right: 4px;"></span> {{ item.cmp_name }}
+                </span>
+
+                <h3 class="product-title" (click)="goToProductDetail(item)">
+                    {{ item.prov_name }}
+                </h3>
+
+                <p class="product-sku" *ngIf="item.prov_sku">SKU: {{ item.prov_sku }}</p>
+
+                <div class="card-price-row">
+                    <span class="price-value">$ {{ item.prov_suggestedminimumsellingprice | number:'1.2-2' }}</span>
+                    <nz-tag [nzColor]="item.prov_stock > 0 ? 'green' : 'volcano'">
+                        {{ item.prov_stock > 0 ? 'En Stock' : 'Sin Stock' }}
+                    </nz-tag>
+                </div>
+            </div>
+
+            <div class="card-footer-actions">
+                <button nz-button nzType="primary" nzBlock nzSize="large" (click)="addToCart(item)" [disabled]="item.prov_stock <= 0">
+                    <span nz-icon nzType="shopping-cart"></span> Añadir al Carrito
+                </button>
+            </div>
+
+        </div>
+    </div>
+</div>
