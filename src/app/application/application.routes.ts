@@ -35,6 +35,7 @@ import { AnalyticsComponent } from './analytics/analytics.component';
 import { FinancesComponent } from './finances/finances.component';
 import { AddressesComponent } from './addresses/addresses.component';
 import { CouponsComponent } from './coupons/coupons.component';
+import { MyFavoritesComponent } from './my-favorites/my-favorites.component';
 
 import { authGuard } from '@guards/auth.guard';
 import { superAdminGuard } from '@guards/super-admin.guard';
@@ -75,6 +76,7 @@ export const APPLICATION_ROUTES: Routes = [
             { path: 'inventory-audit', component: InventoryAuditComponent, canActivate: [merchantGuard] },
             { path: 'orders-received', component: OrdersReceivedComponent, canActivate: [merchantGuard] },
             { path: 'my-purchases', component: MyPurchasesComponent },
+            { path: 'my-favorites', component: MyFavoritesComponent },
             { path: 'customers', component: CustomersComponent, canActivate: [merchantGuard] },
             { path: 'suppliers', component: SuppliersComponent, canActivate: [merchantGuard] },
             { path: 'supplier/:sup_uuid', component: SupplierComponent, canActivate: [merchantGuard] },
