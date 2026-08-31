@@ -404,7 +404,7 @@ export class AnalyticsComponent implements OnInit, AfterViewInit, OnDestroy {
               break;
             }
           }
-          return { name, sku, category, views: item.views };
+          return { name, sku, category, views: item.views, favorites: item.favorites || 0 };
         });
 
         // Mix de categorías

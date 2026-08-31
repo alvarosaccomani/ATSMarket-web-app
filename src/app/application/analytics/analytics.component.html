@@ -377,7 +377,8 @@
                                 <th nzWidth="40%">Producto Estrella</th>
                                 <th nzWidth="20%">Rubro</th>
                                 <th nzWidth="20%" style="text-align: center;">Visualizaciones</th>
-                                <th nzWidth="20%">Interés</th>
+                                <th nzWidth="10%" style="text-align: center;">Favoritos</th>
+                                <th nzWidth="10%">Interés</th>
                             </tr>
                         </thead>
                         <tbody>
@@ -399,12 +400,18 @@
                                 <td style="text-align: center;">
                                     <span class="product-volume" style="font-weight: 700; color: #722ed1;">{{ data.views | number }}</span>
                                 </td>
+                                <td style="text-align: center;">
+                                    <span class="product-volume" style="font-weight: 700; color: #f5222d;">
+                                        <span nz-icon nzType="heart" nzTheme="fill" style="font-size: 11px; margin-right: 2px;"></span>
+                                        {{ data.favorites | number }}
+                                    </span>
+                                </td>
                                 <td>
                                     <nz-tag nzColor="success" style="font-weight: 500;">Muy Interesante</nz-tag>
                                 </td>
                             </tr>
                             <tr *ngIf="topViewedProductsList.length === 0">
-                                <td colspan="4" style="text-align: center; padding: 40px 0; color: #8c8c8c;">
+                                <td colspan="5" style="text-align: center; padding: 40px 0; color: #8c8c8c;">
                                     <span nz-icon nzType="inbox" style="font-size: 28px; margin-bottom: 8px; display: block;"></span>
                                     No se registraron visitas en el catálogo aún
                                 </td>
