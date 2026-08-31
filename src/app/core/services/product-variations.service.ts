@@ -18,10 +18,13 @@ export class ProductVariationsService {
      * En una aplicación real, aquí usarías this.http.get<IProduct[]>('URL_DE_TU_API').
      * @returns Observable de un array de productos.
      */
-  public getProductsVariations(cmp_uuid: string, pro_uuid: string, slug?: string): Observable<ProductVariationResults> {
+  public getProductsVariations(cmp_uuid: string, pro_uuid: string, slug?: string, prov_isvisible?: boolean): Observable<ProductVariationResults> {
     const headers = new HttpHeaders().set('content-type', 'application/json');
 
     let params = new HttpParams();
+    if (prov_isvisible !== undefined) {
+      params = params.set('prov_isvisible', String(prov_isvisible));
+    }
 
     return this._http.get<ProductVariationResults>(`${environment.apiUrl}products-variations/${cmp_uuid}`, { headers, params });
   }
@@ -66,13 +69,17 @@ export class ProductVariationsService {
    * Realiza la búsqueda de variaciones de productos por consulta (y opcionalmente por compañía).
    * @param query Término de búsqueda.
    * @param companyUuid ID opcional de la tienda para restringir la búsqueda.
+   * @param prov_isvisible Opcional. Si se pasa true, filtra solo las variantes visibles.
    * @returns Observable con los resultados.
    */
-  public searchVariations(query: string, companyUuid?: string): Observable<ProductVariationResults> {
+  public searchVariations(query: string, companyUuid?: string, prov_isvisible?: boolean): Observable<ProductVariationResults> {
     const headers = new HttpHeaders().set('content-type', 'application/json');
     let params = new HttpParams().set('query', query);
     if (companyUuid) {
       params = params.set('companyUuid', companyUuid);
+    }
+    if (prov_isvisible !== undefined) {
+      params = params.set('prov_isvisible', String(prov_isvisible));
     }
     return this._http.get<ProductVariationResults>(`${environment.apiUrl}products-variations-search`, { headers, params });
   }

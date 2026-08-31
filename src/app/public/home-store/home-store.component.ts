@@ -130,10 +130,10 @@ export class HomeStoreComponent {
   }
 
   private loadProductosDestacados(cmpUuid: string): void {
-    this._productVariationsService.getProductsVariations(cmpUuid, '').subscribe({
+    this._productVariationsService.getProductsVariations(cmpUuid, '', '', true).subscribe({
       next: (res) => {
         if (res && res.data) {
-          this.destacados = (res.data || []).filter((p: any) => p.prov_isvisible !== false);
+          this.destacados = res.data;
         }
       },
       error: (err) => {
