@@ -103,10 +103,18 @@
                     <nz-card [nzHoverable]="true" class="premium-product-card" [nzCover]="coverTemplate"
                         [nzBodyStyle]="{ padding: '16px' }">
                         <ng-template #coverTemplate>
-                            <div class="card-image-wrapper" (click)="openProductDetail(producto)" style="cursor: pointer;">
+                            <div class="card-image-wrapper" (click)="openProductDetail(producto)" style="cursor: pointer; position: relative;">
                                 <img [alt]="producto.prov_name"
                                     [src]="producto.prov_image ? producto.prov_image : 'https://placehold.co/400x400/eeeeee/8c8c8c?text=Sin+Foto'"
                                     class="product-card-image" />
+                                <button nz-button nzType="text" nzShape="circle" 
+                                    (click)="toggleFavorite($event, producto)"
+                                    style="position: absolute; top: 12px; right: 12px; z-index: 10; background: rgba(255, 255, 255, 0.85); backdrop-filter: blur(4px); box-shadow: 0 4px 10px rgba(0, 0, 0, 0.08); display: inline-flex; align-items: center; justify-content: center; border: none; width: 34px; height: 34px; transition: transform 0.2s ease;">
+                                    <span nz-icon [nzType]="'heart'" 
+                                        [nzTheme]="isFavorited(producto.prov_uuid) ? 'fill' : 'outline'" 
+                                        [style.color]="isFavorited(producto.prov_uuid) ? '#f5222d' : '#8c8c8c'"
+                                        style="font-size: 16px;"></span>
+                                </button>
                             </div>
                         </ng-template>
 

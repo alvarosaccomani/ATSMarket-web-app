@@ -33,6 +33,8 @@ import { StoreContextService } from '@services/store-context.service';
 import { GlobalCategoriesService } from '@services/global-categories.service';
 import { GlobalMaterialsService } from '@services/global-materials.service';
 import { AnalyticsService } from '@services/analytics.service';
+import { FavoritesService } from '@services/favorites.service';
+import { SessionService } from '@services/session.service';
 
 @Component({
   selector: 'app-store',
@@ -96,7 +98,9 @@ export class StoreCatalogComponent implements OnInit {
     private _globalCategoriesService: GlobalCategoriesService,
     private _globalMaterialsService: GlobalMaterialsService,
     private message: NzMessageService,
-    private _analyticsService: AnalyticsService
+    private _analyticsService: AnalyticsService,
+    private _favoritesService: FavoritesService,
+    private _sessionService: SessionService
   ) { }
 
   ngOnInit(): void {
@@ -124,6 +128,10 @@ export class StoreCatalogComponent implements OnInit {
       }
     });
 
+    if (this._sessionService.getIdentity()) {
+      this._favoritesService.loadFavorites().subscribe();
+    }
+ 
     // Suscribirse a los queryParams de la URL para inicializar filtros
     this.route.queryParams.subscribe(params => {
       this.searchTerm = params['search'] || '';
@@ -284,5 +292,39 @@ export class StoreCatalogComponent implements OnInit {
 
   public openProductDetail(producto: ProductVariationInterface): void {
     this.router.navigate(['/public/store-catalog', this.companieslug, 'product', producto.prov_uuid]);
+  }
+
+  public toggleFavorite(event: Event, product: ProductVariationInterface): void {
+    event.stopPropagation();
+    
+    const identity = this._sessionService.getIdentity();
+    if (!identity) {
+      this.message.warning('Iniciá sesión para guardar este producto en tus favoritos.');
+      return;
+    }
+
+    const prov_uuid = product.prov_uuid;
+    const cmp_uuid = product.cmp_uuid;
+    const pro_uuid = product.pro_uuid;
+
+    if (this._favoritesService.isFavorited(prov_uuid)) {
+      this._favoritesService.removeFavorite(prov_uuid, cmp_uuid).subscribe({
+        next: () => {
+          this.message.success('Producto eliminado de favoritos.');
+        },
+        error: () => this.message.error('No se pudo eliminar de favoritos.')
+      });
+    } else {
+      this._favoritesService.addFavorite(cmp_uuid, pro_uuid, prov_uuid).subscribe({
+        next: () => {
+          this.message.success('Producto agregado a favoritos.');
+        },
+        error: () => this.message.error('No se pudo guardar en favoritos.')
+      });
+    }
+  }
+
+  public isFavorited(prov_uuid: string): boolean {
+    return this._favoritesService.isFavorited(prov_uuid);
   }
 }
