@@ -28,6 +28,7 @@ import { StoreContextService } from '@services/store-context.service';
 import { ProductVariationReviewsService } from '@services/product-variation-reviews.service';
 import { AnalyticsService } from '@services/analytics.service';
 import { ProductVariationReviewInterface } from '@interfaces/product-variation-review';
+import { FavoritesService } from '@services/favorites.service';
 
 @Component({
   selector: 'app-product-detail',
@@ -88,10 +89,15 @@ export class ProductDetailComponent implements OnInit {
     private message: NzMessageService,
     private titleService: Title,
     private metaService: Meta,
-    private _analyticsService: AnalyticsService
+    private _analyticsService: AnalyticsService,
+    private _favoritesService: FavoritesService
   ) { }
 
   ngOnInit(): void {
+    if (this._sessionService.getIdentity()) {
+      this._favoritesService.loadFavorites().subscribe();
+    }
+
     // Escuchar parámetros de la URL
     this.route.paramMap.subscribe(params => {
       this.storeSlug = params.get('slug') || '';
@@ -419,5 +425,39 @@ export class ProductDetailComponent implements OnInit {
     this.metaService.updateTag({ name: 'twitter:title', content: producto.prov_name });
     this.metaService.updateTag({ name: 'twitter:description', content: desc });
     this.metaService.updateTag({ name: 'twitter:image', content: producto.prov_image || 'https://placehold.co/400x400/eeeeee/8c8c8c?text=Sin+Foto' });
+  }
+
+  public toggleFavorite(): void {
+    if (!this.producto) return;
+    
+    const identity = this._sessionService.getIdentity();
+    if (!identity) {
+      this.message.warning('Iniciá sesión para guardar este producto en tus favoritos.');
+      return;
+    }
+
+    const prov_uuid = this.producto.prov_uuid;
+    const cmp_uuid = this.producto.cmp_uuid;
+    const pro_uuid = this.producto.pro_uuid;
+
+    if (this._favoritesService.isFavorited(prov_uuid)) {
+      this._favoritesService.removeFavorite(prov_uuid, cmp_uuid).subscribe({
+        next: () => {
+          this.message.success('Producto eliminado de favoritos.');
+        },
+        error: () => this.message.error('No se pudo eliminar de favoritos.')
+      });
+    } else {
+      this._favoritesService.addFavorite(cmp_uuid, pro_uuid, prov_uuid).subscribe({
+        next: () => {
+          this.message.success('Producto agregado a favoritos.');
+        },
+        error: () => this.message.error('No se pudo guardar en favoritos.')
+      });
+    }
+  }
+
+  public isFavorited(): boolean {
+    return this.producto ? this._favoritesService.isFavorited(this.producto.prov_uuid) : false;
   }
 }
