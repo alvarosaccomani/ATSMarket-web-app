@@ -133,7 +133,7 @@ export class HomeStoreComponent {
     this._productVariationsService.getProductsVariations(cmpUuid, '').subscribe({
       next: (res) => {
         if (res && res.data) {
-          this.destacados = res.data;
+          this.destacados = (res.data || []).filter((p: any) => p.prov_isvisible !== false);
         }
       },
       error: (err) => {

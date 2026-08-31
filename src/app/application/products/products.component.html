@@ -181,7 +181,7 @@
                             <div *ngFor="let v of selectedProduct.productVariations || []" class="variation-item">
                                 <div class="v-info">
                                     <strong>{{ v.prov_name }}</strong>
-                                    <span>SKU: {{ v.prov_sku }} | Stock: <nz-tag [nzColor]="v.prov_stock > 0 ? 'green' : 'red'">{{ v.prov_stock }}</nz-tag></span>
+                                    <span>SKU: {{ v.prov_sku }} | Stock: <nz-tag [nzColor]="v.prov_stock > 0 ? 'green' : 'red'">{{ v.prov_stock }}</nz-tag> | Status: <nz-tag [nzColor]="v.prov_isvisible !== false ? 'blue' : 'volcano'">{{ v.prov_isvisible !== false ? 'Visible' : 'Oculto' }}</nz-tag></span>
                                 </div>
                                 <div class="v-price">
                                     ${{ v.prov_suggestedminimumsellingprice | number:'1.2-2' }}

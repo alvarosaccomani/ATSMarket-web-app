@@ -23,6 +23,18 @@
                                 </nz-form-control>
                             </nz-form-item>
 
+                            <nz-form-item style="margin-bottom: 16px;">
+                                <nz-form-label nzTooltipTitle="Indica si esta variante de producto estará visible para los clientes en la tienda pública">Visibilidad en la Tienda</nz-form-label>
+                                <nz-form-control>
+                                    <nz-switch formControlName="prov_isvisible" [nzCheckedChildren]="checkedTemplate" [nzUnCheckedChildren]="unCheckedTemplate"></nz-switch>
+                                    <ng-template #checkedTemplate><span nz-icon nzType="check"></span> Visible</ng-template>
+                                    <ng-template #unCheckedTemplate><span nz-icon nzType="close"></span> Oculto</ng-template>
+                                    <span style="margin-left: 12px; font-size: 12.5px; font-weight: 600;" [style.color]="productVariationForm.get('prov_isvisible')?.value ? '#52c41a' : '#ff4d4f'">
+                                        {{ productVariationForm.get('prov_isvisible')?.value ? 'Público en la tienda' : 'Oculto para los clientes' }}
+                                    </span>
+                                </nz-form-control>
+                            </nz-form-item>
+
                             <nz-form-item style="margin-bottom: 0;">
                                 <nz-form-label>Descripción Específica</nz-form-label>
                                 <nz-form-control>

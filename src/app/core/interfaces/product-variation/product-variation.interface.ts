@@ -16,6 +16,7 @@ export interface ProductVariationInterface {
     inventoryStock?: InventoryStockInterface[];
     prov_averagerating?: number;
     prov_reviewscount?: number;
+    prov_isvisible?: boolean;
     prov_createdat: Date;
     prov_updatedat: Date;
     cmp_name?: string;

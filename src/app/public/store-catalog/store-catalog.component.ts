@@ -171,7 +171,8 @@ export class StoreCatalogComponent implements OnInit {
 
     this.productsVariationsService.getProductsVariations(cmp_uuid, '', this.companieslug)
       .subscribe((products: any) => {
-        this.allStoreProducts = products.data || [];
+        const raw = products.data || [];
+        this.allStoreProducts = raw.filter((p: any) => p.prov_isvisible !== false);
         this.originalProducts = [...this.allStoreProducts];
         this.initializeFilters(this.allStoreProducts);
         this.executeSearch();
@@ -190,7 +191,8 @@ export class StoreCatalogComponent implements OnInit {
     if (this.searchTerm) {
       this.productsVariationsService.searchVariations(this.searchTerm, this.store.cmp_uuid).subscribe({
         next: (res: any) => {
-          this.allStoreProducts = res.data || [];
+          const raw = res.data || [];
+          this.allStoreProducts = raw.filter((p: any) => p.prov_isvisible !== false);
           this.applyFilters();
         },
         error: (err) => {
@@ -217,7 +219,7 @@ export class StoreCatalogComponent implements OnInit {
   }
 
   public applyFilters(): void {
-    let result = this.allStoreProducts;
+    let result = this.allStoreProducts.filter(p => p.prov_isvisible !== false);
 
     if (this.searchTerm) {
       const term = this.searchTerm.toLowerCase();

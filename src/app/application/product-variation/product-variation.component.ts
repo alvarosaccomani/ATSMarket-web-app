@@ -100,6 +100,7 @@ export class ProductVariationComponent implements OnInit {
       prov_name: ['', Validators.required],
       prov_description: [''],
       prov_image: [''],
+      prov_isvisible: [true],
       markup_percentage: [50, [Validators.required]], // Ganancia global de la variación
       costsPerSupplier: this.fb.array([])
     });
@@ -290,6 +291,7 @@ export class ProductVariationComponent implements OnInit {
             prov_name: productVariationData.prov_name,
             prov_description: productVariationData.prov_description,
             prov_image: productVariationData.prov_image,
+            prov_isvisible: productVariationData.prov_isvisible !== undefined ? productVariationData.prov_isvisible : true,
             markup_percentage: productVariationData.markup_percentage || 50
           });
 
