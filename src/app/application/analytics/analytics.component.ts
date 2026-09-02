@@ -395,16 +395,20 @@ export class AnalyticsComponent implements OnInit, AfterViewInit, OnDestroy {
           let name = 'Producto Desconocido';
           let sku = 'S/D';
           let category = 'General';
+          let rating = 0;
+          let reviewsCount = 0;
           for (const p of products) {
             const v = p.productVariations?.find((x: any) => x.prov_uuid === item.prov_uuid);
             if (v) {
               name = p.pro_name + ' (' + v.prov_name + ')';
               sku = v.prov_sku || p.pro_code || 'S/D';
               category = categories.find((c: any) => c.gcat_uuid === p.cat_uuid)?.gcat_name || 'General';
+              rating = v.prov_averagerating || 0;
+              reviewsCount = v.prov_reviewscount || 0;
               break;
             }
           }
-          return { name, sku, category, views: item.views, favorites: item.favorites || 0 };
+          return { name, sku, category, views: item.views, favorites: item.favorites || 0, rating, reviewsCount };
         });
 
         // Mix de categorías

@@ -374,11 +374,11 @@
                     <nz-table #topViewedTable [nzData]="topViewedProductsList" nzShowPagination="false" nzSize="middle" class="premium-table" *ngIf="activeTab === 'views'">
                         <thead>
                             <tr>
-                                <th nzWidth="40%">Producto Estrella</th>
-                                <th nzWidth="20%">Rubro</th>
-                                <th nzWidth="20%" style="text-align: center;">Visualizaciones</th>
-                                <th nzWidth="10%" style="text-align: center;">Favoritos</th>
-                                <th nzWidth="10%">Interés</th>
+                                <th nzWidth="35%">Producto Estrella</th>
+                                <th nzWidth="15%">Rubro</th>
+                                <th nzWidth="15%" style="text-align: center;">Visualizaciones</th>
+                                <th nzWidth="15%" style="text-align: center;">Favoritos</th>
+                                <th nzWidth="20%" style="text-align: center;">Calificación</th>
                             </tr>
                         </thead>
                         <tbody>
@@ -406,8 +406,14 @@
                                         {{ data.favorites | number }}
                                     </span>
                                 </td>
-                                <td>
-                                    <nz-tag nzColor="success" style="font-weight: 500;">Muy Interesante</nz-tag>
+                                <td style="text-align: center;">
+                                    <span style="font-weight: 700; color: #faad14;">
+                                        <span nz-icon nzType="star" nzTheme="fill" style="font-size: 12px; margin-right: 4px;"></span>
+                                        {{ data.rating > 0 ? (data.rating | number:'1.1-1') : 'Sin notas' }}
+                                    </span>
+                                    <span *ngIf="data.reviewsCount > 0" style="font-size: 11px; color: #8c8c8c; display: block;">
+                                        ({{ data.reviewsCount }} {{ data.reviewsCount === 1 ? 'reseña' : 'reseñas' }})
+                                    </span>
                                 </td>
                             </tr>
                             <tr *ngIf="topViewedProductsList.length === 0">
