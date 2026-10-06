@@ -41,9 +41,15 @@
 
 /* Contenido Principal para evitar que el header fijo lo tape */
 .app-content {
-    /* padding superior igual a la altura del header */
-    min-height: calc(100vh - 64px);
-    /* Para que ocupe toda la altura */
+    margin-top: 94px;
+    min-height: calc(100vh - 94px);
+}
+
+@media (max-width: 768px) {
+    .app-content {
+        margin-top: 56px;
+        min-height: calc(100vh - 56px);
+    }
 }
 
 .inner-content {

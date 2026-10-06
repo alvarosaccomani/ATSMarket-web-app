@@ -1,146 +1,192 @@
 <nz-header class="app-header" [style.backgroundColor]="navbarColor" [class.light-header]="isLightHeader">
-    <div class="logo">
-        <a [routerLink]="activeStore ? '/public/home-store/' + activeStore.cmp_slug : '/public/market-home'">
-            <img *ngIf="storeLogoUrl" [src]="storeLogoUrl" [alt]="storeName" class="logo-image" />
-            <span *ngIf="!storeLogoUrl" nz-icon nzType="shop" nzTheme="outline"></span>
-            <span class="site-title">{{ storeName }}</span>
-        </a>
-    </div>
+    <!-- FILA 1: MARCA Y BUSCADOR PRINCIPAL (DOMINANTE) -->
+    <div class="header-main-row">
+        <div class="logo">
+            <a [routerLink]="activeStore ? '/public/home-store/' + activeStore.cmp_slug : '/public/market-home'">
+                <img *ngIf="storeLogoUrl" [src]="storeLogoUrl" [alt]="storeName" class="logo-image" />
+                <span *ngIf="!storeLogoUrl" nz-icon nzType="shop" nzTheme="outline"></span>
+                <span class="site-title">{{ storeName }}</span>
+            </a>
+        </div>
 
-    <div class="search-container">
-        <nz-input-group [nzAddOnBefore]="searchIcon">
-            <ng-template #searchIcon>
-                <span nz-icon nzType="search" (click)="onSearch()" class="search-icon"></span>
-            </ng-template>
-            <input type="text" nz-input [placeholder]="activeStore ? 'Buscar en ' + storeName + '...' : 'Buscar productos, rubros...'"
-                [(ngModel)]="searchQuery" (keydown.enter)="onSearch()" />
-        </nz-input-group>
-    </div>
+        <div class="search-container">
+            <nz-input-group [nzSuffix]="suffixButton" class="search-input-group">
+                <input type="text" nz-input [placeholder]="activeStore ? 'Buscar en ' + storeName + '...' : 'Buscar productos, marcas, rubros...'"
+                    [(ngModel)]="searchQuery" (keydown.enter)="onSearch()" />
+                <ng-template #suffixButton>
+                    <div class="search-btn-wrapper" (click)="onSearch()">
+                        <span class="search-divider">|</span>
+                        <span nz-icon nzType="search" class="search-icon"></span>
+                    </div>
+                </ng-template>
+            </nz-input-group>
+        </div>
 
-    <ul nz-menu [nzTheme]="isLightHeader ? 'light' : 'dark'" nzMode="horizontal" class="header-menu desktop-menu">
-        <li nz-menu-item routerLink="/user/cart" nzMatchRouter>
-            <nz-icon nzType="shopping-cart"></nz-icon> <span>Carrito</span>
-            <nz-badge [nzCount]="(cartItems$ | async)?.length || 0" [nzShowZero]="false"></nz-badge>
-        </li>
+        <div class="desktop-spacer desktop-only"></div>
 
-        <!-- FAVORITOS ACCESO RÁPIDO -->
-        <li nz-menu-item (click)="openFavoritesDrawer()" class="favorites-menu-item">
-            <nz-badge [nzCount]="(favoritesCount$ | async) || 0" [nzOverflowCount]="99" class="fav-badge">
-                <span nz-icon nzType="heart" nzTheme="fill" class="fav-icon-heart"></span>
-            </nz-badge>
-        </li>
-
-        <!-- Separador visual estético -->
-        <li class="nav-divider" aria-hidden="true"></li>
-
-        <!-- NOTIFICACIONES -->
-        <li nz-menu-item *ngIf="userIdentity" nz-dropdown [nzDropdownMenu]="notificationsMenu" nzPlacement="bottomRight" nzTrigger="click" class="notifications-menu-item">
-            <div class="bell-icon-wrapper" [class.shake-bell]="animateBell">
-                <nz-badge [nzCount]="(unreadCount$ | async) ?? 0" [nzOverflowCount]="9" class="notification-badge">
-                    <span nz-icon nzType="bell" nzTheme="outline" class="bell-icon"></span>
+        <!-- ACCIONES RÁPIDAS MÓVIL (< 768px) -->
+        <div class="mobile-actions">
+            <button nz-button nzType="text" class="mobile-action-btn" (click)="openFavoritesDrawer()">
+                <nz-badge [nzCount]="(favoritesCount$ | async) || 0" [nzOverflowCount]="99" class="fav-badge">
+                    <span nz-icon nzType="heart" nzTheme="fill" class="fav-icon-heart"></span>
                 </nz-badge>
-            </div>
-        </li>
+            </button>
 
-        <nz-dropdown-menu #notificationsMenu="nzDropdownMenu">
-            <div class="notifications-dropdown-panel glassmorphic-panel">
-                <div class="dropdown-header">
-                    <h4>Notificaciones</h4>
-                    <button nz-button nzType="link" nzSize="small" (click)="markAllAsRead()" *ngIf="(unreadCount$ | async) && (unreadCount$ | async)! > 0" class="mark-read-btn">
-                        Marcar leídas
-                    </button>
+            <button nz-button nzType="text" class="mobile-action-btn" routerLink="/user/cart">
+                <nz-badge [nzCount]="(cartItems$ | async)?.length || 0" [nzShowZero]="false">
+                    <span nz-icon nzType="shopping-cart" class="bell-icon"></span>
+                </nz-badge>
+            </button>
+
+            <button nz-button class="menu-toggle-button" nzType="default" (click)="openDrawer()">
+                <span nz-icon nzType="menu"></span>
+            </button>
+        </div>
+    </div>
+
+    <!-- FILA 2: NAVEGACIÓN Y BLOQUE UNIFICADO DE CUENTA (DESKTOP > 768px) -->
+    <div class="header-sub-row desktop-only">
+        <div class="nav-links-left">
+            <a routerLink="/public/home" class="sub-nav-link"><span nz-icon nzType="home"></span> Inicio</a>
+            <a routerLink="/public/catalog" class="sub-nav-link"><span nz-icon nzType="appstore"></span> Catálogo</a>
+        </div>
+
+        <div class="user-actions-right">
+            <!-- Favoritos -->
+            <button nz-button nzType="text" (click)="openFavoritesDrawer()" class="sub-nav-action-btn">
+                <nz-badge [nzCount]="(favoritesCount$ | async) || 0" [nzOverflowCount]="99" class="fav-badge">
+                    <span nz-icon nzType="heart" nzTheme="fill" class="fav-icon-heart"></span>
+                </nz-badge>
+                <span class="btn-text">Favoritos</span>
+            </button>
+
+            <!-- Carrito -->
+            <button nz-button nzType="text" routerLink="/user/cart" class="sub-nav-action-btn">
+                <nz-badge [nzCount]="(cartItems$ | async)?.length || 0" [nzShowZero]="false">
+                    <span nz-icon nzType="shopping-cart" class="bell-icon"></span>
+                </nz-badge>
+                <span class="btn-text">Carrito</span>
+            </button>
+
+            <span class="nav-divider" aria-hidden="true"></span>
+
+            <!-- Notificaciones -->
+            <button nz-button nzType="text" *ngIf="userIdentity" nz-dropdown [nzDropdownMenu]="notificationsMenu" nzPlacement="bottomRight" nzTrigger="click" class="sub-nav-action-btn">
+                <div class="bell-icon-wrapper" [class.shake-bell]="animateBell">
+                    <nz-badge [nzCount]="(unreadCount$ | async) ?? 0" [nzOverflowCount]="9" class="notification-badge">
+                        <span nz-icon nzType="bell" nzTheme="outline" class="bell-icon"></span>
+                    </nz-badge>
                 </div>
-                <nz-divider class="header-divider"></nz-divider>
-                <div class="notifications-list-container">
-                    <ng-container *ngIf="(notifications$ | async) && (notifications$ | async)!.length > 0; else emptyNotifications">
-                        <div class="notification-card-item" *ngFor="let ntf of notifications$ | async" [class.unread]="!ntf.ntf_isread" (click)="navegarNotificacion(ntf)">
-                            <div class="ntf-icon-box" [class]="ntf.ntf_type">
-                                <span nz-icon [nzType]="ntf.ntf_type === 'success' ? 'check-circle' : ntf.ntf_type === 'warning' ? 'exclamation-circle' : ntf.ntf_type === 'error' ? 'close-circle' : 'info-circle'" nzTheme="fill"></span>
+            </button>
+
+            <nz-dropdown-menu #notificationsMenu="nzDropdownMenu">
+                <div class="notifications-dropdown-panel glassmorphic-panel">
+                    <div class="dropdown-header">
+                        <h4>Notificaciones</h4>
+                        <button nz-button nzType="link" nzSize="small" (click)="markAllAsRead()" *ngIf="(unreadCount$ | async) && (unreadCount$ | async)! > 0" class="mark-read-btn">
+                            Marcar leídas
+                        </button>
+                    </div>
+                    <nz-divider class="header-divider"></nz-divider>
+                    <div class="notifications-list-container">
+                        <ng-container *ngIf="(notifications$ | async) && (notifications$ | async)!.length > 0; else emptyNotifications">
+                            <div class="notification-card-item" *ngFor="let ntf of notifications$ | async" [class.unread]="!ntf.ntf_isread" (click)="navegarNotificacion(ntf)">
+                                <div class="ntf-icon-box" [class]="ntf.ntf_type">
+                                    <span nz-icon [nzType]="ntf.ntf_type === 'success' ? 'check-circle' : ntf.ntf_type === 'warning' ? 'exclamation-circle' : ntf.ntf_type === 'error' ? 'close-circle' : 'info-circle'" nzTheme="fill"></span>
+                                </div>
+                                <div class="ntf-content-box">
+                                    <span class="ntf-title">{{ ntf.ntf_title }}</span>
+                                    <p class="ntf-message">{{ ntf.ntf_message }}</p>
+                                    <span class="ntf-time">{{ ntf.ntf_createdat | date:'shortTime' }} - {{ ntf.ntf_createdat | date:'mediumDate' }}</span>
+                                </div>
                             </div>
-                            <div class="ntf-content-box">
-                                <span class="ntf-title">{{ ntf.ntf_title }}</span>
-                                <p class="ntf-message">{{ ntf.ntf_message }}</p>
-                                <span class="ntf-time">{{ ntf.ntf_createdat | date:'shortTime' }} - {{ ntf.ntf_createdat | date:'mediumDate' }}</span>
+                        </ng-container>
+                        <ng-template #emptyNotifications>
+                            <div class="empty-notifications-state">
+                                <span nz-icon nzType="bell" nzTheme="outline" class="empty-ntf-icon"></span>
+                                <p>No tenés notificaciones aún</p>
                             </div>
-                        </div>
-                    </ng-container>
-                    <ng-template #emptyNotifications>
-                        <div class="empty-notifications-state">
-                            <span nz-icon nzType="bell" nzTheme="outline" class="empty-ntf-icon"></span>
-                            <p>No tenés notificaciones aún</p>
-                        </div>
-                    </ng-template>
+                        </ng-template>
+                    </div>
+                </div>
+            </nz-dropdown-menu>
+
+            <!-- Usuario Dropdown -->
+            <a *ngIf="!userIdentity" routerLink="/auth/login" class="sub-nav-link login-link">
+                <span nz-icon nzType="user"></span> Ingresar
+            </a>
+
+            <div *ngIf="userIdentity" nz-dropdown [nzDropdownMenu]="userMenu" nzPlacement="bottomRight" class="user-dropdown-wrapper">
+                <div class="user-profile-box">
+                    <nz-avatar nzIcon="user" nzSize="small" nzSrc="assets/img/user-avatar.png"></nz-avatar>
+                    <span>{{ userIdentity.usr_name || userIdentity.usr_user }}</span>
+                    <span nz-icon nzType="down" class="user-chevron"></span>
                 </div>
             </div>
-        </nz-dropdown-menu>
 
-        <!-- Separador visual estético -->
-        <li class="nav-divider" aria-hidden="true"></li>
-
-        <!-- OPCIONES DE USUARIO -->
-        <li nz-menu-item *ngIf="!userIdentity" routerLink="/auth/login">
-            <span nz-icon nzType="user"></span> Ingresar
-        </li>
-
-        <li nz-menu-item *ngIf="userIdentity" nz-dropdown [nzDropdownMenu]="userMenu" nzPlacement="bottomRight" class="user-menu-item">
-            <div class="user-profile-box">
-                <nz-avatar nzIcon="user" nzSize="small" nzSrc="assets/img/user-avatar.png"></nz-avatar>
-                <span>Hola, {{ userIdentity.usr_name || userIdentity.usr_user }}</span>
-            </div>
-        </li>
-
-        <nz-dropdown-menu #userMenu="nzDropdownMenu">
-            <ul nz-menu class="user-dropdown-menu">
-                <li nz-menu-item routerLink="/application/my-favorites">
-                    <span nz-icon nzType="heart" class="menu-icon heart-red"></span> Mis Favoritos
-                </li>
-                <li nz-menu-item routerLink="/application/my-purchases">
-                    <span nz-icon nzType="shopping" class="menu-icon"></span> Mis Compras
-                </li>
-                <li nz-menu-item routerLink="/application/my-companies">
-                    <span nz-icon nzType="shop" class="menu-icon"></span> Administrar Tiendas
-                </li>
-                <li nz-menu-divider></li>
-                <li nz-menu-item nzDanger (click)="logout()">
-                    <span nz-icon nzType="logout" class="menu-icon"></span> Cerrar sesión
-                </li>
-            </ul>
-        </nz-dropdown-menu>
-    </ul>
-
-    <button nz-button class="menu-toggle-button" nzType="default" (click)="openDrawer()">
-        <span nz-icon nzType="menu"></span>
-    </button>
+            <nz-dropdown-menu #userMenu="nzDropdownMenu">
+                <ul nz-menu class="user-dropdown-menu">
+                    <li nz-menu-item routerLink="/application/my-favorites">
+                        <span nz-icon nzType="heart" class="menu-icon heart-red"></span> Mis Favoritos
+                    </li>
+                    <li nz-menu-item routerLink="/application/my-purchases">
+                        <span nz-icon nzType="shopping" class="menu-icon"></span> Mis Compras
+                    </li>
+                    <li nz-menu-item routerLink="/application/my-companies">
+                        <span nz-icon nzType="shop" class="menu-icon"></span> Administrar Tiendas
+                    </li>
+                    <li nz-menu-divider></li>
+                    <li nz-menu-item nzDanger (click)="logout()">
+                        <span nz-icon nzType="logout" class="menu-icon"></span> Cerrar sesión
+                    </li>
+                </ul>
+            </nz-dropdown-menu>
+        </div>
+    </div>
 </nz-header>
 
-<nz-drawer [nzVisible]="drawerVisible" nzPlacement="right" nzTitle="Menú" (nzOnClose)="closeDrawer()">
+<!-- DRAWER PRINCIPAL MÓVIL -->
+<nz-drawer [nzVisible]="drawerVisible" nzPlacement="right" [nzTitle]="menuTitleTemplate" (nzOnClose)="closeDrawer()">
+    <ng-template #menuTitleTemplate>
+        <div class="drawer-title-box">
+            <span nz-icon nzType="menu-fold" style="margin-right: 8px;"></span> Menú Principal
+        </div>
+    </ng-template>
+
     <ng-container *nzDrawerContent>
-        <ul nz-menu nzMode="inline" nzTheme="dark" class="mobile-menu">
-            <li nz-menu-item routerLink="/public/home" (click)="closeDrawer()">
-                <nz-icon nzType="home"></nz-icon> Inicio
-            </li>
-            <li nz-menu-item routerLink="/public/catalog" (click)="closeDrawer()">
-                <nz-icon nzType="appstore"></nz-icon> Catálogo
-            </li>
-            <li nz-menu-item routerLink="/user/cart" (click)="closeDrawer()">
-                <nz-icon nzType="shopping-cart"></nz-icon> Carrito
-                <nz-badge [nzCount]="(cartItems$ | async)?.length || 0" [nzShowZero]="false"
-                    class="mobile-badge"></nz-badge>
-            </li>
-            <li nz-menu-item (click)="openFavoritesDrawer(); closeDrawer()">
-                <nz-icon nzType="heart" class="heart-red"></nz-icon> Favoritos
-                <nz-badge [nzCount]="(favoritesCount$ | async) || 0" [nzShowZero]="false" class="mobile-badge"></nz-badge>
-            </li>
+        <div class="mobile-drawer-body">
+            <!-- TARJETA DE PERFIL -->
+            <div class="drawer-user-card" *ngIf="userIdentity">
+                <nz-avatar nzIcon="user" [nzSize]="44" nzSrc="assets/img/user-avatar.png" class="drawer-user-avatar"></nz-avatar>
+                <div class="drawer-user-info">
+                    <span class="drawer-user-name">{{ userIdentity.usr_name || userIdentity.usr_user }}</span>
+                    <span class="drawer-user-role">Cuenta activa</span>
+                </div>
+            </div>
 
-            <li nz-menu-divider></li>
+            <ul nz-menu nzMode="inline" nzTheme="dark" class="mobile-menu">
+                <li nz-menu-item routerLink="/public/home" (click)="closeDrawer()">
+                    <nz-icon nzType="home"></nz-icon> Inicio
+                </li>
+                <li nz-menu-item routerLink="/public/catalog" (click)="closeDrawer()">
+                    <nz-icon nzType="appstore"></nz-icon> Catálogo
+                </li>
+                <li nz-menu-item routerLink="/user/cart" (click)="closeDrawer()">
+                    <nz-icon nzType="shopping-cart"></nz-icon> Carrito
+                    <nz-badge [nzCount]="(cartItems$ | async)?.length || 0" [nzShowZero]="false" class="mobile-badge"></nz-badge>
+                </li>
+                <li nz-menu-item (click)="openFavoritesDrawer(); closeDrawer()">
+                    <nz-icon nzType="heart" class="heart-red"></nz-icon> Favoritos
+                    <nz-badge [nzCount]="(favoritesCount$ | async) || 0" [nzShowZero]="false" class="mobile-badge"></nz-badge>
+                </li>
 
-            <li nz-menu-item *ngIf="!userIdentity" routerLink="/auth/login" (click)="closeDrawer()">
-                <span nz-icon nzType="login"></span> Iniciar Sesión / Regístrate
-            </li>
+                <li nz-menu-divider></li>
 
-            <li nz-submenu *ngIf="userIdentity"
-                [nzTitle]="'Cuenta: ' + (userIdentity.usr_name || userIdentity.usr_user)">
-                <ul>
+                <li nz-menu-item *ngIf="!userIdentity" routerLink="/auth/login" (click)="closeDrawer()">
+                    <span nz-icon nzType="login"></span> Iniciar Sesión / Regístrate
+                </li>
+
+                <ng-container *ngIf="userIdentity">
                     <li nz-menu-item routerLink="/application/my-favorites" (click)="closeDrawer()">
                         <span nz-icon nzType="heart" class="menu-icon heart-red"></span> Mis Favoritos
                     </li>
@@ -148,14 +194,15 @@
                         <span nz-icon nzType="shopping" class="menu-icon"></span> Mis Compras
                     </li>
                     <li nz-menu-item routerLink="/application/my-companies" (click)="closeDrawer()">
-                        <span nz-icon nzType="shop" class="menu-icon"></span> Mis Tiendas (Administrar)
+                        <span nz-icon nzType="shop" class="menu-icon"></span> Administrar Tiendas
                     </li>
+                    <li nz-menu-divider></li>
                     <li nz-menu-item nzDanger (click)="logout(); closeDrawer()">
                         <span nz-icon nzType="logout" class="menu-icon"></span> Cerrar sesión
                     </li>
-                </ul>
-            </li>
-        </ul>
+                </ng-container>
+            </ul>
+        </div>
     </ng-container>
 </nz-drawer>
 
