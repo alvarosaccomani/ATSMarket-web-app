@@ -31,7 +31,7 @@
         </li>
 
         <!-- Separador visual estético -->
-        <li nz-menu-item class="nav-separator">|</li>
+        <li class="nav-divider" aria-hidden="true"></li>
 
         <!-- NOTIFICACIONES -->
         <li nz-menu-item *ngIf="userIdentity" nz-dropdown [nzDropdownMenu]="notificationsMenu" nzPlacement="bottomRight" nzTrigger="click" class="notifications-menu-item">
@@ -75,7 +75,7 @@
         </nz-dropdown-menu>
 
         <!-- Separador visual estético -->
-        <li nz-menu-item class="nav-separator">|</li>
+        <li class="nav-divider" aria-hidden="true"></li>
 
         <!-- OPCIONES DE USUARIO -->
         <li nz-menu-item *ngIf="!userIdentity" routerLink="/auth/login">
