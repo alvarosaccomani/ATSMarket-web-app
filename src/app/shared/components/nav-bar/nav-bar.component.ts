@@ -64,6 +64,10 @@ export class NavBarComponent implements OnInit {
   public favoriteItemsDetails: any[] = [];
   public isLoadingFavorites: boolean = false;
 
+  public get favoritesDrawerWidth(): string {
+    return window.innerWidth <= 480 ? '100%' : '420px';
+  }
+
   // Usuario
   public userIdentity: any = null;
 

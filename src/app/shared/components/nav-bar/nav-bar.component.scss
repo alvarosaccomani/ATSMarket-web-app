@@ -209,20 +209,42 @@ $header-height: 64px;
     }
 }
 
-/* --- Media Query para Pantallas Móviles (max-width: 768px) --- */
+/* --- Media Queries para Pantallas Móviles --- */
 @media (max-width: 768px) {
     .app-header {
-        padding: 0 15px;
+        padding: 0 12px;
+        height: 58px;
+        gap: 8px;
     }
 
-    .logo a .site-title {
-        display: none;
+    .logo {
+        flex-shrink: 0;
+
+        a .site-title {
+            display: none;
+        }
+    }
+
+    .logo-image {
+        max-height: 32px;
+        max-width: 90px;
     }
 
     .search-container {
         display: flex;
-        margin: 0 10px;
-        max-width: none;
+        flex: 1;
+        min-width: 0;
+        margin: 0 4px;
+
+        ::ng-deep .ant-input-group-wrapper {
+            width: 100%;
+        }
+
+        input {
+            font-size: 13px;
+            height: 36px;
+            padding: 4px 10px;
+        }
     }
 
     .header-menu {
@@ -230,7 +252,38 @@ $header-height: 64px;
     }
 
     .menu-toggle-button {
-        display: block;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        width: 38px;
+        height: 38px;
+        padding: 0;
+        border-radius: 6px;
+        flex-shrink: 0;
+        font-size: 18px;
+    }
+}
+
+@media (max-width: 480px) {
+    .app-header {
+        padding: 0 8px;
+        gap: 6px;
+    }
+
+    .search-container {
+        margin: 0 2px;
+
+        input {
+            font-size: 12px;
+            height: 34px;
+            padding: 2px 8px;
+        }
+    }
+
+    .menu-toggle-button {
+        width: 34px;
+        height: 34px;
+        font-size: 16px;
     }
 }
 

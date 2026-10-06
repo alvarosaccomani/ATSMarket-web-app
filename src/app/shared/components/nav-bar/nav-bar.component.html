@@ -160,7 +160,7 @@
 </nz-drawer>
 
 <!-- DRAWER LATERAL DE FAVORITOS (ACCESO RÁPIDO) -->
-<nz-drawer [nzVisible]="isFavoritesDrawerVisible" nzPlacement="right" [nzTitle]="favTitleTemplate" [nzWidth]="'420px'" (nzOnClose)="closeFavoritesDrawer()">
+<nz-drawer [nzVisible]="isFavoritesDrawerVisible" nzPlacement="right" [nzTitle]="favTitleTemplate" [nzWidth]="favoritesDrawerWidth" (nzOnClose)="closeFavoritesDrawer()">
     <ng-template #favTitleTemplate>
         <div class="fav-drawer-header">
             <span class="fav-drawer-title">
