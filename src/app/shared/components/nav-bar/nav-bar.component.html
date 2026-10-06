@@ -1,4 +1,4 @@
-<nz-header class="app-header" [style.backgroundColor]="navbarColor">
+<nz-header class="app-header" [style.backgroundColor]="navbarColor" [class.light-header]="isLightHeader">
     <div class="logo">
         <a [routerLink]="activeStore ? '/public/home-store/' + activeStore.cmp_slug : '/public/market-home'">
             <img *ngIf="storeLogoUrl" [src]="storeLogoUrl" [alt]="storeName" class="logo-image" />
@@ -17,7 +17,7 @@
         </nz-input-group>
     </div>
 
-    <ul nz-menu nzTheme="dark" nzMode="horizontal" class="header-menu desktop-menu">
+    <ul nz-menu [nzTheme]="isLightHeader ? 'light' : 'dark'" nzMode="horizontal" class="header-menu desktop-menu">
         <li nz-menu-item routerLink="/user/cart" nzMatchRouter>
             <nz-icon nzType="shopping-cart"></nz-icon> <span>Carrito</span>
             <nz-badge [nzCount]="(cartItems$ | async)?.length || 0" [nzShowZero]="false"></nz-badge>
@@ -31,13 +31,13 @@
         </li>
 
         <!-- Separador visual estético -->
-        <li nz-menu-item style="pointer-events: none; padding: 0 8px;">|</li>
+        <li nz-menu-item class="nav-separator" style="pointer-events: none; padding: 0 8px;">|</li>
 
         <!-- NOTIFICACIONES -->
         <li nz-menu-item *ngIf="userIdentity" nz-dropdown [nzDropdownMenu]="notificationsMenu" nzPlacement="bottomRight" nzTrigger="click" style="padding: 0 16px;">
             <div class="bell-icon-wrapper" [class.shake-bell]="animateBell">
                 <nz-badge [nzCount]="(unreadCount$ | async) ?? 0" [nzOverflowCount]="9" [nzStyle]="{ backgroundColor: '#ff4d4f', boxShadow: '0 0 0 1px #fff' }">
-                    <span nz-icon nzType="bell" nzTheme="outline" style="font-size: 19px; vertical-align: middle; color: rgba(255,255,255,0.85);"></span>
+                    <span nz-icon nzType="bell" nzTheme="outline" class="bell-icon"></span>
                 </nz-badge>
             </div>
         </li>

@@ -72,6 +72,7 @@ export class NavBarComponent implements OnInit {
   public storeLogoUrl: string = '';
   public storeName: string = 'ATS Market';
   public navbarColor: string = '#001529'; // Color por defecto (dark)
+  public isLightHeader: boolean = false;
   public searchQuery: string = '';
 
   // Notificaciones
@@ -101,6 +102,7 @@ export class NavBarComponent implements OnInit {
       this.activeStore = store;
       this.storeName = store?.cmp_name || 'ATS Market';
       this.updateLogo();
+      this.updateNavbarColor();
     });
 
     this._storeContext.storeSettings$.subscribe(() => {
@@ -203,6 +205,22 @@ export class NavBarComponent implements OnInit {
   private updateNavbarColor(): void {
     const customColor = this._storeContext.getSetting('THEME_NAVBAR_COLOR');
     this.navbarColor = customColor || this.activeStore?.cmp_primarycolor || '#001529';
+    this.isLightHeader = this.getContrastYIQ(this.navbarColor) === 'light';
+  }
+
+  private getContrastYIQ(hexcolor: string): 'dark' | 'light' {
+    if (!hexcolor) return 'dark';
+    let hex = hexcolor.replace('#', '');
+    if (hex.length === 3) {
+      hex = hex.split('').map(c => c + c).join('');
+    }
+    if (hex.length !== 6) return 'dark';
+
+    const r = parseInt(hex.substring(0, 2), 16);
+    const g = parseInt(hex.substring(2, 4), 16);
+    const b = parseInt(hex.substring(4, 6), 16);
+    const yiq = ((r * 299) + (g * 587) + (b * 114)) / 1000;
+    return (yiq >= 140) ? 'light' : 'dark';
   }
 
   // Ejecuta la búsqueda desde el navbar
