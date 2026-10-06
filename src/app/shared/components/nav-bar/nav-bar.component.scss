@@ -43,6 +43,10 @@
     }
 }
 
+.search-icon {
+    cursor: pointer;
+}
+
 .bell-icon {
     font-size: 19px;
     vertical-align: middle;
@@ -53,6 +57,56 @@
 .nav-separator {
     color: rgba(255, 255, 255, 0.35);
     user-select: none;
+    pointer-events: none;
+    padding: 0 8px;
+}
+
+.favorites-menu-item {
+    cursor: pointer;
+    padding: 0 14px;
+}
+
+.notifications-menu-item,
+.user-menu-item {
+    padding: 0 16px;
+}
+
+.fav-badge,
+.notification-badge {
+    ::ng-deep .ant-badge-count {
+        background-color: #ff4d4f;
+        box-shadow: 0 0 0 1px #fff;
+    }
+}
+
+.fav-icon-heart {
+    font-size: 18px;
+    vertical-align: middle;
+    color: #ff4d4f;
+}
+
+.user-profile-box {
+    display: flex;
+    align-items: center;
+    gap: 8px;
+}
+
+.user-dropdown-menu {
+    ::ng-deep .ant-menu-item {
+        color: #1f2937;
+    }
+}
+
+.menu-icon {
+    margin-right: 8px;
+
+    &.heart-red {
+        color: #ff4d4f;
+    }
+}
+
+.heart-red {
+    color: #ff4d4f;
 }
 
 .logo a {
@@ -76,17 +130,13 @@
     margin-left: 8px;
 }
 
-/* ... (Estilos de .logo, .site-title, etc. sin cambios) ... */
-
-/* Contenedor del Buscador: Ahora se expande completamente */
+/* Contenedor del Buscador */
 .search-container {
     display: flex;
     flex-direction: row;
     align-items: center;
     flex-grow: 1;
     max-width: 400px;
-
-    /* ELIMINADO: Restricción de 400px para que sea lo más ancho posible */
     margin: 0 30px;
 }
 
@@ -98,7 +148,6 @@
     color: white;
     line-height: 64px;
     margin: 0;
-    /* Aseguramos que no crezca, dejando espacio para el buscador */
     flex-shrink: 0;
     background: transparent !important;
     border-bottom: none !important;
@@ -111,86 +160,59 @@
     }
 }
 
-/* El botón para abrir el menú móvil debe estar oculto en desktop */
 .menu-toggle-button {
     display: none;
-    /* Aseguramos que no crezca */
     flex-shrink: 0;
     color: white;
     background: transparent;
     border: none;
 }
 
-/* ---------------------------------------------------- */
-/* --- Estilos del Menú Móvil (Dentro del nz-drawer) --- */
-/* ---------------------------------------------------- */
-
+/* --- Estilos del Menú Móvil --- */
 .mobile-menu {
     width: 100%;
-    /* Asegura que el menú ocupe el ancho del drawer */
     border-right: none;
     padding: 0;
 
-    /* Elimina el borde derecho si lo tiene */
     li {
         list-style: none;
         margin: 0 10px 0 0;
         font-size: 16px;
         cursor: pointer;
-    }
-}
+        padding: 12px 0;
 
-.mobile-menu li {
-    font-size: 16px;
-    padding: 12px 0;
-    /* Espaciado interno de los ítems */
-
-    /* Asegura que el icono esté espaciado del texto */
-    .anticon {
-        margin-right: 8px;
+        .anticon {
+            margin-right: 8px;
+        }
     }
 }
 
 /* --- Media Query para Pantallas Móviles (max-width: 768px) --- */
-
 @media (max-width: 768px) {
     .app-header {
-        /* Reducir el padding horizontal */
         padding: 0 15px;
     }
 
-    /* Ocultar el título en el logo si el espacio es crítico */
     .logo a .site-title {
         display: none;
     }
 
-    /* El buscador ahora se MANTIENE visible y expandido */
     .search-container {
         display: flex;
-        /* ASEGURAMOS que esté visible en móvil */
         margin: 0 10px;
-        /* Reducimos el margen horizontal en móvil */
-        /* Permite que crezca y tome todo el espacio */
         max-width: none;
     }
 
-    /* Ocultar el menú horizontal de escritorio, ya que usamos el drawer */
     .header-menu {
         display: none;
     }
 
-    /* Mostrar el botón para abrir el menú móvil */
     .menu-toggle-button {
         display: block;
     }
-
-    /* (Estilos del menú móvil dentro del drawer sin cambios) */
 }
 
-/* ---------------------------------------------------- */
-/* --- MÓDULO DE NOTIFICACIONES PREMIUM EN TIEMPO REAL --- */
-/* ---------------------------------------------------- */
-
+/* --- MÓDULO DE NOTIFICACIONES --- */
 .bell-icon-wrapper {
     display: flex;
     align-items: center;
@@ -204,7 +226,6 @@
     }
 }
 
-/* Animación Premium de Campana (Efecto Timbrado) */
 .shake-bell {
     animation: ring 1.2s cubic-bezier(0.36, 0.07, 0.19, 0.97) both;
     transform-origin: top center;
@@ -220,7 +241,6 @@
     100% { transform: rotate(0); }
 }
 
-/* Panel Flotante de Cristal (Glassmorphism) */
 .notifications-dropdown-panel {
     background: rgba(255, 255, 255, 0.85) !important;
     backdrop-filter: blur(20px) saturate(180%) !important;
@@ -231,6 +251,31 @@
     overflow: hidden;
     margin-top: 8px;
     animation: dropdownFadeIn 0.3s ease-out;
+
+    .dropdown-header {
+        display: flex;
+        justify-content: space-between;
+        align-items: center;
+        padding: 12px 16px;
+        background: rgba(255, 255, 255, 0.05);
+
+        h4 {
+            margin: 0;
+            font-weight: 700;
+            font-size: 14px;
+            color: #262626;
+        }
+
+        .mark-read-btn {
+            padding: 0;
+            font-size: 12px;
+            height: auto;
+        }
+    }
+
+    .header-divider {
+        margin: 0;
+    }
 }
 
 @keyframes dropdownFadeIn {
@@ -244,7 +289,12 @@
     }
 }
 
-/* Estilos de las Tarjetas de Notificaciones individualmente */
+.notifications-list-container {
+    max-height: 320px;
+    overflow-y: auto;
+    width: 320px;
+}
+
 .notification-card-item {
     display: flex;
     gap: 12px;
@@ -282,7 +332,6 @@
     }
 }
 
-/* Iconos de Notificaciones por Categorías */
 .ntf-icon-box {
     display: flex;
     align-items: center;
@@ -320,7 +369,7 @@
     flex-direction: column;
     gap: 2px;
     flex: 1;
-    min-width: 0; /* Permite truncar textos correctamente */
+    min-width: 0;
 }
 
 .ntf-title {
@@ -343,4 +392,161 @@
     color: #bfbfbf;
     font-weight: 500;
     margin-top: 4px;
-}
+}
+
+.empty-notifications-state {
+    padding: 32px 16px;
+    text-align: center;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    gap: 8px;
+
+    .empty-ntf-icon {
+        font-size: 32px;
+        color: #d9d9d9;
+    }
+
+    p {
+        margin: 0;
+        color: #bfbfbf;
+        font-size: 13px;
+        font-weight: 500;
+    }
+}
+
+/* --- DRAWER LATERAL DE FAVORITOS --- */
+.fav-drawer-header {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    width: 100%;
+}
+
+.fav-drawer-title {
+    font-weight: 700;
+    font-size: 16px;
+    color: #1f2937;
+}
+
+.fav-drawer-title-icon {
+    color: #ff4d4f;
+    margin-right: 6px;
+}
+
+.fav-drawer-see-all-btn {
+    padding: 0;
+    font-size: 13px;
+    font-weight: 600;
+}
+
+.favorites-drawer-content {
+    display: flex;
+    flex-direction: column;
+    height: 100%;
+}
+
+.loader-box {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    padding: 48px 0;
+
+    p {
+        margin-top: 12px;
+        color: #6b7280;
+        font-weight: 500;
+    }
+}
+
+.empty-fav-box {
+    padding: 48px 16px;
+    text-align: center;
+}
+
+.fav-items-scroll {
+    flex: 1;
+    overflow-y: auto;
+    padding-right: 4px;
+}
+
+.fav-item-card {
+    display: flex;
+    gap: 12px;
+    padding: 12px;
+    border-bottom: 1px solid #f3f4f6;
+    align-items: center;
+    background: #fff;
+    border-radius: 8px;
+    margin-bottom: 8px;
+    box-shadow: 0 1px 3px rgba(0, 0, 0, 0.04);
+}
+
+.fav-item-img {
+    width: 64px;
+    height: 64px;
+    object-fit: cover;
+    border-radius: 8px;
+    cursor: pointer;
+    border: 1px solid #e5e7eb;
+}
+
+.fav-item-info {
+    flex: 1;
+    min-width: 0;
+}
+
+.fav-item-company {
+    font-size: 11px;
+    color: #9ca3af;
+    font-weight: 600;
+    text-transform: uppercase;
+    display: block;
+    margin-bottom: 2px;
+}
+
+.fav-item-title {
+    font-size: 13.5px;
+    font-weight: 700;
+    color: #111827;
+    margin: 0 0 4px;
+    white-space: nowrap;
+    overflow: hidden;
+    text-overflow: ellipsis;
+    cursor: pointer;
+}
+
+.fav-item-price-wrapper {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+}
+
+.fav-item-price {
+    font-weight: 800;
+    color: #059669;
+    font-size: 14px;
+}
+
+.fav-item-stock-tag {
+    margin: 0;
+    font-size: 11px;
+}
+
+.fav-item-actions {
+    display: flex;
+    flex-direction: column;
+    gap: 4px;
+    align-items: center;
+}
+
+.fav-drawer-footer {
+    padding-top: 16px;
+    border-top: 1px solid #e5e7eb;
+    margin-top: auto;
+
+    .fav-drawer-footer-btn {
+        border-radius: 8px;
+    }
+}
