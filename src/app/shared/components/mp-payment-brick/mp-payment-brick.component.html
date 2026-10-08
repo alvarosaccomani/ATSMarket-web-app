@@ -1,1 +1,15 @@
-<p>mp-payment-brick works!</p>
+<div class="mp-brick-container-wrapper">
+  @if (isLoading) {
+    <div class="mp-brick-loader">
+      <nz-spin nzSimple nzTip="Cargando pasarela segura de Mercado Pago..."></nz-spin>
+    </div>
+  }
+
+  @if (errorMessage) {
+    <div class="mp-brick-error">
+      <p>⚠️ {{ errorMessage }}</p>
+    </div>
+  }
+
+  <div id="paymentBrick_container" #brickContainer></div>
+</div>

@@ -1,0 +1,35 @@
+.mp-brick-container-wrapper {
+  position: relative;
+  width: 100%;
+  min-height: 280px;
+  background: #ffffff;
+  border-radius: 8px;
+  padding: 16px;
+  box-shadow: 0 2px 8px rgba(0, 0, 0, 0.06);
+
+  .mp-brick-loader {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    padding: 40px 0;
+  }
+
+  .mp-brick-error {
+    background-color: #fff2f0;
+    border: 1px solid #ffccc7;
+    border-radius: 6px;
+    padding: 12px 16px;
+    margin-bottom: 16px;
+
+    p {
+      color: #ff4d4f;
+      margin: 0;
+      font-size: 14px;
+      font-weight: 500;
+    }
+  }
+
+  #paymentBrick_container {
+    width: 100%;
+  }
+}
