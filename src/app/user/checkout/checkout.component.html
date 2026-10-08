@@ -416,19 +416,15 @@
                             </div>
                         </label>
 
-                        <!-- Extra Form para Mercado Pago -->
-                        <div class="mp-details-wrapper" *ngIf="paymentMethod === 'mercadopago'" style="margin-top: 16px; padding: 20px; background: rgba(0, 158, 227, 0.04); border: 1px dashed #009ee3; border-radius: 12px;">
-                            <div class="mp-promo-box" style="display: flex; align-items: center; gap: 12px; margin-bottom: 12px;">
-                                <div class="mp-brand-badge" style="width: 36px; height: 36px; border-radius: 50%; background: #009ee3; display: flex; align-items: center; justify-content: center; color: #fff;">
-                                    <span nz-icon nzType="wallet" nzTheme="fill" style="font-size: 18px;"></span>
-                                </div>
-                                <div style="text-align: left;">
-                                    <h4 style="margin: 0; font-weight: 700; color: #003058;">Billetera Mercado Pago</h4>
-                                    <p style="margin: 0; font-size: 11px; color: #64748b;">Dinero en cuenta o tus tarjetas guardadas.</p>
-                                </div>
-                            </div>
-                            <nz-alert nzType="info" nzMessage="Cobro en Billetera Segura"
-                                nzDescription="Al presionar Pagar se desplegará el modal seguro de Mercado Pago para autenticarte y autorizar los fondos."></nz-alert>
+                        <!-- Componente Oficial Mercado Pago Payment Brick -->
+                        <div class="mp-details-wrapper" *ngIf="paymentMethod === 'mercadopago'" style="margin-top: 16px;">
+                            <app-mp-payment-brick
+                                [publicKey]="mpPublicKey"
+                                [amount]="totalFinal"
+                                [payerEmail]="mpEmail"
+                                (paymentSubmit)="onMpPaymentBrickSubmit($event)"
+                                (paymentError)="onMpPaymentBrickError($event)">
+                            </app-mp-payment-brick>
                         </div>
 
                     </nz-radio-group>
@@ -561,6 +557,7 @@
                     <div style="margin-top: 32px; display: flex; gap: 16px;">
                         <button nz-button nzType="default" nzSize="large" (click)="goToShippingStep()">Volver a Envío</button>
                         <button nz-button nzType="primary" nzSize="large" style="flex: 1;"
+                            *ngIf="paymentMethod !== 'mercadopago'"
                             [nzLoading]="isProcessingPayment" (click)="submitOrderPayment()">
                             ✅ Pagar Total (${{ totalFinal | number:'1.2-2' }})
                         </button>

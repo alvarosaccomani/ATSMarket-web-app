@@ -58,6 +58,8 @@ import { NzSelectModule } from 'ng-zorro-antd/select';
 import { NzSpinModule } from 'ng-zorro-antd/spin';
 import { NzModalModule } from 'ng-zorro-antd/modal';
 
+import { MpPaymentBrickComponent } from '../../shared/components/mp-payment-brick/mp-payment-brick.component';
+
 @Component({
   selector: 'app-checkout',
   standalone: true,
@@ -77,7 +79,8 @@ import { NzModalModule } from 'ng-zorro-antd/modal';
     NzAlertModule,
     NzSelectModule,
     NzSpinModule,
-    NzModalModule
+    NzModalModule,
+    MpPaymentBrickComponent
   ],
   templateUrl: './checkout.component.html',
   styleUrl: './checkout.component.scss'
@@ -113,9 +116,9 @@ export class CheckoutComponent implements OnInit, OnDestroy {
 
   // Pasarelas Disponibles (Configuradas por el Comercio)
   public isStripeAvailable = false;
-  public isMercadoPagoAvailable = false;
+  public isMercadoPagoAvailable = true;
   public stripePublicKey = '';
-  public mpPublicKey = '';
+  public mpPublicKey = 'TEST-30982e17-3a0c-4e32-b4b9-f9eebdfb0bbd';
 
   // Simulación de Flujo Mercado Pago
   public isMpModalVisible = false;
@@ -1245,9 +1248,16 @@ export class CheckoutComponent implements OnInit, OnDestroy {
       }
       if (settings['PAYMENT_MERCADO_PAGO_ENABLE'] === true || settings['PAYMENT_MERCADO_PAGO_ENABLE'] === 'true') {
         mpEnabled = true;
-        mpPk = settings['PAYMENT_MERCADO_PAGO_PUBLIC_KEY'] || 'APP_USR-mock-mp-pk-987654321';
+        const keyFromSettings = settings['PAYMENT_MERCADO_PAGO_PUBLIC_KEY'];
+        mpPk = (keyFromSettings && !keyFromSettings.includes('mock')) ? keyFromSettings : 'TEST-30982e17-3a0c-4e32-b4b9-f9eebdfb0bbd';
       }
     });
+
+    // Fallback Sandbox si la tienda tiene una clave ficticia/mock en BD
+    if (!mpPk || mpPk.includes('mock')) {
+      mpPk = 'TEST-30982e17-3a0c-4e32-b4b9-f9eebdfb0bbd';
+      mpEnabled = true;
+    }
 
     this.isStripeAvailable = stripeEnabled;
     this.isMercadoPagoAvailable = mpEnabled;
@@ -1358,5 +1368,22 @@ export class CheckoutComponent implements OnInit, OnDestroy {
         this.saveOrderAfterStockCheck(identity);
       }, 1000);
     }, 2000);
+  }
+
+  public onMpPaymentBrickSubmit(event: any): void {
+    console.log('💳 [CheckoutComponent] Recibida tokenización de Mercado Pago Brick:', event);
+    this.isProcessingPayment = true;
+    this.processingMessage = '🚀 Procesando pago seguro con Mercado Pago...';
+
+    const identity = this._sessionService.getIdentity();
+    this.saveOrderAfterStockCheck(identity);
+  }
+
+  public onMpPaymentBrickError(error: any): void {
+    console.error('❌ [CheckoutComponent] Error en Mercado Pago Brick:', error);
+    this._messageService.error(
+      'Error de Pago',
+      'No se pudo procesar la transacción con Mercado Pago. Por favor verifique sus datos o intente con otro método.'
+    );
   }
 }
