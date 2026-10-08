@@ -20,6 +20,7 @@ import { WebSocketNotificationService } from '../../core/services/web-socket-not
 import { CompaniesService } from '../../core/services/companies.service';
 import { CompaniesSettingsService } from '../../core/services/companies-settings.service';
 import { CouponsService } from '../../core/services/coupons.service';
+import { MercadopagoService } from '../../core/services/mercadopago.service';
 import { CompanyInterface } from '../../core/interfaces/company/company.interface';
 import { CartItemInterface } from '../../core/interfaces/cart-item.interface';
 
@@ -232,7 +233,8 @@ export class CheckoutComponent implements OnInit, OnDestroy {
     private _notificationService: WebSocketNotificationService,
     private companiesService: CompaniesService,
     private companiesSettingsService: CompaniesSettingsService,
-    private couponsService: CouponsService
+    private couponsService: CouponsService,
+    private _mercadopagoService: MercadopagoService
   ) { }
 
   ngOnInit(): void {
@@ -1373,10 +1375,41 @@ export class CheckoutComponent implements OnInit, OnDestroy {
   public onMpPaymentBrickSubmit(event: any): void {
     console.log('💳 [CheckoutComponent] Recibida tokenización de Mercado Pago Brick:', event);
     this.isProcessingPayment = true;
-    this.processingMessage = '🚀 Procesando pago seguro con Mercado Pago...';
+    this.processingMessage = '🚀 Creando orden y procesando pago seguro con Mercado Pago...';
 
     const identity = this._sessionService.getIdentity();
+    const formData = event?.formData || event;
+
+    // 1. Guardar la orden en base de datos
     this.saveOrderAfterStockCheck(identity);
+
+    // 2. Transmitir el token de la tarjeta y datos al backend Express para ejecutar el cobro en MP
+    const firstStoreGroup = this.storesInOrder[0];
+    const ordUuid = firstStoreGroup?.orderUuid || 'ord-' + Date.now();
+    const cmpUuid = firstStoreGroup?.cmp_uuid || (this.currentCompany ? this.currentCompany.cmp_uuid : '');
+
+    const paymentPayload = {
+      token: formData.token,
+      issuer_id: formData.issuer_id,
+      payment_method_id: formData.payment_method_id,
+      transaction_amount: formData.transaction_amount || this.totalFinal,
+      installments: formData.installments || 1,
+      payer: formData.payer,
+      ord_uuid: ordUuid,
+      cmp_uuid: cmpUuid
+    };
+
+    this._mercadopagoService.processPayment(paymentPayload).subscribe({
+      next: (res: any) => {
+        console.log('✅ [CheckoutComponent] Cobro procesado exitosamente en Mercado Pago:', res);
+        this.processingMessage = '🚀 ¡Cobro registrado! Aguardando confirmación final...';
+      },
+      error: (err: any) => {
+        console.error('❌ [CheckoutComponent] Error al procesar cobro en backend:', err);
+        this.isProcessingPayment = false;
+        this.message.error(err.error?.message || err.error?.error || 'No se pudo procesar el pago con Mercado Pago.');
+      }
+    });
   }
 
   public onMpPaymentBrickError(error: any): void {
