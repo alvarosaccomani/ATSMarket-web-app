@@ -1,4 +1,7 @@
 import { Injectable } from '@angular/core';
+import { HttpClient, HttpHeaders } from '@angular/common/http';
+import { Observable } from 'rxjs';
+import { environment } from '../../../environments/environment';
 
 declare global {
   interface Window {
@@ -14,7 +17,15 @@ export class MercadopagoService {
   private scriptLoaded = false;
   private loadPromise: Promise<void> | null = null;
 
-  constructor() { }
+  constructor(private _http: HttpClient) { }
+
+  /**
+   * Envía el token obtenido de Payment Brick a la API backend para ejecutar el cobro en Mercado Pago
+   */
+  public processPayment(payload: any): Observable<any> {
+    const headers = new HttpHeaders().set('content-type', 'application/json');
+    return this._http.post(`${environment.apiUrl}payments/process`, payload, { headers });
+  }
 
   /**
    * Carga el SDK JS v2 de Mercado Pago de forma dinámica y segura
