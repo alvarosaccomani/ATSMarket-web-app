@@ -19,7 +19,14 @@ self.addEventListener('install', (event) => {
       return cache.addAll(STATIC_ASSETS);
     })
   );
-  self.skipWaiting();
+  // Se remueve self.skipWaiting() automático para esperar confirmación del usuario
+});
+
+// Escuchar mensaje enviado desde la app para activar la nueva versión
+self.addEventListener('message', (event) => {
+  if (event.data && event.data.type === 'SKIP_WAITING') {
+    self.skipWaiting();
+  }
 });
 
 // Activación: Limpieza de cachés antiguos
