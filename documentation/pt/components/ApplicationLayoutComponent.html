@@ -1,0 +1,1827 @@
+<!doctype html>
+<html class="no-js" lang="">
+    <head>
+        <meta charset="utf-8">
+        <meta http-equiv="x-ua-compatible" content="ie=edge">
+        <title>ATSMarket Web App</title>
+        <meta name="description" content="">
+        <meta name="viewport" content="width=device-width, initial-scale=1">
+
+        <link rel="icon" type="image/x-icon" href="../images/favicon.ico">
+	   <link rel="stylesheet" href="../styles/style.css">
+        <link rel="stylesheet" href="../styles/dark.css">
+    
+<style id="compodoc-lang-styles">
+  .compodoc-lang-switch {
+    position: fixed;
+    top: 15px;
+    right: calc(90px + var(--content-scrollbar-width, 0px));
+    z-index: 1050;
+    display: inline-block;
+  }
+  @media (max-width: 767px) {
+    .compodoc-lang-switch {
+      top: 8px;
+      right: 60px;
+    }
+  }
+  #compodoc-lang-select {
+    height: 34px;
+    padding: 0 12px;
+    border-radius: 17px;
+    border: 1px solid #d9d9d9;
+    background-color: #ffffff;
+    color: #1f1f1f;
+    font-size: 13px;
+    font-family: inherit;
+    font-weight: 500;
+    cursor: pointer;
+    outline: none;
+    box-shadow: 0 2px 6px rgba(0, 0, 0, 0.08);
+    transition: all 0.3s cubic-bezier(0.645, 0.045, 0.355, 1);
+    -webkit-appearance: none;
+    -moz-appearance: none;
+    appearance: none;
+    padding-right: 26px;
+    background-image: url("data:image/svg+xml;charset=UTF-8,%3csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 24 24' fill='none' stroke='%23666' stroke-width='2' stroke-linecap='round' stroke-linejoin='round'%3e%3cpolyline points='6 9 12 15 18 9'%3e%3c/polyline%3e%3c/svg%3e");
+    background-repeat: no-repeat;
+    background-position: right 8px center;
+    background-size: 14px;
+  }
+  #compodoc-lang-select:hover, #compodoc-lang-select:focus {
+    border-color: #5cc0ae;
+    box-shadow: 0 2px 8px rgba(92, 192, 174, 0.25);
+  }
+  body.dark .compodoc-lang-switch #compodoc-lang-select {
+    background-color: #2c3e50;
+    color: #ecf0f1;
+    border: 1px solid #4a627a;
+    box-shadow: 0 2px 6px rgba(0, 0, 0, 0.35);
+    background-image: url("data:image/svg+xml;charset=UTF-8,%3csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 24 24' fill='none' stroke='%23ecf0f1' stroke-width='2' stroke-linecap='round' stroke-linejoin='round'%3e%3cpolyline points='6 9 12 15 18 9'%3e%3c/polyline%3e%3c/svg%3e");
+  }
+  body.dark .compodoc-lang-switch #compodoc-lang-select option {
+    background-color: #2c3e50;
+    color: #ecf0f1;
+  }
+</style>
+
+</head>
+    <body>
+          <script>
+               // Blocking script to avoid flickering dark mode
+               // Dark mode toggle button
+               var useDark = window.matchMedia('(prefers-color-scheme: dark)');
+               var darkModeState = useDark.matches;
+               var $darkModeToggleSwitchers = document.querySelectorAll('.dark-mode-switch input');
+               var $darkModeToggles = document.querySelectorAll('.dark-mode-switch');
+               var darkModeStateLocal = localStorage.getItem('compodoc_darkmode-state');
+
+               function checkToggle(check) {
+                    for (var i = 0; i < $darkModeToggleSwitchers.length; i++) {
+                         $darkModeToggleSwitchers[i].checked = check;
+                    }
+               }
+
+               function toggleDarkMode(state) {
+                    if (window.localStorage) {
+                         localStorage.setItem('compodoc_darkmode-state', state);
+                    }
+
+                    checkToggle(state);
+
+                    const hasClass = document.body.classList.contains('dark');
+
+                    if (state) {
+                         for (var i = 0; i < $darkModeToggles.length; i++) {
+                              $darkModeToggles[i].classList.add('dark');
+                         }
+                         if (!hasClass) {
+                              document.body.classList.add('dark');
+                         }
+                    } else {
+                         for (var i = 0; i < $darkModeToggles.length; i++) {
+                              $darkModeToggles[i].classList.remove('dark');
+                         }
+                         if (hasClass) {
+                              document.body.classList.remove('dark');
+                         }
+                    }
+               }
+
+               useDark.addEventListener('change', function (evt) {
+                    toggleDarkMode(evt.matches);
+               });
+               if (darkModeStateLocal) {
+                    darkModeState = darkModeStateLocal === 'true';
+               }
+               toggleDarkMode(darkModeState);
+          </script>
+          <script>
+              // --- Iframe navigation tracking for Template Playground ---
+              function sendCurrentUrlToParent() {
+                  if (window.parent && window.parent !== window) {
+                      window.parent.postMessage({
+                          type: 'compodoc-iframe-navigate',
+                          url: window.location.pathname + window.location.hash
+                      }, '*');
+                  }
+              }
+              window.addEventListener('hashchange', sendCurrentUrlToParent, false);
+              window.addEventListener('popstate', sendCurrentUrlToParent, false);
+              window.addEventListener('DOMContentLoaded', sendCurrentUrlToParent, false);
+          </script>
+
+        <div class="navbar navbar-default navbar-fixed-top d-md-none p-0">
+               <div class="d-flex">
+                    <a href="../" class="navbar-brand">ATSMarket Web App</a>
+                    <button type="button" class="btn btn-default btn-menu ion-ios-menu" id="btn-menu"></button>
+               </div>
+        </div>
+
+        <div class="xs-menu menu" id="mobile-menu">
+                <div id="book-search-input" role="search">
+    <input type="text" placeholder="Digite para pesquisar">
+    <button type="button"
+        class="search-input-clear"
+        aria-label="Clear search"
+        data-search-input-clear>&times;</button>
+</div>
+            <compodoc-menu></compodoc-menu>
+        </div>
+
+        <div class="container-fluid main">
+           <div class="row main">
+               <div class="d-none d-md-block menu">
+                   <compodoc-menu mode="normal"></compodoc-menu>
+               </div>
+               <!-- START CONTENT -->
+               <div class="content component">
+                   <div class="content-data">
+
+
+
+
+
+
+
+
+<ol class="breadcrumb">
+  <li class="breadcrumb-item">Componentes</li>
+  <li class="breadcrumb-item"
+  >
+  ApplicationLayoutComponent</li>
+</ol>
+
+<div class="io-file io-file-path" data-compodoc="entity-file-path">
+    <span class="icon ion-ios-document" aria-hidden="true"></span>
+    <code>src/app/application/application-layout/application-layout.component.ts</code>
+</div>
+
+<ul class="nav nav-tabs" role="tablist">
+        <li class="nav-item">
+            <a href="#info" class="nav-link active"
+                role="tab" id="info-tab" data-bs-toggle="tab" data-link="info">Info</a>
+        </li>
+        <li class="nav-item">
+            <a href="#api" class="nav-link"
+                role="tab" id="api-tab" data-bs-toggle="tab" data-link="api">API</a>
+        </li>
+        <li class="nav-item">
+            <a href="#source" class="nav-link"
+                role="tab" id="source-tab" data-bs-toggle="tab" data-link="source">Source</a>
+        </li>
+        <li class="nav-item">
+            <a href="#templateData" class="nav-link"
+                role="tab" id="templateData-tab" data-bs-toggle="tab" data-link="template">Template</a>
+        </li>
+        <li class="nav-item">
+            <a href="#styleData" class="nav-link"
+                role="tab" id="styleData-tab" data-bs-toggle="tab" data-link="style">Styles</a>
+        </li>
+        <li class="nav-item">
+            <a href="#tree" class="nav-link"
+                role="tab" id="tree-tab" data-bs-toggle="tab" data-link="dom-tree">DOM Tree</a>
+        </li>
+</ul>
+
+<div class="tab-content">
+    <div class="tab-pane fade active in" id="info">
+
+
+    <p class="comment">
+        <h3>Implementa</h3>
+    </p>
+    <p class="comment">
+                    <code><a href="https://angular.dev/api/core/OnInit" target="_blank" >OnInit</a></code>
+                    <code><a href="https://angular.dev/api/core/OnDestroy" target="_blank" >OnDestroy</a></code>
+    </p>
+
+
+<section data-compodoc="block-metadata">
+    <h3>Metadata</h3>
+    <table class="table table-sm table-hover metadata">
+        <tbody>
+
+
+
+
+
+
+
+
+
+
+
+
+            <tr>
+                <td class="col-md-3">selector</td>
+                <td class="col-md-9"><code>app-application-layout</code></td>
+            </tr>
+
+            <tr>
+                <td class="col-md-3">standalone</td>
+                <td class="col-md-9"><code>true</code></td>
+            </tr>
+
+            <tr>
+                <td class="col-md-3">imports</td>
+                <td class="col-md-9">
+                        <div>        <code><a href="https://angular.dev/api/common/CommonModule" target="_blank" >CommonModule</a></code>
+</div>
+                        <div>        <code><a href="https://angular.dev/api/router/RouterOutlet" target="_blank" >RouterOutlet</a></code>
+</div>
+                        <div>        <code><a href="https://angular.dev/api/router/RouterLink" target="_blank" >RouterLink</a></code>
+</div>
+                        <div>    <code>NzLayoutModule</code>
+</div>
+                        <div>        <code><a href="../components/SideBarComponent.html" target="_self" >SideBarComponent</a></code>
+</div>
+                        <div>    <code>NzBreadCrumbModule</code>
+</div>
+                        <div>    <code>NzIconModule</code>
+</div>
+                        <div>    <code>NzMenuModule</code>
+</div>
+                        <div>    <code>NzAvatarModule</code>
+</div>
+                        <div>    <code>NzDropDownModule</code>
+</div>
+                        <div>    <code>NzButtonModule</code>
+</div>
+                        <div>    <code>NzToolTipModule</code>
+</div>
+                        <div>    <code>NzNotificationModule</code>
+</div>
+                        <div>        <code><a href="../components/ApplicationBarComponent.html" target="_self" >ApplicationBarComponent</a></code>
+</div>
+                </td>
+            </tr>
+
+            <tr>
+                <td class="col-md-3">styleUrls</td>
+                <td class="col-md-9"><code>./application-layout.component.scss</code></td>
+            </tr>
+
+
+
+
+            <tr>
+                <td class="col-md-3">templateUrl</td>
+                <td class="col-md-9"><code>./application-layout.component.html</code></td>
+            </tr>
+
+
+
+            <tr>
+                <td class="col-md-3">styleUrl</td>
+                <td class="col-md-9"><code>./application-layout.component.scss</code></td>
+            </tr>
+
+
+
+
+
+        </tbody>
+    </table>
+</section>
+
+        <section data-compodoc="block-relationships">
+            <h3>Relationships</h3>
+
+            <div class="row pt-3">
+                <div class="col-sm-6">
+                    <h4>Used by</h4>
+                        <p class="comment"><i>Nenhum resultado correspondente.</i></p>
+                </div>
+
+                <div class="col-sm-6">
+                    <h4>Depends on</h4>
+                        <ul class="list-unstyled relationships-list">
+                                <li>
+                                            <code><a href="https://angular.dev/api/common/CommonModule" target="_blank" >CommonModule</a></code>
+                                </li>
+                                <li>
+                                            <code><a href="https://angular.dev/api/router/RouterOutlet" target="_blank" >RouterOutlet</a></code>
+                                </li>
+                                <li>
+                                            <code><a href="https://angular.dev/api/router/RouterLink" target="_blank" >RouterLink</a></code>
+                                </li>
+                                <li>
+                                        <code>NzLayoutModule</code>
+                                </li>
+                                <li>
+                                            <code><a href="../components/SideBarComponent.html" target="_self" >SideBarComponent</a></code>
+                                </li>
+                                <li>
+                                        <code>NzBreadCrumbModule</code>
+                                </li>
+                                <li>
+                                        <code>NzIconModule</code>
+                                </li>
+                                <li>
+                                        <code>NzMenuModule</code>
+                                </li>
+                                <li>
+                                        <code>NzAvatarModule</code>
+                                </li>
+                                <li>
+                                        <code>NzDropDownModule</code>
+                                </li>
+                                <li>
+                                        <code>NzButtonModule</code>
+                                </li>
+                                <li>
+                                        <code>NzToolTipModule</code>
+                                </li>
+                                <li>
+                                        <code>NzNotificationModule</code>
+                                </li>
+                                <li>
+                                            <code><a href="../components/ApplicationBarComponent.html" target="_self" >ApplicationBarComponent</a></code>
+                                </li>
+                                <li>
+                                            <code><a href="https://angular.dev/api/core/OnInit" target="_blank" >OnInit</a></code>
+                                </li>
+                                <li>
+                                            <code><a href="https://angular.dev/api/core/OnDestroy" target="_blank" >OnDestroy</a></code>
+                                </li>
+                        </ul>
+                </div>
+            </div>
+        </section>
+</div>
+
+    <div class="tab-pane fade " id="api">    <section data-compodoc="block-index">
+    <h3 id="index">Index</h3>
+        <table class="table table-sm table-bordered index-table">
+            <tbody>
+                <tr>
+                    <td class="col-md-3">
+                        <h6><b>Propriedades</b></h6>
+                    </td>
+                    <td class="col-md-9">
+                        <ul class="index-list">
+                            <li>
+                                <span class="reference-badge reference-badge--property" aria-hidden="true">P</span>
+                                    <span class="modifier">Public</span>
+                                <a href="#activeCompany" >activeCompany</a>
+                            </li>
+                            <li>
+                                <span class="reference-badge reference-badge--property" aria-hidden="true">P</span>
+                                    <span class="modifier">Public</span>
+                                <a href="#breadcrumbs" >breadcrumbs</a>
+                            </li>
+                            <li>
+                                <span class="reference-badge reference-badge--property" aria-hidden="true">P</span>
+                                    <span class="modifier">Private</span>
+                                <a href="#destroy$" >destroy$</a>
+                            </li>
+                            <li>
+                                <span class="reference-badge reference-badge--property" aria-hidden="true">P</span>
+                                    <span class="modifier">Public</span>
+                                <a href="#isCollapsed" >isCollapsed</a>
+                            </li>
+                            <li>
+                                <span class="reference-badge reference-badge--property" aria-hidden="true">P</span>
+                                    <span class="modifier">Public</span>
+                                <a href="#menuItems" >menuItems</a>
+                            </li>
+                            <li>
+                                <span class="reference-badge reference-badge--property" aria-hidden="true">P</span>
+                                    <span class="modifier">Public</span>
+                                <a href="#userIdentity" >userIdentity</a>
+                            </li>
+                            <li>
+                                <span class="reference-badge reference-badge--property" aria-hidden="true">P</span>
+                                    <span class="modifier">Public</span>
+                                <a href="#userRolesCompany" >userRolesCompany</a>
+                            </li>
+                        </ul>
+                    </td>
+                </tr>
+            </tbody>
+        </table>
+
+        <table class="table table-sm table-bordered index-table">
+            <tbody>
+                <tr>
+                    <td class="col-md-3">
+                        <h6><b>Métodos</b></h6>
+                    </td>
+                    <td class="col-md-9">
+                        <ul class="index-list">
+                            <li>
+                                <span class="reference-badge reference-badge--method" aria-hidden="true">M</span>
+                                    <span class="modifier">Public</span>
+                                <a href="#groupByCompany" >groupByCompany</a>
+                            </li>
+                            <li>
+                                <span class="reference-badge reference-badge--method" aria-hidden="true">M</span>
+                                    <span class="modifier">Private</span>
+                                <a href="#loadMenuTree" >loadMenuTree</a>
+                            </li>
+                            <li>
+                                <span class="reference-badge reference-badge--method" aria-hidden="true">M</span>
+                                    <span class="modifier">Public</span>
+                                <a href="#logout" >logout</a>
+                            </li>
+                            <li>
+                                <span class="reference-badge reference-badge--method" aria-hidden="true">M</span>
+                                <a href="#ngOnDestroy" >ngOnDestroy</a>
+                            </li>
+                            <li>
+                                <span class="reference-badge reference-badge--method" aria-hidden="true">M</span>
+                                <a href="#ngOnInit" >ngOnInit</a>
+                            </li>
+                            <li>
+                                <span class="reference-badge reference-badge--method" aria-hidden="true">M</span>
+                                    <span class="modifier">Public</span>
+                                <a href="#selectCompany" >selectCompany</a>
+                            </li>
+                            <li>
+                                <span class="reference-badge reference-badge--method" aria-hidden="true">M</span>
+                                    <span class="modifier">Private</span>
+                                <a href="#updateBreadcrumbs" >updateBreadcrumbs</a>
+                            </li>
+                        </ul>
+                    </td>
+                </tr>
+            </tbody>
+        </table>
+
+
+
+
+
+</section>
+
+    <section data-compodoc="block-constructor">
+    <h3 id="constructor">Construtor</h3>
+        <table class="table table-sm table-bordered">
+            <tbody>
+                <tr>
+                    <td class="col-md-4">
+<code>constructor(_sessionService: <a href="../injectables/SessionService.html" target="_self">SessionService</a>, _userRolesCompanyService: <a href="../injectables/UserRolesCompanyService.html" target="_self">UserRolesCompanyService</a>, _appMmenusService: <a href="../injectables/AppMenusService.html" target="_self">AppMenusService</a>, _router: <a href="https://angular.dev/api/router/Router" target="_blank">Router</a>, _notificationService: <a href="../injectables/WebSocketNotificationService.html" target="_self">WebSocketNotificationService</a>, _nzNotificationService: NzNotificationService)</code>
+                    </td>
+                </tr>
+                        <tr>
+                            <td class="col-md-4">
+                                <div class="io-line">Definido em <a href="" data-line="55" class="link-to-prism">src/app/application/application-layout/application-layout.component.ts:55</a></div>
+                            </td>
+                        </tr>
+
+                <tr>
+                    <td class="col-md-4">
+                            <div>
+                                    <b>Parâmetros :</b>
+                                    <table class="params">
+                                        <thead>
+                                            <tr>
+                                                <td>Nome</td>
+                                                    <td>Tipo</td>
+                                                <td>Opcional</td>
+                                            </tr>
+                                        </thead>
+                                        <tbody>
+                                                <tr>
+                                                        <td>_sessionService</td>
+                                                  
+                                                        <td>
+                                                                        <code><a href="../injectables/SessionService.html" target="_self" >SessionService</a></code>
+                                                        </td>
+                                                  
+                                                    <td>
+                                                            Não
+                                                    </td>
+                                                    
+                                                </tr>
+                                                <tr>
+                                                        <td>_userRolesCompanyService</td>
+                                                  
+                                                        <td>
+                                                                        <code><a href="../injectables/UserRolesCompanyService.html" target="_self" >UserRolesCompanyService</a></code>
+                                                        </td>
+                                                  
+                                                    <td>
+                                                            Não
+                                                    </td>
+                                                    
+                                                </tr>
+                                                <tr>
+                                                        <td>_appMmenusService</td>
+                                                  
+                                                        <td>
+                                                                        <code><a href="../injectables/AppMenusService.html" target="_self" >AppMenusService</a></code>
+                                                        </td>
+                                                  
+                                                    <td>
+                                                            Não
+                                                    </td>
+                                                    
+                                                </tr>
+                                                <tr>
+                                                        <td>_router</td>
+                                                  
+                                                        <td>
+                                                                        <code><a href="https://angular.dev/api/router/Router" target="_blank" >Router</a></code>
+                                                        </td>
+                                                  
+                                                    <td>
+                                                            Não
+                                                    </td>
+                                                    
+                                                </tr>
+                                                <tr>
+                                                        <td>_notificationService</td>
+                                                  
+                                                        <td>
+                                                                        <code><a href="../injectables/WebSocketNotificationService.html" target="_self" >WebSocketNotificationService</a></code>
+                                                        </td>
+                                                  
+                                                    <td>
+                                                            Não
+                                                    </td>
+                                                    
+                                                </tr>
+                                                <tr>
+                                                        <td>_nzNotificationService</td>
+                                                  
+                                                        <td>
+                                                                    <code>NzNotificationService</code>
+                                                        </td>
+                                                  
+                                                    <td>
+                                                            Não
+                                                    </td>
+                                                    
+                                                </tr>
+                                        </tbody>
+                                    </table>
+                            </div>
+                    </td>
+                </tr>
+            </tbody>
+        </table>
+</section>
+
+
+
+
+
+    <section data-compodoc="block-methods">
+    
+    <h3 id="methods">
+        Métodos
+    </h3>
+    <table class="table table-sm table-bordered">
+        <tbody>
+            <tr>
+                <td class="col-md-4">
+                    <a name="groupByCompany"></a>
+                    <span class="name">
+                            <span class="modifier">Public</span>
+                        <span ><b>groupByCompany</b></span>
+                        <a href="#groupByCompany"><span class="icon ion-ios-link"></span></a>
+                    </span>
+                </td>
+            </tr>
+            <tr>
+                <td class="col-md-4">
+                        <span class="modifier-icon icon ion-ios-reset"></span>
+                    <code>groupByCompany(data: any[])</code>
+                </td>
+            </tr>
+
+
+                    <tr>
+                        <td class="col-md-4">
+                            <div class="io-line">Definido em <a href="" data-line="176"
+                                    class="link-to-prism">src/app/application/application-layout/application-layout.component.ts:176</a></div>
+                        </td>
+                    </tr>
+
+
+            <tr>
+                <td class="col-md-4">
+
+                            <div class="io-description">
+                                <b>Parâmetros :</b>
+                                
+                                <table class="params">
+                                    <thead>
+                                        <tr>
+                                            <td>Nome</td>
+                                                <td>Tipo</td>
+                                            <td>Opcional</td>
+                                        </tr>
+                                    </thead>
+                                    <tbody>
+                                        <tr>
+                                                <td>data</td>
+                                            <td>
+                                                        <code>any[]</code>
+                                            </td>
+
+                                            <td>
+                                                    Não
+                                            </td>
+
+
+                                        </tr>
+                                    </tbody>
+                                </table>
+                            </div>
+                        <div class="io-description">
+                            <b>Retorna : </b>    <code>any[]</code>
+
+                        </div>
+                            <div class="io-description">
+                                
+                            </div>
+                </td>
+            </tr>
+        </tbody>
+    </table>
+    <table class="table table-sm table-bordered">
+        <tbody>
+            <tr>
+                <td class="col-md-4">
+                    <a name="loadMenuTree"></a>
+                    <span class="name">
+                            <span class="modifier">Private</span>
+                        <span ><b>loadMenuTree</b></span>
+                        <a href="#loadMenuTree"><span class="icon ion-ios-link"></span></a>
+                    </span>
+                </td>
+            </tr>
+            <tr>
+                <td class="col-md-4">
+                        <span class="modifier-icon icon ion-ios-reset"></span>
+                    <code>loadMenuTree()</code>
+                </td>
+            </tr>
+
+
+                    <tr>
+                        <td class="col-md-4">
+                            <div class="io-line">Definido em <a href="" data-line="137"
+                                    class="link-to-prism">src/app/application/application-layout/application-layout.component.ts:137</a></div>
+                        </td>
+                    </tr>
+
+
+            <tr>
+                <td class="col-md-4">
+
+                        <div class="io-description">
+                            <b>Retorna : </b>        <code><a href="https://www.typescriptlang.org/docs/handbook/basic-types.html" target="_blank" >void</a></code>
+
+                        </div>
+                </td>
+            </tr>
+        </tbody>
+    </table>
+    <table class="table table-sm table-bordered">
+        <tbody>
+            <tr>
+                <td class="col-md-4">
+                    <a name="logout"></a>
+                    <span class="name">
+                            <span class="modifier">Public</span>
+                        <span ><b>logout</b></span>
+                        <a href="#logout"><span class="icon ion-ios-link"></span></a>
+                    </span>
+                </td>
+            </tr>
+            <tr>
+                <td class="col-md-4">
+                        <span class="modifier-icon icon ion-ios-reset"></span>
+                    <code>logout()</code>
+                </td>
+            </tr>
+
+
+                    <tr>
+                        <td class="col-md-4">
+                            <div class="io-line">Definido em <a href="" data-line="206"
+                                    class="link-to-prism">src/app/application/application-layout/application-layout.component.ts:206</a></div>
+                        </td>
+                    </tr>
+
+
+            <tr>
+                <td class="col-md-4">
+
+                        <div class="io-description">
+                            <b>Retorna : </b>        <code><a href="https://www.typescriptlang.org/docs/handbook/basic-types.html" target="_blank" >void</a></code>
+
+                        </div>
+                </td>
+            </tr>
+        </tbody>
+    </table>
+    <table class="table table-sm table-bordered">
+        <tbody>
+            <tr>
+                <td class="col-md-4">
+                    <a name="ngOnDestroy"></a>
+                    <span class="name">
+                        <span ><b>ngOnDestroy</b></span>
+                        <a href="#ngOnDestroy"><span class="icon ion-ios-link"></span></a>
+                    </span>
+                </td>
+            </tr>
+            <tr>
+                <td class="col-md-4">
+<code>ngOnDestroy()</code>
+                </td>
+            </tr>
+
+
+                    <tr>
+                        <td class="col-md-4">
+                            <div class="io-line">Definido em <a href="" data-line="211"
+                                    class="link-to-prism">src/app/application/application-layout/application-layout.component.ts:211</a></div>
+                        </td>
+                    </tr>
+
+
+            <tr>
+                <td class="col-md-4">
+
+                        <div class="io-description">
+                            <b>Retorna : </b>        <code><a href="https://www.typescriptlang.org/docs/handbook/basic-types.html" target="_blank" >void</a></code>
+
+                        </div>
+                </td>
+            </tr>
+        </tbody>
+    </table>
+    <table class="table table-sm table-bordered">
+        <tbody>
+            <tr>
+                <td class="col-md-4">
+                    <a name="ngOnInit"></a>
+                    <span class="name">
+                        <span ><b>ngOnInit</b></span>
+                        <a href="#ngOnInit"><span class="icon ion-ios-link"></span></a>
+                    </span>
+                </td>
+            </tr>
+            <tr>
+                <td class="col-md-4">
+<code>ngOnInit()</code>
+                </td>
+            </tr>
+
+
+                    <tr>
+                        <td class="col-md-4">
+                            <div class="io-line">Definido em <a href="" data-line="66"
+                                    class="link-to-prism">src/app/application/application-layout/application-layout.component.ts:66</a></div>
+                        </td>
+                    </tr>
+
+
+            <tr>
+                <td class="col-md-4">
+
+                        <div class="io-description">
+                            <b>Retorna : </b>        <code><a href="https://www.typescriptlang.org/docs/handbook/basic-types.html" target="_blank" >void</a></code>
+
+                        </div>
+                </td>
+            </tr>
+        </tbody>
+    </table>
+    <table class="table table-sm table-bordered">
+        <tbody>
+            <tr>
+                <td class="col-md-4">
+                    <a name="selectCompany"></a>
+                    <span class="name">
+                            <span class="modifier">Public</span>
+                        <span ><b>selectCompany</b></span>
+                        <a href="#selectCompany"><span class="icon ion-ios-link"></span></a>
+                    </span>
+                </td>
+            </tr>
+            <tr>
+                <td class="col-md-4">
+                        <span class="modifier-icon icon ion-ios-reset"></span>
+                    <code>selectCompany(company: <a href="https://www.typescriptlang.org/docs/handbook/basic-types.html" target="_blank">any</a>)</code>
+                </td>
+            </tr>
+
+
+                    <tr>
+                        <td class="col-md-4">
+                            <div class="io-line">Definido em <a href="" data-line="196"
+                                    class="link-to-prism">src/app/application/application-layout/application-layout.component.ts:196</a></div>
+                        </td>
+                    </tr>
+
+
+            <tr>
+                <td class="col-md-4">
+
+                            <div class="io-description">
+                                <b>Parâmetros :</b>
+                                
+                                <table class="params">
+                                    <thead>
+                                        <tr>
+                                            <td>Nome</td>
+                                                <td>Tipo</td>
+                                            <td>Opcional</td>
+                                        </tr>
+                                    </thead>
+                                    <tbody>
+                                        <tr>
+                                                <td>company</td>
+                                            <td>
+                                                            <code><a href="https://www.typescriptlang.org/docs/handbook/basic-types.html" target="_blank" >any</a></code>
+                                            </td>
+
+                                            <td>
+                                                    Não
+                                            </td>
+
+
+                                        </tr>
+                                    </tbody>
+                                </table>
+                            </div>
+                        <div class="io-description">
+                            <b>Retorna : </b>        <code><a href="https://www.typescriptlang.org/docs/handbook/basic-types.html" target="_blank" >void</a></code>
+
+                        </div>
+                            <div class="io-description">
+                                
+                            </div>
+                </td>
+            </tr>
+        </tbody>
+    </table>
+    <table class="table table-sm table-bordered">
+        <tbody>
+            <tr>
+                <td class="col-md-4">
+                    <a name="updateBreadcrumbs"></a>
+                    <span class="name">
+                            <span class="modifier">Private</span>
+                        <span ><b>updateBreadcrumbs</b></span>
+                        <a href="#updateBreadcrumbs"><span class="icon ion-ios-link"></span></a>
+                    </span>
+                </td>
+            </tr>
+            <tr>
+                <td class="col-md-4">
+                        <span class="modifier-icon icon ion-ios-reset"></span>
+                    <code>updateBreadcrumbs(url: <a href="https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/string" target="_blank">string</a>)</code>
+                </td>
+            </tr>
+
+
+                    <tr>
+                        <td class="col-md-4">
+                            <div class="io-line">Definido em <a href="" data-line="150"
+                                    class="link-to-prism">src/app/application/application-layout/application-layout.component.ts:150</a></div>
+                        </td>
+                    </tr>
+
+
+            <tr>
+                <td class="col-md-4">
+
+                            <div class="io-description">
+                                <b>Parâmetros :</b>
+                                
+                                <table class="params">
+                                    <thead>
+                                        <tr>
+                                            <td>Nome</td>
+                                                <td>Tipo</td>
+                                            <td>Opcional</td>
+                                        </tr>
+                                    </thead>
+                                    <tbody>
+                                        <tr>
+                                                <td>url</td>
+                                            <td>
+                                                            <code><a href="https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/string" target="_blank" >string</a></code>
+                                            </td>
+
+                                            <td>
+                                                    Não
+                                            </td>
+
+
+                                        </tr>
+                                    </tbody>
+                                </table>
+                            </div>
+                        <div class="io-description">
+                            <b>Retorna : </b>        <code><a href="https://www.typescriptlang.org/docs/handbook/basic-types.html" target="_blank" >void</a></code>
+
+                        </div>
+                            <div class="io-description">
+                                
+                            </div>
+                </td>
+            </tr>
+        </tbody>
+    </table>
+</section>
+
+    <section data-compodoc="block-properties">
+    
+    <h3 id="inputs">
+        Propriedades
+    </h3>
+    <table class="table table-sm table-bordered">
+        <tbody>
+            <tr>
+                <td class="col-md-4">
+                    <a name="activeCompany"></a>
+                    <span class="name">
+                            <span class="modifier">Public</span>
+                        <span ><b>activeCompany</b></span>
+                        <a href="#activeCompany"><span class="icon ion-ios-link"></span></a>
+                    </span>
+                </td>
+            </tr>
+                <tr>
+                    <td class="col-md-4">
+                        <i>Tipo : </i>        <code><a href="https://www.typescriptlang.org/docs/handbook/basic-types.html" target="_blank" >any</a></code>
+
+                    </td>
+                </tr>
+                <tr>
+                    <td class="col-md-4">
+                        <i>Valor padrão : </i><code>null</code>
+                    </td>
+                </tr>
+                    <tr>
+                        <td class="col-md-4">
+                                <div class="io-line">Definido em <a href="" data-line="49" class="link-to-prism">src/app/application/application-layout/application-layout.component.ts:49</a></div>
+                        </td>
+                    </tr>
+
+
+        </tbody>
+    </table>
+    <table class="table table-sm table-bordered">
+        <tbody>
+            <tr>
+                <td class="col-md-4">
+                    <a name="breadcrumbs"></a>
+                    <span class="name">
+                            <span class="modifier">Public</span>
+                        <span ><b>breadcrumbs</b></span>
+                        <a href="#breadcrumbs"><span class="icon ion-ios-link"></span></a>
+                    </span>
+                </td>
+            </tr>
+                <tr>
+                    <td class="col-md-4">
+                        <i>Tipo : </i>    <code>string[]</code>
+
+                    </td>
+                </tr>
+                <tr>
+                    <td class="col-md-4">
+                        <i>Valor padrão : </i><code>[&#x27;Inicio&#x27;]</code>
+                    </td>
+                </tr>
+                    <tr>
+                        <td class="col-md-4">
+                                <div class="io-line">Definido em <a href="" data-line="53" class="link-to-prism">src/app/application/application-layout/application-layout.component.ts:53</a></div>
+                        </td>
+                    </tr>
+
+
+        </tbody>
+    </table>
+    <table class="table table-sm table-bordered">
+        <tbody>
+            <tr>
+                <td class="col-md-4">
+                    <a name="destroy$"></a>
+                    <span class="name">
+                            <span class="modifier">Private</span>
+                        <span ><b>destroy$</b></span>
+                        <a href="#destroy$"><span class="icon ion-ios-link"></span></a>
+                    </span>
+                </td>
+            </tr>
+                <tr>
+                    <td class="col-md-4">
+                        <i>Tipo : </i>    <code>unknown</code>
+
+                    </td>
+                </tr>
+                <tr>
+                    <td class="col-md-4">
+                        <i>Valor padrão : </i><code>new Subject&lt;void&gt;()</code>
+                    </td>
+                </tr>
+                    <tr>
+                        <td class="col-md-4">
+                                <div class="io-line">Definido em <a href="" data-line="55" class="link-to-prism">src/app/application/application-layout/application-layout.component.ts:55</a></div>
+                        </td>
+                    </tr>
+
+
+        </tbody>
+    </table>
+    <table class="table table-sm table-bordered">
+        <tbody>
+            <tr>
+                <td class="col-md-4">
+                    <a name="isCollapsed"></a>
+                    <span class="name">
+                            <span class="modifier">Public</span>
+                        <span ><b>isCollapsed</b></span>
+                        <a href="#isCollapsed"><span class="icon ion-ios-link"></span></a>
+                    </span>
+                </td>
+            </tr>
+                <tr>
+                    <td class="col-md-4">
+                        <i>Tipo : </i>    <code>unknown</code>
+
+                    </td>
+                </tr>
+                <tr>
+                    <td class="col-md-4">
+                        <i>Valor padrão : </i><code>false</code>
+                    </td>
+                </tr>
+                    <tr>
+                        <td class="col-md-4">
+                                <div class="io-line">Definido em <a href="" data-line="47" class="link-to-prism">src/app/application/application-layout/application-layout.component.ts:47</a></div>
+                        </td>
+                    </tr>
+
+
+        </tbody>
+    </table>
+    <table class="table table-sm table-bordered">
+        <tbody>
+            <tr>
+                <td class="col-md-4">
+                    <a name="menuItems"></a>
+                    <span class="name">
+                            <span class="modifier">Public</span>
+                        <span ><b>menuItems</b></span>
+                        <a href="#menuItems"><span class="icon ion-ios-link"></span></a>
+                    </span>
+                </td>
+            </tr>
+                <tr>
+                    <td class="col-md-4">
+                        <i>Tipo : </i>        <code><a href="../interfaces/MenuInterface.html" target="_self" >MenuInterface[]</a></code>
+
+                    </td>
+                </tr>
+                <tr>
+                    <td class="col-md-4">
+                        <i>Valor padrão : </i><code>[]</code>
+                    </td>
+                </tr>
+                    <tr>
+                        <td class="col-md-4">
+                                <div class="io-line">Definido em <a href="" data-line="52" class="link-to-prism">src/app/application/application-layout/application-layout.component.ts:52</a></div>
+                        </td>
+                    </tr>
+
+
+        </tbody>
+    </table>
+    <table class="table table-sm table-bordered">
+        <tbody>
+            <tr>
+                <td class="col-md-4">
+                    <a name="userIdentity"></a>
+                    <span class="name">
+                            <span class="modifier">Public</span>
+                        <span ><b>userIdentity</b></span>
+                        <a href="#userIdentity"><span class="icon ion-ios-link"></span></a>
+                    </span>
+                </td>
+            </tr>
+                <tr>
+                    <td class="col-md-4">
+                        <i>Tipo : </i>        <code><a href="https://www.typescriptlang.org/docs/handbook/basic-types.html" target="_blank" >any</a></code>
+
+                    </td>
+                </tr>
+                <tr>
+                    <td class="col-md-4">
+                        <i>Valor padrão : </i><code>null</code>
+                    </td>
+                </tr>
+                    <tr>
+                        <td class="col-md-4">
+                                <div class="io-line">Definido em <a href="" data-line="50" class="link-to-prism">src/app/application/application-layout/application-layout.component.ts:50</a></div>
+                        </td>
+                    </tr>
+
+
+        </tbody>
+    </table>
+    <table class="table table-sm table-bordered">
+        <tbody>
+            <tr>
+                <td class="col-md-4">
+                    <a name="userRolesCompany"></a>
+                    <span class="name">
+                            <span class="modifier">Public</span>
+                        <span ><b>userRolesCompany</b></span>
+                        <a href="#userRolesCompany"><span class="icon ion-ios-link"></span></a>
+                    </span>
+                </td>
+            </tr>
+                <tr>
+                    <td class="col-md-4">
+                        <i>Tipo : </i>    <code>any[]</code>
+
+                    </td>
+                </tr>
+                <tr>
+                    <td class="col-md-4">
+                        <i>Valor padrão : </i><code>[]</code>
+                    </td>
+                </tr>
+                    <tr>
+                        <td class="col-md-4">
+                                <div class="io-line">Definido em <a href="" data-line="48" class="link-to-prism">src/app/application/application-layout/application-layout.component.ts:48</a></div>
+                        </td>
+                    </tr>
+
+
+        </tbody>
+    </table>
+</section>
+
+</div>
+
+
+    <div class="tab-pane fade  tab-source-code" id="source">
+        <pre class="line-numbers compodoc-sourcecode"><code class="language-typescript">import { Component, OnInit, OnDestroy } from &#x27;@angular/core&#x27;;
+import { RouterOutlet, RouterLink, Router, NavigationEnd } from &#x27;@angular/router&#x27;;
+import { CommonModule } from &#x27;@angular/common&#x27;;
+import { filter, Subject, takeUntil } from &#x27;rxjs&#x27;;
+
+import { NzLayoutModule } from &#x27;ng-zorro-antd/layout&#x27;;
+import { SideBarComponent } from &#x27;@components/side-bar/side-bar.component&#x27;;
+import { NzBreadCrumbModule } from &#x27;ng-zorro-antd/breadcrumb&#x27;;
+import { NzIconModule } from &#x27;ng-zorro-antd/icon&#x27;;
+import { NzMenuModule } from &#x27;ng-zorro-antd/menu&#x27;;
+import { NzAvatarModule } from &#x27;ng-zorro-antd/avatar&#x27;;
+import { NzDropDownModule } from &#x27;ng-zorro-antd/dropdown&#x27;;
+import { NzButtonModule } from &#x27;ng-zorro-antd/button&#x27;;
+import { NzToolTipModule } from &#x27;ng-zorro-antd/tooltip&#x27;;
+import { ApplicationBarComponent } from &#x27;@components/application-bar/application-bar.component&#x27;;
+import { NzNotificationModule, NzNotificationService } from &#x27;ng-zorro-antd/notification&#x27;;
+
+import { SessionService } from &#x27;@services/session.service&#x27;;
+import { UserRolesCompanyService } from &#x27;@services/user-roles-company.service&#x27;;
+import { MenuInterface } from &#x27;@interfaces/menu&#x27;;
+import { AppMenusService } from &#x27;@services/app-menus.service&#x27;;
+import { WebSocketNotificationService } from &#x27;../../core/services/web-socket-notification.service&#x27;;
+
+@Component({
+  selector: &#x27;app-application-layout&#x27;,
+  imports: [
+    CommonModule,
+    RouterOutlet,
+    RouterLink,
+    NzLayoutModule,
+    SideBarComponent,
+    NzBreadCrumbModule,
+    NzIconModule,
+    NzMenuModule,
+    NzAvatarModule,
+    NzDropDownModule,
+    NzButtonModule,
+    NzToolTipModule,
+    NzNotificationModule,
+    ApplicationBarComponent
+  ],
+  templateUrl: &#x27;./application-layout.component.html&#x27;,
+  styleUrl: &#x27;./application-layout.component.scss&#x27;
+})
+export class ApplicationLayoutComponent implements OnInit, OnDestroy {
+
+  public isCollapsed &#x3D; false;
+  public userRolesCompany: any[] &#x3D; [];
+  public activeCompany: any &#x3D; null;
+  public userIdentity: any &#x3D; null;
+
+  public menuItems: MenuInterface[] &#x3D; [];
+  public breadcrumbs: string[] &#x3D; [&#x27;Inicio&#x27;];
+
+  private destroy$ &#x3D; new Subject&lt;void&gt;();
+
+  constructor(
+    private _sessionService: SessionService,
+    private _userRolesCompanyService: UserRolesCompanyService,
+    private _appMmenusService: AppMenusService,
+    private _router: Router,
+    private _notificationService: WebSocketNotificationService,
+    private _nzNotificationService: NzNotificationService
+  ) { }
+
+  ngOnInit(): void {
+    const identity &#x3D; this._sessionService.getIdentity();
+    this.userIdentity &#x3D; identity;
+    const currentSession &#x3D; this._sessionService.getCurrentSession() as any;
+    this.activeCompany &#x3D; currentSession?.company || null;
+
+    if (identity) {
+      this._userRolesCompanyService.getUserRolesCompanyByUser(identity.usr_uuid!)
+        .subscribe((response: any) &#x3D;&gt; {
+          this.userRolesCompany &#x3D; this.groupByCompany(response.data);
+
+          if (!this.activeCompany &amp;&amp; this.userRolesCompany.length &gt; 0) {
+            this.activeCompany &#x3D; this.userRolesCompany[0];
+            this._sessionService.setCompany(JSON.stringify(this.activeCompany));
+          }
+        });
+    }
+
+    this._sessionService.refreshCompanies$.subscribe(() &#x3D;&gt; {
+      if (this.userIdentity) {
+        this._userRolesCompanyService.getUserRolesCompanyByUser(this.userIdentity.usr_uuid!)
+          .subscribe((response: any) &#x3D;&gt; {
+            this.userRolesCompany &#x3D; this.groupByCompany(response.data);
+          });
+      }
+    });
+
+    this.loadMenuTree();
+
+    // Suscribirse a cambios de ruta para breadcrumbs
+    this._router.events.pipe(
+      filter(event &#x3D;&gt; event instanceof NavigationEnd)
+    ).subscribe((event: any) &#x3D;&gt; {
+      this.updateBreadcrumbs(event.urlAfterRedirects);
+    });
+
+    // Suscribirse al canal de notificaciones en tiempo real
+    this._notificationService.incomingNotification$
+      .pipe(takeUntil(this.destroy$))
+      .subscribe((ntf) &#x3D;&gt; {
+        // Validar que la notificación corresponda a la tienda/compañía activa
+        if (ntf.cmp_uuid &amp;&amp; this.activeCompany &amp;&amp; ntf.cmp_uuid &#x3D;&#x3D;&#x3D; this.activeCompany.cmp_uuid) {
+          const type &#x3D; ntf.ntf_type || &#x27;info&#x27;;
+          let borderLeftColor &#x3D; &#x27;#1890ff&#x27;; // Info blue
+          if (type &#x3D;&#x3D;&#x3D; &#x27;success&#x27;) borderLeftColor &#x3D; &#x27;#52c41a&#x27;; // Success green
+          else if (type &#x3D;&#x3D;&#x3D; &#x27;warning&#x27;) borderLeftColor &#x3D; &#x27;#faad14&#x27;; // Warning yellow
+          else if (type &#x3D;&#x3D;&#x3D; &#x27;error&#x27;) borderLeftColor &#x3D; &#x27;#ff4d4f&#x27;; // Error red
+
+          // Mostrar notificación flotante visual
+          this._nzNotificationService.create(
+            type,
+            ntf.ntf_title,
+            ntf.ntf_message,
+            {
+              nzDuration: 7000,
+              nzPlacement: &#x27;topRight&#x27;,
+              nzStyle: {
+                background: &#x27;#ffffff&#x27;,
+                borderLeft: &#x60;5px solid ${borderLeftColor}&#x60;,
+                borderRadius: &#x27;8px&#x27;,
+                boxShadow: &#x27;0 4px 16px rgba(0, 0, 0, 0.12)&#x27;
+              }
+            }
+          );
+
+          // Reproducir alerta de sonido armónico
+          this._notificationService.playNotificationSound();
+        }
+      });
+  }
+
+  private loadMenuTree(): void {
+    this._appMmenusService.getMenuItemsTree().subscribe({
+      next: (res) &#x3D;&gt; {
+        this.menuItems &#x3D; res.data;
+        // Una vez cargado el menú, inicializamos breadcrumbs
+        this.updateBreadcrumbs(this._router.url);
+      },
+      error: (err) &#x3D;&gt; {
+        console.error(&#x27;Error al cargar el menú:&#x27;, err);
+      }
+    });
+  }
+
+  private updateBreadcrumbs(url: string): void {
+    const path: string[] &#x3D; [&#x27;ATS Market&#x27;]; // Nombre base
+    
+    // Buscamos en el árbol de menús
+    for (const item of this.menuItems) {
+      // Caso 1: El ítem padre coincide
+      if (item.mnu_route &amp;&amp; url.includes(item.mnu_route)) {
+        path.push(item.mnu_title || &#x27;&#x27;);
+        break;
+      }
+      
+      // Caso 2: Uno de los hijos coincide
+      if (item.items &amp;&amp; item.items.length &gt; 0) {
+        const child &#x3D; item.items.find(c &#x3D;&gt; c.mnu_route &amp;&amp; url.includes(c.mnu_route));
+        if (child) {
+          path.push(item.mnu_title || &#x27;&#x27;);
+          path.push(child.mnu_title || &#x27;&#x27;);
+          break;
+        }
+      }
+    }
+
+    // Si no se encontró nada (ej: dashboard), podrías añadir lógica por defecto o dejar solo el base
+    this.breadcrumbs &#x3D; path;
+  }
+
+  public groupByCompany(data: any[]): any[] {
+    const grouped &#x3D; new Map();
+    data.forEach((item) &#x3D;&gt; {
+      const cmpUuid &#x3D; item.cmp.cmp_uuid;
+      if (!grouped.has(cmpUuid)) {
+        grouped.set(cmpUuid, {
+          cmp_uuid: item.cmp.cmp_uuid,
+          cmp_name: item.cmp.cmp_name,
+          roles: [],
+        });
+      }
+      grouped.get(cmpUuid).roles.push({
+        rol_uuid: item.rol.rol_uuid,
+        rol_name: item.rol.rol_name,
+        rolpers: item.rolpers.map((e: any) &#x3D;&gt; e.per.per_slug)
+      });
+    });
+    return Array.from(grouped.values());
+  }
+
+  public selectCompany(company: any): void {
+    this.activeCompany &#x3D; company;
+    this._sessionService.setCompany(JSON.stringify(company));
+
+    // Recargar componentes para que usen la nueva tienda de la sesión
+    this._router.navigateByUrl(&#x27;/&#x27;, { skipLocationChange: true }).then(() &#x3D;&gt; {
+      this._router.navigate([&#x27;/application/products&#x27;]);
+    });
+  }
+
+  public logout(): void {
+    this._sessionService.logout();
+    this._router.navigate([&#x27;/auth/login&#x27;]);
+  }
+
+  ngOnDestroy(): void {
+    this.destroy$.next();
+    this.destroy$.complete();
+  }
+}
+</code></pre>
+    </div>
+
+    <div class="tab-pane fade " id="templateData">
+        <pre class="line-numbers"><code class="language-html">&lt;!-- &lt;nz-layout class&#x3D;&quot;app-layout&quot;&gt;
+    &lt;app-side-bar&gt;&lt;/app-side-bar&gt;
+    &lt;nz-layout&gt;
+        &lt;app-application-bar&gt;&lt;/app-application-bar&gt;
+        &lt;nz-content class&#x3D;&quot;app-content&quot;&gt;
+            &lt;div class&#x3D;&quot;inner-content&quot;&gt;
+                &lt;router-outlet&gt;&lt;/router-outlet&gt;
+            &lt;/div&gt;
+        &lt;/nz-content&gt;
+    &lt;/nz-layout&gt;
+&lt;/nz-layout&gt; --&gt;
+
+&lt;nz-layout&gt;
+    &lt;nz-sider nzCollapsible [nzTrigger]&#x3D;&quot;null&quot; nzBreakpoint&#x3D;&quot;md&quot; [nzCollapsedWidth]&#x3D;&quot;0&quot; [(nzCollapsed)]&#x3D;&quot;isCollapsed&quot;
+        [nzTrigger]&#x3D;&quot;null&quot;&gt;
+        &lt;div class&#x3D;&quot;logo&quot;&gt;&lt;/div&gt;
+        &lt;ul nz-menu nzTheme&#x3D;&quot;dark&quot; nzMode&#x3D;&quot;inline&quot;&gt;
+            &lt;ng-container *ngFor&#x3D;&quot;let item of menuItems&quot;&gt;
+                &lt;!-- Simple Menu Item (Level 1) --&gt;
+                &lt;li nz-menu-item *ngIf&#x3D;&quot;(!item.items || item.items.length &#x3D;&#x3D;&#x3D; 0) &amp;&amp; (!item.mnu_showifcompanyactive || activeCompany)&quot;
+                    [routerLink]&#x3D;&quot;item.mnu_showifcompanyactive ? [item.mnu_route, activeCompany?.cmp_uuid] : item.mnu_route&quot;&gt;
+                    &lt;span nz-icon [nzType]&#x3D;&quot;item.mnu_icon!&quot; *ngIf&#x3D;&quot;item.mnu_icon&quot;&gt;&lt;/span&gt;
+                    &lt;span&gt;{{ item.mnu_title }}&lt;/span&gt;
+                &lt;/li&gt;
+
+                &lt;!-- Submenu (Level 1) --&gt;
+                &lt;li nz-submenu *ngIf&#x3D;&quot;item.items &amp;&amp; item.items.length &gt; 0 &amp;&amp; (!item.mnu_showifcompanyactive || activeCompany)&quot; 
+                    [nzTitle]&#x3D;&quot;item.mnu_title!&quot; [nzIcon]&#x3D;&quot;item.mnu_icon!&quot;&gt;
+                    &lt;ul&gt;
+                        &lt;ng-container *ngFor&#x3D;&quot;let child of item.items&quot;&gt;
+                            &lt;li nz-menu-item *ngIf&#x3D;&quot;!child.mnu_showifcompanyactive || activeCompany&quot;
+                                [routerLink]&#x3D;&quot;child.mnu_showifcompanyactive ? [child.mnu_route, activeCompany?.cmp_uuid] : child.mnu_route&quot;&gt;
+                                &lt;span nz-icon [nzType]&#x3D;&quot;child.mnu_icon!&quot; *ngIf&#x3D;&quot;child.mnu_icon&quot;&gt;&lt;/span&gt;
+                                &lt;span&gt;{{ child.mnu_title }}&lt;/span&gt;
+                            &lt;/li&gt;
+                        &lt;/ng-container&gt;
+                    &lt;/ul&gt;
+                &lt;/li&gt;
+            &lt;/ng-container&gt;
+        &lt;/ul&gt;
+    &lt;/nz-sider&gt;
+    &lt;nz-layout&gt;
+        &lt;nz-header style&#x3D;&quot;display: flex; flex-direction: row; align-items: center; justify-content: space-between;&quot;&gt;
+            &lt;nz-icon class&#x3D;&quot;trigger&quot; [nzType]&#x3D;&quot;isCollapsed ? &#x27;menu-unfold&#x27; : &#x27;menu-fold&#x27;&quot;
+                (click)&#x3D;&quot;isCollapsed &#x3D; !isCollapsed&quot; /&gt;
+            &lt;div class&#x3D;&quot;header-right&quot; style&#x3D;&quot;display: flex; align-items: center; gap: 24px; padding-right: 24px;&quot;&gt;
+
+                &lt;!-- Botón de Acceso Directo de Configuración --&gt;
+                &lt;button nz-button nzType&#x3D;&quot;text&quot; nzShape&#x3D;&quot;circle&quot; style&#x3D;&quot;background-color: #f5f5f5;&quot;
+                    nzTooltipTitle&#x3D;&quot;Ajustes de mi Empresa&quot; nz-tooltip
+                    [routerLink]&#x3D;&quot;[&#x27;/application/company-settings&#x27;, activeCompany?.cmp_uuid]&quot; *ngIf&#x3D;&quot;activeCompany&quot;&gt;
+                    &lt;span nz-icon nzType&#x3D;&quot;setting&quot; nzTheme&#x3D;&quot;outline&quot; style&#x3D;&quot;font-size: 18px;&quot;&gt;&lt;/span&gt;
+                &lt;/button&gt;
+
+                &lt;!-- Menú Desplegable de Tienda Activa --&gt;
+                &lt;a nz-dropdown [nzDropdownMenu]&#x3D;&quot;companyMenu&quot; class&#x3D;&quot;company-selector&quot;
+                    style&#x3D;&quot;color: black; font-size: 16px; display: flex; align-items: center; cursor: pointer;&quot;&gt;
+                    &lt;span nz-icon nzType&#x3D;&quot;shop&quot; style&#x3D;&quot;margin-right: 8px;&quot;&gt;&lt;/span&gt;
+                    &lt;span&gt;{{ activeCompany?.cmp_name || &#x27;Seleccionar Tienda&#x27; }}&lt;/span&gt;
+                    &lt;span nz-icon nzType&#x3D;&quot;down&quot; style&#x3D;&quot;margin-left: 8px; font-size: 12px;&quot;&gt;&lt;/span&gt;
+                &lt;/a&gt;
+
+                &lt;nz-dropdown-menu #companyMenu&#x3D;&quot;nzDropdownMenu&quot;&gt;
+                    &lt;ul nz-menu&gt;
+                        &lt;li nz-menu-item *ngFor&#x3D;&quot;let company of userRolesCompany&quot; (click)&#x3D;&quot;selectCompany(company)&quot;&gt;
+                            &lt;span nz-icon nzType&#x3D;&quot;shop&quot; style&#x3D;&quot;margin-right: 8px;&quot;&gt;&lt;/span&gt; {{ company.cmp_name }}
+                        &lt;/li&gt;
+                        &lt;li nz-menu-divider *ngIf&#x3D;&quot;userRolesCompany.length &gt; 0&quot;&gt;&lt;/li&gt;
+                        &lt;li nz-menu-item routerLink&#x3D;&quot;/application/my-companies&quot;&gt;
+                            &lt;span nz-icon nzType&#x3D;&quot;appstore&quot; style&#x3D;&quot;margin-right: 8px;&quot;&gt;&lt;/span&gt; Ver todas mis tiendas
+                        &lt;/li&gt;
+                    &lt;/ul&gt;
+                &lt;/nz-dropdown-menu&gt;
+
+                &lt;div class&#x3D;&quot;user-profile&quot; style&#x3D;&quot;display: flex; align-items: center; gap: 8px;&quot;&gt;
+                    &lt;a nz-dropdown [nzDropdownMenu]&#x3D;&quot;userMenu&quot;
+                        style&#x3D;&quot;color: black; display: flex; align-items: center; gap: 8px; cursor: pointer;&quot;&gt;
+                        &lt;span class&#x3D;&quot;user-name&quot;&gt;Hola, {{ userIdentity?.usr_name || &#x27;Usuario&#x27; }}&lt;/span&gt;
+                        &lt;nz-avatar nzIcon&#x3D;&quot;user&quot; nzSrc&#x3D;&quot;assets/img/user-avatar.png&quot;&gt;&lt;/nz-avatar&gt;
+                    &lt;/a&gt;
+                    &lt;nz-dropdown-menu #userMenu&#x3D;&quot;nzDropdownMenu&quot;&gt;
+                        &lt;ul nz-menu&gt;
+                            &lt;li nz-menu-item&gt;
+                                &lt;span nz-icon nzType&#x3D;&quot;user&quot; style&#x3D;&quot;margin-right: 8px;&quot;&gt;&lt;/span&gt; Mi Perfil
+                            &lt;/li&gt;
+                            &lt;li nz-menu-item *ngIf&#x3D;&quot;activeCompany&quot;
+                                [routerLink]&#x3D;&quot;[&#x27;/application/company-settings&#x27;, activeCompany?.cmp_uuid]&quot;&gt;
+                                &lt;span nz-icon nzType&#x3D;&quot;setting&quot; style&#x3D;&quot;margin-right: 8px;&quot;&gt;&lt;/span&gt; Configuración de la
+                                Empresa
+                            &lt;/li&gt;
+                            &lt;li nz-menu-divider&gt;&lt;/li&gt;
+                            &lt;li nz-menu-item nzDanger (click)&#x3D;&quot;logout()&quot;&gt;
+                                &lt;span nz-icon nzType&#x3D;&quot;logout&quot; style&#x3D;&quot;margin-right: 8px;&quot;&gt;&lt;/span&gt; Cerrar sesión
+                            &lt;/li&gt;
+                        &lt;/ul&gt;
+                    &lt;/nz-dropdown-menu&gt;
+                &lt;/div&gt;
+            &lt;/div&gt;
+        &lt;/nz-header&gt;
+        &lt;nz-content&gt;
+            &lt;nz-breadcrumb style&#x3D;&quot;margin:16px 0;&quot;&gt;
+                &lt;nz-breadcrumb-item *ngFor&#x3D;&quot;let crumb of breadcrumbs&quot;&gt;{{ crumb }}&lt;/nz-breadcrumb-item&gt;
+            &lt;/nz-breadcrumb&gt;
+            &lt;router-outlet&gt;&lt;/router-outlet&gt;
+        &lt;/nz-content&gt;
+        &lt;nz-footer&gt;Implement By ATS&lt;/nz-footer&gt;
+    &lt;/nz-layout&gt;
+&lt;/nz-layout&gt;</code></pre>
+    </div>
+
+    <div class="tab-pane fade " id="styleData">
+                <p class="comment">
+                    <code>./application-layout.component.scss</code>
+                </p>
+                <pre class="line-numbers"><code class="language-scss">// .app-layout {
+//     display: flex;
+//     flex-direction: row;
+//     min-height: 100vh;
+// }
+
+// .app-content {
+//     margin: 24px;
+// }
+
+// .inner-content {
+//     background: #fff;
+//     padding: 24px;
+//     min-height: 100%;
+//     border-radius: 8px;
+// }
+
+.trigger {
+    font-size: 18px;
+    line-height: 64px;
+    padding: 0 24px;
+    cursor: pointer;
+    transition: color 0.3s;
+}
+
+.trigger:hover {
+    color: #1890ff;
+}
+
+.logo {
+    height: 32px;
+    background: rgba(255, 255, 255, 0.2);
+    margin: 16px;
+}
+
+nz-header {
+    background: #fff;
+    padding: 0;
+}
+
+nz-content {
+    margin: 0 16px;
+}
+
+nz-breadcrumb {
+    margin: 16px 0;
+}
+
+.inner-content {
+    padding: 24px;
+    background: #fff;
+    min-height: 360px;
+}
+
+nz-footer {
+    text-align: center;
+}
+
+
+
+.app-header {
+    background: #fff;
+    padding: 0 24px;
+    display: flex;
+    justify-content: flex-end;
+    align-items: center;
+    box-shadow: 0 1px 4px rgba(0, 21, 41, 0.08);
+}
+
+.header-right {
+    display: flex;
+    align-items: center;
+    gap: 12px;
+    margin: 0 12px 0 0;
+}</code></pre>
+    </div>
+
+    <div class="tab-pane fade " id="tree">
+        <div id="tree-container"></div>
+        <div class="tree-legend">
+            <div class="title">
+                <b>Legend</b>
+            </div>
+            <div>
+                <div class="color htmlelement"></div><span>Elemento HTML</span>
+            </div>
+            <div>
+                <div class="color component"></div><span>Componente</span>
+            </div>
+            <div>
+                <div class="color directive"></div><span>Elemento HTML com diretiva</span>
+            </div>
+        </div>
+    </div>
+
+    
+</div>
+
+<script src="../js/libs/vis-network.min.js"></script>
+<script src="../js/libs/htmlparser.js"></script>
+<script src="../js/libs/deep-iterator.js"></script>
+<script>
+        var COMPONENT_TEMPLATE = '<div><!-- <nz-layout class="app-layout">    <app-side-bar></app-side-bar>    <nz-layout>        <app-application-bar></app-application-bar>        <nz-content class="app-content">            <div class="inner-content">                <router-outlet></router-outlet>            </div>        </nz-content>    </nz-layout></nz-layout> --><nz-layout>    <nz-sider nzCollapsible [nzTrigger]="null" nzBreakpoint="md" [nzCollapsedWidth]="0" [(nzCollapsed)]="isCollapsed"        [nzTrigger]="null">        <div class="logo"></div>        <ul nz-menu nzTheme="dark" nzMode="inline">            <ng-container *ngFor="let item of menuItems">                <!-- Simple Menu Item (Level 1) -->                <li nz-menu-item *ngIf="(!item.items || item.items.length === 0) && (!item.mnu_showifcompanyactive || activeCompany)"                    [routerLink]="item.mnu_showifcompanyactive ? [item.mnu_route, activeCompany?.cmp_uuid] : item.mnu_route">                    <span nz-icon [nzType]="item.mnu_icon!" *ngIf="item.mnu_icon"></span>                    <span>{{ item.mnu_title }}</span>                </li>                <!-- Submenu (Level 1) -->                <li nz-submenu *ngIf="item.items && item.items.length > 0 && (!item.mnu_showifcompanyactive || activeCompany)"                     [nzTitle]="item.mnu_title!" [nzIcon]="item.mnu_icon!">                    <ul>                        <ng-container *ngFor="let child of item.items">                            <li nz-menu-item *ngIf="!child.mnu_showifcompanyactive || activeCompany"                                [routerLink]="child.mnu_showifcompanyactive ? [child.mnu_route, activeCompany?.cmp_uuid] : child.mnu_route">                                <span nz-icon [nzType]="child.mnu_icon!" *ngIf="child.mnu_icon"></span>                                <span>{{ child.mnu_title }}</span>                            </li>                        </ng-container>                    </ul>                </li>            </ng-container>        </ul>    </nz-sider>    <nz-layout>        <nz-header style="display: flex; flex-direction: row; align-items: center; justify-content: space-between;">            <nz-icon class="trigger" [nzType]="isCollapsed ? \'menu-unfold\' : \'menu-fold\'"                (click)="isCollapsed = !isCollapsed" />            <div class="header-right" style="display: flex; align-items: center; gap: 24px; padding-right: 24px;">                <!-- Botón de Acceso Directo de Configuración -->                <button nz-button nzType="text" nzShape="circle" style="background-color: #f5f5f5;"                    nzTooltipTitle="Ajustes de mi Empresa" nz-tooltip                    [routerLink]="[\'/application/company-settings\', activeCompany?.cmp_uuid]" *ngIf="activeCompany">                    <span nz-icon nzType="setting" nzTheme="outline" style="font-size: 18px;"></span>                </button>                <!-- Menú Desplegable de Tienda Activa -->                <a nz-dropdown [nzDropdownMenu]="companyMenu" class="company-selector"                    style="color: black; font-size: 16px; display: flex; align-items: center; cursor: pointer;">                    <span nz-icon nzType="shop" style="margin-right: 8px;"></span>                    <span>{{ activeCompany?.cmp_name || \'Seleccionar Tienda\' }}</span>                    <span nz-icon nzType="down" style="margin-left: 8px; font-size: 12px;"></span>                </a>                <nz-dropdown-menu #companyMenu="nzDropdownMenu">                    <ul nz-menu>                        <li nz-menu-item *ngFor="let company of userRolesCompany" (click)="selectCompany(company)">                            <span nz-icon nzType="shop" style="margin-right: 8px;"></span> {{ company.cmp_name }}                        </li>                        <li nz-menu-divider *ngIf="userRolesCompany.length > 0"></li>                        <li nz-menu-item routerLink="/application/my-companies">                            <span nz-icon nzType="appstore" style="margin-right: 8px;"></span> Ver todas mis tiendas                        </li>                    </ul>                </nz-dropdown-menu>                <div class="user-profile" style="display: flex; align-items: center; gap: 8px;">                    <a nz-dropdown [nzDropdownMenu]="userMenu"                        style="color: black; display: flex; align-items: center; gap: 8px; cursor: pointer;">                        <span class="user-name">Hola, {{ userIdentity?.usr_name || \'Usuario\' }}</span>                        <nz-avatar nzIcon="user" nzSrc="assets/img/user-avatar.png"></nz-avatar>                    </a>                    <nz-dropdown-menu #userMenu="nzDropdownMenu">                        <ul nz-menu>                            <li nz-menu-item>                                <span nz-icon nzType="user" style="margin-right: 8px;"></span> Mi Perfil                            </li>                            <li nz-menu-item *ngIf="activeCompany"                                [routerLink]="[\'/application/company-settings\', activeCompany?.cmp_uuid]">                                <span nz-icon nzType="setting" style="margin-right: 8px;"></span> Configuración de la                                Empresa                            </li>                            <li nz-menu-divider></li>                            <li nz-menu-item nzDanger (click)="logout()">                                <span nz-icon nzType="logout" style="margin-right: 8px;"></span> Cerrar sesión                            </li>                        </ul>                    </nz-dropdown-menu>                </div>            </div>        </nz-header>        <nz-content>            <nz-breadcrumb style="margin:16px 0;">                <nz-breadcrumb-item *ngFor="let crumb of breadcrumbs">{{ crumb }}</nz-breadcrumb-item>            </nz-breadcrumb>            <router-outlet></router-outlet>        </nz-content>        <nz-footer>Implement By ATS</nz-footer>    </nz-layout></nz-layout></div>'
+    var COMPONENTS = [{'name': 'AccountConfirmedComponent', 'selector': 'app-account-confirmed'},{'name': 'AccountCreatedComponent', 'selector': 'app-account-created'},{'name': 'AddressesComponent', 'selector': 'app-addresses'},{'name': 'AnalyticsComponent', 'selector': 'app-analytics'},{'name': 'AppComponent', 'selector': 'app-root'},{'name': 'ApplicationBarComponent', 'selector': 'app-application-bar'},{'name': 'ApplicationLayoutComponent', 'selector': 'app-application-layout'},{'name': 'AuthLayoutComponent', 'selector': 'app-auth-layout'},{'name': 'BarcodeScannerComponent', 'selector': 'app-barcode-scanner'},{'name': 'CameraComponent', 'selector': 'app-camera'},{'name': 'CartComponent', 'selector': 'app-cart'},{'name': 'CatalogComponent', 'selector': 'app-catalog'},{'name': 'CategoriesComponent', 'selector': 'app-categories'},{'name': 'CategoriesListComponent', 'selector': 'app-categories-list'},{'name': 'CheckoutComponent', 'selector': 'app-checkout'},{'name': 'CompanyComponent', 'selector': 'app-company'},{'name': 'CompanySettingsComponent', 'selector': 'app-company-settings'},{'name': 'CouponsComponent', 'selector': 'app-coupons'},{'name': 'CustomersComponent', 'selector': 'app-customers'},{'name': 'DistPriceListComponent', 'selector': 'app-dist-price-list'},{'name': 'FinancesComponent', 'selector': 'app-finances'},{'name': 'ForgotPasswordComponent', 'selector': 'app-forgot-password'},{'name': 'GlobalCategoriesComponent', 'selector': 'app-global-categories'},{'name': 'GlobalCategoryComponent', 'selector': 'app-global-category'},{'name': 'GlobalItemComponent', 'selector': 'app-global-item'},{'name': 'GlobalItemsComponent', 'selector': 'app-global-items'},{'name': 'GlobalMaterialComponent', 'selector': 'app-global-material'},{'name': 'GlobalMaterialsComponent', 'selector': 'app-global-materials'},{'name': 'HomeStoreComponent', 'selector': 'app-home'},{'name': 'InventoryAuditComponent', 'selector': 'app-inventory-audit'},{'name': 'ItemsComponent', 'selector': 'app-items'},{'name': 'LoginComponent', 'selector': 'app-login'},{'name': 'MapPickerComponent', 'selector': 'app-map-picker'},{'name': 'MarketHomeComponent', 'selector': 'app-market-home'},{'name': 'MaterialComponent', 'selector': 'app-material'},{'name': 'MaterialsComponent', 'selector': 'app-materials'},{'name': 'MenuItemComponent', 'selector': 'app-menu-item'},{'name': 'MenuItemsComponent', 'selector': 'app-menu-items'},{'name': 'MpPaymentBrickComponent', 'selector': 'app-mp-payment-brick'},{'name': 'MyCompaniesComponent', 'selector': 'app-my-companies'},{'name': 'MyFavoritesComponent', 'selector': 'app-my-favorites'},{'name': 'MyPurchasesComponent', 'selector': 'app-my-purchases'},{'name': 'NavBarComponent', 'selector': 'app-nav-bar'},{'name': 'OrdersReceivedComponent', 'selector': 'app-orders-received'},{'name': 'PriceListComponent', 'selector': 'app-price-list'},{'name': 'ProductComponent', 'selector': 'app-product'},{'name': 'ProductDetailComponent', 'selector': 'app-product-detail'},{'name': 'ProductsComponent', 'selector': 'app-products'},{'name': 'ProductsVariationsComponent', 'selector': 'app-products-variations'},{'name': 'ProductVariationComponent', 'selector': 'app-product-variation'},{'name': 'PublicLayoutComponent', 'selector': 'app-public-layout'},{'name': 'RegisterComponent', 'selector': 'app-register'},{'name': 'ResetPasswordComponent', 'selector': 'app-reset-password'},{'name': 'SideBarComponent', 'selector': 'app-side-bar'},{'name': 'SsoCallbackComponent', 'selector': 'app-sso-callback'},{'name': 'StoreCatalogComponent', 'selector': 'app-store'},{'name': 'SuperAdminComponent', 'selector': 'app-super-admin'},{'name': 'SupplierComponent', 'selector': 'app-supplier'},{'name': 'SuppliersComponent', 'selector': 'app-suppliers'},{'name': 'UserLayoutComponent', 'selector': 'app-user-layout'},{'name': 'UserRolCompanyComponent', 'selector': 'app-user-rol-company'},{'name': 'WarehousesComponent', 'selector': 'app-warehouses'}];
+    var DIRECTIVES = [{'name': 'ImagePreloadDirective', 'selector': 'img[default]'}];
+    var ACTUAL_COMPONENT = {'name': 'ApplicationLayoutComponent'};
+</script>
+<script src="../js/tree.js"></script>
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+                   </div><div class="search-results">
+    <div class="has-results">
+        <h1 class="search-results-title"><span class='search-results-count'></span> resultados correspondentes "<span class='search-query'></span>"</h1>
+        <ul class="search-results-list"></ul>
+    </div>
+    <div class="no-results">
+        <h1 class="search-results-title">Nenhum resultado correspondente "<span class='search-query'></span>"</h1>
+    </div>
+</div>
+</div>
+               <!-- END CONTENT -->
+           </div>
+       </div>
+
+          
+<div class="compodoc-lang-switch">
+  <select id="compodoc-lang-select" aria-label="Seleccionar idioma">
+    <option value="es" >🇪🇸 Español</option>
+    <option value="en" >🇺🇸 English</option>
+    <option value="pt" selected>🇧🇷 Português</option>
+  </select>
+</div>
+
+          <label class="dark-mode-switch">
+               <input type="checkbox">
+               <span class="slider">
+                    <svg class="slider-icon" viewBox="0 0 24 24" fill="none" height="20" stroke="#000" stroke-linecap="round" stroke-linejoin="round" stroke-width="2" width="20" xmlns="http://www.w3.org/2000/svg">
+                    <path d="M21 12.79A9 9 0 1111.21 3 7 7 0 0021 12.79z"></path>
+                    </svg>
+               </span>
+          </label>
+
+       <script>
+            var COMPODOC_CURRENT_PAGE_DEPTH = 1;
+            var COMPODOC_CURRENT_PAGE_CONTEXT = 'component';
+            var COMPODOC_CURRENT_PAGE_URL = 'ApplicationLayoutComponent.html';
+            var MAX_SEARCH_RESULTS = 15;
+       </script>
+
+       <script>
+               $darkModeToggleSwitchers = document.querySelectorAll('.dark-mode-switch input');
+               var updateDarkModeSwitchOffset = function () {
+                    var content = document.querySelector('.content');
+                    var scrollbarWidth = 0;
+
+                    if (content) {
+                         scrollbarWidth = Math.max(0, content.offsetWidth - content.clientWidth);
+                    }
+
+                    document.documentElement.style.setProperty(
+                         '--content-scrollbar-width',
+                         scrollbarWidth + 'px'
+                    );
+               };
+
+               updateDarkModeSwitchOffset();
+               requestAnimationFrame(updateDarkModeSwitchOffset);
+               window.addEventListener('resize', updateDarkModeSwitchOffset);
+
+               checkToggle(darkModeState);
+               if ($darkModeToggleSwitchers.length > 0) {
+                    for (var i = 0; i < $darkModeToggleSwitchers.length; i++) {
+                         $darkModeToggleSwitchers[i].addEventListener('change', function (event) {
+                              darkModeState = !darkModeState;
+                              toggleDarkMode(darkModeState);
+                         });
+                    }
+               }
+          </script>
+
+       <script src="../js/libs/custom-elements.min.js"></script>
+       <script src="../js/libs/lit-html.js"></script>
+
+       <script src="../js/menu-wc.js" defer></script>
+
+       <script src="../js/libs/bootstrap-native.js"></script>
+
+       <script src="../js/libs/es6-shim.min.js"></script>
+       <script src="../js/libs/EventDispatcher.js"></script>
+       <script src="../js/libs/promise.min.js"></script>
+
+       <script src="../js/compodoc.js"></script>
+
+       <script src="../js/tabs.js"></script>
+       <script src="../js/menu.js"></script>
+       <script src="../js/libs/clipboard.min.js"></script>
+       <script src="../js/libs/prism.js"></script>
+       <script src="../js/sourceCode.js"></script>
+          <script src="../js/search/search.js"></script>
+          <script src="../js/search/lunr.min.js"></script>
+          <script src="../js/search/search-lunr.js"></script>
+          <script src="../js/search/search_index.js"></script>
+       <script src="../js/lazy-load-graphs.js"></script>
+
+
+    
+<script id="compodoc-lang-script">
+(function() {
+  var CURRENT_LANG = "pt";
+  var ADDITIONAL_DOCS_MAP = {"es":["01.-introducción-y-arquitectura-general.html","02.-autenticación-y-control-de-accesos.html","03.-catálogo-público-y-exploración-de-tiendas.html","04.-carrito-de-compras-y-checkout-multitienda.html","05.-gestión-de-empresas,-roles-y-configuración.html","06.-inventario,-productos,-variaciones-y-almacenes.html","07.-gestión-de-pedidos,-compras-y-cupones.html","08.-analíticas-de-negocio,-finanzas-y-proveedores.html"],"en":["01.-introduction-and-general-architecture.html","02.-authentication-and-access-control.html","03.-public-catalog-and-store-exploration.html","04.-shopping-cart-and-multi-store-checkout.html","05.-company-management,-roles-and-configuration.html","06.-inventory,-products,-variations-and-warehouses.html","07.-orders-management,-purchases-and-coupons.html","08.-business-analytics,-finances-and-suppliers.html"],"pt":["01.-introdução-e-arquitetura-geral.html","02.-autenticação-e-controle-de-acesso.html","03.-catálogo-público-e-exploração-de-lojas.html","04.-carrinho-de-compras-e-checkout-multiloja.html","05.-gestão-de-empresas,-funções-e-configuração.html","06.-estoque,-produtos,-variações-e-armazéns.html","07.-gestão-de-pedidos,-compras-e-cupons.html","08.-análise-de-negócios,-finanças-e-fornecedores.html"]};
+
+  var select = document.getElementById('compodoc-lang-select');
+  if (!select) return;
+
+  try {
+    localStorage.setItem('compodoc_lang', CURRENT_LANG);
+  } catch (e) {}
+
+  select.addEventListener('change', function(e) {
+    var targetLang = e.target.value;
+    if (targetLang === CURRENT_LANG) return;
+
+    try {
+      localStorage.setItem('compodoc_lang', targetLang);
+    } catch (err) {}
+
+    var href = window.location.href;
+    var pathname = window.location.pathname;
+
+    // Manejo especial para páginas de additional-documentation
+    if (pathname.indexOf('/additional-documentation/') !== -1) {
+      var segments = pathname.split('/');
+      var currentFile = decodeURIComponent(segments[segments.length - 1]);
+      
+      var currentList = ADDITIONAL_DOCS_MAP[CURRENT_LANG] || [];
+      var targetList = ADDITIONAL_DOCS_MAP[targetLang] || [];
+      var foundIndex = -1;
+
+      var prefixMatch = currentFile.match(/^(\d{2}\.-)/);
+      if (prefixMatch) {
+        var prefix = prefixMatch[1];
+        for (var i = 0; i < targetList.length; i++) {
+          if (targetList[i].startsWith(prefix)) {
+            foundIndex = i;
+            break;
+          }
+        }
+      }
+      if (foundIndex === -1) {
+        for (var j = 0; j < currentList.length; j++) {
+          if (currentList[j] === currentFile) {
+            foundIndex = j;
+            break;
+          }
+        }
+      }
+
+      var targetFile = (foundIndex !== -1 && targetList[foundIndex]) 
+        ? targetList[foundIndex] 
+        : (targetList[0] || 'index.html');
+
+      var targetSubpath = '/' + targetLang + '/additional-documentation/' + targetFile;
+      var currentSubpath = '/' + CURRENT_LANG + '/additional-documentation/' + segments[segments.length - 1];
+
+      if (href.indexOf(currentSubpath) !== -1) {
+        window.location.href = href.replace(currentSubpath, targetSubpath);
+        return;
+      }
+    }
+
+    // Páginas estándar
+    var standardReplace = href.replace('/' + CURRENT_LANG + '/', '/' + targetLang + '/');
+    if (standardReplace !== href) {
+      window.location.href = standardReplace;
+    } else {
+      var depth = (typeof COMPODOC_CURRENT_PAGE_DEPTH !== 'undefined') ? COMPODOC_CURRENT_PAGE_DEPTH : 0;
+      var prefixPath = '';
+      for (var k = 0; k <= depth; k++) {
+        prefixPath += '../';
+      }
+      window.location.href = prefixPath + targetLang + '/index.html';
+    }
+  });
+})();
+</script>
+
+</body>
+</html>

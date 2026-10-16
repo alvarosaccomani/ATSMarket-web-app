@@ -15,6 +15,11 @@ import { NzIconModule } from 'ng-zorro-antd/icon';
 import { SessionService } from '@services/session.service';
 import { AuthService } from '@services/auth.service';
 
+/**
+ * @description Componente de inicio de sesión de usuarios y comerciantes.
+ * Procesa credenciales mediante AuthService, inicializa la sesión en SessionService
+ * y redirige a la URL previa solicitada o a la consola principal de empresas.
+ */
 @Component({
   selector: 'app-login',
   imports: [

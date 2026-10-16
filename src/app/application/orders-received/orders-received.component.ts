@@ -32,6 +32,12 @@ import { MessageInterface } from '../../core/interfaces/message/message.interfac
 
 declare const L: any;
 
+/**
+ * @description Panel integral de gestión y expedición de pedidos recibidos por el comercio.
+ * Provee filtrado logístico por solapas de estado (Pendientes, En Preparación, Despachados, Entregados),
+ * verificación de paquetes mediante escáner óptico de código de barras, canal de chat bidireccional
+ * con el cliente en tiempo real y generación instantánea de remitos/comprobantes de entrega en PDF.
+ */
 @Component({
   selector: 'app-orders-received',
   standalone: true,

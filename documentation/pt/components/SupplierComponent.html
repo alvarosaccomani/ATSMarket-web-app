@@ -1,0 +1,1661 @@
+<!doctype html>
+<html class="no-js" lang="">
+    <head>
+        <meta charset="utf-8">
+        <meta http-equiv="x-ua-compatible" content="ie=edge">
+        <title>ATSMarket Web App</title>
+        <meta name="description" content="">
+        <meta name="viewport" content="width=device-width, initial-scale=1">
+
+        <link rel="icon" type="image/x-icon" href="../images/favicon.ico">
+	   <link rel="stylesheet" href="../styles/style.css">
+        <link rel="stylesheet" href="../styles/dark.css">
+    
+<style id="compodoc-lang-styles">
+  .compodoc-lang-switch {
+    position: fixed;
+    top: 15px;
+    right: calc(90px + var(--content-scrollbar-width, 0px));
+    z-index: 1050;
+    display: inline-block;
+  }
+  @media (max-width: 767px) {
+    .compodoc-lang-switch {
+      top: 8px;
+      right: 60px;
+    }
+  }
+  #compodoc-lang-select {
+    height: 34px;
+    padding: 0 12px;
+    border-radius: 17px;
+    border: 1px solid #d9d9d9;
+    background-color: #ffffff;
+    color: #1f1f1f;
+    font-size: 13px;
+    font-family: inherit;
+    font-weight: 500;
+    cursor: pointer;
+    outline: none;
+    box-shadow: 0 2px 6px rgba(0, 0, 0, 0.08);
+    transition: all 0.3s cubic-bezier(0.645, 0.045, 0.355, 1);
+    -webkit-appearance: none;
+    -moz-appearance: none;
+    appearance: none;
+    padding-right: 26px;
+    background-image: url("data:image/svg+xml;charset=UTF-8,%3csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 24 24' fill='none' stroke='%23666' stroke-width='2' stroke-linecap='round' stroke-linejoin='round'%3e%3cpolyline points='6 9 12 15 18 9'%3e%3c/polyline%3e%3c/svg%3e");
+    background-repeat: no-repeat;
+    background-position: right 8px center;
+    background-size: 14px;
+  }
+  #compodoc-lang-select:hover, #compodoc-lang-select:focus {
+    border-color: #5cc0ae;
+    box-shadow: 0 2px 8px rgba(92, 192, 174, 0.25);
+  }
+  body.dark .compodoc-lang-switch #compodoc-lang-select {
+    background-color: #2c3e50;
+    color: #ecf0f1;
+    border: 1px solid #4a627a;
+    box-shadow: 0 2px 6px rgba(0, 0, 0, 0.35);
+    background-image: url("data:image/svg+xml;charset=UTF-8,%3csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 24 24' fill='none' stroke='%23ecf0f1' stroke-width='2' stroke-linecap='round' stroke-linejoin='round'%3e%3cpolyline points='6 9 12 15 18 9'%3e%3c/polyline%3e%3c/svg%3e");
+  }
+  body.dark .compodoc-lang-switch #compodoc-lang-select option {
+    background-color: #2c3e50;
+    color: #ecf0f1;
+  }
+</style>
+
+</head>
+    <body>
+          <script>
+               // Blocking script to avoid flickering dark mode
+               // Dark mode toggle button
+               var useDark = window.matchMedia('(prefers-color-scheme: dark)');
+               var darkModeState = useDark.matches;
+               var $darkModeToggleSwitchers = document.querySelectorAll('.dark-mode-switch input');
+               var $darkModeToggles = document.querySelectorAll('.dark-mode-switch');
+               var darkModeStateLocal = localStorage.getItem('compodoc_darkmode-state');
+
+               function checkToggle(check) {
+                    for (var i = 0; i < $darkModeToggleSwitchers.length; i++) {
+                         $darkModeToggleSwitchers[i].checked = check;
+                    }
+               }
+
+               function toggleDarkMode(state) {
+                    if (window.localStorage) {
+                         localStorage.setItem('compodoc_darkmode-state', state);
+                    }
+
+                    checkToggle(state);
+
+                    const hasClass = document.body.classList.contains('dark');
+
+                    if (state) {
+                         for (var i = 0; i < $darkModeToggles.length; i++) {
+                              $darkModeToggles[i].classList.add('dark');
+                         }
+                         if (!hasClass) {
+                              document.body.classList.add('dark');
+                         }
+                    } else {
+                         for (var i = 0; i < $darkModeToggles.length; i++) {
+                              $darkModeToggles[i].classList.remove('dark');
+                         }
+                         if (hasClass) {
+                              document.body.classList.remove('dark');
+                         }
+                    }
+               }
+
+               useDark.addEventListener('change', function (evt) {
+                    toggleDarkMode(evt.matches);
+               });
+               if (darkModeStateLocal) {
+                    darkModeState = darkModeStateLocal === 'true';
+               }
+               toggleDarkMode(darkModeState);
+          </script>
+          <script>
+              // --- Iframe navigation tracking for Template Playground ---
+              function sendCurrentUrlToParent() {
+                  if (window.parent && window.parent !== window) {
+                      window.parent.postMessage({
+                          type: 'compodoc-iframe-navigate',
+                          url: window.location.pathname + window.location.hash
+                      }, '*');
+                  }
+              }
+              window.addEventListener('hashchange', sendCurrentUrlToParent, false);
+              window.addEventListener('popstate', sendCurrentUrlToParent, false);
+              window.addEventListener('DOMContentLoaded', sendCurrentUrlToParent, false);
+          </script>
+
+        <div class="navbar navbar-default navbar-fixed-top d-md-none p-0">
+               <div class="d-flex">
+                    <a href="../" class="navbar-brand">ATSMarket Web App</a>
+                    <button type="button" class="btn btn-default btn-menu ion-ios-menu" id="btn-menu"></button>
+               </div>
+        </div>
+
+        <div class="xs-menu menu" id="mobile-menu">
+                <div id="book-search-input" role="search">
+    <input type="text" placeholder="Digite para pesquisar">
+    <button type="button"
+        class="search-input-clear"
+        aria-label="Clear search"
+        data-search-input-clear>&times;</button>
+</div>
+            <compodoc-menu></compodoc-menu>
+        </div>
+
+        <div class="container-fluid main">
+           <div class="row main">
+               <div class="d-none d-md-block menu">
+                   <compodoc-menu mode="normal"></compodoc-menu>
+               </div>
+               <!-- START CONTENT -->
+               <div class="content component">
+                   <div class="content-data">
+
+
+
+
+
+
+
+
+<ol class="breadcrumb">
+  <li class="breadcrumb-item">Componentes</li>
+  <li class="breadcrumb-item"
+  >
+  SupplierComponent</li>
+</ol>
+
+<div class="io-file io-file-path" data-compodoc="entity-file-path">
+    <span class="icon ion-ios-document" aria-hidden="true"></span>
+    <code>src/app/application/supplier/supplier.component.ts</code>
+</div>
+
+<ul class="nav nav-tabs" role="tablist">
+        <li class="nav-item">
+            <a href="#info" class="nav-link active"
+                role="tab" id="info-tab" data-bs-toggle="tab" data-link="info">Info</a>
+        </li>
+        <li class="nav-item">
+            <a href="#api" class="nav-link"
+                role="tab" id="api-tab" data-bs-toggle="tab" data-link="api">API</a>
+        </li>
+        <li class="nav-item">
+            <a href="#source" class="nav-link"
+                role="tab" id="source-tab" data-bs-toggle="tab" data-link="source">Source</a>
+        </li>
+        <li class="nav-item">
+            <a href="#templateData" class="nav-link"
+                role="tab" id="templateData-tab" data-bs-toggle="tab" data-link="template">Template</a>
+        </li>
+        <li class="nav-item">
+            <a href="#styleData" class="nav-link"
+                role="tab" id="styleData-tab" data-bs-toggle="tab" data-link="style">Styles</a>
+        </li>
+        <li class="nav-item">
+            <a href="#tree" class="nav-link"
+                role="tab" id="tree-tab" data-bs-toggle="tab" data-link="dom-tree">DOM Tree</a>
+        </li>
+</ul>
+
+<div class="tab-content">
+    <div class="tab-pane fade active in" id="info">
+
+
+    <p class="comment">
+        <h3>Implementa</h3>
+    </p>
+    <p class="comment">
+                    <code><a href="https://angular.dev/api/core/OnInit" target="_blank" >OnInit</a></code>
+    </p>
+
+
+<section data-compodoc="block-metadata">
+    <h3>Metadata</h3>
+    <table class="table table-sm table-hover metadata">
+        <tbody>
+
+
+
+
+
+
+
+
+
+
+
+
+            <tr>
+                <td class="col-md-3">selector</td>
+                <td class="col-md-9"><code>app-supplier</code></td>
+            </tr>
+
+            <tr>
+                <td class="col-md-3">standalone</td>
+                <td class="col-md-9"><code>true</code></td>
+            </tr>
+
+            <tr>
+                <td class="col-md-3">imports</td>
+                <td class="col-md-9">
+                        <div>        <code><a href="https://angular.dev/api/common/CommonModule" target="_blank" >CommonModule</a></code>
+</div>
+                        <div>        <code><a href="https://angular.dev/api/forms/ReactiveFormsModule" target="_blank" >ReactiveFormsModule</a></code>
+</div>
+                        <div>    <code>NzFormModule</code>
+</div>
+                        <div>    <code>NzInputModule</code>
+</div>
+                        <div>    <code>NzButtonModule</code>
+</div>
+                        <div>    <code>NzCardModule</code>
+</div>
+                        <div>    <code>NzGridModule</code>
+</div>
+                        <div>    <code>NzIconModule</code>
+</div>
+                        <div>    <code>NzDividerModule</code>
+</div>
+                        <div>    <code>NzSpaceModule</code>
+</div>
+                </td>
+            </tr>
+
+            <tr>
+                <td class="col-md-3">styleUrls</td>
+                <td class="col-md-9"><code>./supplier.component.scss</code></td>
+            </tr>
+
+
+
+
+            <tr>
+                <td class="col-md-3">templateUrl</td>
+                <td class="col-md-9"><code>./supplier.component.html</code></td>
+            </tr>
+
+
+
+            <tr>
+                <td class="col-md-3">styleUrl</td>
+                <td class="col-md-9"><code>./supplier.component.scss</code></td>
+            </tr>
+
+
+
+
+
+        </tbody>
+    </table>
+</section>
+
+        <section data-compodoc="block-relationships">
+            <h3>Relationships</h3>
+
+            <div class="row pt-3">
+                <div class="col-sm-6">
+                    <h4>Used by</h4>
+                        <p class="comment"><i>Nenhum resultado correspondente.</i></p>
+                </div>
+
+                <div class="col-sm-6">
+                    <h4>Depends on</h4>
+                        <ul class="list-unstyled relationships-list">
+                                <li>
+                                            <code><a href="https://angular.dev/api/common/CommonModule" target="_blank" >CommonModule</a></code>
+                                </li>
+                                <li>
+                                            <code><a href="https://angular.dev/api/forms/ReactiveFormsModule" target="_blank" >ReactiveFormsModule</a></code>
+                                </li>
+                                <li>
+                                        <code>NzFormModule</code>
+                                </li>
+                                <li>
+                                        <code>NzInputModule</code>
+                                </li>
+                                <li>
+                                        <code>NzButtonModule</code>
+                                </li>
+                                <li>
+                                        <code>NzCardModule</code>
+                                </li>
+                                <li>
+                                        <code>NzGridModule</code>
+                                </li>
+                                <li>
+                                        <code>NzIconModule</code>
+                                </li>
+                                <li>
+                                        <code>NzDividerModule</code>
+                                </li>
+                                <li>
+                                        <code>NzSpaceModule</code>
+                                </li>
+                                <li>
+                                            <code><a href="https://angular.dev/api/core/OnInit" target="_blank" >OnInit</a></code>
+                                </li>
+                        </ul>
+                </div>
+            </div>
+        </section>
+</div>
+
+    <div class="tab-pane fade " id="api">    <section data-compodoc="block-index">
+    <h3 id="index">Index</h3>
+        <table class="table table-sm table-bordered index-table">
+            <tbody>
+                <tr>
+                    <td class="col-md-3">
+                        <h6><b>Propriedades</b></h6>
+                    </td>
+                    <td class="col-md-9">
+                        <ul class="index-list">
+                            <li>
+                                <span class="reference-badge reference-badge--property" aria-hidden="true">P</span>
+                                    <span class="modifier">Public</span>
+                                <a href="#currentCmpUuid" >currentCmpUuid</a>
+                            </li>
+                            <li>
+                                <span class="reference-badge reference-badge--property" aria-hidden="true">P</span>
+                                    <span class="modifier">Public</span>
+                                <a href="#isLoading" >isLoading</a>
+                            </li>
+                            <li>
+                                <span class="reference-badge reference-badge--property" aria-hidden="true">P</span>
+                                    <span class="modifier">Public</span>
+                                <a href="#supplierForm" >supplierForm</a>
+                            </li>
+                        </ul>
+                    </td>
+                </tr>
+            </tbody>
+        </table>
+
+        <table class="table table-sm table-bordered index-table">
+            <tbody>
+                <tr>
+                    <td class="col-md-3">
+                        <h6><b>Métodos</b></h6>
+                    </td>
+                    <td class="col-md-9">
+                        <ul class="index-list">
+                            <li>
+                                <span class="reference-badge reference-badge--method" aria-hidden="true">M</span>
+                                    <span class="modifier">Private</span>
+                                <a href="#getSupplierById" >getSupplierById</a>
+                            </li>
+                            <li>
+                                <span class="reference-badge reference-badge--method" aria-hidden="true">M</span>
+                                    <span class="modifier">Private</span>
+                                <a href="#insertSupplier" >insertSupplier</a>
+                            </li>
+                            <li>
+                                <span class="reference-badge reference-badge--method" aria-hidden="true">M</span>
+                                <a href="#ngOnInit" >ngOnInit</a>
+                            </li>
+                            <li>
+                                <span class="reference-badge reference-badge--method" aria-hidden="true">M</span>
+                                    <span class="modifier">Public</span>
+                                <a href="#onCancel" >onCancel</a>
+                            </li>
+                            <li>
+                                <span class="reference-badge reference-badge--method" aria-hidden="true">M</span>
+                                    <span class="modifier">Public</span>
+                                <a href="#onSave" >onSave</a>
+                            </li>
+                            <li>
+                                <span class="reference-badge reference-badge--method" aria-hidden="true">M</span>
+                                    <span class="modifier">Private</span>
+                                <a href="#updateSupplier" >updateSupplier</a>
+                            </li>
+                        </ul>
+                    </td>
+                </tr>
+            </tbody>
+        </table>
+
+
+
+
+
+</section>
+
+    <section data-compodoc="block-constructor">
+    <h3 id="constructor">Construtor</h3>
+        <table class="table table-sm table-bordered">
+            <tbody>
+                <tr>
+                    <td class="col-md-4">
+<code>constructor(fb: <a href="https://angular.dev/api/forms/FormBuilder" target="_blank">FormBuilder</a>, _suppliersService: <a href="../injectables/SuppliersService.html" target="_self">SuppliersService</a>, _sessionService: <a href="../injectables/SessionService.html" target="_self">SessionService</a>, _messageService: <a href="../injectables/MessageService.html" target="_self">MessageService</a>, _route: <a href="https://angular.dev/api/router/ActivatedRoute" target="_blank">ActivatedRoute</a>, _router: <a href="https://angular.dev/api/router/Router" target="_blank">Router</a>, location: <a href="https://angular.dev/api/common/Location" target="_blank">Location</a>)</code>
+                    </td>
+                </tr>
+                        <tr>
+                            <td class="col-md-4">
+                                <div class="io-line">Definido em <a href="" data-line="41" class="link-to-prism">src/app/application/supplier/supplier.component.ts:41</a></div>
+                            </td>
+                        </tr>
+
+                <tr>
+                    <td class="col-md-4">
+                            <div>
+                                    <b>Parâmetros :</b>
+                                    <table class="params">
+                                        <thead>
+                                            <tr>
+                                                <td>Nome</td>
+                                                    <td>Tipo</td>
+                                                <td>Opcional</td>
+                                            </tr>
+                                        </thead>
+                                        <tbody>
+                                                <tr>
+                                                        <td>fb</td>
+                                                  
+                                                        <td>
+                                                                        <code><a href="https://angular.dev/api/forms/FormBuilder" target="_blank" >FormBuilder</a></code>
+                                                        </td>
+                                                  
+                                                    <td>
+                                                            Não
+                                                    </td>
+                                                    
+                                                </tr>
+                                                <tr>
+                                                        <td>_suppliersService</td>
+                                                  
+                                                        <td>
+                                                                        <code><a href="../injectables/SuppliersService.html" target="_self" >SuppliersService</a></code>
+                                                        </td>
+                                                  
+                                                    <td>
+                                                            Não
+                                                    </td>
+                                                    
+                                                </tr>
+                                                <tr>
+                                                        <td>_sessionService</td>
+                                                  
+                                                        <td>
+                                                                        <code><a href="../injectables/SessionService.html" target="_self" >SessionService</a></code>
+                                                        </td>
+                                                  
+                                                    <td>
+                                                            Não
+                                                    </td>
+                                                    
+                                                </tr>
+                                                <tr>
+                                                        <td>_messageService</td>
+                                                  
+                                                        <td>
+                                                                        <code><a href="../injectables/MessageService.html" target="_self" >MessageService</a></code>
+                                                        </td>
+                                                  
+                                                    <td>
+                                                            Não
+                                                    </td>
+                                                    
+                                                </tr>
+                                                <tr>
+                                                        <td>_route</td>
+                                                  
+                                                        <td>
+                                                                        <code><a href="https://angular.dev/api/router/ActivatedRoute" target="_blank" >ActivatedRoute</a></code>
+                                                        </td>
+                                                  
+                                                    <td>
+                                                            Não
+                                                    </td>
+                                                    
+                                                </tr>
+                                                <tr>
+                                                        <td>_router</td>
+                                                  
+                                                        <td>
+                                                                        <code><a href="https://angular.dev/api/router/Router" target="_blank" >Router</a></code>
+                                                        </td>
+                                                  
+                                                    <td>
+                                                            Não
+                                                    </td>
+                                                    
+                                                </tr>
+                                                <tr>
+                                                        <td>location</td>
+                                                  
+                                                        <td>
+                                                                        <code><a href="https://angular.dev/api/common/Location" target="_blank" >Location</a></code>
+                                                        </td>
+                                                  
+                                                    <td>
+                                                            Não
+                                                    </td>
+                                                    
+                                                </tr>
+                                        </tbody>
+                                    </table>
+                            </div>
+                    </td>
+                </tr>
+            </tbody>
+        </table>
+</section>
+
+
+
+
+
+    <section data-compodoc="block-methods">
+    
+    <h3 id="methods">
+        Métodos
+    </h3>
+    <table class="table table-sm table-bordered">
+        <tbody>
+            <tr>
+                <td class="col-md-4">
+                    <a name="getSupplierById"></a>
+                    <span class="name">
+                            <span class="modifier">Private</span>
+                        <span ><b>getSupplierById</b></span>
+                        <a href="#getSupplierById"><span class="icon ion-ios-link"></span></a>
+                    </span>
+                </td>
+            </tr>
+            <tr>
+                <td class="col-md-4">
+                        <span class="modifier-icon icon ion-ios-reset"></span>
+                    <code>getSupplierById(cmp_uuid: <a href="https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/string" target="_blank">string</a>, sup_uuid: <a href="https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/string" target="_blank">string</a>)</code>
+                </td>
+            </tr>
+
+
+                    <tr>
+                        <td class="col-md-4">
+                            <div class="io-line">Definido em <a href="" data-line="78"
+                                    class="link-to-prism">src/app/application/supplier/supplier.component.ts:78</a></div>
+                        </td>
+                    </tr>
+
+
+            <tr>
+                <td class="col-md-4">
+
+                            <div class="io-description">
+                                <b>Parâmetros :</b>
+                                
+                                <table class="params">
+                                    <thead>
+                                        <tr>
+                                            <td>Nome</td>
+                                                <td>Tipo</td>
+                                            <td>Opcional</td>
+                                        </tr>
+                                    </thead>
+                                    <tbody>
+                                        <tr>
+                                                <td>cmp_uuid</td>
+                                            <td>
+                                                            <code><a href="https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/string" target="_blank" >string</a></code>
+                                            </td>
+
+                                            <td>
+                                                    Não
+                                            </td>
+
+
+                                        </tr>
+                                        <tr>
+                                                <td>sup_uuid</td>
+                                            <td>
+                                                            <code><a href="https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/string" target="_blank" >string</a></code>
+                                            </td>
+
+                                            <td>
+                                                    Não
+                                            </td>
+
+
+                                        </tr>
+                                    </tbody>
+                                </table>
+                            </div>
+                        <div class="io-description">
+                            <b>Retorna : </b>        <code><a href="https://www.typescriptlang.org/docs/handbook/basic-types.html" target="_blank" >void</a></code>
+
+                        </div>
+                            <div class="io-description">
+                                
+                            </div>
+                </td>
+            </tr>
+        </tbody>
+    </table>
+    <table class="table table-sm table-bordered">
+        <tbody>
+            <tr>
+                <td class="col-md-4">
+                    <a name="insertSupplier"></a>
+                    <span class="name">
+                            <span class="modifier">Private</span>
+                        <span ><b>insertSupplier</b></span>
+                        <a href="#insertSupplier"><span class="icon ion-ios-link"></span></a>
+                    </span>
+                </td>
+            </tr>
+            <tr>
+                <td class="col-md-4">
+                        <span class="modifier-icon icon ion-ios-reset"></span>
+                    <code>insertSupplier(data: <a href="https://www.typescriptlang.org/docs/handbook/basic-types.html" target="_blank">any</a>)</code>
+                </td>
+            </tr>
+
+
+                    <tr>
+                        <td class="col-md-4">
+                            <div class="io-line">Definido em <a href="" data-line="114"
+                                    class="link-to-prism">src/app/application/supplier/supplier.component.ts:114</a></div>
+                        </td>
+                    </tr>
+
+
+            <tr>
+                <td class="col-md-4">
+
+                            <div class="io-description">
+                                <b>Parâmetros :</b>
+                                
+                                <table class="params">
+                                    <thead>
+                                        <tr>
+                                            <td>Nome</td>
+                                                <td>Tipo</td>
+                                            <td>Opcional</td>
+                                        </tr>
+                                    </thead>
+                                    <tbody>
+                                        <tr>
+                                                <td>data</td>
+                                            <td>
+                                                            <code><a href="https://www.typescriptlang.org/docs/handbook/basic-types.html" target="_blank" >any</a></code>
+                                            </td>
+
+                                            <td>
+                                                    Não
+                                            </td>
+
+
+                                        </tr>
+                                    </tbody>
+                                </table>
+                            </div>
+                        <div class="io-description">
+                            <b>Retorna : </b>        <code><a href="https://www.typescriptlang.org/docs/handbook/basic-types.html" target="_blank" >void</a></code>
+
+                        </div>
+                            <div class="io-description">
+                                
+                            </div>
+                </td>
+            </tr>
+        </tbody>
+    </table>
+    <table class="table table-sm table-bordered">
+        <tbody>
+            <tr>
+                <td class="col-md-4">
+                    <a name="ngOnInit"></a>
+                    <span class="name">
+                        <span ><b>ngOnInit</b></span>
+                        <a href="#ngOnInit"><span class="icon ion-ios-link"></span></a>
+                    </span>
+                </td>
+            </tr>
+            <tr>
+                <td class="col-md-4">
+<code>ngOnInit()</code>
+                </td>
+            </tr>
+
+
+                    <tr>
+                        <td class="col-md-4">
+                            <div class="io-line">Definido em <a href="" data-line="53"
+                                    class="link-to-prism">src/app/application/supplier/supplier.component.ts:53</a></div>
+                        </td>
+                    </tr>
+
+
+            <tr>
+                <td class="col-md-4">
+
+                        <div class="io-description">
+                            <b>Retorna : </b>        <code><a href="https://www.typescriptlang.org/docs/handbook/basic-types.html" target="_blank" >void</a></code>
+
+                        </div>
+                </td>
+            </tr>
+        </tbody>
+    </table>
+    <table class="table table-sm table-bordered">
+        <tbody>
+            <tr>
+                <td class="col-md-4">
+                    <a name="onCancel"></a>
+                    <span class="name">
+                            <span class="modifier">Public</span>
+                        <span ><b>onCancel</b></span>
+                        <a href="#onCancel"><span class="icon ion-ios-link"></span></a>
+                    </span>
+                </td>
+            </tr>
+            <tr>
+                <td class="col-md-4">
+                        <span class="modifier-icon icon ion-ios-reset"></span>
+                    <code>onCancel()</code>
+                </td>
+            </tr>
+
+
+                    <tr>
+                        <td class="col-md-4">
+                            <div class="io-line">Definido em <a href="" data-line="148"
+                                    class="link-to-prism">src/app/application/supplier/supplier.component.ts:148</a></div>
+                        </td>
+                    </tr>
+
+
+            <tr>
+                <td class="col-md-4">
+
+                        <div class="io-description">
+                            <b>Retorna : </b>        <code><a href="https://www.typescriptlang.org/docs/handbook/basic-types.html" target="_blank" >void</a></code>
+
+                        </div>
+                </td>
+            </tr>
+        </tbody>
+    </table>
+    <table class="table table-sm table-bordered">
+        <tbody>
+            <tr>
+                <td class="col-md-4">
+                    <a name="onSave"></a>
+                    <span class="name">
+                            <span class="modifier">Public</span>
+                        <span ><b>onSave</b></span>
+                        <a href="#onSave"><span class="icon ion-ios-link"></span></a>
+                    </span>
+                </td>
+            </tr>
+            <tr>
+                <td class="col-md-4">
+                        <span class="modifier-icon icon ion-ios-reset"></span>
+                    <code>onSave()</code>
+                </td>
+            </tr>
+
+
+                    <tr>
+                        <td class="col-md-4">
+                            <div class="io-line">Definido em <a href="" data-line="94"
+                                    class="link-to-prism">src/app/application/supplier/supplier.component.ts:94</a></div>
+                        </td>
+                    </tr>
+
+
+            <tr>
+                <td class="col-md-4">
+
+                        <div class="io-description">
+                            <b>Retorna : </b>        <code><a href="https://www.typescriptlang.org/docs/handbook/basic-types.html" target="_blank" >void</a></code>
+
+                        </div>
+                </td>
+            </tr>
+        </tbody>
+    </table>
+    <table class="table table-sm table-bordered">
+        <tbody>
+            <tr>
+                <td class="col-md-4">
+                    <a name="updateSupplier"></a>
+                    <span class="name">
+                            <span class="modifier">Private</span>
+                        <span ><b>updateSupplier</b></span>
+                        <a href="#updateSupplier"><span class="icon ion-ios-link"></span></a>
+                    </span>
+                </td>
+            </tr>
+            <tr>
+                <td class="col-md-4">
+                        <span class="modifier-icon icon ion-ios-reset"></span>
+                    <code>updateSupplier(data: <a href="https://www.typescriptlang.org/docs/handbook/basic-types.html" target="_blank">any</a>)</code>
+                </td>
+            </tr>
+
+
+                    <tr>
+                        <td class="col-md-4">
+                            <div class="io-line">Definido em <a href="" data-line="131"
+                                    class="link-to-prism">src/app/application/supplier/supplier.component.ts:131</a></div>
+                        </td>
+                    </tr>
+
+
+            <tr>
+                <td class="col-md-4">
+
+                            <div class="io-description">
+                                <b>Parâmetros :</b>
+                                
+                                <table class="params">
+                                    <thead>
+                                        <tr>
+                                            <td>Nome</td>
+                                                <td>Tipo</td>
+                                            <td>Opcional</td>
+                                        </tr>
+                                    </thead>
+                                    <tbody>
+                                        <tr>
+                                                <td>data</td>
+                                            <td>
+                                                            <code><a href="https://www.typescriptlang.org/docs/handbook/basic-types.html" target="_blank" >any</a></code>
+                                            </td>
+
+                                            <td>
+                                                    Não
+                                            </td>
+
+
+                                        </tr>
+                                    </tbody>
+                                </table>
+                            </div>
+                        <div class="io-description">
+                            <b>Retorna : </b>        <code><a href="https://www.typescriptlang.org/docs/handbook/basic-types.html" target="_blank" >void</a></code>
+
+                        </div>
+                            <div class="io-description">
+                                
+                            </div>
+                </td>
+            </tr>
+        </tbody>
+    </table>
+</section>
+
+    <section data-compodoc="block-properties">
+    
+    <h3 id="inputs">
+        Propriedades
+    </h3>
+    <table class="table table-sm table-bordered">
+        <tbody>
+            <tr>
+                <td class="col-md-4">
+                    <a name="currentCmpUuid"></a>
+                    <span class="name">
+                            <span class="modifier">Public</span>
+                        <span ><b>currentCmpUuid</b></span>
+                        <a href="#currentCmpUuid"><span class="icon ion-ios-link"></span></a>
+                    </span>
+                </td>
+            </tr>
+                <tr>
+                    <td class="col-md-4">
+                        <i>Tipo : </i>        <code><a href="https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/string" target="_blank" >string</a></code>
+
+                    </td>
+                </tr>
+                <tr>
+                    <td class="col-md-4">
+                        <i>Valor padrão : </i><code>&#x27;&#x27;</code>
+                    </td>
+                </tr>
+                    <tr>
+                        <td class="col-md-4">
+                                <div class="io-line">Definido em <a href="" data-line="41" class="link-to-prism">src/app/application/supplier/supplier.component.ts:41</a></div>
+                        </td>
+                    </tr>
+
+
+        </tbody>
+    </table>
+    <table class="table table-sm table-bordered">
+        <tbody>
+            <tr>
+                <td class="col-md-4">
+                    <a name="isLoading"></a>
+                    <span class="name">
+                            <span class="modifier">Public</span>
+                        <span ><b>isLoading</b></span>
+                        <a href="#isLoading"><span class="icon ion-ios-link"></span></a>
+                    </span>
+                </td>
+            </tr>
+                <tr>
+                    <td class="col-md-4">
+                        <i>Tipo : </i>        <code><a href="https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/boolean" target="_blank" >boolean</a></code>
+
+                    </td>
+                </tr>
+                <tr>
+                    <td class="col-md-4">
+                        <i>Valor padrão : </i><code>false</code>
+                    </td>
+                </tr>
+                    <tr>
+                        <td class="col-md-4">
+                                <div class="io-line">Definido em <a href="" data-line="40" class="link-to-prism">src/app/application/supplier/supplier.component.ts:40</a></div>
+                        </td>
+                    </tr>
+
+
+        </tbody>
+    </table>
+    <table class="table table-sm table-bordered">
+        <tbody>
+            <tr>
+                <td class="col-md-4">
+                    <a name="supplierForm"></a>
+                    <span class="name">
+                            <span class="modifier">Public</span>
+                        <span ><b>supplierForm</b></span>
+                        <a href="#supplierForm"><span class="icon ion-ios-link"></span></a>
+                    </span>
+                </td>
+            </tr>
+                <tr>
+                    <td class="col-md-4">
+                        <i>Tipo : </i>        <code><a href="https://angular.dev/api/forms/FormGroup" target="_blank" >FormGroup</a></code>
+
+                    </td>
+                </tr>
+                    <tr>
+                        <td class="col-md-4">
+                                <div class="io-line">Definido em <a href="" data-line="39" class="link-to-prism">src/app/application/supplier/supplier.component.ts:39</a></div>
+                        </td>
+                    </tr>
+
+
+        </tbody>
+    </table>
+</section>
+
+</div>
+
+
+    <div class="tab-pane fade  tab-source-code" id="source">
+        <pre class="line-numbers compodoc-sourcecode"><code class="language-typescript">import { Component, OnInit } from &#x27;@angular/core&#x27;;
+import { CommonModule, Location } from &#x27;@angular/common&#x27;;
+import { FormBuilder, FormGroup, Validators, ReactiveFormsModule } from &#x27;@angular/forms&#x27;;
+import { ActivatedRoute, Router } from &#x27;@angular/router&#x27;;
+
+import { NzFormModule } from &#x27;ng-zorro-antd/form&#x27;;
+import { NzInputModule } from &#x27;ng-zorro-antd/input&#x27;;
+import { NzButtonModule } from &#x27;ng-zorro-antd/button&#x27;;
+import { NzCardModule } from &#x27;ng-zorro-antd/card&#x27;;
+import { NzGridModule } from &#x27;ng-zorro-antd/grid&#x27;;
+import { NzIconModule } from &#x27;ng-zorro-antd/icon&#x27;;
+import { NzDividerModule } from &#x27;ng-zorro-antd/divider&#x27;;
+import { NzSpaceModule } from &#x27;ng-zorro-antd/space&#x27;;
+
+import { SuppliersService } from &#x27;@services/suppliers.service&#x27;;
+import { SessionService } from &#x27;@services/session.service&#x27;;
+import { MessageService } from &#x27;@services/message.service&#x27;;
+
+@Component({
+  selector: &#x27;app-supplier&#x27;,
+  standalone: true,
+  imports: [
+    CommonModule,
+    ReactiveFormsModule,
+    NzFormModule,
+    NzInputModule,
+    NzButtonModule,
+    NzCardModule,
+    NzGridModule,
+    NzIconModule,
+    NzDividerModule,
+    NzSpaceModule
+  ],
+  templateUrl: &#x27;./supplier.component.html&#x27;,
+  styleUrl: &#x27;./supplier.component.scss&#x27;
+})
+export class SupplierComponent implements OnInit {
+
+  public supplierForm!: FormGroup;
+  public isLoading: boolean &#x3D; false;
+  public currentCmpUuid: string &#x3D; &#x27;&#x27;;
+
+  constructor(
+    private fb: FormBuilder,
+    private _suppliersService: SuppliersService,
+    private _sessionService: SessionService,
+    private _messageService: MessageService,
+    private _route: ActivatedRoute,
+    private _router: Router,
+    private location: Location
+  ) { }
+
+  ngOnInit(): void {
+    this.supplierForm &#x3D; this.fb.group({
+      cmp_uuid: [&#x27;&#x27;, [Validators.required]],
+      sup_uuid: [null],
+      sup_fullname: [&#x27;&#x27;, [Validators.required]],
+      sup_email: [&#x27;&#x27;, [Validators.email]],
+      sup_phone: [&#x27;&#x27;],
+      pmt_uuid: [null], // Término de pago (opcional por ahora)
+      usr_uuid: [null]
+    });
+
+    const company &#x3D; this._sessionService.getCompany();
+    this.currentCmpUuid &#x3D; company.cmp_uuid;
+    
+    this.supplierForm.patchValue({
+      cmp_uuid: this.currentCmpUuid
+    });
+
+    this._route.params.subscribe(params &#x3D;&gt; {
+      if (params[&#x27;sup_uuid&#x27;] &amp;&amp; params[&#x27;sup_uuid&#x27;] !&#x3D;&#x3D; &#x27;new&#x27;) {
+        this.getSupplierById(this.currentCmpUuid, params[&#x27;sup_uuid&#x27;]);
+      }
+    });
+  }
+
+  private getSupplierById(cmp_uuid: string, sup_uuid: string): void {
+    this.isLoading &#x3D; true;
+    this._suppliersService.getSupplierById(cmp_uuid, sup_uuid).subscribe(
+      (res: any) &#x3D;&gt; {
+        this.isLoading &#x3D; false;
+        if (res.success) {
+          this.supplierForm.patchValue(res.data);
+        }
+      },
+      (error) &#x3D;&gt; {
+        this.isLoading &#x3D; false;
+        console.error(error);
+      }
+    );
+  }
+
+  public onSave(): void {
+    if (this.supplierForm.valid) {
+      this.isLoading &#x3D; true;
+      const supplierData &#x3D; this.supplierForm.value;
+
+      if (supplierData.sup_uuid) {
+        this.updateSupplier(supplierData);
+      } else {
+        this.insertSupplier(supplierData);
+      }
+    } else {
+      Object.values(this.supplierForm.controls).forEach(control &#x3D;&gt; {
+        if (control.invalid) {
+          control.markAsDirty();
+          control.updateValueAndValidity({ onlySelf: true });
+        }
+      });
+    }
+  }
+
+  private insertSupplier(data: any): void {
+    this._suppliersService.saveSupplier(data).subscribe(
+      (res: any) &#x3D;&gt; {
+        this.isLoading &#x3D; false;
+        if (res.success) {
+          this._messageService.success(&quot;Éxito&quot;, &quot;Proveedor creado correctamente.&quot;, () &#x3D;&gt; {
+            this._router.navigate([&#x27;/application/suppliers&#x27;]);
+          });
+        }
+      },
+      (error) &#x3D;&gt; {
+        this.isLoading &#x3D; false;
+        this._messageService.error(&quot;Error&quot;, &quot;No se pudo crear el proveedor.&quot;);
+      }
+    );
+  }
+
+  private updateSupplier(data: any): void {
+    this._suppliersService.updateSupplier(data).subscribe(
+      (res: any) &#x3D;&gt; {
+        this.isLoading &#x3D; false;
+        if (res.success) {
+          this._messageService.success(&quot;Éxito&quot;, &quot;Proveedor actualizado correctamente.&quot;, () &#x3D;&gt; {
+            this._router.navigate([&#x27;/application/suppliers&#x27;]);
+          });
+        }
+      },
+      (error) &#x3D;&gt; {
+        this.isLoading &#x3D; false;
+        this._messageService.error(&quot;Error&quot;, &quot;No se pudo actualizar el proveedor.&quot;);
+      }
+    );
+  }
+
+  public onCancel(): void {
+    this.location.back();
+  }
+
+}
+</code></pre>
+    </div>
+
+    <div class="tab-pane fade " id="templateData">
+        <pre class="line-numbers"><code class="language-html">&lt;div class&#x3D;&quot;supplier-form-wrapper&quot;&gt;
+    &lt;div class&#x3D;&quot;form-header&quot;&gt;
+        &lt;div class&#x3D;&quot;header-titles&quot;&gt;
+            &lt;h1 class&#x3D;&quot;page-title&quot;&gt;{{ supplierForm.get(&#x27;sup_uuid&#x27;)?.value ? &#x27;Editar Proveedor&#x27; : &#x27;Nuevo Proveedor&#x27; }}&lt;/h1&gt;
+            &lt;p class&#x3D;&quot;page-subtitle&quot;&gt;Gestiona la información de contacto y términos comerciales de tu proveedor.&lt;/p&gt;
+        &lt;/div&gt;
+        &lt;div class&#x3D;&quot;header-actions&quot;&gt;
+            &lt;nz-space&gt;
+                &lt;button *nzSpaceItem nz-button nzType&#x3D;&quot;default&quot; (click)&#x3D;&quot;onCancel()&quot;&gt;Cancelar&lt;/button&gt;
+                &lt;button *nzSpaceItem nz-button nzType&#x3D;&quot;primary&quot; (click)&#x3D;&quot;onSave()&quot; [nzLoading]&#x3D;&quot;isLoading&quot;
+                    [disabled]&#x3D;&quot;supplierForm.invalid&quot;&gt;
+                    &lt;span nz-icon nzType&#x3D;&quot;save&quot;&gt;&lt;/span&gt; Guardar
+                &lt;/button&gt;
+            &lt;/nz-space&gt;
+        &lt;/div&gt;
+    &lt;/div&gt;
+
+    &lt;form nz-form [formGroup]&#x3D;&quot;supplierForm&quot; nzLayout&#x3D;&quot;vertical&quot;&gt;
+        &lt;div nz-row [nzGutter]&#x3D;&quot;24&quot;&gt;
+            &lt;!-- COLUMNA PRINCIPAL: DATOS GENERALES --&gt;
+            &lt;div nz-col [nzXs]&#x3D;&quot;24&quot; [nzLg]&#x3D;&quot;16&quot;&gt;
+                &lt;nz-card class&#x3D;&quot;premium-card&quot; nzTitle&#x3D;&quot;Información del Proveedor&quot; [nzBordered]&#x3D;&quot;false&quot;&gt;
+                    &lt;div nz-row [nzGutter]&#x3D;&quot;16&quot;&gt;
+                        &lt;div nz-col nzSpan&#x3D;&quot;24&quot;&gt;
+                            &lt;nz-form-item&gt;
+                                &lt;nz-form-label nzRequired&gt;Nombre Completo / Razón Social&lt;/nz-form-label&gt;
+                                &lt;nz-form-control nzErrorTip&#x3D;&quot;Por favor ingrese el nombre&quot;&gt;
+                                    &lt;input nz-input formControlName&#x3D;&quot;sup_fullname&quot; placeholder&#x3D;&quot;Ej: Distribuidora San Juan&quot; /&gt;
+                                &lt;/nz-form-control&gt;
+                            &lt;/nz-form-item&gt;
+                        &lt;/div&gt;
+
+                        &lt;div nz-col [nzXs]&#x3D;&quot;24&quot; [nzMd]&#x3D;&quot;12&quot;&gt;
+                            &lt;nz-form-item&gt;
+                                &lt;nz-form-label&gt;Correo Electrónico&lt;/nz-form-label&gt;
+                                &lt;nz-form-control nzErrorTip&#x3D;&quot;Ingrese un email válido&quot;&gt;
+                                    &lt;input nz-input formControlName&#x3D;&quot;sup_email&quot; placeholder&#x3D;&quot;contacto@proveedor.com&quot; /&gt;
+                                &lt;/nz-form-control&gt;
+                            &lt;/nz-form-item&gt;
+                        &lt;/div&gt;
+
+                        &lt;div nz-col [nzXs]&#x3D;&quot;24&quot; [nzMd]&#x3D;&quot;12&quot;&gt;
+                            &lt;nz-form-item&gt;
+                                &lt;nz-form-label&gt;Teléfono de Contacto&lt;/nz-form-label&gt;
+                                &lt;nz-form-control&gt;
+                                    &lt;input nz-input formControlName&#x3D;&quot;sup_phone&quot; placeholder&#x3D;&quot;+54 11 ...&quot; /&gt;
+                                &lt;/nz-form-control&gt;
+                            &lt;/nz-form-item&gt;
+                        &lt;/div&gt;
+                    &lt;/div&gt;
+                &lt;/nz-card&gt;
+
+                &lt;nz-card class&#x3D;&quot;premium-card&quot; nzTitle&#x3D;&quot;Configuración Avanzada&quot; [nzBordered]&#x3D;&quot;false&quot; style&#x3D;&quot;margin-top: 24px;&quot;&gt;
+                    &lt;p style&#x3D;&quot;color: #8c8c8c; margin-bottom: 16px;&quot;&gt;Configura parámetros adicionales para la relación comercial.&lt;/p&gt;
+                    &lt;div nz-row [nzGutter]&#x3D;&quot;16&quot;&gt;
+                        &lt;div nz-col nzSpan&#x3D;&quot;12&quot;&gt;
+                            &lt;nz-form-item&gt;
+                                &lt;nz-form-label&gt;Términos de Pago&lt;/nz-form-label&gt;
+                                &lt;nz-form-control&gt;
+                                    &lt;nz-input-group nzPrefixIcon&#x3D;&quot;credit-card&quot;&gt;
+                                        &lt;input nz-input disabled placeholder&#x3D;&quot;Próximamente...&quot; /&gt;
+                                    &lt;/nz-input-group&gt;
+                                &lt;/nz-form-control&gt;
+                            &lt;/nz-form-item&gt;
+                        &lt;/div&gt;
+                        &lt;div nz-col nzSpan&#x3D;&quot;12&quot;&gt;
+                            &lt;nz-form-item&gt;
+                                &lt;nz-form-label&gt;Categoría Interna&lt;/nz-form-label&gt;
+                                &lt;nz-form-control&gt;
+                                    &lt;nz-input-group nzPrefixIcon&#x3D;&quot;tags&quot;&gt;
+                                        &lt;input nz-input disabled placeholder&#x3D;&quot;Próximamente...&quot; /&gt;
+                                    &lt;/nz-input-group&gt;
+                                &lt;/nz-form-control&gt;
+                            &lt;/nz-form-item&gt;
+                        &lt;/div&gt;
+                    &lt;/div&gt;
+                &lt;/nz-card&gt;
+            &lt;/div&gt;
+
+            &lt;!-- COLUMNA LATERAL: ESTADO Y METADATA --&gt;
+            &lt;div nz-col [nzXs]&#x3D;&quot;24&quot; [nzLg]&#x3D;&quot;8&quot;&gt;
+                &lt;nz-card class&#x3D;&quot;premium-card side-info&quot; [nzBordered]&#x3D;&quot;false&quot;&gt;
+                    &lt;div class&#x3D;&quot;status-summary&quot;&gt;
+                        &lt;div class&#x3D;&quot;status-icon-wrapper&quot;&gt;
+                            &lt;span nz-icon nzType&#x3D;&quot;shop&quot; nzTheme&#x3D;&quot;outline&quot;&gt;&lt;/span&gt;
+                        &lt;/div&gt;
+                        &lt;div class&#x3D;&quot;status-details&quot;&gt;
+                            &lt;span class&#x3D;&quot;status-label&quot;&gt;Estado de la Relación&lt;/span&gt;
+                            &lt;span class&#x3D;&quot;status-value&quot;&gt;ACTIVO&lt;/span&gt;
+                        &lt;/div&gt;
+                    &lt;/div&gt;
+                    
+                    &lt;nz-divider&gt;&lt;/nz-divider&gt;
+                    
+                    &lt;div class&#x3D;&quot;meta-info&quot;&gt;
+                        &lt;div class&#x3D;&quot;meta-item&quot;&gt;
+                            &lt;span class&#x3D;&quot;meta-label&quot;&gt;ID Proveedor:&lt;/span&gt;
+                            &lt;span class&#x3D;&quot;meta-value&quot;&gt;{{ supplierForm.get(&#x27;sup_uuid&#x27;)?.value || &#x27;Nuevo&#x27; }}&lt;/span&gt;
+                        &lt;/div&gt;
+                        &lt;div class&#x3D;&quot;meta-item&quot; *ngIf&#x3D;&quot;supplierForm.get(&#x27;sup_uuid&#x27;)?.value&quot;&gt;
+                            &lt;span class&#x3D;&quot;meta-label&quot;&gt;Última actualización:&lt;/span&gt;
+                            &lt;span class&#x3D;&quot;meta-value&quot;&gt;Hoy&lt;/span&gt;
+                        &lt;/div&gt;
+                    &lt;/div&gt;
+                &lt;/nz-card&gt;
+
+                &lt;div class&#x3D;&quot;helper-box&quot; style&#x3D;&quot;margin-top: 24px;&quot;&gt;
+                    &lt;span nz-icon nzType&#x3D;&quot;info-circle&quot; nzTheme&#x3D;&quot;fill&quot;&gt;&lt;/span&gt;
+                    &lt;p&gt;Asegúrate de completar el nombre y el correo para poder enviar órdenes de compra automáticas en el futuro.&lt;/p&gt;
+                &lt;/div&gt;
+            &lt;/div&gt;
+        &lt;/div&gt;
+    &lt;/form&gt;
+&lt;/div&gt;
+</code></pre>
+    </div>
+
+    <div class="tab-pane fade " id="styleData">
+                <p class="comment">
+                    <code>./supplier.component.scss</code>
+                </p>
+                <pre class="line-numbers"><code class="language-scss">.supplier-form-wrapper {
+    padding: 24px;
+    max-width: 1200px;
+    margin: 0 auto;
+
+    .form-header {
+        display: flex;
+        justify-content: space-between;
+        align-items: flex-start;
+        margin-bottom: 32px;
+
+        .page-title {
+            font-size: 28px;
+            font-weight: 700;
+            color: #1a1a1a;
+            margin: 0;
+            letter-spacing: -0.5px;
+        }
+
+        .page-subtitle {
+            font-size: 14px;
+            color: #8c8c8c;
+            margin: 4px 0 0 0;
+        }
+    }
+
+    .premium-card {
+        border-radius: 12px;
+        box-shadow: 0 4px 12px rgba(0, 0, 0, 0.05);
+        transition: all 0.3s ease;
+
+        &amp;:hover {
+            box-shadow: 0 8px 24px rgba(0, 0, 0, 0.08);
+        }
+
+        ::ng-deep .ant-card-head {
+            border-bottom: 1px solid #f0f0f0;
+            padding: 0 24px;
+            
+            .ant-card-head-title {
+                font-weight: 600;
+                color: #262626;
+            }
+        }
+
+        ::ng-deep .ant-card-body {
+            padding: 24px;
+        }
+    }
+
+    .side-info {
+        background: linear-gradient(135deg, #ffffff 0%, #f9fafb 100%);
+        
+        .status-summary {
+            display: flex;
+            align-items: center;
+            gap: 16px;
+            margin-bottom: 8px;
+
+            .status-icon-wrapper {
+                width: 48px;
+                height: 48px;
+                background: #e6f7ff;
+                border-radius: 10px;
+                display: flex;
+                align-items: center;
+                justify-content: center;
+                color: #1890ff;
+                font-size: 20px;
+            }
+
+            .status-details {
+                display: flex;
+                flex-direction: column;
+
+                .status-label {
+                    font-size: 12px;
+                    color: #8c8c8c;
+                    text-transform: uppercase;
+                    letter-spacing: 0.5px;
+                }
+
+                .status-value {
+                    font-size: 16px;
+                    font-weight: 600;
+                    color: #52c41a;
+                }
+            }
+        }
+
+        .meta-info {
+            .meta-item {
+                display: flex;
+                justify-content: space-between;
+                margin-bottom: 12px;
+                font-size: 13px;
+
+                .meta-label {
+                    color: #8c8c8c;
+                }
+
+                .meta-value {
+                    color: #262626;
+                    font-weight: 500;
+                    font-family: &#x27;SF Mono&#x27;, &#x27;Monaco&#x27;, &#x27;Inconsolata&#x27;, monospace;
+                }
+            }
+        }
+    }
+
+    .helper-box {
+        background-color: #fffbe6;
+        border: 1px solid #ffe58f;
+        padding: 16px;
+        border-radius: 10px;
+        display: flex;
+        gap: 12px;
+        align-items: flex-start;
+
+        span {
+            color: #faad14;
+            font-size: 16px;
+            margin-top: 2px;
+        }
+
+        p {
+            margin: 0;
+            font-size: 13px;
+            color: #595959;
+            line-height: 1.5;
+        }
+    }
+}
+
+// Estilos para inputs
+nz-form-label {
+    font-weight: 500;
+    color: #434343;
+}
+
+.ant-input {
+    border-radius: 8px;
+    padding: 8px 12px;
+    
+    &amp;:focus {
+        box-shadow: 0 0 0 2px rgba(24, 144, 255, 0.1);
+    }
+}
+
+.ant-btn {
+    border-radius: 8px;
+    height: auto;
+    padding: 8px 24px;
+    font-weight: 500;
+    display: flex;
+    align-items: center;
+    gap: 8px;
+}
+</code></pre>
+    </div>
+
+    <div class="tab-pane fade " id="tree">
+        <div id="tree-container"></div>
+        <div class="tree-legend">
+            <div class="title">
+                <b>Legend</b>
+            </div>
+            <div>
+                <div class="color htmlelement"></div><span>Elemento HTML</span>
+            </div>
+            <div>
+                <div class="color component"></div><span>Componente</span>
+            </div>
+            <div>
+                <div class="color directive"></div><span>Elemento HTML com diretiva</span>
+            </div>
+        </div>
+    </div>
+
+    
+</div>
+
+<script src="../js/libs/vis-network.min.js"></script>
+<script src="../js/libs/htmlparser.js"></script>
+<script src="../js/libs/deep-iterator.js"></script>
+<script>
+        var COMPONENT_TEMPLATE = '<div><div class="supplier-form-wrapper">    <div class="form-header">        <div class="header-titles">            <h1 class="page-title">{{ supplierForm.get(\'sup_uuid\')?.value ? \'Editar Proveedor\' : \'Nuevo Proveedor\' }}</h1>            <p class="page-subtitle">Gestiona la información de contacto y términos comerciales de tu proveedor.</p>        </div>        <div class="header-actions">            <nz-space>                <button *nzSpaceItem nz-button nzType="default" (click)="onCancel()">Cancelar</button>                <button *nzSpaceItem nz-button nzType="primary" (click)="onSave()" [nzLoading]="isLoading"                    [disabled]="supplierForm.invalid">                    <span nz-icon nzType="save"></span> Guardar                </button>            </nz-space>        </div>    </div>    <form nz-form [formGroup]="supplierForm" nzLayout="vertical">        <div nz-row [nzGutter]="24">            <!-- COLUMNA PRINCIPAL: DATOS GENERALES -->            <div nz-col [nzXs]="24" [nzLg]="16">                <nz-card class="premium-card" nzTitle="Información del Proveedor" [nzBordered]="false">                    <div nz-row [nzGutter]="16">                        <div nz-col nzSpan="24">                            <nz-form-item>                                <nz-form-label nzRequired>Nombre Completo / Razón Social</nz-form-label>                                <nz-form-control nzErrorTip="Por favor ingrese el nombre">                                    <input nz-input formControlName="sup_fullname" placeholder="Ej: Distribuidora San Juan" />                                </nz-form-control>                            </nz-form-item>                        </div>                        <div nz-col [nzXs]="24" [nzMd]="12">                            <nz-form-item>                                <nz-form-label>Correo Electrónico</nz-form-label>                                <nz-form-control nzErrorTip="Ingrese un email válido">                                    <input nz-input formControlName="sup_email" placeholder="contacto@proveedor.com" />                                </nz-form-control>                            </nz-form-item>                        </div>                        <div nz-col [nzXs]="24" [nzMd]="12">                            <nz-form-item>                                <nz-form-label>Teléfono de Contacto</nz-form-label>                                <nz-form-control>                                    <input nz-input formControlName="sup_phone" placeholder="+54 11 ..." />                                </nz-form-control>                            </nz-form-item>                        </div>                    </div>                </nz-card>                <nz-card class="premium-card" nzTitle="Configuración Avanzada" [nzBordered]="false" style="margin-top: 24px;">                    <p style="color: #8c8c8c; margin-bottom: 16px;">Configura parámetros adicionales para la relación comercial.</p>                    <div nz-row [nzGutter]="16">                        <div nz-col nzSpan="12">                            <nz-form-item>                                <nz-form-label>Términos de Pago</nz-form-label>                                <nz-form-control>                                    <nz-input-group nzPrefixIcon="credit-card">                                        <input nz-input disabled placeholder="Próximamente..." />                                    </nz-input-group>                                </nz-form-control>                            </nz-form-item>                        </div>                        <div nz-col nzSpan="12">                            <nz-form-item>                                <nz-form-label>Categoría Interna</nz-form-label>                                <nz-form-control>                                    <nz-input-group nzPrefixIcon="tags">                                        <input nz-input disabled placeholder="Próximamente..." />                                    </nz-input-group>                                </nz-form-control>                            </nz-form-item>                        </div>                    </div>                </nz-card>            </div>            <!-- COLUMNA LATERAL: ESTADO Y METADATA -->            <div nz-col [nzXs]="24" [nzLg]="8">                <nz-card class="premium-card side-info" [nzBordered]="false">                    <div class="status-summary">                        <div class="status-icon-wrapper">                            <span nz-icon nzType="shop" nzTheme="outline"></span>                        </div>                        <div class="status-details">                            <span class="status-label">Estado de la Relación</span>                            <span class="status-value">ACTIVO</span>                        </div>                    </div>                                        <nz-divider></nz-divider>                                        <div class="meta-info">                        <div class="meta-item">                            <span class="meta-label">ID Proveedor:</span>                            <span class="meta-value">{{ supplierForm.get(\'sup_uuid\')?.value || \'Nuevo\' }}</span>                        </div>                        <div class="meta-item" *ngIf="supplierForm.get(\'sup_uuid\')?.value">                            <span class="meta-label">Última actualización:</span>                            <span class="meta-value">Hoy</span>                        </div>                    </div>                </nz-card>                <div class="helper-box" style="margin-top: 24px;">                    <span nz-icon nzType="info-circle" nzTheme="fill"></span>                    <p>Asegúrate de completar el nombre y el correo para poder enviar órdenes de compra automáticas en el futuro.</p>                </div>            </div>        </div>    </form></div></div>'
+    var COMPONENTS = [{'name': 'AccountConfirmedComponent', 'selector': 'app-account-confirmed'},{'name': 'AccountCreatedComponent', 'selector': 'app-account-created'},{'name': 'AddressesComponent', 'selector': 'app-addresses'},{'name': 'AnalyticsComponent', 'selector': 'app-analytics'},{'name': 'AppComponent', 'selector': 'app-root'},{'name': 'ApplicationBarComponent', 'selector': 'app-application-bar'},{'name': 'ApplicationLayoutComponent', 'selector': 'app-application-layout'},{'name': 'AuthLayoutComponent', 'selector': 'app-auth-layout'},{'name': 'BarcodeScannerComponent', 'selector': 'app-barcode-scanner'},{'name': 'CameraComponent', 'selector': 'app-camera'},{'name': 'CartComponent', 'selector': 'app-cart'},{'name': 'CatalogComponent', 'selector': 'app-catalog'},{'name': 'CategoriesComponent', 'selector': 'app-categories'},{'name': 'CategoriesListComponent', 'selector': 'app-categories-list'},{'name': 'CheckoutComponent', 'selector': 'app-checkout'},{'name': 'CompanyComponent', 'selector': 'app-company'},{'name': 'CompanySettingsComponent', 'selector': 'app-company-settings'},{'name': 'CouponsComponent', 'selector': 'app-coupons'},{'name': 'CustomersComponent', 'selector': 'app-customers'},{'name': 'DistPriceListComponent', 'selector': 'app-dist-price-list'},{'name': 'FinancesComponent', 'selector': 'app-finances'},{'name': 'ForgotPasswordComponent', 'selector': 'app-forgot-password'},{'name': 'GlobalCategoriesComponent', 'selector': 'app-global-categories'},{'name': 'GlobalCategoryComponent', 'selector': 'app-global-category'},{'name': 'GlobalItemComponent', 'selector': 'app-global-item'},{'name': 'GlobalItemsComponent', 'selector': 'app-global-items'},{'name': 'GlobalMaterialComponent', 'selector': 'app-global-material'},{'name': 'GlobalMaterialsComponent', 'selector': 'app-global-materials'},{'name': 'HomeStoreComponent', 'selector': 'app-home'},{'name': 'InventoryAuditComponent', 'selector': 'app-inventory-audit'},{'name': 'ItemsComponent', 'selector': 'app-items'},{'name': 'LoginComponent', 'selector': 'app-login'},{'name': 'MapPickerComponent', 'selector': 'app-map-picker'},{'name': 'MarketHomeComponent', 'selector': 'app-market-home'},{'name': 'MaterialComponent', 'selector': 'app-material'},{'name': 'MaterialsComponent', 'selector': 'app-materials'},{'name': 'MenuItemComponent', 'selector': 'app-menu-item'},{'name': 'MenuItemsComponent', 'selector': 'app-menu-items'},{'name': 'MpPaymentBrickComponent', 'selector': 'app-mp-payment-brick'},{'name': 'MyCompaniesComponent', 'selector': 'app-my-companies'},{'name': 'MyFavoritesComponent', 'selector': 'app-my-favorites'},{'name': 'MyPurchasesComponent', 'selector': 'app-my-purchases'},{'name': 'NavBarComponent', 'selector': 'app-nav-bar'},{'name': 'OrdersReceivedComponent', 'selector': 'app-orders-received'},{'name': 'PriceListComponent', 'selector': 'app-price-list'},{'name': 'ProductComponent', 'selector': 'app-product'},{'name': 'ProductDetailComponent', 'selector': 'app-product-detail'},{'name': 'ProductsComponent', 'selector': 'app-products'},{'name': 'ProductsVariationsComponent', 'selector': 'app-products-variations'},{'name': 'ProductVariationComponent', 'selector': 'app-product-variation'},{'name': 'PublicLayoutComponent', 'selector': 'app-public-layout'},{'name': 'RegisterComponent', 'selector': 'app-register'},{'name': 'ResetPasswordComponent', 'selector': 'app-reset-password'},{'name': 'SideBarComponent', 'selector': 'app-side-bar'},{'name': 'SsoCallbackComponent', 'selector': 'app-sso-callback'},{'name': 'StoreCatalogComponent', 'selector': 'app-store'},{'name': 'SuperAdminComponent', 'selector': 'app-super-admin'},{'name': 'SupplierComponent', 'selector': 'app-supplier'},{'name': 'SuppliersComponent', 'selector': 'app-suppliers'},{'name': 'UserLayoutComponent', 'selector': 'app-user-layout'},{'name': 'UserRolCompanyComponent', 'selector': 'app-user-rol-company'},{'name': 'WarehousesComponent', 'selector': 'app-warehouses'}];
+    var DIRECTIVES = [{'name': 'ImagePreloadDirective', 'selector': 'img[default]'}];
+    var ACTUAL_COMPONENT = {'name': 'SupplierComponent'};
+</script>
+<script src="../js/tree.js"></script>
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+                   </div><div class="search-results">
+    <div class="has-results">
+        <h1 class="search-results-title"><span class='search-results-count'></span> resultados correspondentes "<span class='search-query'></span>"</h1>
+        <ul class="search-results-list"></ul>
+    </div>
+    <div class="no-results">
+        <h1 class="search-results-title">Nenhum resultado correspondente "<span class='search-query'></span>"</h1>
+    </div>
+</div>
+</div>
+               <!-- END CONTENT -->
+           </div>
+       </div>
+
+          
+<div class="compodoc-lang-switch">
+  <select id="compodoc-lang-select" aria-label="Seleccionar idioma">
+    <option value="es" >🇪🇸 Español</option>
+    <option value="en" >🇺🇸 English</option>
+    <option value="pt" selected>🇧🇷 Português</option>
+  </select>
+</div>
+
+          <label class="dark-mode-switch">
+               <input type="checkbox">
+               <span class="slider">
+                    <svg class="slider-icon" viewBox="0 0 24 24" fill="none" height="20" stroke="#000" stroke-linecap="round" stroke-linejoin="round" stroke-width="2" width="20" xmlns="http://www.w3.org/2000/svg">
+                    <path d="M21 12.79A9 9 0 1111.21 3 7 7 0 0021 12.79z"></path>
+                    </svg>
+               </span>
+          </label>
+
+       <script>
+            var COMPODOC_CURRENT_PAGE_DEPTH = 1;
+            var COMPODOC_CURRENT_PAGE_CONTEXT = 'component';
+            var COMPODOC_CURRENT_PAGE_URL = 'SupplierComponent.html';
+            var MAX_SEARCH_RESULTS = 15;
+       </script>
+
+       <script>
+               $darkModeToggleSwitchers = document.querySelectorAll('.dark-mode-switch input');
+               var updateDarkModeSwitchOffset = function () {
+                    var content = document.querySelector('.content');
+                    var scrollbarWidth = 0;
+
+                    if (content) {
+                         scrollbarWidth = Math.max(0, content.offsetWidth - content.clientWidth);
+                    }
+
+                    document.documentElement.style.setProperty(
+                         '--content-scrollbar-width',
+                         scrollbarWidth + 'px'
+                    );
+               };
+
+               updateDarkModeSwitchOffset();
+               requestAnimationFrame(updateDarkModeSwitchOffset);
+               window.addEventListener('resize', updateDarkModeSwitchOffset);
+
+               checkToggle(darkModeState);
+               if ($darkModeToggleSwitchers.length > 0) {
+                    for (var i = 0; i < $darkModeToggleSwitchers.length; i++) {
+                         $darkModeToggleSwitchers[i].addEventListener('change', function (event) {
+                              darkModeState = !darkModeState;
+                              toggleDarkMode(darkModeState);
+                         });
+                    }
+               }
+          </script>
+
+       <script src="../js/libs/custom-elements.min.js"></script>
+       <script src="../js/libs/lit-html.js"></script>
+
+       <script src="../js/menu-wc.js" defer></script>
+
+       <script src="../js/libs/bootstrap-native.js"></script>
+
+       <script src="../js/libs/es6-shim.min.js"></script>
+       <script src="../js/libs/EventDispatcher.js"></script>
+       <script src="../js/libs/promise.min.js"></script>
+
+       <script src="../js/compodoc.js"></script>
+
+       <script src="../js/tabs.js"></script>
+       <script src="../js/menu.js"></script>
+       <script src="../js/libs/clipboard.min.js"></script>
+       <script src="../js/libs/prism.js"></script>
+       <script src="../js/sourceCode.js"></script>
+          <script src="../js/search/search.js"></script>
+          <script src="../js/search/lunr.min.js"></script>
+          <script src="../js/search/search-lunr.js"></script>
+          <script src="../js/search/search_index.js"></script>
+       <script src="../js/lazy-load-graphs.js"></script>
+
+
+    
+<script id="compodoc-lang-script">
+(function() {
+  var CURRENT_LANG = "pt";
+  var ADDITIONAL_DOCS_MAP = {"es":["01.-introducción-y-arquitectura-general.html","02.-autenticación-y-control-de-accesos.html","03.-catálogo-público-y-exploración-de-tiendas.html","04.-carrito-de-compras-y-checkout-multitienda.html","05.-gestión-de-empresas,-roles-y-configuración.html","06.-inventario,-productos,-variaciones-y-almacenes.html","07.-gestión-de-pedidos,-compras-y-cupones.html","08.-analíticas-de-negocio,-finanzas-y-proveedores.html"],"en":["01.-introduction-and-general-architecture.html","02.-authentication-and-access-control.html","03.-public-catalog-and-store-exploration.html","04.-shopping-cart-and-multi-store-checkout.html","05.-company-management,-roles-and-configuration.html","06.-inventory,-products,-variations-and-warehouses.html","07.-orders-management,-purchases-and-coupons.html","08.-business-analytics,-finances-and-suppliers.html"],"pt":["01.-introdução-e-arquitetura-geral.html","02.-autenticação-e-controle-de-acesso.html","03.-catálogo-público-e-exploração-de-lojas.html","04.-carrinho-de-compras-e-checkout-multiloja.html","05.-gestão-de-empresas,-funções-e-configuração.html","06.-estoque,-produtos,-variações-e-armazéns.html","07.-gestão-de-pedidos,-compras-e-cupons.html","08.-análise-de-negócios,-finanças-e-fornecedores.html"]};
+
+  var select = document.getElementById('compodoc-lang-select');
+  if (!select) return;
+
+  try {
+    localStorage.setItem('compodoc_lang', CURRENT_LANG);
+  } catch (e) {}
+
+  select.addEventListener('change', function(e) {
+    var targetLang = e.target.value;
+    if (targetLang === CURRENT_LANG) return;
+
+    try {
+      localStorage.setItem('compodoc_lang', targetLang);
+    } catch (err) {}
+
+    var href = window.location.href;
+    var pathname = window.location.pathname;
+
+    // Manejo especial para páginas de additional-documentation
+    if (pathname.indexOf('/additional-documentation/') !== -1) {
+      var segments = pathname.split('/');
+      var currentFile = decodeURIComponent(segments[segments.length - 1]);
+      
+      var currentList = ADDITIONAL_DOCS_MAP[CURRENT_LANG] || [];
+      var targetList = ADDITIONAL_DOCS_MAP[targetLang] || [];
+      var foundIndex = -1;
+
+      var prefixMatch = currentFile.match(/^(\d{2}\.-)/);
+      if (prefixMatch) {
+        var prefix = prefixMatch[1];
+        for (var i = 0; i < targetList.length; i++) {
+          if (targetList[i].startsWith(prefix)) {
+            foundIndex = i;
+            break;
+          }
+        }
+      }
+      if (foundIndex === -1) {
+        for (var j = 0; j < currentList.length; j++) {
+          if (currentList[j] === currentFile) {
+            foundIndex = j;
+            break;
+          }
+        }
+      }
+
+      var targetFile = (foundIndex !== -1 && targetList[foundIndex]) 
+        ? targetList[foundIndex] 
+        : (targetList[0] || 'index.html');
+
+      var targetSubpath = '/' + targetLang + '/additional-documentation/' + targetFile;
+      var currentSubpath = '/' + CURRENT_LANG + '/additional-documentation/' + segments[segments.length - 1];
+
+      if (href.indexOf(currentSubpath) !== -1) {
+        window.location.href = href.replace(currentSubpath, targetSubpath);
+        return;
+      }
+    }
+
+    // Páginas estándar
+    var standardReplace = href.replace('/' + CURRENT_LANG + '/', '/' + targetLang + '/');
+    if (standardReplace !== href) {
+      window.location.href = standardReplace;
+    } else {
+      var depth = (typeof COMPODOC_CURRENT_PAGE_DEPTH !== 'undefined') ? COMPODOC_CURRENT_PAGE_DEPTH : 0;
+      var prefixPath = '';
+      for (var k = 0; k <= depth; k++) {
+        prefixPath += '../';
+      }
+      window.location.href = prefixPath + targetLang + '/index.html';
+    }
+  });
+})();
+</script>
+
+</body>
+</html>

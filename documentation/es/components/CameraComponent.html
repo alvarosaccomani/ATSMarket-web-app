@@ -1,0 +1,1896 @@
+<!doctype html>
+<html class="no-js" lang="">
+    <head>
+        <meta charset="utf-8">
+        <meta http-equiv="x-ua-compatible" content="ie=edge">
+        <title>ATSMarket Web App</title>
+        <meta name="description" content="">
+        <meta name="viewport" content="width=device-width, initial-scale=1">
+
+        <link rel="icon" type="image/x-icon" href="../images/favicon.ico">
+	   <link rel="stylesheet" href="../styles/style.css">
+        <link rel="stylesheet" href="../styles/dark.css">
+    
+<style id="compodoc-lang-styles">
+  .compodoc-lang-switch {
+    position: fixed;
+    top: 15px;
+    right: calc(90px + var(--content-scrollbar-width, 0px));
+    z-index: 1050;
+    display: inline-block;
+  }
+  @media (max-width: 767px) {
+    .compodoc-lang-switch {
+      top: 8px;
+      right: 60px;
+    }
+  }
+  #compodoc-lang-select {
+    height: 34px;
+    padding: 0 12px;
+    border-radius: 17px;
+    border: 1px solid #d9d9d9;
+    background-color: #ffffff;
+    color: #1f1f1f;
+    font-size: 13px;
+    font-family: inherit;
+    font-weight: 500;
+    cursor: pointer;
+    outline: none;
+    box-shadow: 0 2px 6px rgba(0, 0, 0, 0.08);
+    transition: all 0.3s cubic-bezier(0.645, 0.045, 0.355, 1);
+    -webkit-appearance: none;
+    -moz-appearance: none;
+    appearance: none;
+    padding-right: 26px;
+    background-image: url("data:image/svg+xml;charset=UTF-8,%3csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 24 24' fill='none' stroke='%23666' stroke-width='2' stroke-linecap='round' stroke-linejoin='round'%3e%3cpolyline points='6 9 12 15 18 9'%3e%3c/polyline%3e%3c/svg%3e");
+    background-repeat: no-repeat;
+    background-position: right 8px center;
+    background-size: 14px;
+  }
+  #compodoc-lang-select:hover, #compodoc-lang-select:focus {
+    border-color: #5cc0ae;
+    box-shadow: 0 2px 8px rgba(92, 192, 174, 0.25);
+  }
+  body.dark .compodoc-lang-switch #compodoc-lang-select {
+    background-color: #2c3e50;
+    color: #ecf0f1;
+    border: 1px solid #4a627a;
+    box-shadow: 0 2px 6px rgba(0, 0, 0, 0.35);
+    background-image: url("data:image/svg+xml;charset=UTF-8,%3csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 24 24' fill='none' stroke='%23ecf0f1' stroke-width='2' stroke-linecap='round' stroke-linejoin='round'%3e%3cpolyline points='6 9 12 15 18 9'%3e%3c/polyline%3e%3c/svg%3e");
+  }
+  body.dark .compodoc-lang-switch #compodoc-lang-select option {
+    background-color: #2c3e50;
+    color: #ecf0f1;
+  }
+</style>
+
+</head>
+    <body>
+          <script>
+               // Blocking script to avoid flickering dark mode
+               // Dark mode toggle button
+               var useDark = window.matchMedia('(prefers-color-scheme: dark)');
+               var darkModeState = useDark.matches;
+               var $darkModeToggleSwitchers = document.querySelectorAll('.dark-mode-switch input');
+               var $darkModeToggles = document.querySelectorAll('.dark-mode-switch');
+               var darkModeStateLocal = localStorage.getItem('compodoc_darkmode-state');
+
+               function checkToggle(check) {
+                    for (var i = 0; i < $darkModeToggleSwitchers.length; i++) {
+                         $darkModeToggleSwitchers[i].checked = check;
+                    }
+               }
+
+               function toggleDarkMode(state) {
+                    if (window.localStorage) {
+                         localStorage.setItem('compodoc_darkmode-state', state);
+                    }
+
+                    checkToggle(state);
+
+                    const hasClass = document.body.classList.contains('dark');
+
+                    if (state) {
+                         for (var i = 0; i < $darkModeToggles.length; i++) {
+                              $darkModeToggles[i].classList.add('dark');
+                         }
+                         if (!hasClass) {
+                              document.body.classList.add('dark');
+                         }
+                    } else {
+                         for (var i = 0; i < $darkModeToggles.length; i++) {
+                              $darkModeToggles[i].classList.remove('dark');
+                         }
+                         if (hasClass) {
+                              document.body.classList.remove('dark');
+                         }
+                    }
+               }
+
+               useDark.addEventListener('change', function (evt) {
+                    toggleDarkMode(evt.matches);
+               });
+               if (darkModeStateLocal) {
+                    darkModeState = darkModeStateLocal === 'true';
+               }
+               toggleDarkMode(darkModeState);
+          </script>
+          <script>
+              // --- Iframe navigation tracking for Template Playground ---
+              function sendCurrentUrlToParent() {
+                  if (window.parent && window.parent !== window) {
+                      window.parent.postMessage({
+                          type: 'compodoc-iframe-navigate',
+                          url: window.location.pathname + window.location.hash
+                      }, '*');
+                  }
+              }
+              window.addEventListener('hashchange', sendCurrentUrlToParent, false);
+              window.addEventListener('popstate', sendCurrentUrlToParent, false);
+              window.addEventListener('DOMContentLoaded', sendCurrentUrlToParent, false);
+          </script>
+
+        <div class="navbar navbar-default navbar-fixed-top d-md-none p-0">
+               <div class="d-flex">
+                    <a href="../" class="navbar-brand">ATSMarket Web App</a>
+                    <button type="button" class="btn btn-default btn-menu ion-ios-menu" id="btn-menu"></button>
+               </div>
+        </div>
+
+        <div class="xs-menu menu" id="mobile-menu">
+                <div id="book-search-input" role="search">
+    <input type="text" placeholder="Escribe para buscar">
+    <button type="button"
+        class="search-input-clear"
+        aria-label="Clear search"
+        data-search-input-clear>&times;</button>
+</div>
+            <compodoc-menu></compodoc-menu>
+        </div>
+
+        <div class="container-fluid main">
+           <div class="row main">
+               <div class="d-none d-md-block menu">
+                   <compodoc-menu mode="normal"></compodoc-menu>
+               </div>
+               <!-- START CONTENT -->
+               <div class="content component">
+                   <div class="content-data">
+
+
+
+
+
+
+
+
+<ol class="breadcrumb">
+  <li class="breadcrumb-item">Componentes</li>
+  <li class="breadcrumb-item"
+  >
+  CameraComponent</li>
+</ol>
+
+<div class="io-file io-file-path" data-compodoc="entity-file-path">
+    <span class="icon ion-ios-document" aria-hidden="true"></span>
+    <code>src/app/shared/components/camera/camera.component.ts</code>
+</div>
+
+<ul class="nav nav-tabs" role="tablist">
+        <li class="nav-item">
+            <a href="#info" class="nav-link active"
+                role="tab" id="info-tab" data-bs-toggle="tab" data-link="info">Info</a>
+        </li>
+        <li class="nav-item">
+            <a href="#api" class="nav-link"
+                role="tab" id="api-tab" data-bs-toggle="tab" data-link="api">API</a>
+        </li>
+        <li class="nav-item">
+            <a href="#source" class="nav-link"
+                role="tab" id="source-tab" data-bs-toggle="tab" data-link="source">Source</a>
+        </li>
+        <li class="nav-item">
+            <a href="#templateData" class="nav-link"
+                role="tab" id="templateData-tab" data-bs-toggle="tab" data-link="template">Template</a>
+        </li>
+        <li class="nav-item">
+            <a href="#styleData" class="nav-link"
+                role="tab" id="styleData-tab" data-bs-toggle="tab" data-link="style">Styles</a>
+        </li>
+        <li class="nav-item">
+            <a href="#tree" class="nav-link"
+                role="tab" id="tree-tab" data-bs-toggle="tab" data-link="dom-tree">DOM Tree</a>
+        </li>
+</ul>
+
+<div class="tab-content">
+    <div class="tab-pane fade active in" id="info">
+
+
+    <p class="comment">
+        <h3>Implementa</h3>
+    </p>
+    <p class="comment">
+                    <code><a href="https://angular.dev/api/core/AfterViewInit" target="_blank" >AfterViewInit</a></code>
+                    <code><a href="https://angular.dev/api/core/OnDestroy" target="_blank" >OnDestroy</a></code>
+                    <code><a href="https://angular.dev/api/core/OnChanges" target="_blank" >OnChanges</a></code>
+    </p>
+
+
+<section data-compodoc="block-metadata">
+    <h3>Meta datos</h3>
+    <table class="table table-sm table-hover metadata">
+        <tbody>
+
+
+
+
+
+
+
+
+
+
+
+
+            <tr>
+                <td class="col-md-3">selector</td>
+                <td class="col-md-9"><code>app-camera</code></td>
+            </tr>
+
+            <tr>
+                <td class="col-md-3">standalone</td>
+                <td class="col-md-9"><code>true</code></td>
+            </tr>
+
+            <tr>
+                <td class="col-md-3">imports</td>
+                <td class="col-md-9">
+                        <div>        <code><a href="https://angular.dev/api/common/CommonModule" target="_blank" >CommonModule</a></code>
+</div>
+                        <div>    <code>NzSpinModule</code>
+</div>
+                        <div>    <code>NzIconModule</code>
+</div>
+                </td>
+            </tr>
+
+            <tr>
+                <td class="col-md-3">styleUrls</td>
+                <td class="col-md-9"><code>./camera.component.scss</code></td>
+            </tr>
+
+
+
+
+            <tr>
+                <td class="col-md-3">templateUrl</td>
+                <td class="col-md-9"><code>./camera.component.html</code></td>
+            </tr>
+
+
+
+            <tr>
+                <td class="col-md-3">styleUrl</td>
+                <td class="col-md-9"><code>./camera.component.scss</code></td>
+            </tr>
+
+
+
+
+
+        </tbody>
+    </table>
+</section>
+
+        <section data-compodoc="block-relationships">
+            <h3>Relationships</h3>
+
+            <div class="row pt-3">
+                <div class="col-sm-6">
+                    <h4>Used by</h4>
+                        <ul class="list-unstyled relationships-list">
+                                <li>
+                                            <code><a href="../components/PriceListComponent.html" target="_self" >PriceListComponent</a></code>
+                                </li>
+                        </ul>
+                </div>
+
+                <div class="col-sm-6">
+                    <h4>Depends on</h4>
+                        <ul class="list-unstyled relationships-list">
+                                <li>
+                                            <code><a href="https://angular.dev/api/common/CommonModule" target="_blank" >CommonModule</a></code>
+                                </li>
+                                <li>
+                                        <code>NzSpinModule</code>
+                                </li>
+                                <li>
+                                        <code>NzIconModule</code>
+                                </li>
+                                <li>
+                                            <code><a href="https://angular.dev/api/core/AfterViewInit" target="_blank" >AfterViewInit</a></code>
+                                </li>
+                                <li>
+                                            <code><a href="https://angular.dev/api/core/OnDestroy" target="_blank" >OnDestroy</a></code>
+                                </li>
+                                <li>
+                                            <code><a href="https://angular.dev/api/core/OnChanges" target="_blank" >OnChanges</a></code>
+                                </li>
+                        </ul>
+                </div>
+            </div>
+        </section>
+</div>
+
+    <div class="tab-pane fade " id="api">    <section data-compodoc="block-index">
+    <h3 id="index">Índice</h3>
+        <table class="table table-sm table-bordered index-table">
+            <tbody>
+                <tr>
+                    <td class="col-md-3">
+                        <h6><b>Propiedades</b></h6>
+                    </td>
+                    <td class="col-md-9">
+                        <ul class="index-list">
+                            <li>
+                                <span class="reference-badge reference-badge--property" aria-hidden="true">P</span>
+                                    <span class="modifier">Public</span>
+                                <a href="#cameraError" >cameraError</a>
+                            </li>
+                            <li>
+                                <span class="reference-badge reference-badge--property" aria-hidden="true">P</span>
+                                    <span class="modifier"></span>
+                                <a href="#canvasElement" >canvasElement</a>
+                            </li>
+                            <li>
+                                <span class="reference-badge reference-badge--property" aria-hidden="true">P</span>
+                                    <span class="modifier">Public</span>
+                                <a href="#capturedImage" >capturedImage</a>
+                            </li>
+                            <li>
+                                <span class="reference-badge reference-badge--property" aria-hidden="true">P</span>
+                                    <span class="modifier">Public</span>
+                                <a href="#isCameraActive" >isCameraActive</a>
+                            </li>
+                            <li>
+                                <span class="reference-badge reference-badge--property" aria-hidden="true">P</span>
+                                    <span class="modifier">Public</span>
+                                <a href="#isLoading" >isLoading</a>
+                            </li>
+                            <li>
+                                <span class="reference-badge reference-badge--property" aria-hidden="true">P</span>
+                                    <span class="modifier">Private</span>
+                                <a href="#mediaStream" >mediaStream</a>
+                            </li>
+                            <li>
+                                <span class="reference-badge reference-badge--property" aria-hidden="true">P</span>
+                                    <span class="modifier"></span>
+                                <a href="#videoElement" >videoElement</a>
+                            </li>
+                        </ul>
+                    </td>
+                </tr>
+            </tbody>
+        </table>
+
+        <table class="table table-sm table-bordered index-table">
+            <tbody>
+                <tr>
+                    <td class="col-md-3">
+                        <h6><b>Métodos</b></h6>
+                    </td>
+                    <td class="col-md-9">
+                        <ul class="index-list">
+                            <li>
+                                <span class="reference-badge reference-badge--method" aria-hidden="true">M</span>
+                                    <span class="modifier">Public</span>
+                                <a href="#capturePhoto" >capturePhoto</a>
+                            </li>
+                            <li>
+                                <span class="reference-badge reference-badge--method" aria-hidden="true">M</span>
+                                <a href="#ngAfterViewInit" >ngAfterViewInit</a>
+                            </li>
+                            <li>
+                                <span class="reference-badge reference-badge--method" aria-hidden="true">M</span>
+                                <a href="#ngOnChanges" >ngOnChanges</a>
+                            </li>
+                            <li>
+                                <span class="reference-badge reference-badge--method" aria-hidden="true">M</span>
+                                <a href="#ngOnDestroy" >ngOnDestroy</a>
+                            </li>
+                            <li>
+                                <span class="reference-badge reference-badge--method" aria-hidden="true">M</span>
+                                    <span class="modifier">Public</span>
+                                <a href="#retakePhoto" >retakePhoto</a>
+                            </li>
+                            <li>
+                                <span class="reference-badge reference-badge--method" aria-hidden="true">M</span>
+                                    <span class="modifier">Public</span>
+                                <a href="#savePhoto" >savePhoto</a>
+                            </li>
+                            <li>
+                                <span class="reference-badge reference-badge--method" aria-hidden="true">M</span>
+                                    <span class="modifier">Public</span>
+                                    <span class="modifier">Async</span>
+                                <a href="#startCamera" >startCamera</a>
+                            </li>
+                            <li>
+                                <span class="reference-badge reference-badge--method" aria-hidden="true">M</span>
+                                    <span class="modifier">Public</span>
+                                <a href="#stopCamera" >stopCamera</a>
+                            </li>
+                        </ul>
+                    </td>
+                </tr>
+            </tbody>
+        </table>
+
+        <table class="table table-sm table-bordered index-table">
+            <tbody>
+                <tr>
+                    <td class="col-md-3">
+                        <h6><b>Entradas</b></h6>
+                    </td>
+                    <td class="col-md-9">
+                        <ul class="index-list">
+                            <li>
+                                <span class="reference-badge reference-badge--property" aria-hidden="true">I</span><a href="#captureHintText" >captureHintText</a>
+                            </li>
+                            <li>
+                                <span class="reference-badge reference-badge--property" aria-hidden="true">I</span><a href="#existingImage" >existingImage</a>
+                            </li>
+                            <li>
+                                <span class="reference-badge reference-badge--property" aria-hidden="true">I</span><a href="#showCaptureHint" >showCaptureHint</a>
+                            </li>
+                            <li>
+                                <span class="reference-badge reference-badge--property" aria-hidden="true">I</span><a href="#showScannerFrame" >showScannerFrame</a>
+                            </li>
+                        </ul>
+                    </td>
+                </tr>
+            </tbody>
+        </table>
+
+        <table class="table table-sm table-bordered index-table">
+            <tbody>
+                <tr>
+                    <td class="col-md-3">
+                        <h6><b>Salidas</b></h6>
+                    </td>
+                    <td class="col-md-9">
+                        <ul class="index-list">
+                            <li>
+                                <span class="reference-badge reference-badge--property" aria-hidden="true">O</span><a href="#onClose" >onClose</a>
+                            </li>
+                            <li>
+                                <span class="reference-badge reference-badge--property" aria-hidden="true">O</span><a href="#onPhotoSaved" >onPhotoSaved</a>
+                            </li>
+                        </ul>
+                    </td>
+                </tr>
+            </tbody>
+        </table>
+
+
+
+</section>
+
+    <section data-compodoc="block-constructor">
+    <h3 id="constructor">Constructor</h3>
+        <table class="table table-sm table-bordered">
+            <tbody>
+                <tr>
+                    <td class="col-md-4">
+<code>constructor()</code>
+                    </td>
+                </tr>
+                        <tr>
+                            <td class="col-md-4">
+                                <div class="io-line">Definido en <a href="" data-line="33" class="link-to-prism">src/app/shared/components/camera/camera.component.ts:33</a></div>
+                            </td>
+                        </tr>
+
+            </tbody>
+        </table>
+</section>
+
+    <section data-compodoc="block-inputs">
+    <h3 id="inputs">Entradas</h3>
+        <table class="table table-sm table-bordered">
+            <tbody>
+                <tr>
+                    <td class="col-md-4">
+                        <a name="captureHintText"></a>
+                        <b>captureHintText</b>
+                    </td>
+                </tr>
+                <tr>
+                    <td class="col-md-4">
+                        <i>Tipo : </i>        <code><a href="https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/string" target="_blank" >string</a></code>
+
+                    </td>
+                </tr>
+                <tr>
+                    <td class="col-md-4">
+                        <i>Valor por defecto : </i><code>&#x27;Encuadre el comprobante&#x27;</code>
+                    </td>
+                </tr>
+                        <tr>
+                            <td class="col-md-2" colspan="2">
+                                    <div class="io-line">Definido en <a href="" data-line="20" class="link-to-prism">src/app/shared/components/camera/camera.component.ts:20</a></div>
+                            </td>
+                        </tr>
+            </tbody>
+        </table>
+        <table class="table table-sm table-bordered">
+            <tbody>
+                <tr>
+                    <td class="col-md-4">
+                        <a name="existingImage"></a>
+                        <b>existingImage</b>
+                    </td>
+                </tr>
+                <tr>
+                    <td class="col-md-4">
+                        <i>Tipo : </i>    <code>string | null</code>
+
+                    </td>
+                </tr>
+                <tr>
+                    <td class="col-md-4">
+                        <i>Valor por defecto : </i><code>null</code>
+                    </td>
+                </tr>
+                        <tr>
+                            <td class="col-md-2" colspan="2">
+                                    <div class="io-line">Definido en <a href="" data-line="18" class="link-to-prism">src/app/shared/components/camera/camera.component.ts:18</a></div>
+                            </td>
+                        </tr>
+            </tbody>
+        </table>
+        <table class="table table-sm table-bordered">
+            <tbody>
+                <tr>
+                    <td class="col-md-4">
+                        <a name="showCaptureHint"></a>
+                        <b>showCaptureHint</b>
+                    </td>
+                </tr>
+                <tr>
+                    <td class="col-md-4">
+                        <i>Tipo : </i>        <code><a href="https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/boolean" target="_blank" >boolean</a></code>
+
+                    </td>
+                </tr>
+                <tr>
+                    <td class="col-md-4">
+                        <i>Valor por defecto : </i><code>true</code>
+                    </td>
+                </tr>
+                        <tr>
+                            <td class="col-md-2" colspan="2">
+                                    <div class="io-line">Definido en <a href="" data-line="21" class="link-to-prism">src/app/shared/components/camera/camera.component.ts:21</a></div>
+                            </td>
+                        </tr>
+            </tbody>
+        </table>
+        <table class="table table-sm table-bordered">
+            <tbody>
+                <tr>
+                    <td class="col-md-4">
+                        <a name="showScannerFrame"></a>
+                        <b>showScannerFrame</b>
+                    </td>
+                </tr>
+                <tr>
+                    <td class="col-md-4">
+                        <i>Tipo : </i>        <code><a href="https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/boolean" target="_blank" >boolean</a></code>
+
+                    </td>
+                </tr>
+                <tr>
+                    <td class="col-md-4">
+                        <i>Valor por defecto : </i><code>true</code>
+                    </td>
+                </tr>
+                        <tr>
+                            <td class="col-md-2" colspan="2">
+                                    <div class="io-line">Definido en <a href="" data-line="19" class="link-to-prism">src/app/shared/components/camera/camera.component.ts:19</a></div>
+                            </td>
+                        </tr>
+            </tbody>
+        </table>
+</section>
+
+    <section data-compodoc="block-outputs">
+    <h3 id="outputs">Salidas</h3>
+        <table class="table table-sm table-bordered">
+            <tbody>
+                <tr>
+                    <td class="col-md-4">
+                        <a name="onClose"></a>
+                        <b>onClose</b>
+                    </td>
+                </tr>
+                <tr>
+                    <td class="col-md-4">
+                        <i>Tipo : </i>        <code><a href="https://angular.dev/api/core/EventEmitter" target="_blank" >EventEmitter</a></code>
+
+                    </td>
+                </tr>
+                        <tr>
+                            <td class="col-md-2" colspan="2">
+                                    <div class="io-line">Definido en <a href="" data-line="23" class="link-to-prism">src/app/shared/components/camera/camera.component.ts:23</a></div>
+                            </td>
+                        </tr>
+            </tbody>
+        </table>
+        <table class="table table-sm table-bordered">
+            <tbody>
+                <tr>
+                    <td class="col-md-4">
+                        <a name="onPhotoSaved"></a>
+                        <b>onPhotoSaved</b>
+                    </td>
+                </tr>
+                <tr>
+                    <td class="col-md-4">
+                        <i>Tipo : </i>        <code><a href="https://angular.dev/api/core/EventEmitter" target="_blank" >EventEmitter</a></code>
+
+                    </td>
+                </tr>
+                        <tr>
+                            <td class="col-md-2" colspan="2">
+                                    <div class="io-line">Definido en <a href="" data-line="22" class="link-to-prism">src/app/shared/components/camera/camera.component.ts:22</a></div>
+                            </td>
+                        </tr>
+            </tbody>
+        </table>
+</section>
+
+
+
+    <section data-compodoc="block-methods">
+    
+    <h3 id="methods">
+        Métodos
+    </h3>
+    <table class="table table-sm table-bordered">
+        <tbody>
+            <tr>
+                <td class="col-md-4">
+                    <a name="capturePhoto"></a>
+                    <span class="name">
+                            <span class="modifier">Public</span>
+                        <span ><b>capturePhoto</b></span>
+                        <a href="#capturePhoto"><span class="icon ion-ios-link"></span></a>
+                    </span>
+                </td>
+            </tr>
+            <tr>
+                <td class="col-md-4">
+                        <span class="modifier-icon icon ion-ios-reset"></span>
+                    <code>capturePhoto()</code>
+                </td>
+            </tr>
+
+
+                    <tr>
+                        <td class="col-md-4">
+                            <div class="io-line">Definido en <a href="" data-line="84"
+                                    class="link-to-prism">src/app/shared/components/camera/camera.component.ts:84</a></div>
+                        </td>
+                    </tr>
+
+
+            <tr>
+                <td class="col-md-4">
+
+                        <div class="io-description">
+                            <b>Devuelve : </b>        <code><a href="https://www.typescriptlang.org/docs/handbook/basic-types.html" target="_blank" >void</a></code>
+
+                        </div>
+                </td>
+            </tr>
+        </tbody>
+    </table>
+    <table class="table table-sm table-bordered">
+        <tbody>
+            <tr>
+                <td class="col-md-4">
+                    <a name="ngAfterViewInit"></a>
+                    <span class="name">
+                        <span ><b>ngAfterViewInit</b></span>
+                        <a href="#ngAfterViewInit"><span class="icon ion-ios-link"></span></a>
+                    </span>
+                </td>
+            </tr>
+            <tr>
+                <td class="col-md-4">
+<code>ngAfterViewInit()</code>
+                </td>
+            </tr>
+
+
+                    <tr>
+                        <td class="col-md-4">
+                            <div class="io-line">Definido en <a href="" data-line="37"
+                                    class="link-to-prism">src/app/shared/components/camera/camera.component.ts:37</a></div>
+                        </td>
+                    </tr>
+
+
+            <tr>
+                <td class="col-md-4">
+
+                        <div class="io-description">
+                            <b>Devuelve : </b>        <code><a href="https://www.typescriptlang.org/docs/handbook/basic-types.html" target="_blank" >void</a></code>
+
+                        </div>
+                </td>
+            </tr>
+        </tbody>
+    </table>
+    <table class="table table-sm table-bordered">
+        <tbody>
+            <tr>
+                <td class="col-md-4">
+                    <a name="ngOnChanges"></a>
+                    <span class="name">
+                        <span ><b>ngOnChanges</b></span>
+                        <a href="#ngOnChanges"><span class="icon ion-ios-link"></span></a>
+                    </span>
+                </td>
+            </tr>
+            <tr>
+                <td class="col-md-4">
+<code>ngOnChanges(changes: <a href="https://angular.dev/api/core/SimpleChanges" target="_blank">SimpleChanges</a>)</code>
+                </td>
+            </tr>
+
+
+                    <tr>
+                        <td class="col-md-4">
+                            <div class="io-line">Definido en <a href="" data-line="47"
+                                    class="link-to-prism">src/app/shared/components/camera/camera.component.ts:47</a></div>
+                        </td>
+                    </tr>
+
+
+            <tr>
+                <td class="col-md-4">
+
+                            <div class="io-description">
+                                <b>Parámetros :</b>
+                                
+                                <table class="params">
+                                    <thead>
+                                        <tr>
+                                            <td>Nombre</td>
+                                                <td>Tipo</td>
+                                            <td>Opcional</td>
+                                        </tr>
+                                    </thead>
+                                    <tbody>
+                                        <tr>
+                                                <td>changes</td>
+                                            <td>
+                                                            <code><a href="https://angular.dev/api/core/SimpleChanges" target="_blank" >SimpleChanges</a></code>
+                                            </td>
+
+                                            <td>
+                                                    No
+                                            </td>
+
+
+                                        </tr>
+                                    </tbody>
+                                </table>
+                            </div>
+                        <div class="io-description">
+                            <b>Devuelve : </b>        <code><a href="https://www.typescriptlang.org/docs/handbook/basic-types.html" target="_blank" >void</a></code>
+
+                        </div>
+                            <div class="io-description">
+                                
+                            </div>
+                </td>
+            </tr>
+        </tbody>
+    </table>
+    <table class="table table-sm table-bordered">
+        <tbody>
+            <tr>
+                <td class="col-md-4">
+                    <a name="ngOnDestroy"></a>
+                    <span class="name">
+                        <span ><b>ngOnDestroy</b></span>
+                        <a href="#ngOnDestroy"><span class="icon ion-ios-link"></span></a>
+                    </span>
+                </td>
+            </tr>
+            <tr>
+                <td class="col-md-4">
+<code>ngOnDestroy()</code>
+                </td>
+            </tr>
+
+
+                    <tr>
+                        <td class="col-md-4">
+                            <div class="io-line">Definido en <a href="" data-line="126"
+                                    class="link-to-prism">src/app/shared/components/camera/camera.component.ts:126</a></div>
+                        </td>
+                    </tr>
+
+
+            <tr>
+                <td class="col-md-4">
+
+                        <div class="io-description">
+                            <b>Devuelve : </b>        <code><a href="https://www.typescriptlang.org/docs/handbook/basic-types.html" target="_blank" >void</a></code>
+
+                        </div>
+                </td>
+            </tr>
+        </tbody>
+    </table>
+    <table class="table table-sm table-bordered">
+        <tbody>
+            <tr>
+                <td class="col-md-4">
+                    <a name="retakePhoto"></a>
+                    <span class="name">
+                            <span class="modifier">Public</span>
+                        <span ><b>retakePhoto</b></span>
+                        <a href="#retakePhoto"><span class="icon ion-ios-link"></span></a>
+                    </span>
+                </td>
+            </tr>
+            <tr>
+                <td class="col-md-4">
+                        <span class="modifier-icon icon ion-ios-reset"></span>
+                    <code>retakePhoto()</code>
+                </td>
+            </tr>
+
+
+                    <tr>
+                        <td class="col-md-4">
+                            <div class="io-line">Definido en <a href="" data-line="113"
+                                    class="link-to-prism">src/app/shared/components/camera/camera.component.ts:113</a></div>
+                        </td>
+                    </tr>
+
+
+            <tr>
+                <td class="col-md-4">
+
+                        <div class="io-description">
+                            <b>Devuelve : </b>        <code><a href="https://www.typescriptlang.org/docs/handbook/basic-types.html" target="_blank" >void</a></code>
+
+                        </div>
+                </td>
+            </tr>
+        </tbody>
+    </table>
+    <table class="table table-sm table-bordered">
+        <tbody>
+            <tr>
+                <td class="col-md-4">
+                    <a name="savePhoto"></a>
+                    <span class="name">
+                            <span class="modifier">Public</span>
+                        <span ><b>savePhoto</b></span>
+                        <a href="#savePhoto"><span class="icon ion-ios-link"></span></a>
+                    </span>
+                </td>
+            </tr>
+            <tr>
+                <td class="col-md-4">
+                        <span class="modifier-icon icon ion-ios-reset"></span>
+                    <code>savePhoto()</code>
+                </td>
+            </tr>
+
+
+                    <tr>
+                        <td class="col-md-4">
+                            <div class="io-line">Definido en <a href="" data-line="105"
+                                    class="link-to-prism">src/app/shared/components/camera/camera.component.ts:105</a></div>
+                        </td>
+                    </tr>
+
+
+            <tr>
+                <td class="col-md-4">
+
+                        <div class="io-description">
+                            <b>Devuelve : </b>        <code><a href="https://www.typescriptlang.org/docs/handbook/basic-types.html" target="_blank" >void</a></code>
+
+                        </div>
+                </td>
+            </tr>
+        </tbody>
+    </table>
+    <table class="table table-sm table-bordered">
+        <tbody>
+            <tr>
+                <td class="col-md-4">
+                    <a name="startCamera"></a>
+                    <span class="name">
+                            <span class="modifier">Public</span>
+                            <span class="modifier">Async</span>
+                        <span ><b>startCamera</b></span>
+                        <a href="#startCamera"><span class="icon ion-ios-link"></span></a>
+                    </span>
+                </td>
+            </tr>
+            <tr>
+                <td class="col-md-4">
+                        <span class="modifier-icon icon ion-ios-reset"></span>
+                    <code>startCamera()</code>
+                </td>
+            </tr>
+
+
+                    <tr>
+                        <td class="col-md-4">
+                            <div class="io-line">Definido en <a href="" data-line="57"
+                                    class="link-to-prism">src/app/shared/components/camera/camera.component.ts:57</a></div>
+                        </td>
+                    </tr>
+
+
+            <tr>
+                <td class="col-md-4">
+
+                        <div class="io-description">
+                            <b>Devuelve : </b>        <code><a href="https://www.typescriptlang.org/docs/handbook/basic-types.html" target="_blank" >any</a></code>
+
+                        </div>
+                </td>
+            </tr>
+        </tbody>
+    </table>
+    <table class="table table-sm table-bordered">
+        <tbody>
+            <tr>
+                <td class="col-md-4">
+                    <a name="stopCamera"></a>
+                    <span class="name">
+                            <span class="modifier">Public</span>
+                        <span ><b>stopCamera</b></span>
+                        <a href="#stopCamera"><span class="icon ion-ios-link"></span></a>
+                    </span>
+                </td>
+            </tr>
+            <tr>
+                <td class="col-md-4">
+                        <span class="modifier-icon icon ion-ios-reset"></span>
+                    <code>stopCamera()</code>
+                </td>
+            </tr>
+
+
+                    <tr>
+                        <td class="col-md-4">
+                            <div class="io-line">Definido en <a href="" data-line="119"
+                                    class="link-to-prism">src/app/shared/components/camera/camera.component.ts:119</a></div>
+                        </td>
+                    </tr>
+
+
+            <tr>
+                <td class="col-md-4">
+
+                        <div class="io-description">
+                            <b>Devuelve : </b>        <code><a href="https://www.typescriptlang.org/docs/handbook/basic-types.html" target="_blank" >void</a></code>
+
+                        </div>
+                </td>
+            </tr>
+        </tbody>
+    </table>
+</section>
+
+    <section data-compodoc="block-properties">
+    
+    <h3 id="inputs">
+        Propiedades
+    </h3>
+    <table class="table table-sm table-bordered">
+        <tbody>
+            <tr>
+                <td class="col-md-4">
+                    <a name="cameraError"></a>
+                    <span class="name">
+                            <span class="modifier">Public</span>
+                        <span ><b>cameraError</b></span>
+                        <a href="#cameraError"><span class="icon ion-ios-link"></span></a>
+                    </span>
+                </td>
+            </tr>
+                <tr>
+                    <td class="col-md-4">
+                        <i>Tipo : </i>    <code>string | null</code>
+
+                    </td>
+                </tr>
+                <tr>
+                    <td class="col-md-4">
+                        <i>Valor por defecto : </i><code>null</code>
+                    </td>
+                </tr>
+                    <tr>
+                        <td class="col-md-4">
+                                <div class="io-line">Definido en <a href="" data-line="31" class="link-to-prism">src/app/shared/components/camera/camera.component.ts:31</a></div>
+                        </td>
+                    </tr>
+
+
+        </tbody>
+    </table>
+    <table class="table table-sm table-bordered">
+        <tbody>
+            <tr>
+                <td class="col-md-4">
+                    <a name="canvasElement"></a>
+                    <span class="name">
+                            <span class="modifier"></span>
+                        <span ><b>canvasElement</b></span>
+                        <a href="#canvasElement"><span class="icon ion-ios-link"></span></a>
+                    </span>
+                </td>
+            </tr>
+                <tr>
+                    <td class="col-md-4">
+                        <i>Tipo : </i>    <code>ElementRef&lt;HTMLCanvasElement&gt;</code>
+
+                    </td>
+                </tr>
+                <tr>
+                    <td class="col-md-4">
+                        <b>Decoradores : </b>
+                        <br />
+                        <code>
+                            @ViewChild(&#x27;canvas&#x27;)<br />
+                        </code>
+                    </td>
+                </tr>
+                    <tr>
+                        <td class="col-md-4">
+                                <div class="io-line">Definido en <a href="" data-line="26" class="link-to-prism">src/app/shared/components/camera/camera.component.ts:26</a></div>
+                        </td>
+                    </tr>
+
+
+        </tbody>
+    </table>
+    <table class="table table-sm table-bordered">
+        <tbody>
+            <tr>
+                <td class="col-md-4">
+                    <a name="capturedImage"></a>
+                    <span class="name">
+                            <span class="modifier">Public</span>
+                        <span ><b>capturedImage</b></span>
+                        <a href="#capturedImage"><span class="icon ion-ios-link"></span></a>
+                    </span>
+                </td>
+            </tr>
+                <tr>
+                    <td class="col-md-4">
+                        <i>Tipo : </i>    <code>string | null</code>
+
+                    </td>
+                </tr>
+                <tr>
+                    <td class="col-md-4">
+                        <i>Valor por defecto : </i><code>null</code>
+                    </td>
+                </tr>
+                    <tr>
+                        <td class="col-md-4">
+                                <div class="io-line">Definido en <a href="" data-line="30" class="link-to-prism">src/app/shared/components/camera/camera.component.ts:30</a></div>
+                        </td>
+                    </tr>
+
+
+        </tbody>
+    </table>
+    <table class="table table-sm table-bordered">
+        <tbody>
+            <tr>
+                <td class="col-md-4">
+                    <a name="isCameraActive"></a>
+                    <span class="name">
+                            <span class="modifier">Public</span>
+                        <span ><b>isCameraActive</b></span>
+                        <a href="#isCameraActive"><span class="icon ion-ios-link"></span></a>
+                    </span>
+                </td>
+            </tr>
+                <tr>
+                    <td class="col-md-4">
+                        <i>Tipo : </i>    <code>unknown</code>
+
+                    </td>
+                </tr>
+                <tr>
+                    <td class="col-md-4">
+                        <i>Valor por defecto : </i><code>true</code>
+                    </td>
+                </tr>
+                    <tr>
+                        <td class="col-md-4">
+                                <div class="io-line">Definido en <a href="" data-line="28" class="link-to-prism">src/app/shared/components/camera/camera.component.ts:28</a></div>
+                        </td>
+                    </tr>
+
+
+        </tbody>
+    </table>
+    <table class="table table-sm table-bordered">
+        <tbody>
+            <tr>
+                <td class="col-md-4">
+                    <a name="isLoading"></a>
+                    <span class="name">
+                            <span class="modifier">Public</span>
+                        <span ><b>isLoading</b></span>
+                        <a href="#isLoading"><span class="icon ion-ios-link"></span></a>
+                    </span>
+                </td>
+            </tr>
+                <tr>
+                    <td class="col-md-4">
+                        <i>Tipo : </i>    <code>unknown</code>
+
+                    </td>
+                </tr>
+                <tr>
+                    <td class="col-md-4">
+                        <i>Valor por defecto : </i><code>true</code>
+                    </td>
+                </tr>
+                    <tr>
+                        <td class="col-md-4">
+                                <div class="io-line">Definido en <a href="" data-line="29" class="link-to-prism">src/app/shared/components/camera/camera.component.ts:29</a></div>
+                        </td>
+                    </tr>
+
+
+        </tbody>
+    </table>
+    <table class="table table-sm table-bordered">
+        <tbody>
+            <tr>
+                <td class="col-md-4">
+                    <a name="mediaStream"></a>
+                    <span class="name">
+                            <span class="modifier">Private</span>
+                        <span ><b>mediaStream</b></span>
+                        <a href="#mediaStream"><span class="icon ion-ios-link"></span></a>
+                    </span>
+                </td>
+            </tr>
+                <tr>
+                    <td class="col-md-4">
+                        <i>Tipo : </i>    <code>MediaStream | null</code>
+
+                    </td>
+                </tr>
+                <tr>
+                    <td class="col-md-4">
+                        <i>Valor por defecto : </i><code>null</code>
+                    </td>
+                </tr>
+                    <tr>
+                        <td class="col-md-4">
+                                <div class="io-line">Definido en <a href="" data-line="33" class="link-to-prism">src/app/shared/components/camera/camera.component.ts:33</a></div>
+                        </td>
+                    </tr>
+
+
+        </tbody>
+    </table>
+    <table class="table table-sm table-bordered">
+        <tbody>
+            <tr>
+                <td class="col-md-4">
+                    <a name="videoElement"></a>
+                    <span class="name">
+                            <span class="modifier"></span>
+                        <span ><b>videoElement</b></span>
+                        <a href="#videoElement"><span class="icon ion-ios-link"></span></a>
+                    </span>
+                </td>
+            </tr>
+                <tr>
+                    <td class="col-md-4">
+                        <i>Tipo : </i>    <code>ElementRef&lt;HTMLVideoElement&gt;</code>
+
+                    </td>
+                </tr>
+                <tr>
+                    <td class="col-md-4">
+                        <b>Decoradores : </b>
+                        <br />
+                        <code>
+                            @ViewChild(&#x27;video&#x27;)<br />
+                        </code>
+                    </td>
+                </tr>
+                    <tr>
+                        <td class="col-md-4">
+                                <div class="io-line">Definido en <a href="" data-line="25" class="link-to-prism">src/app/shared/components/camera/camera.component.ts:25</a></div>
+                        </td>
+                    </tr>
+
+
+        </tbody>
+    </table>
+</section>
+
+</div>
+
+
+    <div class="tab-pane fade  tab-source-code" id="source">
+        <pre class="line-numbers compodoc-sourcecode"><code class="language-typescript">import { Component, ElementRef, EventEmitter, Input, Output, ViewChild, AfterViewInit, OnDestroy, OnChanges, SimpleChanges } from &#x27;@angular/core&#x27;;
+import { NzSpinModule } from &#x27;ng-zorro-antd/spin&#x27;;
+import { NzIconModule } from &#x27;ng-zorro-antd/icon&#x27;;
+import { CommonModule } from &#x27;@angular/common&#x27;;
+
+@Component({
+  selector: &#x27;app-camera&#x27;,
+  standalone: true,
+  imports: [
+    CommonModule,
+    NzSpinModule,
+    NzIconModule
+  ],
+  templateUrl: &#x27;./camera.component.html&#x27;,
+  styleUrl: &#x27;./camera.component.scss&#x27;
+})
+export class CameraComponent implements AfterViewInit, OnDestroy, OnChanges {
+  @Input() existingImage: string | null &#x3D; null;
+  @Input() showScannerFrame: boolean &#x3D; true;
+  @Input() captureHintText: string &#x3D; &#x27;Encuadre el comprobante&#x27;;
+  @Input() showCaptureHint: boolean &#x3D; true;
+  @Output() onPhotoSaved &#x3D; new EventEmitter&lt;string&gt;();
+  @Output() onClose &#x3D; new EventEmitter&lt;void&gt;();
+
+  @ViewChild(&#x27;video&#x27;) videoElement!: ElementRef&lt;HTMLVideoElement&gt;;
+  @ViewChild(&#x27;canvas&#x27;) canvasElement!: ElementRef&lt;HTMLCanvasElement&gt;;
+
+  public isCameraActive &#x3D; true;
+  public isLoading &#x3D; true;
+  public capturedImage: string | null &#x3D; null; // Almacena la captura para previsualización rápida
+  public cameraError: string | null &#x3D; null; // Almacena el mensaje si se niegan los permisos
+
+  private mediaStream: MediaStream | null &#x3D; null;
+
+  constructor() { }
+
+  ngAfterViewInit() {
+    if (this.existingImage) {
+      this.capturedImage &#x3D; this.existingImage;
+      this.isCameraActive &#x3D; false;
+      this.isLoading &#x3D; false;
+    } else {
+      this.startCamera();
+    }
+  }
+
+  ngOnChanges(changes: SimpleChanges): void {
+    if (changes[&#x27;existingImage&#x27;] &amp;&amp; !changes[&#x27;existingImage&#x27;].firstChange) {
+      const newImage &#x3D; changes[&#x27;existingImage&#x27;].currentValue;
+      if (newImage) {
+        this.capturedImage &#x3D; newImage;
+        this.isCameraActive &#x3D; false;
+      }
+    }
+  }
+
+  public async startCamera() {
+    try {
+      this.isLoading &#x3D; true;
+      this.cameraError &#x3D; null;
+      if (this.mediaStream) this.stopCamera();
+
+      const stream &#x3D; await navigator.mediaDevices.getUserMedia({
+        video: {
+          facingMode: &#x27;environment&#x27;,
+          width: { ideal: 4096 },
+          height: { ideal: 2160 }
+        }
+      });
+      this.mediaStream &#x3D; stream;
+
+      if (this.videoElement?.nativeElement) {
+        this.videoElement.nativeElement.srcObject &#x3D; stream;
+        await this.videoElement.nativeElement.play();
+        this.isLoading &#x3D; false;
+      }
+    } catch (error) {
+      console.error(&#x27;Error cámara:&#x27;, error);
+      this.isLoading &#x3D; false;
+      this.cameraError &#x3D; &#x27;No se pudo acceder a la cámara. Por favor, verifique los permisos en su navegador.&#x27;;
+    }
+  }
+
+  public capturePhoto(): void {
+    if (!this.videoElement?.nativeElement) return;
+
+    const video &#x3D; this.videoElement.nativeElement;
+    const canvas &#x3D; this.canvasElement.nativeElement;
+
+    // Ajustamos el canvas a la resolución real del stream de video
+    canvas.width &#x3D; video.videoWidth;
+    canvas.height &#x3D; video.videoHeight;
+
+    const context &#x3D; canvas.getContext(&#x27;2d&#x27;);
+    if (context) {
+      context.drawImage(video, 0, 0, canvas.width, canvas.height);
+      // Extraemos la imagen en formato WebP con calidad 80% (pesa mucho menos que un JPEG sin pérdida visual)
+      this.capturedImage &#x3D; canvas.toDataURL(&#x27;image/webp&#x27;, 0.80);
+    }
+
+    this.isCameraActive &#x3D; false;
+    this.stopCamera();
+  }
+
+  public savePhoto(): void {
+    if (this.capturedImage) {
+      // Emitimos la imagen original al padre para que él decida 
+      // si pasar por OpenCV y el Editor Aislado.
+      this.onPhotoSaved.emit(this.capturedImage);
+    }
+  }
+
+  public retakePhoto(): void {
+    this.isCameraActive &#x3D; true;
+    this.capturedImage &#x3D; null;
+    this.startCamera();
+  }
+
+  public stopCamera(): void {
+    if (this.mediaStream) {
+      this.mediaStream.getTracks().forEach(t &#x3D;&gt; t.stop());
+      this.mediaStream &#x3D; null;
+    }
+  }
+
+  ngOnDestroy() {
+    this.stopCamera();
+  }
+}</code></pre>
+    </div>
+
+    <div class="tab-pane fade " id="templateData">
+        <pre class="line-numbers"><code class="language-html">&lt;div class&#x3D;&quot;camera-container&quot;&gt;
+    &lt;button class&#x3D;&quot;btn-back&quot; (click)&#x3D;&quot;onClose.emit()&quot;&gt;
+        &lt;span nz-icon nzType&#x3D;&quot;arrow-left&quot; nzTheme&#x3D;&quot;outline&quot;&gt;&lt;/span&gt;
+    &lt;/button&gt;
+
+    @if(isLoading) {
+    &lt;div class&#x3D;&quot;loading-overlay&quot;&gt;
+        &lt;nz-spin nzSimple nzSize&#x3D;&quot;large&quot;&gt;&lt;/nz-spin&gt;
+        &lt;span&gt;Iniciando cámara...&lt;/span&gt;
+    &lt;/div&gt;
+    }
+
+    @if(cameraError) {
+    &lt;div class&#x3D;&quot;loading-overlay&quot; style&#x3D;&quot;background: rgba(0,0,0,0.85); padding: 30px 20px; border-radius: 16px; width: 85%; max-width: 350px;&quot;&gt;
+        &lt;span nz-icon nzType&#x3D;&quot;warning&quot; nzTheme&#x3D;&quot;outline&quot; style&#x3D;&quot;font-size: 42px; color: #ffaa00; margin-bottom: 20px; display: inline-block;&quot;&gt;&lt;/span&gt;
+        &lt;p style&#x3D;&quot;font-size: 15px; font-weight: 500; line-height: 1.4; margin-bottom: 24px;&quot;&gt;
+            {{ cameraError }}
+        &lt;/p&gt;
+        &lt;button (click)&#x3D;&quot;retakePhoto()&quot; style&#x3D;&quot;background: #25d366; color: white; border: none; padding: 12px 30px; border-radius: 30px; font-weight: bold; cursor: pointer; display: flex; align-items: center; justify-content: center; width: 100%; gap: 8px;&quot;&gt;
+            &lt;span nz-icon nzType&#x3D;&quot;reload&quot; nzTheme&#x3D;&quot;outline&quot;&gt;&lt;/span&gt; REINTENTAR
+        &lt;/button&gt;
+    &lt;/div&gt;
+    }
+
+    &lt;video #video autoplay playsinline [style.display]&#x3D;&quot;isCameraActive &amp;&amp; !isLoading ? &#x27;block&#x27; : &#x27;none&#x27;&quot;&gt;
+    &lt;/video&gt;
+
+    @if(isCameraActive &amp;&amp; !isLoading) {
+    @if(showScannerFrame) {
+    &lt;div class&#x3D;&quot;camera-overlay-mask&quot;&gt;
+        &lt;div class&#x3D;&quot;scanner-frame&quot;&gt;
+            &lt;div class&#x3D;&quot;corner top-left&quot;&gt;&lt;/div&gt;
+            &lt;div class&#x3D;&quot;corner top-right&quot;&gt;&lt;/div&gt;
+            &lt;div class&#x3D;&quot;corner bottom-left&quot;&gt;&lt;/div&gt;
+            &lt;div class&#x3D;&quot;corner bottom-right&quot;&gt;&lt;/div&gt;
+            &lt;div class&#x3D;&quot;scan-line&quot;&gt;&lt;/div&gt;
+        &lt;/div&gt;
+    &lt;/div&gt;
+    }
+
+    &lt;div class&#x3D;&quot;capture-ui&quot;&gt;
+        &lt;button class&#x3D;&quot;shutter-button&quot; (click)&#x3D;&quot;capturePhoto()&quot;&gt;&lt;/button&gt;
+        @if(showCaptureHint &amp;&amp; captureHintText) {
+        &lt;p class&#x3D;&quot;capture-hint&quot;&gt;{{ captureHintText }}&lt;/p&gt;
+        }
+    &lt;/div&gt;
+    }
+
+    &lt;canvas #canvas style&#x3D;&quot;display: none;&quot;&gt;&lt;/canvas&gt;
+
+    @if(!isCameraActive &amp;&amp; capturedImage &amp;&amp; !isLoading) {
+    &lt;div class&#x3D;&quot;preview-overlay&quot;&gt;
+        &lt;img [src]&#x3D;&quot;capturedImage&quot; alt&#x3D;&quot;Foto capturada&quot;&gt;
+
+        &lt;div class&#x3D;&quot;preview-toolbar&quot;&gt;
+            &lt;button class&#x3D;&quot;btn-action retake&quot; (click)&#x3D;&quot;retakePhoto()&quot;&gt;
+                &lt;span nz-icon nzType&#x3D;&quot;reload&quot; nzTheme&#x3D;&quot;outline&quot;&gt;&lt;/span&gt; REINTENTAR
+            &lt;/button&gt;
+            &lt;button class&#x3D;&quot;btn-action confirm&quot; (click)&#x3D;&quot;savePhoto()&quot;&gt;
+                {{ existingImage ? &#x27;CONTINUAR&#x27; : &#x27;ACEPTAR&#x27; }}
+                &lt;span nz-icon nzType&#x3D;&quot;arrow-right&quot; nzTheme&#x3D;&quot;outline&quot;&gt;&lt;/span&gt;
+            &lt;/button&gt;
+        &lt;/div&gt;
+        &lt;div class&#x3D;&quot;editor-hint&quot;&gt;¿La foto se ve nítida?&lt;/div&gt;
+    &lt;/div&gt;
+    }
+&lt;/div&gt;</code></pre>
+    </div>
+
+    <div class="tab-pane fade " id="styleData">
+                <p class="comment">
+                    <code>./camera.component.scss</code>
+                </p>
+                <pre class="line-numbers"><code class="language-scss">.camera-container {
+    position: relative;
+    width: 100%;
+    height: 100%;
+    background: #000;
+    overflow: hidden;
+
+    video {
+        width: 100%;
+        height: 100%;
+        object-fit: cover;
+        position: absolute;
+        top: 0;
+        left: 0;
+        z-index: 1;
+    }
+
+    .btn-back {
+        position: absolute;
+        top: 20px;
+        left: 20px;
+        z-index: 1000;
+        background: none;
+        border: none;
+        color: white;
+        font-size: 1.5rem;
+        text-shadow: 0 2px 4px rgba(0, 0, 0, 0.5);
+    }
+
+    .loading-overlay {
+        position: absolute;
+        top: 50%;
+        left: 50%;
+        transform: translate(-50%, -50%);
+        color: white;
+        text-align: center;
+        z-index: 500;
+
+        span {
+            display: block;
+            margin-top: 10px;
+            font-size: 14px;
+        }
+    }
+
+    // UI de disparo
+    .capture-ui {
+        position: absolute;
+        bottom: 40px;
+        width: 100%;
+        display: flex;
+        flex-direction: column;
+        align-items: center;
+        z-index: 80;
+
+        .shutter-button {
+            width: 75px;
+            height: 75px;
+            border-radius: 50%;
+            border: 5px solid #fff;
+            background: rgba(255, 255, 255, 0.3);
+            box-shadow: 0 0 15px rgba(0, 0, 0, 0.5);
+            transition: transform 0.1s;
+
+            &amp;:active {
+                transform: scale(0.9);
+            }
+        }
+    }
+
+    // --- PREVISUALIZACIÓN RÁPIDA (Post-Captura) ---
+    // Esta capa es solo para confirmar que la foto se tomó bien antes de ir al editor profesional
+    .preview-overlay {
+        position: absolute;
+        inset: 0;
+        z-index: 900;
+        background: #000;
+        display: flex;
+        flex-direction: column;
+
+        img {
+            flex: 1;
+            width: 100%;
+            height: 100%;
+            object-fit: contain; // Ver la foto completa
+            background: #111;
+        }
+
+        .preview-toolbar {
+            position: absolute;
+            bottom: 0;
+            width: 100%;
+            height: 120px;
+            background: linear-gradient(transparent, rgba(0, 0, 0, 0.9));
+            display: flex;
+            justify-content: space-around;
+            align-items: center;
+            padding-bottom: 30px;
+            z-index: 1001;
+        }
+
+        .btn-action {
+            border: none;
+            padding: 14px 28px;
+            border-radius: 30px;
+            font-weight: bold;
+            display: flex;
+            align-items: center;
+            gap: 10px;
+            font-size: 14px;
+            cursor: pointer;
+
+            &amp;.retake {
+                background: #333;
+                color: white;
+            }
+
+            &amp;.confirm {
+                background: #25d366;
+                color: white;
+            }
+        }
+
+        .editor-hint {
+            position: absolute;
+            top: 70px;
+            width: 100%;
+            text-align: center;
+            color: #fff;
+            font-weight: 500;
+            text-shadow: 0 2px 4px #000;
+        }
+    }
+}
+
+// Estilos de la máscara (Scanner)
+.camera-overlay-mask {
+    position: absolute;
+    inset: 0;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    z-index: 5;
+    pointer-events: none;
+
+    .scanner-frame {
+        width: 80vw;
+        height: 65vh;
+        position: relative;
+        box-shadow: 0 0 0 1000px rgba(0, 0, 0, 0.5);
+        border: 1px solid rgba(255, 255, 255, 0.3);
+
+        .corner {
+            position: absolute;
+            width: 20px;
+            height: 20px;
+            border: 4px solid #25d366;
+        }
+
+        .top-left {
+            top: -2px;
+            left: -2px;
+            border-right: none;
+            border-bottom: none;
+        }
+
+        .top-right {
+            top: -2px;
+            right: -2px;
+            border-left: none;
+            border-bottom: none;
+        }
+
+        .bottom-left {
+            bottom: -2px;
+            left: -2px;
+            border-right: none;
+            border-top: none;
+        }
+
+        .bottom-right {
+            bottom: -2px;
+            right: -2px;
+            border-left: none;
+            border-top: none;
+        }
+
+        .scan-line {
+            position: absolute;
+            width: 100%;
+            height: 2px;
+            background: #25d366;
+            box-shadow: 0 0 10px #25d366;
+            animation: scan 3s infinite linear;
+        }
+    }
+}
+
+@keyframes scan {
+    0% {
+        top: 0;
+    }
+
+    50% {
+        top: 100%;
+    }
+
+    100% {
+        top: 0;
+    }
+}
+
+.capture-hint {
+    color: white;
+    margin-top: 15px;
+    background: rgba(0, 0, 0, 0.5);
+    padding: 6px 16px;
+    border-radius: 20px;
+    font-size: 13px;
+    text-align: center;
+    z-index: 80;
+}</code></pre>
+    </div>
+
+    <div class="tab-pane fade " id="tree">
+        <div id="tree-container"></div>
+        <div class="tree-legend">
+            <div class="title">
+                <b>Leyenda</b>
+            </div>
+            <div>
+                <div class="color htmlelement"></div><span>Elemento Html</span>
+            </div>
+            <div>
+                <div class="color component"></div><span>Componente</span>
+            </div>
+            <div>
+                <div class="color directive"></div><span>Elemento Html con directiva</span>
+            </div>
+        </div>
+    </div>
+
+    
+</div>
+
+<script src="../js/libs/vis-network.min.js"></script>
+<script src="../js/libs/htmlparser.js"></script>
+<script src="../js/libs/deep-iterator.js"></script>
+<script>
+        var COMPONENT_TEMPLATE = '<div><div class="camera-container">    <button class="btn-back" (click)="onClose.emit()">        <span nz-icon nzType="arrow-left" nzTheme="outline"></span>    </button>    @if(isLoading) {    <div class="loading-overlay">        <nz-spin nzSimple nzSize="large"></nz-spin>        <span>Iniciando cámara...</span>    </div>    }    @if(cameraError) {    <div class="loading-overlay" style="background: rgba(0,0,0,0.85); padding: 30px 20px; border-radius: 16px; width: 85%; max-width: 350px;">        <span nz-icon nzType="warning" nzTheme="outline" style="font-size: 42px; color: #ffaa00; margin-bottom: 20px; display: inline-block;"></span>        <p style="font-size: 15px; font-weight: 500; line-height: 1.4; margin-bottom: 24px;">            {{ cameraError }}        </p>        <button (click)="retakePhoto()" style="background: #25d366; color: white; border: none; padding: 12px 30px; border-radius: 30px; font-weight: bold; cursor: pointer; display: flex; align-items: center; justify-content: center; width: 100%; gap: 8px;">            <span nz-icon nzType="reload" nzTheme="outline"></span> REINTENTAR        </button>    </div>    }    <video #video autoplay playsinline [style.display]="isCameraActive && !isLoading ? \'block\' : \'none\'">    </video>    @if(isCameraActive && !isLoading) {    @if(showScannerFrame) {    <div class="camera-overlay-mask">        <div class="scanner-frame">            <div class="corner top-left"></div>            <div class="corner top-right"></div>            <div class="corner bottom-left"></div>            <div class="corner bottom-right"></div>            <div class="scan-line"></div>        </div>    </div>    }    <div class="capture-ui">        <button class="shutter-button" (click)="capturePhoto()"></button>        @if(showCaptureHint && captureHintText) {        <p class="capture-hint">{{ captureHintText }}</p>        }    </div>    }    <canvas #canvas style="display: none;"></canvas>    @if(!isCameraActive && capturedImage && !isLoading) {    <div class="preview-overlay">        <img [src]="capturedImage" alt="Foto capturada">        <div class="preview-toolbar">            <button class="btn-action retake" (click)="retakePhoto()">                <span nz-icon nzType="reload" nzTheme="outline"></span> REINTENTAR            </button>            <button class="btn-action confirm" (click)="savePhoto()">                {{ existingImage ? \'CONTINUAR\' : \'ACEPTAR\' }}                <span nz-icon nzType="arrow-right" nzTheme="outline"></span>            </button>        </div>        <div class="editor-hint">¿La foto se ve nítida?</div>    </div>    }</div></div>'
+    var COMPONENTS = [{'name': 'AccountConfirmedComponent', 'selector': 'app-account-confirmed'},{'name': 'AccountCreatedComponent', 'selector': 'app-account-created'},{'name': 'AddressesComponent', 'selector': 'app-addresses'},{'name': 'AnalyticsComponent', 'selector': 'app-analytics'},{'name': 'AppComponent', 'selector': 'app-root'},{'name': 'ApplicationBarComponent', 'selector': 'app-application-bar'},{'name': 'ApplicationLayoutComponent', 'selector': 'app-application-layout'},{'name': 'AuthLayoutComponent', 'selector': 'app-auth-layout'},{'name': 'BarcodeScannerComponent', 'selector': 'app-barcode-scanner'},{'name': 'CameraComponent', 'selector': 'app-camera'},{'name': 'CartComponent', 'selector': 'app-cart'},{'name': 'CatalogComponent', 'selector': 'app-catalog'},{'name': 'CategoriesComponent', 'selector': 'app-categories'},{'name': 'CategoriesListComponent', 'selector': 'app-categories-list'},{'name': 'CheckoutComponent', 'selector': 'app-checkout'},{'name': 'CompanyComponent', 'selector': 'app-company'},{'name': 'CompanySettingsComponent', 'selector': 'app-company-settings'},{'name': 'CouponsComponent', 'selector': 'app-coupons'},{'name': 'CustomersComponent', 'selector': 'app-customers'},{'name': 'DistPriceListComponent', 'selector': 'app-dist-price-list'},{'name': 'FinancesComponent', 'selector': 'app-finances'},{'name': 'ForgotPasswordComponent', 'selector': 'app-forgot-password'},{'name': 'GlobalCategoriesComponent', 'selector': 'app-global-categories'},{'name': 'GlobalCategoryComponent', 'selector': 'app-global-category'},{'name': 'GlobalItemComponent', 'selector': 'app-global-item'},{'name': 'GlobalItemsComponent', 'selector': 'app-global-items'},{'name': 'GlobalMaterialComponent', 'selector': 'app-global-material'},{'name': 'GlobalMaterialsComponent', 'selector': 'app-global-materials'},{'name': 'HomeStoreComponent', 'selector': 'app-home'},{'name': 'InventoryAuditComponent', 'selector': 'app-inventory-audit'},{'name': 'ItemsComponent', 'selector': 'app-items'},{'name': 'LoginComponent', 'selector': 'app-login'},{'name': 'MapPickerComponent', 'selector': 'app-map-picker'},{'name': 'MarketHomeComponent', 'selector': 'app-market-home'},{'name': 'MaterialComponent', 'selector': 'app-material'},{'name': 'MaterialsComponent', 'selector': 'app-materials'},{'name': 'MenuItemComponent', 'selector': 'app-menu-item'},{'name': 'MenuItemsComponent', 'selector': 'app-menu-items'},{'name': 'MpPaymentBrickComponent', 'selector': 'app-mp-payment-brick'},{'name': 'MyCompaniesComponent', 'selector': 'app-my-companies'},{'name': 'MyFavoritesComponent', 'selector': 'app-my-favorites'},{'name': 'MyPurchasesComponent', 'selector': 'app-my-purchases'},{'name': 'NavBarComponent', 'selector': 'app-nav-bar'},{'name': 'OrdersReceivedComponent', 'selector': 'app-orders-received'},{'name': 'PriceListComponent', 'selector': 'app-price-list'},{'name': 'ProductComponent', 'selector': 'app-product'},{'name': 'ProductDetailComponent', 'selector': 'app-product-detail'},{'name': 'ProductsComponent', 'selector': 'app-products'},{'name': 'ProductsVariationsComponent', 'selector': 'app-products-variations'},{'name': 'ProductVariationComponent', 'selector': 'app-product-variation'},{'name': 'PublicLayoutComponent', 'selector': 'app-public-layout'},{'name': 'RegisterComponent', 'selector': 'app-register'},{'name': 'ResetPasswordComponent', 'selector': 'app-reset-password'},{'name': 'SideBarComponent', 'selector': 'app-side-bar'},{'name': 'SsoCallbackComponent', 'selector': 'app-sso-callback'},{'name': 'StoreCatalogComponent', 'selector': 'app-store'},{'name': 'SuperAdminComponent', 'selector': 'app-super-admin'},{'name': 'SupplierComponent', 'selector': 'app-supplier'},{'name': 'SuppliersComponent', 'selector': 'app-suppliers'},{'name': 'UserLayoutComponent', 'selector': 'app-user-layout'},{'name': 'UserRolCompanyComponent', 'selector': 'app-user-rol-company'},{'name': 'WarehousesComponent', 'selector': 'app-warehouses'}];
+    var DIRECTIVES = [{'name': 'ImagePreloadDirective', 'selector': 'img[default]'}];
+    var ACTUAL_COMPONENT = {'name': 'CameraComponent'};
+</script>
+<script src="../js/tree.js"></script>
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+                   </div><div class="search-results">
+    <div class="has-results">
+        <h1 class="search-results-title"><span class='search-results-count'></span> comparación de resultados "<span class='search-query'></span>"</h1>
+        <ul class="search-results-list"></ul>
+    </div>
+    <div class="no-results">
+        <h1 class="search-results-title">No hay resultados que coincidan "<span class='search-query'></span>"</h1>
+    </div>
+</div>
+</div>
+               <!-- END CONTENT -->
+           </div>
+       </div>
+
+          
+<div class="compodoc-lang-switch">
+  <select id="compodoc-lang-select" aria-label="Seleccionar idioma">
+    <option value="es" selected>🇪🇸 Español</option>
+    <option value="en" >🇺🇸 English</option>
+    <option value="pt" >🇧🇷 Português</option>
+  </select>
+</div>
+
+          <label class="dark-mode-switch">
+               <input type="checkbox">
+               <span class="slider">
+                    <svg class="slider-icon" viewBox="0 0 24 24" fill="none" height="20" stroke="#000" stroke-linecap="round" stroke-linejoin="round" stroke-width="2" width="20" xmlns="http://www.w3.org/2000/svg">
+                    <path d="M21 12.79A9 9 0 1111.21 3 7 7 0 0021 12.79z"></path>
+                    </svg>
+               </span>
+          </label>
+
+       <script>
+            var COMPODOC_CURRENT_PAGE_DEPTH = 1;
+            var COMPODOC_CURRENT_PAGE_CONTEXT = 'component';
+            var COMPODOC_CURRENT_PAGE_URL = 'CameraComponent.html';
+            var MAX_SEARCH_RESULTS = 15;
+       </script>
+
+       <script>
+               $darkModeToggleSwitchers = document.querySelectorAll('.dark-mode-switch input');
+               var updateDarkModeSwitchOffset = function () {
+                    var content = document.querySelector('.content');
+                    var scrollbarWidth = 0;
+
+                    if (content) {
+                         scrollbarWidth = Math.max(0, content.offsetWidth - content.clientWidth);
+                    }
+
+                    document.documentElement.style.setProperty(
+                         '--content-scrollbar-width',
+                         scrollbarWidth + 'px'
+                    );
+               };
+
+               updateDarkModeSwitchOffset();
+               requestAnimationFrame(updateDarkModeSwitchOffset);
+               window.addEventListener('resize', updateDarkModeSwitchOffset);
+
+               checkToggle(darkModeState);
+               if ($darkModeToggleSwitchers.length > 0) {
+                    for (var i = 0; i < $darkModeToggleSwitchers.length; i++) {
+                         $darkModeToggleSwitchers[i].addEventListener('change', function (event) {
+                              darkModeState = !darkModeState;
+                              toggleDarkMode(darkModeState);
+                         });
+                    }
+               }
+          </script>
+
+       <script src="../js/libs/custom-elements.min.js"></script>
+       <script src="../js/libs/lit-html.js"></script>
+
+       <script src="../js/menu-wc.js" defer></script>
+
+       <script src="../js/libs/bootstrap-native.js"></script>
+
+       <script src="../js/libs/es6-shim.min.js"></script>
+       <script src="../js/libs/EventDispatcher.js"></script>
+       <script src="../js/libs/promise.min.js"></script>
+
+       <script src="../js/compodoc.js"></script>
+
+       <script src="../js/tabs.js"></script>
+       <script src="../js/menu.js"></script>
+       <script src="../js/libs/clipboard.min.js"></script>
+       <script src="../js/libs/prism.js"></script>
+       <script src="../js/sourceCode.js"></script>
+          <script src="../js/search/search.js"></script>
+          <script src="../js/search/lunr.min.js"></script>
+          <script src="../js/search/search-lunr.js"></script>
+          <script src="../js/search/search_index.js"></script>
+       <script src="../js/lazy-load-graphs.js"></script>
+
+
+    
+<script id="compodoc-lang-script">
+(function() {
+  var CURRENT_LANG = "es";
+  var ADDITIONAL_DOCS_MAP = {"es":["01.-introducción-y-arquitectura-general.html","02.-autenticación-y-control-de-accesos.html","03.-catálogo-público-y-exploración-de-tiendas.html","04.-carrito-de-compras-y-checkout-multitienda.html","05.-gestión-de-empresas,-roles-y-configuración.html","06.-inventario,-productos,-variaciones-y-almacenes.html","07.-gestión-de-pedidos,-compras-y-cupones.html","08.-analíticas-de-negocio,-finanzas-y-proveedores.html"],"en":["01.-introduction-and-general-architecture.html","02.-authentication-and-access-control.html","03.-public-catalog-and-store-exploration.html","04.-shopping-cart-and-multi-store-checkout.html","05.-company-management,-roles-and-configuration.html","06.-inventory,-products,-variations-and-warehouses.html","07.-orders-management,-purchases-and-coupons.html","08.-business-analytics,-finances-and-suppliers.html"],"pt":["01.-introdução-e-arquitetura-geral.html","02.-autenticação-e-controle-de-acesso.html","03.-catálogo-público-e-exploração-de-lojas.html","04.-carrinho-de-compras-e-checkout-multiloja.html","05.-gestão-de-empresas,-funções-e-configuração.html","06.-estoque,-produtos,-variações-e-armazéns.html","07.-gestão-de-pedidos,-compras-e-cupons.html","08.-análise-de-negócios,-finanças-e-fornecedores.html"]};
+
+  var select = document.getElementById('compodoc-lang-select');
+  if (!select) return;
+
+  try {
+    localStorage.setItem('compodoc_lang', CURRENT_LANG);
+  } catch (e) {}
+
+  select.addEventListener('change', function(e) {
+    var targetLang = e.target.value;
+    if (targetLang === CURRENT_LANG) return;
+
+    try {
+      localStorage.setItem('compodoc_lang', targetLang);
+    } catch (err) {}
+
+    var href = window.location.href;
+    var pathname = window.location.pathname;
+
+    // Manejo especial para páginas de additional-documentation
+    if (pathname.indexOf('/additional-documentation/') !== -1) {
+      var segments = pathname.split('/');
+      var currentFile = decodeURIComponent(segments[segments.length - 1]);
+      
+      var currentList = ADDITIONAL_DOCS_MAP[CURRENT_LANG] || [];
+      var targetList = ADDITIONAL_DOCS_MAP[targetLang] || [];
+      var foundIndex = -1;
+
+      var prefixMatch = currentFile.match(/^(\d{2}\.-)/);
+      if (prefixMatch) {
+        var prefix = prefixMatch[1];
+        for (var i = 0; i < targetList.length; i++) {
+          if (targetList[i].startsWith(prefix)) {
+            foundIndex = i;
+            break;
+          }
+        }
+      }
+      if (foundIndex === -1) {
+        for (var j = 0; j < currentList.length; j++) {
+          if (currentList[j] === currentFile) {
+            foundIndex = j;
+            break;
+          }
+        }
+      }
+
+      var targetFile = (foundIndex !== -1 && targetList[foundIndex]) 
+        ? targetList[foundIndex] 
+        : (targetList[0] || 'index.html');
+
+      var targetSubpath = '/' + targetLang + '/additional-documentation/' + targetFile;
+      var currentSubpath = '/' + CURRENT_LANG + '/additional-documentation/' + segments[segments.length - 1];
+
+      if (href.indexOf(currentSubpath) !== -1) {
+        window.location.href = href.replace(currentSubpath, targetSubpath);
+        return;
+      }
+    }
+
+    // Páginas estándar
+    var standardReplace = href.replace('/' + CURRENT_LANG + '/', '/' + targetLang + '/');
+    if (standardReplace !== href) {
+      window.location.href = standardReplace;
+    } else {
+      var depth = (typeof COMPODOC_CURRENT_PAGE_DEPTH !== 'undefined') ? COMPODOC_CURRENT_PAGE_DEPTH : 0;
+      var prefixPath = '';
+      for (var k = 0; k <= depth; k++) {
+        prefixPath += '../';
+      }
+      window.location.href = prefixPath + targetLang + '/index.html';
+    }
+  });
+})();
+</script>
+
+</body>
+</html>

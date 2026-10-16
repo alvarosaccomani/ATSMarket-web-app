@@ -1,0 +1,34 @@
+[
+    {
+        "title": "01. Introducción y Arquitectura General",
+        "file": "01-introduccion.md"
+    },
+    {
+        "title": "02. Autenticación y Control de Accesos",
+        "file": "02-autenticacion.md"
+    },
+    {
+        "title": "03. Catálogo Público y Exploración de Tiendas",
+        "file": "03-catalogo-y-tienda.md"
+    },
+    {
+        "title": "04. Carrito de Compras y Checkout Multitienda",
+        "file": "04-carrito-y-checkout.md"
+    },
+    {
+        "title": "05. Gestión de Empresas, Roles y Configuración",
+        "file": "05-panel-empresa-y-administracion.md"
+    },
+    {
+        "title": "06. Inventario, Productos, Variaciones y Almacenes",
+        "file": "06-inventario-productos-y-almacenes.md"
+    },
+    {
+        "title": "07. Gestión de Pedidos, Compras y Cupones",
+        "file": "07-pedidos-compras-cupones.md"
+    },
+    {
+        "title": "08. Analíticas de Negocio, Finanzas y Proveedores",
+        "file": "08-analiticas-finanzas-proveedores.md"
+    }
+]

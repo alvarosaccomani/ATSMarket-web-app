@@ -1,0 +1,3778 @@
+<!doctype html>
+<html class="no-js" lang="">
+    <head>
+        <meta charset="utf-8">
+        <meta http-equiv="x-ua-compatible" content="ie=edge">
+        <title>ATSMarket Web App</title>
+        <meta name="description" content="">
+        <meta name="viewport" content="width=device-width, initial-scale=1">
+
+        <link rel="icon" type="image/x-icon" href="../images/favicon.ico">
+	   <link rel="stylesheet" href="../styles/style.css">
+        <link rel="stylesheet" href="../styles/dark.css">
+    
+<style id="compodoc-lang-styles">
+  .compodoc-lang-switch {
+    position: fixed;
+    top: 15px;
+    right: calc(90px + var(--content-scrollbar-width, 0px));
+    z-index: 1050;
+    display: inline-block;
+  }
+  @media (max-width: 767px) {
+    .compodoc-lang-switch {
+      top: 8px;
+      right: 60px;
+    }
+  }
+  #compodoc-lang-select {
+    height: 34px;
+    padding: 0 12px;
+    border-radius: 17px;
+    border: 1px solid #d9d9d9;
+    background-color: #ffffff;
+    color: #1f1f1f;
+    font-size: 13px;
+    font-family: inherit;
+    font-weight: 500;
+    cursor: pointer;
+    outline: none;
+    box-shadow: 0 2px 6px rgba(0, 0, 0, 0.08);
+    transition: all 0.3s cubic-bezier(0.645, 0.045, 0.355, 1);
+    -webkit-appearance: none;
+    -moz-appearance: none;
+    appearance: none;
+    padding-right: 26px;
+    background-image: url("data:image/svg+xml;charset=UTF-8,%3csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 24 24' fill='none' stroke='%23666' stroke-width='2' stroke-linecap='round' stroke-linejoin='round'%3e%3cpolyline points='6 9 12 15 18 9'%3e%3c/polyline%3e%3c/svg%3e");
+    background-repeat: no-repeat;
+    background-position: right 8px center;
+    background-size: 14px;
+  }
+  #compodoc-lang-select:hover, #compodoc-lang-select:focus {
+    border-color: #5cc0ae;
+    box-shadow: 0 2px 8px rgba(92, 192, 174, 0.25);
+  }
+  body.dark .compodoc-lang-switch #compodoc-lang-select {
+    background-color: #2c3e50;
+    color: #ecf0f1;
+    border: 1px solid #4a627a;
+    box-shadow: 0 2px 6px rgba(0, 0, 0, 0.35);
+    background-image: url("data:image/svg+xml;charset=UTF-8,%3csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 24 24' fill='none' stroke='%23ecf0f1' stroke-width='2' stroke-linecap='round' stroke-linejoin='round'%3e%3cpolyline points='6 9 12 15 18 9'%3e%3c/polyline%3e%3c/svg%3e");
+  }
+  body.dark .compodoc-lang-switch #compodoc-lang-select option {
+    background-color: #2c3e50;
+    color: #ecf0f1;
+  }
+</style>
+
+</head>
+    <body>
+          <script>
+               // Blocking script to avoid flickering dark mode
+               // Dark mode toggle button
+               var useDark = window.matchMedia('(prefers-color-scheme: dark)');
+               var darkModeState = useDark.matches;
+               var $darkModeToggleSwitchers = document.querySelectorAll('.dark-mode-switch input');
+               var $darkModeToggles = document.querySelectorAll('.dark-mode-switch');
+               var darkModeStateLocal = localStorage.getItem('compodoc_darkmode-state');
+
+               function checkToggle(check) {
+                    for (var i = 0; i < $darkModeToggleSwitchers.length; i++) {
+                         $darkModeToggleSwitchers[i].checked = check;
+                    }
+               }
+
+               function toggleDarkMode(state) {
+                    if (window.localStorage) {
+                         localStorage.setItem('compodoc_darkmode-state', state);
+                    }
+
+                    checkToggle(state);
+
+                    const hasClass = document.body.classList.contains('dark');
+
+                    if (state) {
+                         for (var i = 0; i < $darkModeToggles.length; i++) {
+                              $darkModeToggles[i].classList.add('dark');
+                         }
+                         if (!hasClass) {
+                              document.body.classList.add('dark');
+                         }
+                    } else {
+                         for (var i = 0; i < $darkModeToggles.length; i++) {
+                              $darkModeToggles[i].classList.remove('dark');
+                         }
+                         if (hasClass) {
+                              document.body.classList.remove('dark');
+                         }
+                    }
+               }
+
+               useDark.addEventListener('change', function (evt) {
+                    toggleDarkMode(evt.matches);
+               });
+               if (darkModeStateLocal) {
+                    darkModeState = darkModeStateLocal === 'true';
+               }
+               toggleDarkMode(darkModeState);
+          </script>
+          <script>
+              // --- Iframe navigation tracking for Template Playground ---
+              function sendCurrentUrlToParent() {
+                  if (window.parent && window.parent !== window) {
+                      window.parent.postMessage({
+                          type: 'compodoc-iframe-navigate',
+                          url: window.location.pathname + window.location.hash
+                      }, '*');
+                  }
+              }
+              window.addEventListener('hashchange', sendCurrentUrlToParent, false);
+              window.addEventListener('popstate', sendCurrentUrlToParent, false);
+              window.addEventListener('DOMContentLoaded', sendCurrentUrlToParent, false);
+          </script>
+
+        <div class="navbar navbar-default navbar-fixed-top d-md-none p-0">
+               <div class="d-flex">
+                    <a href="../" class="navbar-brand">ATSMarket Web App</a>
+                    <button type="button" class="btn btn-default btn-menu ion-ios-menu" id="btn-menu"></button>
+               </div>
+        </div>
+
+        <div class="xs-menu menu" id="mobile-menu">
+                <div id="book-search-input" role="search">
+    <input type="text" placeholder="Digite para pesquisar">
+    <button type="button"
+        class="search-input-clear"
+        aria-label="Clear search"
+        data-search-input-clear>&times;</button>
+</div>
+            <compodoc-menu></compodoc-menu>
+        </div>
+
+        <div class="container-fluid main">
+           <div class="row main">
+               <div class="d-none d-md-block menu">
+                   <compodoc-menu mode="normal"></compodoc-menu>
+               </div>
+               <!-- START CONTENT -->
+               <div class="content component">
+                   <div class="content-data">
+
+
+
+
+
+
+
+
+<ol class="breadcrumb">
+  <li class="breadcrumb-item">Componentes</li>
+  <li class="breadcrumb-item"
+  >
+  ProductsVariationsComponent</li>
+</ol>
+
+<div class="io-file io-file-path" data-compodoc="entity-file-path">
+    <span class="icon ion-ios-document" aria-hidden="true"></span>
+    <code>src/app/application/products-variations/products-variations.component.ts</code>
+</div>
+
+<ul class="nav nav-tabs" role="tablist">
+        <li class="nav-item">
+            <a href="#info" class="nav-link active"
+                role="tab" id="info-tab" data-bs-toggle="tab" data-link="info">Info</a>
+        </li>
+        <li class="nav-item">
+            <a href="#api" class="nav-link"
+                role="tab" id="api-tab" data-bs-toggle="tab" data-link="api">API</a>
+        </li>
+        <li class="nav-item">
+            <a href="#source" class="nav-link"
+                role="tab" id="source-tab" data-bs-toggle="tab" data-link="source">Source</a>
+        </li>
+        <li class="nav-item">
+            <a href="#templateData" class="nav-link"
+                role="tab" id="templateData-tab" data-bs-toggle="tab" data-link="template">Template</a>
+        </li>
+        <li class="nav-item">
+            <a href="#styleData" class="nav-link"
+                role="tab" id="styleData-tab" data-bs-toggle="tab" data-link="style">Styles</a>
+        </li>
+        <li class="nav-item">
+            <a href="#tree" class="nav-link"
+                role="tab" id="tree-tab" data-bs-toggle="tab" data-link="dom-tree">DOM Tree</a>
+        </li>
+</ul>
+
+<div class="tab-content">
+    <div class="tab-pane fade active in" id="info">
+
+
+    <p class="comment">
+        <h3>Implementa</h3>
+    </p>
+    <p class="comment">
+                    <code><a href="https://angular.dev/api/core/OnInit" target="_blank" >OnInit</a></code>
+    </p>
+
+
+<section data-compodoc="block-metadata">
+    <h3>Metadata</h3>
+    <table class="table table-sm table-hover metadata">
+        <tbody>
+
+
+
+
+
+
+
+
+
+
+
+
+            <tr>
+                <td class="col-md-3">selector</td>
+                <td class="col-md-9"><code>app-products-variations</code></td>
+            </tr>
+
+            <tr>
+                <td class="col-md-3">standalone</td>
+                <td class="col-md-9"><code>true</code></td>
+            </tr>
+
+            <tr>
+                <td class="col-md-3">imports</td>
+                <td class="col-md-9">
+                        <div>        <code><a href="https://angular.dev/api/common/CommonModule" target="_blank" >CommonModule</a></code>
+</div>
+                        <div>        <code><a href="https://angular.dev/api/forms/FormsModule" target="_blank" >FormsModule</a></code>
+</div>
+                        <div>        <code><a href="https://angular.dev/api/router/RouterModule" target="_blank" >RouterModule</a></code>
+</div>
+                        <div>    <code>NzTableModule</code>
+</div>
+                        <div>    <code>NzButtonModule</code>
+</div>
+                        <div>    <code>NzIconModule</code>
+</div>
+                        <div>    <code>NzTagModule</code>
+</div>
+                        <div>    <code>NzEmptyModule</code>
+</div>
+                        <div>    <code>NzToolTipModule</code>
+</div>
+                        <div>    <code>NzCardModule</code>
+</div>
+                        <div>    <code>NzInputModule</code>
+</div>
+                        <div>    <code>NzAvatarModule</code>
+</div>
+                        <div>    <code>NzSpinModule</code>
+</div>
+                        <div>    <code>NzSelectModule</code>
+</div>
+                        <div>    <code>NzModalModule</code>
+</div>
+                        <div>    <code>NzCheckboxModule</code>
+</div>
+                </td>
+            </tr>
+
+            <tr>
+                <td class="col-md-3">styleUrls</td>
+                <td class="col-md-9"><code>./products-variations.component.scss</code></td>
+            </tr>
+
+
+
+
+            <tr>
+                <td class="col-md-3">templateUrl</td>
+                <td class="col-md-9"><code>./products-variations.component.html</code></td>
+            </tr>
+
+
+
+            <tr>
+                <td class="col-md-3">styleUrl</td>
+                <td class="col-md-9"><code>./products-variations.component.scss</code></td>
+            </tr>
+
+
+
+
+
+        </tbody>
+    </table>
+</section>
+
+        <section data-compodoc="block-relationships">
+            <h3>Relationships</h3>
+
+            <div class="row pt-3">
+                <div class="col-sm-6">
+                    <h4>Used by</h4>
+                        <p class="comment"><i>Nenhum resultado correspondente.</i></p>
+                </div>
+
+                <div class="col-sm-6">
+                    <h4>Depends on</h4>
+                        <ul class="list-unstyled relationships-list">
+                                <li>
+                                            <code><a href="https://angular.dev/api/common/CommonModule" target="_blank" >CommonModule</a></code>
+                                </li>
+                                <li>
+                                            <code><a href="https://angular.dev/api/forms/FormsModule" target="_blank" >FormsModule</a></code>
+                                </li>
+                                <li>
+                                            <code><a href="https://angular.dev/api/router/RouterModule" target="_blank" >RouterModule</a></code>
+                                </li>
+                                <li>
+                                        <code>NzTableModule</code>
+                                </li>
+                                <li>
+                                        <code>NzButtonModule</code>
+                                </li>
+                                <li>
+                                        <code>NzIconModule</code>
+                                </li>
+                                <li>
+                                        <code>NzTagModule</code>
+                                </li>
+                                <li>
+                                        <code>NzEmptyModule</code>
+                                </li>
+                                <li>
+                                        <code>NzToolTipModule</code>
+                                </li>
+                                <li>
+                                        <code>NzCardModule</code>
+                                </li>
+                                <li>
+                                        <code>NzInputModule</code>
+                                </li>
+                                <li>
+                                        <code>NzAvatarModule</code>
+                                </li>
+                                <li>
+                                        <code>NzSpinModule</code>
+                                </li>
+                                <li>
+                                        <code>NzSelectModule</code>
+                                </li>
+                                <li>
+                                        <code>NzModalModule</code>
+                                </li>
+                                <li>
+                                        <code>NzCheckboxModule</code>
+                                </li>
+                                <li>
+                                            <code><a href="https://angular.dev/api/core/OnInit" target="_blank" >OnInit</a></code>
+                                </li>
+                        </ul>
+                </div>
+            </div>
+        </section>
+</div>
+
+    <div class="tab-pane fade " id="api">    <section data-compodoc="block-index">
+    <h3 id="index">Index</h3>
+        <table class="table table-sm table-bordered index-table">
+            <tbody>
+                <tr>
+                    <td class="col-md-3">
+                        <h6><b>Propriedades</b></h6>
+                    </td>
+                    <td class="col-md-9">
+                        <ul class="index-list">
+                            <li>
+                                <span class="reference-badge reference-badge--property" aria-hidden="true">P</span>
+                                    <span class="modifier">Private</span>
+                                <a href="#_rawReportsSetting" >_rawReportsSetting</a>
+                            </li>
+                            <li>
+                                <span class="reference-badge reference-badge--property" aria-hidden="true">P</span>
+                                    <span class="modifier">Public</span>
+                                <a href="#activeCompany" >activeCompany</a>
+                            </li>
+                            <li>
+                                <span class="reference-badge reference-badge--property" aria-hidden="true">P</span>
+                                    <span class="modifier">Public</span>
+                                <a href="#activeCompanyUuid" >activeCompanyUuid</a>
+                            </li>
+                            <li>
+                                <span class="reference-badge reference-badge--property" aria-hidden="true">P</span>
+                                    <span class="modifier">Public</span>
+                                <a href="#activeTemplate" >activeTemplate</a>
+                            </li>
+                            <li>
+                                <span class="reference-badge reference-badge--property" aria-hidden="true">P</span>
+                                    <span class="modifier">Public</span>
+                                <a href="#exportType" >exportType</a>
+                            </li>
+                            <li>
+                                <span class="reference-badge reference-badge--property" aria-hidden="true">P</span>
+                                    <span class="modifier">Public</span>
+                                <a href="#filteredVariations" >filteredVariations</a>
+                            </li>
+                            <li>
+                                <span class="reference-badge reference-badge--property" aria-hidden="true">P</span>
+                                    <span class="modifier">Public</span>
+                                <a href="#isCreatingNewTemplate" >isCreatingNewTemplate</a>
+                            </li>
+                            <li>
+                                <span class="reference-badge reference-badge--property" aria-hidden="true">P</span>
+                                    <span class="modifier">Public</span>
+                                <a href="#isExportModalVisible" >isExportModalVisible</a>
+                            </li>
+                            <li>
+                                <span class="reference-badge reference-badge--property" aria-hidden="true">P</span>
+                                    <span class="modifier">Public</span>
+                                <a href="#isFetching" >isFetching</a>
+                            </li>
+                            <li>
+                                <span class="reference-badge reference-badge--property" aria-hidden="true">P</span>
+                                    <span class="modifier">Public</span>
+                                <a href="#isGeneratingPdf" >isGeneratingPdf</a>
+                            </li>
+                            <li>
+                                <span class="reference-badge reference-badge--property" aria-hidden="true">P</span>
+                                    <span class="modifier">Public</span>
+                                <a href="#newTemplateName" >newTemplateName</a>
+                            </li>
+                            <li>
+                                <span class="reference-badge reference-badge--property" aria-hidden="true">P</span>
+                                    <span class="modifier">Public</span>
+                                <a href="#pageIndex" >pageIndex</a>
+                            </li>
+                            <li>
+                                <span class="reference-badge reference-badge--property" aria-hidden="true">P</span>
+                                    <span class="modifier">Public</span>
+                                <a href="#pageSize" >pageSize</a>
+                            </li>
+                            <li>
+                                <span class="reference-badge reference-badge--property" aria-hidden="true">P</span>
+                                    <span class="modifier">Public</span>
+                                <a href="#reportTemplates" >reportTemplates</a>
+                            </li>
+                            <li>
+                                <span class="reference-badge reference-badge--property" aria-hidden="true">P</span>
+                                    <span class="modifier">Public</span>
+                                <a href="#searchTerm" >searchTerm</a>
+                            </li>
+                            <li>
+                                <span class="reference-badge reference-badge--property" aria-hidden="true">P</span>
+                                    <span class="modifier">Public</span>
+                                <a href="#selectedTemplateId" >selectedTemplateId</a>
+                            </li>
+                            <li>
+                                <span class="reference-badge reference-badge--property" aria-hidden="true">P</span>
+                                    <span class="modifier">Public</span>
+                                <a href="#stockStatus" >stockStatus</a>
+                            </li>
+                            <li>
+                                <span class="reference-badge reference-badge--property" aria-hidden="true">P</span>
+                                    <span class="modifier">Public</span>
+                                <a href="#variations" >variations</a>
+                            </li>
+                        </ul>
+                    </td>
+                </tr>
+            </tbody>
+        </table>
+
+        <table class="table table-sm table-bordered index-table">
+            <tbody>
+                <tr>
+                    <td class="col-md-3">
+                        <h6><b>Métodos</b></h6>
+                    </td>
+                    <td class="col-md-9">
+                        <ul class="index-list">
+                            <li>
+                                <span class="reference-badge reference-badge--method" aria-hidden="true">M</span>
+                                    <span class="modifier">Public</span>
+                                <a href="#applyFilters" >applyFilters</a>
+                            </li>
+                            <li>
+                                <span class="reference-badge reference-badge--method" aria-hidden="true">M</span>
+                                    <span class="modifier">Public</span>
+                                <a href="#cancelCreateTemplate" >cancelCreateTemplate</a>
+                            </li>
+                            <li>
+                                <span class="reference-badge reference-badge--method" aria-hidden="true">M</span>
+                                    <span class="modifier">Public</span>
+                                <a href="#confirmCreateTemplate" >confirmCreateTemplate</a>
+                            </li>
+                            <li>
+                                <span class="reference-badge reference-badge--method" aria-hidden="true">M</span>
+                                    <span class="modifier">Public</span>
+                                <a href="#confirmExport" >confirmExport</a>
+                            </li>
+                            <li>
+                                <span class="reference-badge reference-badge--method" aria-hidden="true">M</span>
+                                    <span class="modifier">Public</span>
+                                <a href="#deleteActiveTemplate" >deleteActiveTemplate</a>
+                            </li>
+                            <li>
+                                <span class="reference-badge reference-badge--method" aria-hidden="true">M</span>
+                                    <span class="modifier">Public</span>
+                                <a href="#editVariation" >editVariation</a>
+                            </li>
+                            <li>
+                                <span class="reference-badge reference-badge--method" aria-hidden="true">M</span>
+                                    <span class="modifier">Public</span>
+                                <a href="#enableCreateTemplateMode" >enableCreateTemplateMode</a>
+                            </li>
+                            <li>
+                                <span class="reference-badge reference-badge--method" aria-hidden="true">M</span>
+                                    <span class="modifier">Private</span>
+                                <a href="#escapeCSVField" >escapeCSVField</a>
+                            </li>
+                            <li>
+                                <span class="reference-badge reference-badge--method" aria-hidden="true">M</span>
+                                    <span class="modifier">Public</span>
+                                <a href="#exportToCsv" >exportToCsv</a>
+                            </li>
+                            <li>
+                                <span class="reference-badge reference-badge--method" aria-hidden="true">M</span>
+                                    <span class="modifier">Public</span>
+                                    <span class="modifier">Async</span>
+                                <a href="#exportToPdf" >exportToPdf</a>
+                            </li>
+                            <li>
+                                <span class="reference-badge reference-badge--method" aria-hidden="true">M</span>
+                                    <span class="modifier">Private</span>
+                                <a href="#getBase64ImageFromUrl" >getBase64ImageFromUrl</a>
+                            </li>
+                            <li>
+                                <span class="reference-badge reference-badge--method" aria-hidden="true">M</span>
+                                    <span class="modifier">Public</span>
+                                <a href="#getDefaultTemplate" >getDefaultTemplate</a>
+                            </li>
+                            <li>
+                                <span class="reference-badge reference-badge--method" aria-hidden="true">M</span>
+                                    <span class="modifier">Public</span>
+                                <a href="#hexToRgb" >hexToRgb</a>
+                            </li>
+                            <li>
+                                <span class="reference-badge reference-badge--method" aria-hidden="true">M</span>
+                                    <span class="modifier">Public</span>
+                                <a href="#loadCompanySettings" >loadCompanySettings</a>
+                            </li>
+                            <li>
+                                <span class="reference-badge reference-badge--method" aria-hidden="true">M</span>
+                                    <span class="modifier">Public</span>
+                                <a href="#loadFullCompanyDetails" >loadFullCompanyDetails</a>
+                            </li>
+                            <li>
+                                <span class="reference-badge reference-badge--method" aria-hidden="true">M</span>
+                                    <span class="modifier">Public</span>
+                                <a href="#loadVariations" >loadVariations</a>
+                            </li>
+                            <li>
+                                <span class="reference-badge reference-badge--method" aria-hidden="true">M</span>
+                                <a href="#ngOnInit" >ngOnInit</a>
+                            </li>
+                            <li>
+                                <span class="reference-badge reference-badge--method" aria-hidden="true">M</span>
+                                    <span class="modifier">Public</span>
+                                <a href="#onTemplateChange" >onTemplateChange</a>
+                            </li>
+                            <li>
+                                <span class="reference-badge reference-badge--method" aria-hidden="true">M</span>
+                                    <span class="modifier">Public</span>
+                                <a href="#openExportModal" >openExportModal</a>
+                            </li>
+                            <li>
+                                <span class="reference-badge reference-badge--method" aria-hidden="true">M</span>
+                                    <span class="modifier">Private</span>
+                                <a href="#removeAccents" >removeAccents</a>
+                            </li>
+                            <li>
+                                <span class="reference-badge reference-badge--method" aria-hidden="true">M</span>
+                                    <span class="modifier">Public</span>
+                                <a href="#resetFilters" >resetFilters</a>
+                            </li>
+                            <li>
+                                <span class="reference-badge reference-badge--method" aria-hidden="true">M</span>
+                                    <span class="modifier">Public</span>
+                                <a href="#saveReportTemplates" >saveReportTemplates</a>
+                            </li>
+                        </ul>
+                    </td>
+                </tr>
+            </tbody>
+        </table>
+
+
+
+
+
+</section>
+
+    <section data-compodoc="block-constructor">
+    <h3 id="constructor">Construtor</h3>
+        <table class="table table-sm table-bordered">
+            <tbody>
+                <tr>
+                    <td class="col-md-4">
+<code>constructor(_router: <a href="https://angular.dev/api/router/Router" target="_blank">Router</a>, _sessionService: <a href="../injectables/SessionService.html" target="_self">SessionService</a>, _productVariationsService: <a href="../injectables/ProductVariationsService.html" target="_self">ProductVariationsService</a>, _messageService: <a href="../injectables/MessageService.html" target="_self">MessageService</a>, _companiesService: <a href="../injectables/CompaniesService.html" target="_self">CompaniesService</a>, _settingsService: <a href="../injectables/CompaniesSettingsService.html" target="_self">CompaniesSettingsService</a>)</code>
+                    </td>
+                </tr>
+                        <tr>
+                            <td class="col-md-4">
+                                <div class="io-line">Definido em <a href="" data-line="81" class="link-to-prism">src/app/application/products-variations/products-variations.component.ts:81</a></div>
+                            </td>
+                        </tr>
+
+                <tr>
+                    <td class="col-md-4">
+                            <div>
+                                    <b>Parâmetros :</b>
+                                    <table class="params">
+                                        <thead>
+                                            <tr>
+                                                <td>Nome</td>
+                                                    <td>Tipo</td>
+                                                <td>Opcional</td>
+                                            </tr>
+                                        </thead>
+                                        <tbody>
+                                                <tr>
+                                                        <td>_router</td>
+                                                  
+                                                        <td>
+                                                                        <code><a href="https://angular.dev/api/router/Router" target="_blank" >Router</a></code>
+                                                        </td>
+                                                  
+                                                    <td>
+                                                            Não
+                                                    </td>
+                                                    
+                                                </tr>
+                                                <tr>
+                                                        <td>_sessionService</td>
+                                                  
+                                                        <td>
+                                                                        <code><a href="../injectables/SessionService.html" target="_self" >SessionService</a></code>
+                                                        </td>
+                                                  
+                                                    <td>
+                                                            Não
+                                                    </td>
+                                                    
+                                                </tr>
+                                                <tr>
+                                                        <td>_productVariationsService</td>
+                                                  
+                                                        <td>
+                                                                        <code><a href="../injectables/ProductVariationsService.html" target="_self" >ProductVariationsService</a></code>
+                                                        </td>
+                                                  
+                                                    <td>
+                                                            Não
+                                                    </td>
+                                                    
+                                                </tr>
+                                                <tr>
+                                                        <td>_messageService</td>
+                                                  
+                                                        <td>
+                                                                        <code><a href="../injectables/MessageService.html" target="_self" >MessageService</a></code>
+                                                        </td>
+                                                  
+                                                    <td>
+                                                            Não
+                                                    </td>
+                                                    
+                                                </tr>
+                                                <tr>
+                                                        <td>_companiesService</td>
+                                                  
+                                                        <td>
+                                                                        <code><a href="../injectables/CompaniesService.html" target="_self" >CompaniesService</a></code>
+                                                        </td>
+                                                  
+                                                    <td>
+                                                            Não
+                                                    </td>
+                                                    
+                                                </tr>
+                                                <tr>
+                                                        <td>_settingsService</td>
+                                                  
+                                                        <td>
+                                                                        <code><a href="../injectables/CompaniesSettingsService.html" target="_self" >CompaniesSettingsService</a></code>
+                                                        </td>
+                                                  
+                                                    <td>
+                                                            Não
+                                                    </td>
+                                                    
+                                                </tr>
+                                        </tbody>
+                                    </table>
+                            </div>
+                    </td>
+                </tr>
+            </tbody>
+        </table>
+</section>
+
+
+
+
+
+    <section data-compodoc="block-methods">
+    
+    <h3 id="methods">
+        Métodos
+    </h3>
+    <table class="table table-sm table-bordered">
+        <tbody>
+            <tr>
+                <td class="col-md-4">
+                    <a name="applyFilters"></a>
+                    <span class="name">
+                            <span class="modifier">Public</span>
+                        <span ><b>applyFilters</b></span>
+                        <a href="#applyFilters"><span class="icon ion-ios-link"></span></a>
+                    </span>
+                </td>
+            </tr>
+            <tr>
+                <td class="col-md-4">
+                        <span class="modifier-icon icon ion-ios-reset"></span>
+                    <code>applyFilters()</code>
+                </td>
+            </tr>
+
+
+                    <tr>
+                        <td class="col-md-4">
+                            <div class="io-line">Definido em <a href="" data-line="356"
+                                    class="link-to-prism">src/app/application/products-variations/products-variations.component.ts:356</a></div>
+                        </td>
+                    </tr>
+
+
+            <tr>
+                <td class="col-md-4">
+
+                        <div class="io-description">
+                            <b>Retorna : </b>        <code><a href="https://www.typescriptlang.org/docs/handbook/basic-types.html" target="_blank" >void</a></code>
+
+                        </div>
+                </td>
+            </tr>
+        </tbody>
+    </table>
+    <table class="table table-sm table-bordered">
+        <tbody>
+            <tr>
+                <td class="col-md-4">
+                    <a name="cancelCreateTemplate"></a>
+                    <span class="name">
+                            <span class="modifier">Public</span>
+                        <span ><b>cancelCreateTemplate</b></span>
+                        <a href="#cancelCreateTemplate"><span class="icon ion-ios-link"></span></a>
+                    </span>
+                </td>
+            </tr>
+            <tr>
+                <td class="col-md-4">
+                        <span class="modifier-icon icon ion-ios-reset"></span>
+                    <code>cancelCreateTemplate()</code>
+                </td>
+            </tr>
+
+
+                    <tr>
+                        <td class="col-md-4">
+                            <div class="io-line">Definido em <a href="" data-line="191"
+                                    class="link-to-prism">src/app/application/products-variations/products-variations.component.ts:191</a></div>
+                        </td>
+                    </tr>
+
+
+            <tr>
+                <td class="col-md-4">
+
+                        <div class="io-description">
+                            <b>Retorna : </b>        <code><a href="https://www.typescriptlang.org/docs/handbook/basic-types.html" target="_blank" >void</a></code>
+
+                        </div>
+                </td>
+            </tr>
+        </tbody>
+    </table>
+    <table class="table table-sm table-bordered">
+        <tbody>
+            <tr>
+                <td class="col-md-4">
+                    <a name="confirmCreateTemplate"></a>
+                    <span class="name">
+                            <span class="modifier">Public</span>
+                        <span ><b>confirmCreateTemplate</b></span>
+                        <a href="#confirmCreateTemplate"><span class="icon ion-ios-link"></span></a>
+                    </span>
+                </td>
+            </tr>
+            <tr>
+                <td class="col-md-4">
+                        <span class="modifier-icon icon ion-ios-reset"></span>
+                    <code>confirmCreateTemplate()</code>
+                </td>
+            </tr>
+
+
+                    <tr>
+                        <td class="col-md-4">
+                            <div class="io-line">Definido em <a href="" data-line="196"
+                                    class="link-to-prism">src/app/application/products-variations/products-variations.component.ts:196</a></div>
+                        </td>
+                    </tr>
+
+
+            <tr>
+                <td class="col-md-4">
+
+                        <div class="io-description">
+                            <b>Retorna : </b>        <code><a href="https://www.typescriptlang.org/docs/handbook/basic-types.html" target="_blank" >void</a></code>
+
+                        </div>
+                </td>
+            </tr>
+        </tbody>
+    </table>
+    <table class="table table-sm table-bordered">
+        <tbody>
+            <tr>
+                <td class="col-md-4">
+                    <a name="confirmExport"></a>
+                    <span class="name">
+                            <span class="modifier">Public</span>
+                        <span ><b>confirmExport</b></span>
+                        <a href="#confirmExport"><span class="icon ion-ios-link"></span></a>
+                    </span>
+                </td>
+            </tr>
+            <tr>
+                <td class="col-md-4">
+                        <span class="modifier-icon icon ion-ios-reset"></span>
+                    <code>confirmExport()</code>
+                </td>
+            </tr>
+
+
+                    <tr>
+                        <td class="col-md-4">
+                            <div class="io-line">Definido em <a href="" data-line="398"
+                                    class="link-to-prism">src/app/application/products-variations/products-variations.component.ts:398</a></div>
+                        </td>
+                    </tr>
+
+
+            <tr>
+                <td class="col-md-4">
+
+                        <div class="io-description">
+                            <b>Retorna : </b>        <code><a href="https://www.typescriptlang.org/docs/handbook/basic-types.html" target="_blank" >void</a></code>
+
+                        </div>
+                </td>
+            </tr>
+        </tbody>
+    </table>
+    <table class="table table-sm table-bordered">
+        <tbody>
+            <tr>
+                <td class="col-md-4">
+                    <a name="deleteActiveTemplate"></a>
+                    <span class="name">
+                            <span class="modifier">Public</span>
+                        <span ><b>deleteActiveTemplate</b></span>
+                        <a href="#deleteActiveTemplate"><span class="icon ion-ios-link"></span></a>
+                    </span>
+                </td>
+            </tr>
+            <tr>
+                <td class="col-md-4">
+                        <span class="modifier-icon icon ion-ios-reset"></span>
+                    <code>deleteActiveTemplate()</code>
+                </td>
+            </tr>
+
+
+                    <tr>
+                        <td class="col-md-4">
+                            <div class="io-line">Definido em <a href="" data-line="229"
+                                    class="link-to-prism">src/app/application/products-variations/products-variations.component.ts:229</a></div>
+                        </td>
+                    </tr>
+
+
+            <tr>
+                <td class="col-md-4">
+
+                        <div class="io-description">
+                            <b>Retorna : </b>        <code><a href="https://www.typescriptlang.org/docs/handbook/basic-types.html" target="_blank" >void</a></code>
+
+                        </div>
+                </td>
+            </tr>
+        </tbody>
+    </table>
+    <table class="table table-sm table-bordered">
+        <tbody>
+            <tr>
+                <td class="col-md-4">
+                    <a name="editVariation"></a>
+                    <span class="name">
+                            <span class="modifier">Public</span>
+                        <span ><b>editVariation</b></span>
+                        <a href="#editVariation"><span class="icon ion-ios-link"></span></a>
+                    </span>
+                </td>
+            </tr>
+            <tr>
+                <td class="col-md-4">
+                        <span class="modifier-icon icon ion-ios-reset"></span>
+                    <code>editVariation(v: <a href="../interfaces/ProductVariationInterface.html" target="_self">ProductVariationInterface</a>)</code>
+                </td>
+            </tr>
+
+
+                    <tr>
+                        <td class="col-md-4">
+                            <div class="io-line">Definido em <a href="" data-line="386"
+                                    class="link-to-prism">src/app/application/products-variations/products-variations.component.ts:386</a></div>
+                        </td>
+                    </tr>
+
+
+            <tr>
+                <td class="col-md-4">
+
+                            <div class="io-description">
+                                <b>Parâmetros :</b>
+                                
+                                <table class="params">
+                                    <thead>
+                                        <tr>
+                                            <td>Nome</td>
+                                                <td>Tipo</td>
+                                            <td>Opcional</td>
+                                        </tr>
+                                    </thead>
+                                    <tbody>
+                                        <tr>
+                                                <td>v</td>
+                                            <td>
+                                                            <code><a href="../interfaces/ProductVariationInterface.html" target="_self" >ProductVariationInterface</a></code>
+                                            </td>
+
+                                            <td>
+                                                    Não
+                                            </td>
+
+
+                                        </tr>
+                                    </tbody>
+                                </table>
+                            </div>
+                        <div class="io-description">
+                            <b>Retorna : </b>        <code><a href="https://www.typescriptlang.org/docs/handbook/basic-types.html" target="_blank" >void</a></code>
+
+                        </div>
+                            <div class="io-description">
+                                
+                            </div>
+                </td>
+            </tr>
+        </tbody>
+    </table>
+    <table class="table table-sm table-bordered">
+        <tbody>
+            <tr>
+                <td class="col-md-4">
+                    <a name="enableCreateTemplateMode"></a>
+                    <span class="name">
+                            <span class="modifier">Public</span>
+                        <span ><b>enableCreateTemplateMode</b></span>
+                        <a href="#enableCreateTemplateMode"><span class="icon ion-ios-link"></span></a>
+                    </span>
+                </td>
+            </tr>
+            <tr>
+                <td class="col-md-4">
+                        <span class="modifier-icon icon ion-ios-reset"></span>
+                    <code>enableCreateTemplateMode()</code>
+                </td>
+            </tr>
+
+
+                    <tr>
+                        <td class="col-md-4">
+                            <div class="io-line">Definido em <a href="" data-line="186"
+                                    class="link-to-prism">src/app/application/products-variations/products-variations.component.ts:186</a></div>
+                        </td>
+                    </tr>
+
+
+            <tr>
+                <td class="col-md-4">
+
+                        <div class="io-description">
+                            <b>Retorna : </b>        <code><a href="https://www.typescriptlang.org/docs/handbook/basic-types.html" target="_blank" >void</a></code>
+
+                        </div>
+                </td>
+            </tr>
+        </tbody>
+    </table>
+    <table class="table table-sm table-bordered">
+        <tbody>
+            <tr>
+                <td class="col-md-4">
+                    <a name="escapeCSVField"></a>
+                    <span class="name">
+                            <span class="modifier">Private</span>
+                        <span ><b>escapeCSVField</b></span>
+                        <a href="#escapeCSVField"><span class="icon ion-ios-link"></span></a>
+                    </span>
+                </td>
+            </tr>
+            <tr>
+                <td class="col-md-4">
+                        <span class="modifier-icon icon ion-ios-reset"></span>
+                    <code>escapeCSVField(val: <a href="https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/string" target="_blank">string</a>)</code>
+                </td>
+            </tr>
+
+
+                    <tr>
+                        <td class="col-md-4">
+                            <div class="io-line">Definido em <a href="" data-line="453"
+                                    class="link-to-prism">src/app/application/products-variations/products-variations.component.ts:453</a></div>
+                        </td>
+                    </tr>
+
+
+            <tr>
+                <td class="col-md-4">
+
+                            <div class="io-description">
+                                <b>Parâmetros :</b>
+                                
+                                <table class="params">
+                                    <thead>
+                                        <tr>
+                                            <td>Nome</td>
+                                                <td>Tipo</td>
+                                            <td>Opcional</td>
+                                        </tr>
+                                    </thead>
+                                    <tbody>
+                                        <tr>
+                                                <td>val</td>
+                                            <td>
+                                                            <code><a href="https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/string" target="_blank" >string</a></code>
+                                            </td>
+
+                                            <td>
+                                                    Não
+                                            </td>
+
+
+                                        </tr>
+                                    </tbody>
+                                </table>
+                            </div>
+                        <div class="io-description">
+                            <b>Retorna : </b>        <code><a href="https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/string" target="_blank" >string</a></code>
+
+                        </div>
+                            <div class="io-description">
+                                
+                            </div>
+                </td>
+            </tr>
+        </tbody>
+    </table>
+    <table class="table table-sm table-bordered">
+        <tbody>
+            <tr>
+                <td class="col-md-4">
+                    <a name="exportToCsv"></a>
+                    <span class="name">
+                            <span class="modifier">Public</span>
+                        <span ><b>exportToCsv</b></span>
+                        <a href="#exportToCsv"><span class="icon ion-ios-link"></span></a>
+                    </span>
+                </td>
+            </tr>
+            <tr>
+                <td class="col-md-4">
+                        <span class="modifier-icon icon ion-ios-reset"></span>
+                    <code>exportToCsv()</code>
+                </td>
+            </tr>
+
+
+                    <tr>
+                        <td class="col-md-4">
+                            <div class="io-line">Definido em <a href="" data-line="407"
+                                    class="link-to-prism">src/app/application/products-variations/products-variations.component.ts:407</a></div>
+                        </td>
+                    </tr>
+
+
+            <tr>
+                <td class="col-md-4">
+
+                        <div class="io-description">
+                            <b>Retorna : </b>        <code><a href="https://www.typescriptlang.org/docs/handbook/basic-types.html" target="_blank" >void</a></code>
+
+                        </div>
+                </td>
+            </tr>
+        </tbody>
+    </table>
+    <table class="table table-sm table-bordered">
+        <tbody>
+            <tr>
+                <td class="col-md-4">
+                    <a name="exportToPdf"></a>
+                    <span class="name">
+                            <span class="modifier">Public</span>
+                            <span class="modifier">Async</span>
+                        <span ><b>exportToPdf</b></span>
+                        <a href="#exportToPdf"><span class="icon ion-ios-link"></span></a>
+                    </span>
+                </td>
+            </tr>
+            <tr>
+                <td class="col-md-4">
+                        <span class="modifier-icon icon ion-ios-reset"></span>
+                    <code>exportToPdf()</code>
+                </td>
+            </tr>
+
+
+                    <tr>
+                        <td class="col-md-4">
+                            <div class="io-line">Definido em <a href="" data-line="485"
+                                    class="link-to-prism">src/app/application/products-variations/products-variations.component.ts:485</a></div>
+                        </td>
+                    </tr>
+
+
+            <tr>
+                <td class="col-md-4">
+
+                        <div class="io-description">
+                            <b>Retorna : </b>    <code>Promise&lt;void&gt;</code>
+
+                        </div>
+                </td>
+            </tr>
+        </tbody>
+    </table>
+    <table class="table table-sm table-bordered">
+        <tbody>
+            <tr>
+                <td class="col-md-4">
+                    <a name="getBase64ImageFromUrl"></a>
+                    <span class="name">
+                            <span class="modifier">Private</span>
+                        <span ><b>getBase64ImageFromUrl</b></span>
+                        <a href="#getBase64ImageFromUrl"><span class="icon ion-ios-link"></span></a>
+                    </span>
+                </td>
+            </tr>
+            <tr>
+                <td class="col-md-4">
+                        <span class="modifier-icon icon ion-ios-reset"></span>
+                    <code>getBase64ImageFromUrl(imageUrl: <a href="https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/string" target="_blank">string</a>)</code>
+                </td>
+            </tr>
+
+
+                    <tr>
+                        <td class="col-md-4">
+                            <div class="io-line">Definido em <a href="" data-line="461"
+                                    class="link-to-prism">src/app/application/products-variations/products-variations.component.ts:461</a></div>
+                        </td>
+                    </tr>
+
+
+            <tr>
+                <td class="col-md-4">
+
+                            <div class="io-description">
+                                <b>Parâmetros :</b>
+                                
+                                <table class="params">
+                                    <thead>
+                                        <tr>
+                                            <td>Nome</td>
+                                                <td>Tipo</td>
+                                            <td>Opcional</td>
+                                        </tr>
+                                    </thead>
+                                    <tbody>
+                                        <tr>
+                                                <td>imageUrl</td>
+                                            <td>
+                                                            <code><a href="https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/string" target="_blank" >string</a></code>
+                                            </td>
+
+                                            <td>
+                                                    Não
+                                            </td>
+
+
+                                        </tr>
+                                    </tbody>
+                                </table>
+                            </div>
+                        <div class="io-description">
+                            <b>Retorna : </b>    <code>Promise&lt;string&gt;</code>
+
+                        </div>
+                            <div class="io-description">
+                                
+                            </div>
+                </td>
+            </tr>
+        </tbody>
+    </table>
+    <table class="table table-sm table-bordered">
+        <tbody>
+            <tr>
+                <td class="col-md-4">
+                    <a name="getDefaultTemplate"></a>
+                    <span class="name">
+                            <span class="modifier">Public</span>
+                        <span ><b>getDefaultTemplate</b></span>
+                        <a href="#getDefaultTemplate"><span class="icon ion-ios-link"></span></a>
+                    </span>
+                </td>
+            </tr>
+            <tr>
+                <td class="col-md-4">
+                        <span class="modifier-icon icon ion-ios-reset"></span>
+                    <code>getDefaultTemplate()</code>
+                </td>
+            </tr>
+
+
+                    <tr>
+                        <td class="col-md-4">
+                            <div class="io-line">Definido em <a href="" data-line="153"
+                                    class="link-to-prism">src/app/application/products-variations/products-variations.component.ts:153</a></div>
+                        </td>
+                    </tr>
+
+
+            <tr>
+                <td class="col-md-4">
+
+                        <div class="io-description">
+                            <b>Retorna : </b>    <code>{ id: string; name: string; title: string; includeContact: boolean; includeQr: boolean; showAvailability: boolean; showMaterial: boolean; showZeroPriceItems: boolean; dateFormat: string; timeFormat: string; primaryColor: any; textColor: string; qrLabel: string; columns: { ...; }; }</code>
+
+                        </div>
+                </td>
+            </tr>
+        </tbody>
+    </table>
+    <table class="table table-sm table-bordered">
+        <tbody>
+            <tr>
+                <td class="col-md-4">
+                    <a name="hexToRgb"></a>
+                    <span class="name">
+                            <span class="modifier">Public</span>
+                        <span ><b>hexToRgb</b></span>
+                        <a href="#hexToRgb"><span class="icon ion-ios-link"></span></a>
+                    </span>
+                </td>
+            </tr>
+            <tr>
+                <td class="col-md-4">
+                        <span class="modifier-icon icon ion-ios-reset"></span>
+                    <code>hexToRgb(hex: <a href="https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/string" target="_blank">string</a>)</code>
+                </td>
+            </tr>
+
+
+                    <tr>
+                        <td class="col-md-4">
+                            <div class="io-line">Definido em <a href="" data-line="323"
+                                    class="link-to-prism">src/app/application/products-variations/products-variations.component.ts:323</a></div>
+                        </td>
+                    </tr>
+
+
+            <tr>
+                <td class="col-md-4">
+
+                            <div class="io-description">
+                                <b>Parâmetros :</b>
+                                
+                                <table class="params">
+                                    <thead>
+                                        <tr>
+                                            <td>Nome</td>
+                                                <td>Tipo</td>
+                                            <td>Opcional</td>
+                                        </tr>
+                                    </thead>
+                                    <tbody>
+                                        <tr>
+                                                <td>hex</td>
+                                            <td>
+                                                            <code><a href="https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/string" target="_blank" >string</a></code>
+                                            </td>
+
+                                            <td>
+                                                    Não
+                                            </td>
+
+
+                                        </tr>
+                                    </tbody>
+                                </table>
+                            </div>
+                        <div class="io-description">
+                            <b>Retorna : </b>    <code>unknown</code>
+
+                        </div>
+                            <div class="io-description">
+                                
+                            </div>
+                </td>
+            </tr>
+        </tbody>
+    </table>
+    <table class="table table-sm table-bordered">
+        <tbody>
+            <tr>
+                <td class="col-md-4">
+                    <a name="loadCompanySettings"></a>
+                    <span class="name">
+                            <span class="modifier">Public</span>
+                        <span ><b>loadCompanySettings</b></span>
+                        <a href="#loadCompanySettings"><span class="icon ion-ios-link"></span></a>
+                    </span>
+                </td>
+            </tr>
+            <tr>
+                <td class="col-md-4">
+                        <span class="modifier-icon icon ion-ios-reset"></span>
+                    <code>loadCompanySettings()</code>
+                </td>
+            </tr>
+
+
+                    <tr>
+                        <td class="col-md-4">
+                            <div class="io-line">Definido em <a href="" data-line="106"
+                                    class="link-to-prism">src/app/application/products-variations/products-variations.component.ts:106</a></div>
+                        </td>
+                    </tr>
+
+
+            <tr>
+                <td class="col-md-4">
+
+                        <div class="io-description">
+                            <b>Retorna : </b>        <code><a href="https://www.typescriptlang.org/docs/handbook/basic-types.html" target="_blank" >void</a></code>
+
+                        </div>
+                </td>
+            </tr>
+        </tbody>
+    </table>
+    <table class="table table-sm table-bordered">
+        <tbody>
+            <tr>
+                <td class="col-md-4">
+                    <a name="loadFullCompanyDetails"></a>
+                    <span class="name">
+                            <span class="modifier">Public</span>
+                        <span ><b>loadFullCompanyDetails</b></span>
+                        <a href="#loadFullCompanyDetails"><span class="icon ion-ios-link"></span></a>
+                    </span>
+                </td>
+            </tr>
+            <tr>
+                <td class="col-md-4">
+                        <span class="modifier-icon icon ion-ios-reset"></span>
+                    <code>loadFullCompanyDetails()</code>
+                </td>
+            </tr>
+
+
+                    <tr>
+                        <td class="col-md-4">
+                            <div class="io-line">Definido em <a href="" data-line="296"
+                                    class="link-to-prism">src/app/application/products-variations/products-variations.component.ts:296</a></div>
+                        </td>
+                    </tr>
+
+
+            <tr>
+                <td class="col-md-4">
+
+                        <div class="io-description">
+                            <b>Retorna : </b>        <code><a href="https://www.typescriptlang.org/docs/handbook/basic-types.html" target="_blank" >void</a></code>
+
+                        </div>
+                </td>
+            </tr>
+        </tbody>
+    </table>
+    <table class="table table-sm table-bordered">
+        <tbody>
+            <tr>
+                <td class="col-md-4">
+                    <a name="loadVariations"></a>
+                    <span class="name">
+                            <span class="modifier">Public</span>
+                        <span ><b>loadVariations</b></span>
+                        <a href="#loadVariations"><span class="icon ion-ios-link"></span></a>
+                    </span>
+                </td>
+            </tr>
+            <tr>
+                <td class="col-md-4">
+                        <span class="modifier-icon icon ion-ios-reset"></span>
+                    <code>loadVariations()</code>
+                </td>
+            </tr>
+
+
+                    <tr>
+                        <td class="col-md-4">
+                            <div class="io-line">Definido em <a href="" data-line="335"
+                                    class="link-to-prism">src/app/application/products-variations/products-variations.component.ts:335</a></div>
+                        </td>
+                    </tr>
+
+
+            <tr>
+                <td class="col-md-4">
+
+                        <div class="io-description">
+                            <b>Retorna : </b>        <code><a href="https://www.typescriptlang.org/docs/handbook/basic-types.html" target="_blank" >void</a></code>
+
+                        </div>
+                </td>
+            </tr>
+        </tbody>
+    </table>
+    <table class="table table-sm table-bordered">
+        <tbody>
+            <tr>
+                <td class="col-md-4">
+                    <a name="ngOnInit"></a>
+                    <span class="name">
+                        <span ><b>ngOnInit</b></span>
+                        <a href="#ngOnInit"><span class="icon ion-ios-link"></span></a>
+                    </span>
+                </td>
+            </tr>
+            <tr>
+                <td class="col-md-4">
+<code>ngOnInit()</code>
+                </td>
+            </tr>
+
+
+                    <tr>
+                        <td class="col-md-4">
+                            <div class="io-line">Definido em <a href="" data-line="92"
+                                    class="link-to-prism">src/app/application/products-variations/products-variations.component.ts:92</a></div>
+                        </td>
+                    </tr>
+
+
+            <tr>
+                <td class="col-md-4">
+
+                        <div class="io-description">
+                            <b>Retorna : </b>        <code><a href="https://www.typescriptlang.org/docs/handbook/basic-types.html" target="_blank" >void</a></code>
+
+                        </div>
+                </td>
+            </tr>
+        </tbody>
+    </table>
+    <table class="table table-sm table-bordered">
+        <tbody>
+            <tr>
+                <td class="col-md-4">
+                    <a name="onTemplateChange"></a>
+                    <span class="name">
+                            <span class="modifier">Public</span>
+                        <span ><b>onTemplateChange</b></span>
+                        <a href="#onTemplateChange"><span class="icon ion-ios-link"></span></a>
+                    </span>
+                </td>
+            </tr>
+            <tr>
+                <td class="col-md-4">
+                        <span class="modifier-icon icon ion-ios-reset"></span>
+                    <code>onTemplateChange(id: <a href="https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/string" target="_blank">string</a>)</code>
+                </td>
+            </tr>
+
+
+                    <tr>
+                        <td class="col-md-4">
+                            <div class="io-line">Definido em <a href="" data-line="179"
+                                    class="link-to-prism">src/app/application/products-variations/products-variations.component.ts:179</a></div>
+                        </td>
+                    </tr>
+
+
+            <tr>
+                <td class="col-md-4">
+
+                            <div class="io-description">
+                                <b>Parâmetros :</b>
+                                
+                                <table class="params">
+                                    <thead>
+                                        <tr>
+                                            <td>Nome</td>
+                                                <td>Tipo</td>
+                                            <td>Opcional</td>
+                                        </tr>
+                                    </thead>
+                                    <tbody>
+                                        <tr>
+                                                <td>id</td>
+                                            <td>
+                                                            <code><a href="https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/string" target="_blank" >string</a></code>
+                                            </td>
+
+                                            <td>
+                                                    Não
+                                            </td>
+
+
+                                        </tr>
+                                    </tbody>
+                                </table>
+                            </div>
+                        <div class="io-description">
+                            <b>Retorna : </b>        <code><a href="https://www.typescriptlang.org/docs/handbook/basic-types.html" target="_blank" >void</a></code>
+
+                        </div>
+                            <div class="io-description">
+                                
+                            </div>
+                </td>
+            </tr>
+        </tbody>
+    </table>
+    <table class="table table-sm table-bordered">
+        <tbody>
+            <tr>
+                <td class="col-md-4">
+                    <a name="openExportModal"></a>
+                    <span class="name">
+                            <span class="modifier">Public</span>
+                        <span ><b>openExportModal</b></span>
+                        <a href="#openExportModal"><span class="icon ion-ios-link"></span></a>
+                    </span>
+                </td>
+            </tr>
+            <tr>
+                <td class="col-md-4">
+                        <span class="modifier-icon icon ion-ios-reset"></span>
+                    <code>openExportModal()</code>
+                </td>
+            </tr>
+
+
+                    <tr>
+                        <td class="col-md-4">
+                            <div class="io-line">Definido em <a href="" data-line="394"
+                                    class="link-to-prism">src/app/application/products-variations/products-variations.component.ts:394</a></div>
+                        </td>
+                    </tr>
+
+
+            <tr>
+                <td class="col-md-4">
+
+                        <div class="io-description">
+                            <b>Retorna : </b>        <code><a href="https://www.typescriptlang.org/docs/handbook/basic-types.html" target="_blank" >void</a></code>
+
+                        </div>
+                </td>
+            </tr>
+        </tbody>
+    </table>
+    <table class="table table-sm table-bordered">
+        <tbody>
+            <tr>
+                <td class="col-md-4">
+                    <a name="removeAccents"></a>
+                    <span class="name">
+                            <span class="modifier">Private</span>
+                        <span ><b>removeAccents</b></span>
+                        <a href="#removeAccents"><span class="icon ion-ios-link"></span></a>
+                    </span>
+                </td>
+            </tr>
+            <tr>
+                <td class="col-md-4">
+                        <span class="modifier-icon icon ion-ios-reset"></span>
+                    <code>removeAccents(str: <a href="https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/string" target="_blank">string</a>)</code>
+                </td>
+            </tr>
+
+
+                    <tr>
+                        <td class="col-md-4">
+                            <div class="io-line">Definido em <a href="" data-line="352"
+                                    class="link-to-prism">src/app/application/products-variations/products-variations.component.ts:352</a></div>
+                        </td>
+                    </tr>
+
+
+            <tr>
+                <td class="col-md-4">
+
+                            <div class="io-description">
+                                <b>Parâmetros :</b>
+                                
+                                <table class="params">
+                                    <thead>
+                                        <tr>
+                                            <td>Nome</td>
+                                                <td>Tipo</td>
+                                            <td>Opcional</td>
+                                        </tr>
+                                    </thead>
+                                    <tbody>
+                                        <tr>
+                                                <td>str</td>
+                                            <td>
+                                                            <code><a href="https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/string" target="_blank" >string</a></code>
+                                            </td>
+
+                                            <td>
+                                                    Não
+                                            </td>
+
+
+                                        </tr>
+                                    </tbody>
+                                </table>
+                            </div>
+                        <div class="io-description">
+                            <b>Retorna : </b>        <code><a href="https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/string" target="_blank" >string</a></code>
+
+                        </div>
+                            <div class="io-description">
+                                
+                            </div>
+                </td>
+            </tr>
+        </tbody>
+    </table>
+    <table class="table table-sm table-bordered">
+        <tbody>
+            <tr>
+                <td class="col-md-4">
+                    <a name="resetFilters"></a>
+                    <span class="name">
+                            <span class="modifier">Public</span>
+                        <span ><b>resetFilters</b></span>
+                        <a href="#resetFilters"><span class="icon ion-ios-link"></span></a>
+                    </span>
+                </td>
+            </tr>
+            <tr>
+                <td class="col-md-4">
+                        <span class="modifier-icon icon ion-ios-reset"></span>
+                    <code>resetFilters()</code>
+                </td>
+            </tr>
+
+
+                    <tr>
+                        <td class="col-md-4">
+                            <div class="io-line">Definido em <a href="" data-line="380"
+                                    class="link-to-prism">src/app/application/products-variations/products-variations.component.ts:380</a></div>
+                        </td>
+                    </tr>
+
+
+            <tr>
+                <td class="col-md-4">
+
+                        <div class="io-description">
+                            <b>Retorna : </b>        <code><a href="https://www.typescriptlang.org/docs/handbook/basic-types.html" target="_blank" >void</a></code>
+
+                        </div>
+                </td>
+            </tr>
+        </tbody>
+    </table>
+    <table class="table table-sm table-bordered">
+        <tbody>
+            <tr>
+                <td class="col-md-4">
+                    <a name="saveReportTemplates"></a>
+                    <span class="name">
+                            <span class="modifier">Public</span>
+                        <span ><b>saveReportTemplates</b></span>
+                        <a href="#saveReportTemplates"><span class="icon ion-ios-link"></span></a>
+                    </span>
+                </td>
+            </tr>
+            <tr>
+                <td class="col-md-4">
+                        <span class="modifier-icon icon ion-ios-reset"></span>
+                    <code>saveReportTemplates()</code>
+                </td>
+            </tr>
+
+
+                    <tr>
+                        <td class="col-md-4">
+                            <div class="io-line">Definido em <a href="" data-line="251"
+                                    class="link-to-prism">src/app/application/products-variations/products-variations.component.ts:251</a></div>
+                        </td>
+                    </tr>
+
+
+            <tr>
+                <td class="col-md-4">
+
+                        <div class="io-description">
+                            <b>Retorna : </b>        <code><a href="https://www.typescriptlang.org/docs/handbook/basic-types.html" target="_blank" >void</a></code>
+
+                        </div>
+                </td>
+            </tr>
+        </tbody>
+    </table>
+</section>
+
+    <section data-compodoc="block-properties">
+    
+    <h3 id="inputs">
+        Propriedades
+    </h3>
+    <table class="table table-sm table-bordered">
+        <tbody>
+            <tr>
+                <td class="col-md-4">
+                    <a name="_rawReportsSetting"></a>
+                    <span class="name">
+                            <span class="modifier">Private</span>
+                        <span ><b>_rawReportsSetting</b></span>
+                        <a href="#_rawReportsSetting"><span class="icon ion-ios-link"></span></a>
+                    </span>
+                </td>
+            </tr>
+                <tr>
+                    <td class="col-md-4">
+                        <i>Tipo : </i>        <code><a href="https://www.typescriptlang.org/docs/handbook/basic-types.html" target="_blank" >any</a></code>
+
+                    </td>
+                </tr>
+                <tr>
+                    <td class="col-md-4">
+                        <i>Valor padrão : </i><code>null</code>
+                    </td>
+                </tr>
+                    <tr>
+                        <td class="col-md-4">
+                                <div class="io-line">Definido em <a href="" data-line="77" class="link-to-prism">src/app/application/products-variations/products-variations.component.ts:77</a></div>
+                        </td>
+                    </tr>
+
+
+        </tbody>
+    </table>
+    <table class="table table-sm table-bordered">
+        <tbody>
+            <tr>
+                <td class="col-md-4">
+                    <a name="activeCompany"></a>
+                    <span class="name">
+                            <span class="modifier">Public</span>
+                        <span ><b>activeCompany</b></span>
+                        <a href="#activeCompany"><span class="icon ion-ios-link"></span></a>
+                    </span>
+                </td>
+            </tr>
+                <tr>
+                    <td class="col-md-4">
+                        <i>Tipo : </i>        <code><a href="https://www.typescriptlang.org/docs/handbook/basic-types.html" target="_blank" >any</a></code>
+
+                    </td>
+                </tr>
+                <tr>
+                    <td class="col-md-4">
+                        <i>Valor padrão : </i><code>null</code>
+                    </td>
+                </tr>
+                    <tr>
+                        <td class="col-md-4">
+                                <div class="io-line">Definido em <a href="" data-line="57" class="link-to-prism">src/app/application/products-variations/products-variations.component.ts:57</a></div>
+                        </td>
+                    </tr>
+
+
+        </tbody>
+    </table>
+    <table class="table table-sm table-bordered">
+        <tbody>
+            <tr>
+                <td class="col-md-4">
+                    <a name="activeCompanyUuid"></a>
+                    <span class="name">
+                            <span class="modifier">Public</span>
+                        <span ><b>activeCompanyUuid</b></span>
+                        <a href="#activeCompanyUuid"><span class="icon ion-ios-link"></span></a>
+                    </span>
+                </td>
+            </tr>
+                <tr>
+                    <td class="col-md-4">
+                        <i>Tipo : </i>        <code><a href="https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/string" target="_blank" >string</a></code>
+
+                    </td>
+                </tr>
+                <tr>
+                    <td class="col-md-4">
+                        <i>Valor padrão : </i><code>&#x27;&#x27;</code>
+                    </td>
+                </tr>
+                    <tr>
+                        <td class="col-md-4">
+                                <div class="io-line">Definido em <a href="" data-line="58" class="link-to-prism">src/app/application/products-variations/products-variations.component.ts:58</a></div>
+                        </td>
+                    </tr>
+
+
+        </tbody>
+    </table>
+    <table class="table table-sm table-bordered">
+        <tbody>
+            <tr>
+                <td class="col-md-4">
+                    <a name="activeTemplate"></a>
+                    <span class="name">
+                            <span class="modifier">Public</span>
+                        <span ><b>activeTemplate</b></span>
+                        <a href="#activeTemplate"><span class="icon ion-ios-link"></span></a>
+                    </span>
+                </td>
+            </tr>
+                <tr>
+                    <td class="col-md-4">
+                        <i>Tipo : </i>        <code><a href="https://www.typescriptlang.org/docs/handbook/basic-types.html" target="_blank" >any</a></code>
+
+                    </td>
+                </tr>
+                <tr>
+                    <td class="col-md-4">
+                        <i>Valor padrão : </i><code>null</code>
+                    </td>
+                </tr>
+                    <tr>
+                        <td class="col-md-4">
+                                <div class="io-line">Definido em <a href="" data-line="76" class="link-to-prism">src/app/application/products-variations/products-variations.component.ts:76</a></div>
+                        </td>
+                    </tr>
+
+
+        </tbody>
+    </table>
+    <table class="table table-sm table-bordered">
+        <tbody>
+            <tr>
+                <td class="col-md-4">
+                    <a name="exportType"></a>
+                    <span class="name">
+                            <span class="modifier">Public</span>
+                        <span ><b>exportType</b></span>
+                        <a href="#exportType"><span class="icon ion-ios-link"></span></a>
+                    </span>
+                </td>
+            </tr>
+                <tr>
+                    <td class="col-md-4">
+                        <i>Tipo : </i>    <code>&quot;CSV&quot; | &quot;PDF&quot;</code>
+
+                    </td>
+                </tr>
+                <tr>
+                    <td class="col-md-4">
+                        <i>Valor padrão : </i><code>&#x27;PDF&#x27;</code>
+                    </td>
+                </tr>
+                    <tr>
+                        <td class="col-md-4">
+                                <div class="io-line">Definido em <a href="" data-line="70" class="link-to-prism">src/app/application/products-variations/products-variations.component.ts:70</a></div>
+                        </td>
+                    </tr>
+
+
+        </tbody>
+    </table>
+    <table class="table table-sm table-bordered">
+        <tbody>
+            <tr>
+                <td class="col-md-4">
+                    <a name="filteredVariations"></a>
+                    <span class="name">
+                            <span class="modifier">Public</span>
+                        <span ><b>filteredVariations</b></span>
+                        <a href="#filteredVariations"><span class="icon ion-ios-link"></span></a>
+                    </span>
+                </td>
+            </tr>
+                <tr>
+                    <td class="col-md-4">
+                        <i>Tipo : </i>        <code><a href="../interfaces/ProductVariationInterface.html" target="_self" >ProductVariationInterface[]</a></code>
+
+                    </td>
+                </tr>
+                <tr>
+                    <td class="col-md-4">
+                        <i>Valor padrão : </i><code>[]</code>
+                    </td>
+                </tr>
+                    <tr>
+                        <td class="col-md-4">
+                                <div class="io-line">Definido em <a href="" data-line="60" class="link-to-prism">src/app/application/products-variations/products-variations.component.ts:60</a></div>
+                        </td>
+                    </tr>
+
+
+        </tbody>
+    </table>
+    <table class="table table-sm table-bordered">
+        <tbody>
+            <tr>
+                <td class="col-md-4">
+                    <a name="isCreatingNewTemplate"></a>
+                    <span class="name">
+                            <span class="modifier">Public</span>
+                        <span ><b>isCreatingNewTemplate</b></span>
+                        <a href="#isCreatingNewTemplate"><span class="icon ion-ios-link"></span></a>
+                    </span>
+                </td>
+            </tr>
+                <tr>
+                    <td class="col-md-4">
+                        <i>Tipo : </i>        <code><a href="https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/boolean" target="_blank" >boolean</a></code>
+
+                    </td>
+                </tr>
+                <tr>
+                    <td class="col-md-4">
+                        <i>Valor padrão : </i><code>false</code>
+                    </td>
+                </tr>
+                    <tr>
+                        <td class="col-md-4">
+                                <div class="io-line">Definido em <a href="" data-line="80" class="link-to-prism">src/app/application/products-variations/products-variations.component.ts:80</a></div>
+                        </td>
+                    </tr>
+
+
+        </tbody>
+    </table>
+    <table class="table table-sm table-bordered">
+        <tbody>
+            <tr>
+                <td class="col-md-4">
+                    <a name="isExportModalVisible"></a>
+                    <span class="name">
+                            <span class="modifier">Public</span>
+                        <span ><b>isExportModalVisible</b></span>
+                        <a href="#isExportModalVisible"><span class="icon ion-ios-link"></span></a>
+                    </span>
+                </td>
+            </tr>
+                <tr>
+                    <td class="col-md-4">
+                        <i>Tipo : </i>        <code><a href="https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/boolean" target="_blank" >boolean</a></code>
+
+                    </td>
+                </tr>
+                <tr>
+                    <td class="col-md-4">
+                        <i>Valor padrão : </i><code>false</code>
+                    </td>
+                </tr>
+                    <tr>
+                        <td class="col-md-4">
+                                <div class="io-line">Definido em <a href="" data-line="69" class="link-to-prism">src/app/application/products-variations/products-variations.component.ts:69</a></div>
+                        </td>
+                    </tr>
+
+
+        </tbody>
+    </table>
+    <table class="table table-sm table-bordered">
+        <tbody>
+            <tr>
+                <td class="col-md-4">
+                    <a name="isFetching"></a>
+                    <span class="name">
+                            <span class="modifier">Public</span>
+                        <span ><b>isFetching</b></span>
+                        <a href="#isFetching"><span class="icon ion-ios-link"></span></a>
+                    </span>
+                </td>
+            </tr>
+                <tr>
+                    <td class="col-md-4">
+                        <i>Tipo : </i>        <code><a href="https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/boolean" target="_blank" >boolean</a></code>
+
+                    </td>
+                </tr>
+                <tr>
+                    <td class="col-md-4">
+                        <i>Valor padrão : </i><code>true</code>
+                    </td>
+                </tr>
+                    <tr>
+                        <td class="col-md-4">
+                                <div class="io-line">Definido em <a href="" data-line="61" class="link-to-prism">src/app/application/products-variations/products-variations.component.ts:61</a></div>
+                        </td>
+                    </tr>
+
+
+        </tbody>
+    </table>
+    <table class="table table-sm table-bordered">
+        <tbody>
+            <tr>
+                <td class="col-md-4">
+                    <a name="isGeneratingPdf"></a>
+                    <span class="name">
+                            <span class="modifier">Public</span>
+                        <span ><b>isGeneratingPdf</b></span>
+                        <a href="#isGeneratingPdf"><span class="icon ion-ios-link"></span></a>
+                    </span>
+                </td>
+            </tr>
+                <tr>
+                    <td class="col-md-4">
+                        <i>Tipo : </i>        <code><a href="https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/boolean" target="_blank" >boolean</a></code>
+
+                    </td>
+                </tr>
+                <tr>
+                    <td class="col-md-4">
+                        <i>Valor padrão : </i><code>false</code>
+                    </td>
+                </tr>
+                    <tr>
+                        <td class="col-md-4">
+                                <div class="io-line">Definido em <a href="" data-line="71" class="link-to-prism">src/app/application/products-variations/products-variations.component.ts:71</a></div>
+                        </td>
+                    </tr>
+
+
+        </tbody>
+    </table>
+    <table class="table table-sm table-bordered">
+        <tbody>
+            <tr>
+                <td class="col-md-4">
+                    <a name="newTemplateName"></a>
+                    <span class="name">
+                            <span class="modifier">Public</span>
+                        <span ><b>newTemplateName</b></span>
+                        <a href="#newTemplateName"><span class="icon ion-ios-link"></span></a>
+                    </span>
+                </td>
+            </tr>
+                <tr>
+                    <td class="col-md-4">
+                        <i>Tipo : </i>        <code><a href="https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/string" target="_blank" >string</a></code>
+
+                    </td>
+                </tr>
+                <tr>
+                    <td class="col-md-4">
+                        <i>Valor padrão : </i><code>&#x27;&#x27;</code>
+                    </td>
+                </tr>
+                    <tr>
+                        <td class="col-md-4">
+                                <div class="io-line">Definido em <a href="" data-line="81" class="link-to-prism">src/app/application/products-variations/products-variations.component.ts:81</a></div>
+                        </td>
+                    </tr>
+
+
+        </tbody>
+    </table>
+    <table class="table table-sm table-bordered">
+        <tbody>
+            <tr>
+                <td class="col-md-4">
+                    <a name="pageIndex"></a>
+                    <span class="name">
+                            <span class="modifier">Public</span>
+                        <span ><b>pageIndex</b></span>
+                        <a href="#pageIndex"><span class="icon ion-ios-link"></span></a>
+                    </span>
+                </td>
+            </tr>
+                <tr>
+                    <td class="col-md-4">
+                        <i>Tipo : </i>        <code><a href="https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/number" target="_blank" >number</a></code>
+
+                    </td>
+                </tr>
+                <tr>
+                    <td class="col-md-4">
+                        <i>Valor padrão : </i><code>1</code>
+                    </td>
+                </tr>
+                    <tr>
+                        <td class="col-md-4">
+                                <div class="io-line">Definido em <a href="" data-line="65" class="link-to-prism">src/app/application/products-variations/products-variations.component.ts:65</a></div>
+                        </td>
+                    </tr>
+
+
+        </tbody>
+    </table>
+    <table class="table table-sm table-bordered">
+        <tbody>
+            <tr>
+                <td class="col-md-4">
+                    <a name="pageSize"></a>
+                    <span class="name">
+                            <span class="modifier">Public</span>
+                        <span ><b>pageSize</b></span>
+                        <a href="#pageSize"><span class="icon ion-ios-link"></span></a>
+                    </span>
+                </td>
+            </tr>
+                <tr>
+                    <td class="col-md-4">
+                        <i>Tipo : </i>        <code><a href="https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/number" target="_blank" >number</a></code>
+
+                    </td>
+                </tr>
+                <tr>
+                    <td class="col-md-4">
+                        <i>Valor padrão : </i><code>20</code>
+                    </td>
+                </tr>
+                    <tr>
+                        <td class="col-md-4">
+                                <div class="io-line">Definido em <a href="" data-line="66" class="link-to-prism">src/app/application/products-variations/products-variations.component.ts:66</a></div>
+                        </td>
+                    </tr>
+
+
+        </tbody>
+    </table>
+    <table class="table table-sm table-bordered">
+        <tbody>
+            <tr>
+                <td class="col-md-4">
+                    <a name="reportTemplates"></a>
+                    <span class="name">
+                            <span class="modifier">Public</span>
+                        <span ><b>reportTemplates</b></span>
+                        <a href="#reportTemplates"><span class="icon ion-ios-link"></span></a>
+                    </span>
+                </td>
+            </tr>
+                <tr>
+                    <td class="col-md-4">
+                        <i>Tipo : </i>    <code>any[]</code>
+
+                    </td>
+                </tr>
+                <tr>
+                    <td class="col-md-4">
+                        <i>Valor padrão : </i><code>[]</code>
+                    </td>
+                </tr>
+                    <tr>
+                        <td class="col-md-4">
+                                <div class="io-line">Definido em <a href="" data-line="74" class="link-to-prism">src/app/application/products-variations/products-variations.component.ts:74</a></div>
+                        </td>
+                    </tr>
+
+
+        </tbody>
+    </table>
+    <table class="table table-sm table-bordered">
+        <tbody>
+            <tr>
+                <td class="col-md-4">
+                    <a name="searchTerm"></a>
+                    <span class="name">
+                            <span class="modifier">Public</span>
+                        <span ><b>searchTerm</b></span>
+                        <a href="#searchTerm"><span class="icon ion-ios-link"></span></a>
+                    </span>
+                </td>
+            </tr>
+                <tr>
+                    <td class="col-md-4">
+                        <i>Tipo : </i>        <code><a href="https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/string" target="_blank" >string</a></code>
+
+                    </td>
+                </tr>
+                <tr>
+                    <td class="col-md-4">
+                        <i>Valor padrão : </i><code>&#x27;&#x27;</code>
+                    </td>
+                </tr>
+                    <tr>
+                        <td class="col-md-4">
+                                <div class="io-line">Definido em <a href="" data-line="63" class="link-to-prism">src/app/application/products-variations/products-variations.component.ts:63</a></div>
+                        </td>
+                    </tr>
+
+
+        </tbody>
+    </table>
+    <table class="table table-sm table-bordered">
+        <tbody>
+            <tr>
+                <td class="col-md-4">
+                    <a name="selectedTemplateId"></a>
+                    <span class="name">
+                            <span class="modifier">Public</span>
+                        <span ><b>selectedTemplateId</b></span>
+                        <a href="#selectedTemplateId"><span class="icon ion-ios-link"></span></a>
+                    </span>
+                </td>
+            </tr>
+                <tr>
+                    <td class="col-md-4">
+                        <i>Tipo : </i>        <code><a href="https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/string" target="_blank" >string</a></code>
+
+                    </td>
+                </tr>
+                <tr>
+                    <td class="col-md-4">
+                        <i>Valor padrão : </i><code>&#x27;default&#x27;</code>
+                    </td>
+                </tr>
+                    <tr>
+                        <td class="col-md-4">
+                                <div class="io-line">Definido em <a href="" data-line="75" class="link-to-prism">src/app/application/products-variations/products-variations.component.ts:75</a></div>
+                        </td>
+                    </tr>
+
+
+        </tbody>
+    </table>
+    <table class="table table-sm table-bordered">
+        <tbody>
+            <tr>
+                <td class="col-md-4">
+                    <a name="stockStatus"></a>
+                    <span class="name">
+                            <span class="modifier">Public</span>
+                        <span ><b>stockStatus</b></span>
+                        <a href="#stockStatus"><span class="icon ion-ios-link"></span></a>
+                    </span>
+                </td>
+            </tr>
+                <tr>
+                    <td class="col-md-4">
+                        <i>Tipo : </i>    <code>&quot;ALL&quot; | &quot;IN_STOCK&quot; | &quot;OUT_OF_STOCK&quot;</code>
+
+                    </td>
+                </tr>
+                <tr>
+                    <td class="col-md-4">
+                        <i>Valor padrão : </i><code>&#x27;ALL&#x27;</code>
+                    </td>
+                </tr>
+                    <tr>
+                        <td class="col-md-4">
+                                <div class="io-line">Definido em <a href="" data-line="64" class="link-to-prism">src/app/application/products-variations/products-variations.component.ts:64</a></div>
+                        </td>
+                    </tr>
+
+
+        </tbody>
+    </table>
+    <table class="table table-sm table-bordered">
+        <tbody>
+            <tr>
+                <td class="col-md-4">
+                    <a name="variations"></a>
+                    <span class="name">
+                            <span class="modifier">Public</span>
+                        <span ><b>variations</b></span>
+                        <a href="#variations"><span class="icon ion-ios-link"></span></a>
+                    </span>
+                </td>
+            </tr>
+                <tr>
+                    <td class="col-md-4">
+                        <i>Tipo : </i>        <code><a href="../interfaces/ProductVariationInterface.html" target="_self" >ProductVariationInterface[]</a></code>
+
+                    </td>
+                </tr>
+                <tr>
+                    <td class="col-md-4">
+                        <i>Valor padrão : </i><code>[]</code>
+                    </td>
+                </tr>
+                    <tr>
+                        <td class="col-md-4">
+                                <div class="io-line">Definido em <a href="" data-line="59" class="link-to-prism">src/app/application/products-variations/products-variations.component.ts:59</a></div>
+                        </td>
+                    </tr>
+
+
+        </tbody>
+    </table>
+</section>
+
+</div>
+
+
+    <div class="tab-pane fade  tab-source-code" id="source">
+        <pre class="line-numbers compodoc-sourcecode"><code class="language-typescript">import { Component, OnInit } from &#x27;@angular/core&#x27;;
+import { CommonModule } from &#x27;@angular/common&#x27;;
+import { FormsModule } from &#x27;@angular/forms&#x27;;
+import { Router, RouterModule } from &#x27;@angular/router&#x27;;
+
+// NG-ZORRO
+import { NzTableModule } from &#x27;ng-zorro-antd/table&#x27;;
+import { NzButtonModule } from &#x27;ng-zorro-antd/button&#x27;;
+import { NzIconModule } from &#x27;ng-zorro-antd/icon&#x27;;
+import { NzTagModule } from &#x27;ng-zorro-antd/tag&#x27;;
+import { NzEmptyModule } from &#x27;ng-zorro-antd/empty&#x27;;
+import { NzToolTipModule } from &#x27;ng-zorro-antd/tooltip&#x27;;
+import { NzCardModule } from &#x27;ng-zorro-antd/card&#x27;;
+import { NzInputModule } from &#x27;ng-zorro-antd/input&#x27;;
+import { NzAvatarModule } from &#x27;ng-zorro-antd/avatar&#x27;;
+import { NzSpinModule } from &#x27;ng-zorro-antd/spin&#x27;;
+import { NzSelectModule } from &#x27;ng-zorro-antd/select&#x27;;
+import { NzModalModule } from &#x27;ng-zorro-antd/modal&#x27;;
+import { NzCheckboxModule } from &#x27;ng-zorro-antd/checkbox&#x27;;
+
+import { ProductVariationInterface } from &#x27;@interfaces/product-variation&#x27;;
+import { ProductVariationsService } from &#x27;@services/product-variations.service&#x27;;
+import { SessionService } from &#x27;@services/session.service&#x27;;
+import { MessageService } from &#x27;@services/message.service&#x27;;
+import { CompaniesService } from &#x27;@services/companies.service&#x27;;
+import { CompaniesSettingsService } from &#x27;@services/companies-settings.service&#x27;;
+
+import { jsPDF } from &#x27;jspdf&#x27;;
+import autoTable from &#x27;jspdf-autotable&#x27;;
+
+@Component({
+  selector: &#x27;app-products-variations&#x27;,
+  standalone: true,
+  imports: [
+    CommonModule,
+    FormsModule,
+    RouterModule,
+    NzTableModule,
+    NzButtonModule,
+    NzIconModule,
+    NzTagModule,
+    NzEmptyModule,
+    NzToolTipModule,
+    NzCardModule,
+    NzInputModule,
+    NzAvatarModule,
+    NzSpinModule,
+    NzSelectModule,
+    NzModalModule,
+    NzCheckboxModule
+  ],
+  templateUrl: &#x27;./products-variations.component.html&#x27;,
+  styleUrl: &#x27;./products-variations.component.scss&#x27;
+})
+export class ProductsVariationsComponent implements OnInit {
+
+  public activeCompany: any &#x3D; null;
+  public activeCompanyUuid: string &#x3D; &#x27;&#x27;;
+  public variations: ProductVariationInterface[] &#x3D; [];
+  public filteredVariations: ProductVariationInterface[] &#x3D; [];
+  public isFetching: boolean &#x3D; true;
+
+  public searchTerm: string &#x3D; &#x27;&#x27;;
+  public stockStatus: &#x27;ALL&#x27; | &#x27;IN_STOCK&#x27; | &#x27;OUT_OF_STOCK&#x27; &#x3D; &#x27;ALL&#x27;;
+  public pageIndex: number &#x3D; 1;
+  public pageSize: number &#x3D; 20;
+
+  // Export Modal State
+  public isExportModalVisible: boolean &#x3D; false;
+  public exportType: &#x27;CSV&#x27; | &#x27;PDF&#x27; &#x3D; &#x27;PDF&#x27;;
+  public isGeneratingPdf: boolean &#x3D; false;
+
+  // Report Templates State
+  public reportTemplates: any[] &#x3D; [];
+  public selectedTemplateId: string &#x3D; &#x27;default&#x27;;
+  public activeTemplate: any &#x3D; null;
+  private _rawReportsSetting: any &#x3D; null;
+
+  // Inline template creation
+  public isCreatingNewTemplate: boolean &#x3D; false;
+  public newTemplateName: string &#x3D; &#x27;&#x27;;
+
+  constructor(
+    private _router: Router,
+    private _sessionService: SessionService,
+    private _productVariationsService: ProductVariationsService,
+    private _messageService: MessageService,
+    private _companiesService: CompaniesService,
+    private _settingsService: CompaniesSettingsService
+  ) { }
+
+  ngOnInit(): void {
+    const company &#x3D; this._sessionService.getCompany();
+    if (company &amp;&amp; company.cmp_uuid) {
+      this.activeCompany &#x3D; company;
+      this.activeCompanyUuid &#x3D; company.cmp_uuid;
+      this.loadVariations();
+      this.loadFullCompanyDetails();
+      this.loadCompanySettings();
+    } else {
+      this.isFetching &#x3D; false;
+      this._messageService.error(&#x27;Error&#x27;, &#x27;No se encontró una tienda activa en la sesión.&#x27;);
+    }
+  }
+
+  public loadCompanySettings(): void {
+    this._settingsService.getCompaniesSettings(this.activeCompanyUuid).subscribe({
+      next: (res: any) &#x3D;&gt; {
+        const dbSettings: any[] &#x3D; res?.data || [];
+        this._rawReportsSetting &#x3D; dbSettings.find(s &#x3D;&gt; s.cmps_key &#x3D;&#x3D;&#x3D; &#x27;PDF_REPORTS_CONFIG&#x27;);
+        
+        let parsed: any[] &#x3D; [];
+        if (this._rawReportsSetting &amp;&amp; this._rawReportsSetting.cmps_value) {
+          try {
+            parsed &#x3D; JSON.parse(this._rawReportsSetting.cmps_value);
+          } catch (e) {
+            console.error(&#x27;Error al parsear PDF_REPORTS_CONFIG:&#x27;, e);
+          }
+        }
+
+        // Inicializar con plantilla por defecto si está vacía
+        if (!Array.isArray(parsed) || parsed.length &#x3D;&#x3D;&#x3D; 0) {
+          parsed &#x3D; [this.getDefaultTemplate()];
+        }
+
+        // Asegurar retrocompatibilidad para el color, texto y la etiqueta del QR
+        parsed.forEach(t &#x3D;&gt; {
+          if (!t.primaryColor) {
+            t.primaryColor &#x3D; this.activeCompany?.cmp_primarycolor || &#x27;#262626&#x27;;
+          }
+          if (!t.textColor) {
+            t.textColor &#x3D; &#x27;#ffffff&#x27;;
+          }
+          if (!t.qrLabel) {
+            t.qrLabel &#x3D; &#x27;ESCANEA PARA COMPRAR&#x27;;
+          }
+        });
+
+        this.reportTemplates &#x3D; parsed;
+        this.selectedTemplateId &#x3D; this.reportTemplates[0].id;
+        this.activeTemplate &#x3D; this.reportTemplates[0];
+        console.log(&#x27;Plantillas de reportes cargadas:&#x27;, this.reportTemplates);
+      },
+      error: (err) &#x3D;&gt; {
+        console.error(&#x27;Error al cargar configuraciones de reportes:&#x27;, err);
+        this.reportTemplates &#x3D; [this.getDefaultTemplate()];
+        this.selectedTemplateId &#x3D; &#x27;default&#x27;;
+        this.activeTemplate &#x3D; this.reportTemplates[0];
+      }
+    });
+  }
+
+  public getDefaultTemplate() {
+    return {
+      id: &#x27;default&#x27;,
+      name: &#x27;Lista de Precios Principal&#x27;,
+      title: &#x27;CATÁLOGO DE PRECIOS OFICIAL&#x27;,
+      includeContact: true,
+      includeQr: true,
+      showAvailability: true,
+      showMaterial: true,
+      showZeroPriceItems: true,
+      dateFormat: &#x27;full&#x27;,
+      timeFormat: &#x27;12h&#x27;,
+      primaryColor: this.activeCompany?.cmp_primarycolor || &#x27;#262626&#x27;,
+      textColor: &#x27;#ffffff&#x27;,
+      qrLabel: &#x27;ESCANEA PARA COMPRAR&#x27;,
+      columns: {
+        sku: &#x27;SKU&#x27;,
+        product: &#x27;Producto / Presentación&#x27;,
+        material: &#x27;Material&#x27;,
+        specs: &#x27;Color / Talle&#x27;,
+        price: &#x27;Precio&#x27;,
+        status: &#x27;Estado&#x27;
+      }
+    };
+  }
+
+  public onTemplateChange(id: string): void {
+    const found &#x3D; this.reportTemplates.find(t &#x3D;&gt; t.id &#x3D;&#x3D;&#x3D; id);
+    if (found) {
+      this.activeTemplate &#x3D; found;
+    }
+  }
+
+  public enableCreateTemplateMode(): void {
+    this.isCreatingNewTemplate &#x3D; true;
+    this.newTemplateName &#x3D; &#x27;&#x27;;
+  }
+
+  public cancelCreateTemplate(): void {
+    this.isCreatingNewTemplate &#x3D; false;
+    this.newTemplateName &#x3D; &#x27;&#x27;;
+  }
+
+  public confirmCreateTemplate(): void {
+    const name &#x3D; this.newTemplateName.trim();
+    if (!name) {
+      this._messageService.warning(&#x27;Advertencia&#x27;, &#x27;El nombre de la plantilla no puede estar vacío.&#x27;);
+      return;
+    }
+
+    const newId &#x3D; &#x27;template_&#x27; + Date.now();
+    const newTemp &#x3D; {
+      id: newId,
+      name: name,
+      title: name.toUpperCase(),
+      includeContact: this.activeTemplate?.includeContact ?? true,
+      includeQr: this.activeTemplate?.includeQr ?? true,
+      showAvailability: this.activeTemplate?.showAvailability ?? true,
+      showMaterial: this.activeTemplate?.showMaterial ?? true,
+      showZeroPriceItems: this.activeTemplate?.showZeroPriceItems ?? true,
+      dateFormat: this.activeTemplate?.dateFormat ?? &#x27;full&#x27;,
+      timeFormat: this.activeTemplate?.timeFormat ?? &#x27;12h&#x27;,
+      primaryColor: this.activeTemplate?.primaryColor || this.activeCompany?.cmp_primarycolor || &#x27;#262626&#x27;,
+      textColor: this.activeTemplate?.textColor ?? &#x27;#ffffff&#x27;,
+      qrLabel: this.activeTemplate?.qrLabel ?? &#x27;ESCANEA PARA COMPRAR&#x27;,
+      columns: { ...this.activeTemplate?.columns || this.getDefaultTemplate().columns }
+    };
+
+    this.reportTemplates.push(newTemp);
+    this.selectedTemplateId &#x3D; newId;
+    this.activeTemplate &#x3D; newTemp;
+    this.isCreatingNewTemplate &#x3D; false;
+    this.newTemplateName &#x3D; &#x27;&#x27;;
+    this._messageService.success(&#x27;Plantilla Creada&#x27;, &#x60;Se creó la plantilla &quot;${name}&quot;. Recordá guardar tus configuraciones.&#x60;);
+  }
+
+  public deleteActiveTemplate(): void {
+    if (this.reportTemplates.length &lt;&#x3D; 1) {
+      this._messageService.warning(&#x27;Advertencia&#x27;, &#x27;Tenés que conservar al menos una plantilla de reporte.&#x27;);
+      return;
+    }
+
+    const name &#x3D; this.activeTemplate?.name || &#x27;la plantilla actual&#x27;;
+    this._messageService.confirm(
+      &#x27;¿Eliminar Plantilla?&#x27;,
+      &#x60;¿Deseas eliminar la plantilla &quot;${name}&quot;? Esta acción se guardará de forma permanente al presionar &quot;Guardar Cambios&quot;.&#x60;,
+      () &#x3D;&gt; {
+        const index &#x3D; this.reportTemplates.findIndex(t &#x3D;&gt; t.id &#x3D;&#x3D;&#x3D; this.selectedTemplateId);
+        if (index &gt; -1) {
+          this.reportTemplates.splice(index, 1);
+          this.selectedTemplateId &#x3D; this.reportTemplates[0].id;
+          this.activeTemplate &#x3D; this.reportTemplates[0];
+          this._messageService.info(&#x27;Plantilla Eliminada&#x27;, &#x60;Se eliminó la plantilla de la lista.&#x60;);
+        }
+      }
+    );
+  }
+
+  public saveReportTemplates(): void {
+    if (!this._rawReportsSetting) {
+      this._rawReportsSetting &#x3D; {
+        cmp_uuid: this.activeCompanyUuid,
+        cmps_key: &#x27;PDF_REPORTS_CONFIG&#x27;,
+        cmps_parameter: &#x27;Configuración de Reportes PDF&#x27;,
+        cmps_description: &#x27;Almacena de manera interna las plantillas de catálogos y listas de precios en formato PDF configuradas por el comercio.&#x27;,
+        cmps_datatype: &#x27;string&#x27;,
+        cmps_group: &#x27;Reportes PDF&#x27;,
+        cmps_options: &#x27;&#x27;,
+        cmps_createdat: new Date()
+      };
+    }
+
+    this._rawReportsSetting.cmps_value &#x3D; JSON.stringify(this.reportTemplates);
+    this._rawReportsSetting.cmps_updatedat &#x3D; new Date();
+    
+    const isNew &#x3D; !this._rawReportsSetting.cmps_uuid || this._rawReportsSetting.cmps_uuid.length &lt; 5;
+
+    const payload &#x3D; { ...this._rawReportsSetting };
+    let request$;
+    if (isNew) {
+      delete payload.cmps_uuid;
+      request$ &#x3D; this._settingsService.saveCompanySetting(payload);
+    } else {
+      request$ &#x3D; this._settingsService.updateCompanySetting(payload);
+    }
+
+    this.isGeneratingPdf &#x3D; true;
+    request$.subscribe({
+      next: (res: any) &#x3D;&gt; {
+        if (res &amp;&amp; res.data) {
+          this._rawReportsSetting &#x3D; res.data;
+        }
+        this.isGeneratingPdf &#x3D; false;
+        this._messageService.success(&#x27;Configuraciones Guardadas&#x27;, &#x27;Las plantillas se guardaron de forma permanente.&#x27;);
+      },
+      error: (err) &#x3D;&gt; {
+        console.error(&#x27;Error al guardar plantillas:&#x27;, err);
+        this.isGeneratingPdf &#x3D; false;
+        this._messageService.error(&#x27;Error&#x27;, &#x27;No se pudieron guardar las configuraciones de reportes.&#x27;);
+      }
+    });
+  }
+
+  public loadFullCompanyDetails(): void {
+    this._companiesService.getCompanyById(this.activeCompanyUuid).subscribe({
+      next: (res: any) &#x3D;&gt; {
+        if (res &amp;&amp; res.data) {
+          const fullCompany &#x3D; Array.isArray(res.data) ? res.data[0] : res.data;
+          this.activeCompany &#x3D; { ...this.activeCompany, ...fullCompany };
+          console.log(&#x27;Información completa de la tienda cargada:&#x27;, this.activeCompany);
+          
+          // Parchear color institucional por defecto a las plantillas si no lo tienen seteado
+          if (this.reportTemplates &amp;&amp; this.reportTemplates.length &gt; 0) {
+            this.reportTemplates.forEach(t &#x3D;&gt; {
+              if (!t.primaryColor || t.primaryColor &#x3D;&#x3D;&#x3D; &#x27;#262626&#x27;) {
+                t.primaryColor &#x3D; this.activeCompany?.cmp_primarycolor || &#x27;#262626&#x27;;
+              }
+            });
+            if (this.activeTemplate &amp;&amp; (!this.activeTemplate.primaryColor || this.activeTemplate.primaryColor &#x3D;&#x3D;&#x3D; &#x27;#262626&#x27;)) {
+              this.activeTemplate.primaryColor &#x3D; this.activeCompany?.cmp_primarycolor || &#x27;#262626&#x27;;
+            }
+          }
+        }
+      },
+      error: (err) &#x3D;&gt; {
+        console.error(&#x27;Error al cargar detalles completos de la tienda:&#x27;, err);
+      }
+    });
+  }
+
+  public hexToRgb(hex: string): [number, number, number] {
+    hex &#x3D; hex.replace(/^#/, &#x27;&#x27;);
+    const num &#x3D; parseInt(hex, 16);
+    const r &#x3D; (num &gt;&gt; 16) &amp; 255;
+    const g &#x3D; (num &gt;&gt; 8) &amp; 255;
+    const b &#x3D; num &amp; 255;
+    if (isNaN(r) || isNaN(g) || isNaN(b)) {
+      return [38, 38, 38];
+    }
+    return [r, g, b];
+  }
+
+  public loadVariations(): void {
+    this.isFetching &#x3D; true;
+    this._productVariationsService.getProductsVariations(this.activeCompanyUuid, &#x27;&#x27;)
+      .subscribe({
+        next: (res: any) &#x3D;&gt; {
+          this.variations &#x3D; res.data || [];
+          this.applyFilters();
+          this.isFetching &#x3D; false;
+        },
+        error: (err) &#x3D;&gt; {
+          console.error(&#x27;Error al cargar presentaciones:&#x27;, err);
+          this._messageService.error(&#x27;Error&#x27;, &#x27;No se pudieron cargar las presentaciones de productos.&#x27;);
+          this.isFetching &#x3D; false;
+        }
+      });
+  }
+
+  private removeAccents(str: string): string {
+    return str.normalize(&quot;NFD&quot;).replace(/[\u0300-\u036f]/g, &quot;&quot;);
+  }
+
+  public applyFilters(): void {
+    const rawFilter &#x3D; this.searchTerm.toLowerCase().trim();
+    const normalizedFilter &#x3D; this.removeAccents(rawFilter);
+
+    this.filteredVariations &#x3D; this.variations.filter(v &#x3D;&gt; {
+      if (this.stockStatus &#x3D;&#x3D;&#x3D; &#x27;IN_STOCK&#x27; &amp;&amp; v.prov_stock &lt;&#x3D; 0) return false;
+      if (this.stockStatus &#x3D;&#x3D;&#x3D; &#x27;OUT_OF_STOCK&#x27; &amp;&amp; v.prov_stock &gt; 0) return false;
+
+      if (!normalizedFilter) return true;
+
+      const varName &#x3D; this.removeAccents(v.prov_name.toLowerCase());
+      const varSku &#x3D; v.prov_sku.toLowerCase();
+      const prodName &#x3D; v.pro_name ? this.removeAccents(v.pro_name.toLowerCase()) : &#x27;&#x27;;
+      const prodCode &#x3D; v.prov_code ? v.prov_code.toLowerCase() : &#x27;&#x27;;
+
+      return varName.includes(normalizedFilter) || 
+             varSku.includes(normalizedFilter) || 
+             prodName.includes(normalizedFilter) ||
+             prodCode.includes(normalizedFilter);
+    });
+
+    this.pageIndex &#x3D; 1;
+  }
+
+  public resetFilters(): void {
+    this.searchTerm &#x3D; &#x27;&#x27;;
+    this.stockStatus &#x3D; &#x27;ALL&#x27;;
+    this.applyFilters();
+  }
+
+  public editVariation(v: ProductVariationInterface): void {
+    if (v.pro_uuid &amp;&amp; v.prov_uuid) {
+      this._router.navigate([&#x27;/application/product-variation&#x27;, v.pro_uuid, v.prov_uuid]);
+    } else {
+      this._messageService.warning(&#x27;Advertencia&#x27;, &#x27;Faltan identificadores para editar esta presentación.&#x27;);
+    }
+  }
+
+  public openExportModal(): void {
+    this.isExportModalVisible &#x3D; true;
+  }
+
+  public confirmExport(): void {
+    if (this.exportType &#x3D;&#x3D;&#x3D; &#x27;PDF&#x27;) {
+      this.exportToPdf();
+    } else {
+      this.exportToCsv();
+      this.isExportModalVisible &#x3D; false;
+    }
+  }
+
+  public exportToCsv(): void {
+    if (this.filteredVariations.length &#x3D;&#x3D;&#x3D; 0) {
+      this._messageService.warning(&#x27;Advertencia&#x27;, &#x27;No hay datos en la lista para exportar.&#x27;);
+      return;
+    }
+
+    const headers &#x3D; [
+      &#x27;SKU&#x27;,
+      &#x27;Presentacion&#x27;,
+      &#x27;Producto&#x27;,
+      &#x27;Material&#x27;,
+      &#x27;Color&#x27;,
+      &#x27;Talle&#x27;,
+      &#x27;Precio&#x27;,
+      &#x27;Stock&#x27;
+    ];
+
+    const rows &#x3D; this.filteredVariations.map(v &#x3D;&gt; [
+      v.prov_sku || &#x27;&#x27;,
+      v.prov_name || &#x27;&#x27;,
+      v.pro_name || &#x27;&#x27;,
+      v.gmat_name || &#x27;&#x27;,
+      v.prov_color || &#x27;&#x27;,
+      v.prov_size || &#x27;&#x27;,
+      v.prov_suggestedminimumsellingprice || 0,
+      v.prov_stock || 0
+    ]);
+
+    const separator &#x3D; &#x27;;&#x27;;
+    const csvContent &#x3D; &#x27;sep&#x3D;;\r\n&#x27; + 
+      headers.map(h &#x3D;&gt; this.escapeCSVField(h)).join(separator) + &#x27;\r\n&#x27; +
+      rows.map(row &#x3D;&gt; row.map(field &#x3D;&gt; this.escapeCSVField(field.toString())).join(separator)).join(&#x27;\r\n&#x27;);
+
+    const blob &#x3D; new Blob([&#x27;\uFEFF&#x27; + csvContent], { type: &#x27;text/csv;charset&#x3D;utf-8;&#x27; });
+    const url &#x3D; URL.createObjectURL(blob);
+    const link &#x3D; document.createElement(&#x27;a&#x27;);
+    link.setAttribute(&#x27;href&#x27;, url);
+    link.setAttribute(&#x27;download&#x27;, &#x60;lista_precios_presentaciones_${new Date().toISOString().slice(0,10)}.csv&#x60;);
+    link.style.visibility &#x3D; &#x27;hidden&#x27;;
+    document.body.appendChild(link);
+    link.click();
+    document.body.removeChild(link);
+
+    this._messageService.success(&#x27;Exportación Exitosa&#x27;, &#x27;Se ha descargado la lista de precios.&#x27;);
+  }
+
+  private escapeCSVField(val: string): string {
+    const escaped &#x3D; val.replace(/&quot;/g, &#x27;&quot;&quot;&#x27;);
+    if (escaped.includes(&#x27;;&#x27;) || escaped.includes(&#x27;\n&#x27;) || escaped.includes(&#x27;\r&#x27;) || escaped.includes(&#x27;&quot;&#x27;)) {
+      return &#x60;&quot;${escaped}&quot;&#x60;;
+    }
+    return escaped;
+  }
+
+  private getBase64ImageFromUrl(imageUrl: string): Promise&lt;string&gt; {
+    return new Promise((resolve, reject) &#x3D;&gt; {
+      const img &#x3D; new Image();
+      img.setAttribute(&#x27;crossOrigin&#x27;, &#x27;anonymous&#x27;);
+      img.onload &#x3D; () &#x3D;&gt; {
+        const canvas &#x3D; document.createElement(&#x27;canvas&#x27;);
+        canvas.width &#x3D; img.width;
+        canvas.height &#x3D; img.height;
+        const ctx &#x3D; canvas.getContext(&#x27;2d&#x27;);
+        if (ctx) {
+          ctx.drawImage(img, 0, 0);
+          const dataURL &#x3D; canvas.toDataURL(&#x27;image/png&#x27;);
+          resolve(dataURL);
+        } else {
+          reject(new Error(&#x27;Failed to get 2D context&#x27;));
+        }
+      };
+      img.onerror &#x3D; (err) &#x3D;&gt; {
+        reject(err);
+      };
+      img.src &#x3D; imageUrl;
+    });
+  }
+
+  public async exportToPdf(): Promise&lt;void&gt; {
+    if (this.filteredVariations.length &#x3D;&#x3D;&#x3D; 0) {
+      this._messageService.warning(&#x27;Advertencia&#x27;, &#x27;No hay datos en la lista para exportar.&#x27;);
+      return;
+    }
+
+    const template &#x3D; this.activeTemplate || this.getDefaultTemplate();
+    const cols &#x3D; template.columns || this.getDefaultTemplate().columns;
+
+    this.isGeneratingPdf &#x3D; true;
+    try {
+      const doc &#x3D; new jsPDF({
+        orientation: &#x27;portrait&#x27;,
+        unit: &#x27;mm&#x27;,
+        format: &#x27;a4&#x27;
+      });
+
+      const companyName &#x3D; this.activeCompany?.cmp_name || &#x27;Mi Comercio&#x27;;
+      const companyEmail &#x3D; this.activeCompany?.cmp_email || &#x27;&#x27;;
+      const companyPhone &#x3D; this.activeCompany?.cmp_phone || &#x27;&#x27;;
+      const companySlug &#x3D; this.activeCompany?.cmp_slug || &#x27;&#x27;;
+
+      // 1. DIBUJAR CABECERA (Header)
+      const headerColor &#x3D; this.hexToRgb(template.primaryColor || &#x27;#1f1f1f&#x27;);
+      doc.setFillColor(headerColor[0], headerColor[1], headerColor[2]);
+      doc.rect(0, 0, 210, 40, &#x27;F&#x27;);
+
+      const txtColor &#x3D; this.hexToRgb(template.textColor || &#x27;#ffffff&#x27;);
+
+      // Título Tienda
+      doc.setTextColor(txtColor[0], txtColor[1], txtColor[2]);
+      doc.setFont(&#x27;helvetica&#x27;, &#x27;bold&#x27;);
+      doc.setFontSize(22);
+      doc.text(companyName.toUpperCase(), 14, 18);
+
+      // Subtítulo
+      doc.setFont(&#x27;helvetica&#x27;, &#x27;normal&#x27;);
+      doc.setFontSize(11);
+      if (template.textColor &#x3D;&#x3D;&#x3D; &#x27;#ffffff&#x27;) {
+        doc.setTextColor(200, 200, 200);
+      } else {
+        doc.setTextColor(txtColor[0], txtColor[1], txtColor[2]);
+      }
+      doc.text((template.title || &#x27;CATÁLOGO DE PRECIOS OFICIAL&#x27;).toUpperCase(), 14, 25);
+
+      // Fecha
+      let dateString &#x3D; &#x27;&#x27;;
+      if (template.dateFormat &#x3D;&#x3D;&#x3D; &#x27;full&#x27;) {
+        const use12h &#x3D; template.timeFormat !&#x3D;&#x3D; &#x27;24h&#x27;;
+        const today &#x3D; new Date().toLocaleDateString(&#x27;es-AR&#x27;, {
+          day: &#x27;2-digit&#x27;,
+          month: &#x27;2-digit&#x27;,
+          year: &#x27;numeric&#x27;,
+          hour: &#x27;2-digit&#x27;,
+          minute: &#x27;2-digit&#x27;,
+          hour12: use12h
+        });
+        dateString &#x3D; &#x60;Generado el: ${today}&#x60;;
+      } else if (template.dateFormat &#x3D;&#x3D;&#x3D; &#x27;date&#x27;) {
+        const today &#x3D; new Date().toLocaleDateString(&#x27;es-AR&#x27;, {
+          day: &#x27;2-digit&#x27;,
+          month: &#x27;2-digit&#x27;,
+          year: &#x27;numeric&#x27;
+        });
+        dateString &#x3D; &#x60;Generado el: ${today}&#x60;;
+      }
+
+      if (dateString) {
+        doc.setFontSize(9);
+        if (template.textColor &#x3D;&#x3D;&#x3D; &#x27;#ffffff&#x27;) {
+          doc.setTextColor(160, 160, 160);
+        } else {
+          doc.setTextColor(txtColor[0], txtColor[1], txtColor[2]);
+        }
+        doc.text(dateString, 14, 32);
+      }
+
+      // 2. DETALLES DE CONTACTO Y CÓDIGO QR
+      let startY &#x3D; 48;
+
+      if (template.includeContact || (template.includeQr &amp;&amp; companySlug)) {
+        let contactLines: string[] &#x3D; [];
+        if (template.includeContact) {
+          if (companyEmail) contactLines.push(&#x60;Email: ${companyEmail}&#x60;);
+          if (companyPhone) contactLines.push(&#x60;Teléfono: ${companyPhone}&#x60;);
+          if (this.activeCompany?.cmp_whatsapp) contactLines.push(&#x60;WhatsApp: ${this.activeCompany.cmp_whatsapp}&#x60;);
+          if (this.activeCompany?.cmp_instagram) contactLines.push(&#x60;Instagram: ${this.activeCompany.cmp_instagram}&#x60;);
+          if (this.activeCompany?.cmp_facebook) contactLines.push(&#x60;Facebook: ${this.activeCompany.cmp_facebook}&#x60;);
+          if (contactLines.length &#x3D;&#x3D;&#x3D; 0) {
+            contactLines.push(&#x27;No se registra información de contacto pública.&#x27;);
+          }
+        }
+
+        const hasQr &#x3D; template.includeQr &amp;&amp; companySlug;
+        const numLines &#x3D; contactLines.length;
+        
+        let boxHeight &#x3D; 26;
+        if (template.includeContact) {
+          boxHeight &#x3D; Math.max(15 + numLines * 5, hasQr ? 32 : 26);
+        } else if (hasQr) {
+          boxHeight &#x3D; 26;
+        }
+
+        doc.setFillColor(250, 250, 250);
+        doc.setDrawColor(230, 230, 230);
+        doc.roundedRect(14, 45, 182, boxHeight, 3, 3, &#x27;FD&#x27;);
+
+        let textX &#x3D; 20;
+        let textY &#x3D; 52;
+
+        if (template.includeContact) {
+          doc.setTextColor(80, 80, 80);
+          doc.setFont(&#x27;helvetica&#x27;, &#x27;bold&#x27;);
+          doc.setFontSize(10);
+          doc.text(&#x27;INFORMACIÓN DE CONTACTO:&#x27;, textX, textY);
+          
+          doc.setFont(&#x27;helvetica&#x27;, &#x27;normal&#x27;);
+          doc.setFontSize(9.5);
+          doc.setTextColor(100, 100, 100);
+          
+          let lineOffset &#x3D; 6;
+          contactLines.forEach(line &#x3D;&gt; {
+            doc.text(line, textX, textY + lineOffset);
+            lineOffset +&#x3D; 5;
+          });
+        } else if (template.includeQr &amp;&amp; companySlug) {
+          doc.setTextColor(80, 80, 80);
+          doc.setFont(&#x27;helvetica&#x27;, &#x27;bold&#x27;);
+          doc.setFontSize(10);
+          doc.text(&#x27;COMPRÁ ONLINE EN NUESTRO MARKET:&#x27;, textX, textY);
+
+          doc.setFont(&#x27;helvetica&#x27;, &#x27;normal&#x27;);
+          doc.setFontSize(9);
+          doc.setTextColor(120, 120, 120);
+          
+          const infoText &#x3D; &#x27;Escaneá el código QR de la derecha con tu celular para acceder a nuestro catálogo digital completo, ver stock actualizado en tiempo real y realizar tu pedido directamente.&#x27;;
+          const splitInfo &#x3D; doc.splitTextToSize(infoText, 135);
+          doc.text(splitInfo, textX, textY + 6);
+        }
+
+        // Agregar QR de Compras Online
+        if (template.includeQr &amp;&amp; companySlug) {
+          const marketLink &#x3D; &#x60;${window.location.origin}/home-store/${companySlug}&#x60;;
+          const qrSize &#x3D; template.includeContact ? 25 : 20;
+          const qrX &#x3D; 165;
+          
+          // Centrar el QR verticalmente en el boxHeight
+          const qrSpaceRequired &#x3D; qrSize + 4; // QR + label padding
+          const qrY &#x3D; 45 + (boxHeight - qrSpaceRequired) / 2;
+
+          try {
+            const qrApiUrl &#x3D; &#x60;https://api.qrserver.com/v1/create-qr-code/?size&#x3D;150x150&amp;data&#x3D;${encodeURIComponent(marketLink)}&#x60;;
+            const qrBase64 &#x3D; await this.getBase64ImageFromUrl(qrApiUrl);
+            doc.addImage(qrBase64, &#x27;PNG&#x27;, qrX, qrY, qrSize, qrSize);
+            
+            doc.setFont(&#x27;helvetica&#x27;, &#x27;bold&#x27;);
+            doc.setFontSize(7);
+            doc.setTextColor(120, 120, 120);
+            doc.text((template.qrLabel || &#x27;ESCANEA PARA COMPRAR&#x27;).toUpperCase(), qrX - 2, qrY + qrSize + 4);
+          } catch (qrErr) {
+            console.error(&#x27;Error cargando QR para PDF:&#x27;, qrErr);
+          }
+        }
+
+        startY &#x3D; 45 + boxHeight + 8;
+      }
+
+      // 3. GENERAR TABLA DE PRECIOS
+      const tableHeaders &#x3D; [
+        cols.sku || &#x27;SKU&#x27;,
+        cols.product || &#x27;Producto / Presentación&#x27;
+      ];
+      if (template.showMaterial !&#x3D;&#x3D; false) {
+        tableHeaders.push(cols.material || &#x27;Material&#x27;);
+      }
+      tableHeaders.push(cols.specs || &#x27;Color / Talle&#x27;);
+      tableHeaders.push(cols.price || &#x27;Precio&#x27;);
+      if (template.showAvailability) {
+        tableHeaders.push(cols.status || &#x27;Estado&#x27;);
+      }
+
+      let variationsToExport &#x3D; this.filteredVariations;
+      if (template.showZeroPriceItems &#x3D;&#x3D;&#x3D; false) {
+        variationsToExport &#x3D; variationsToExport.filter(v &#x3D;&gt; {
+          const price &#x3D; v.prov_suggestedminimumsellingprice;
+          return price !&#x3D;&#x3D; null &amp;&amp; price !&#x3D;&#x3D; undefined &amp;&amp; price &gt; 0;
+        });
+      }
+
+      const tableRows &#x3D; variationsToExport.map(v &#x3D;&gt; {
+        const productName &#x3D; v.pro_name ? &#x60;${v.pro_name} - ${v.prov_name}&#x60; : v.prov_name;
+        const row &#x3D; [
+          v.prov_sku || &#x27;-&#x27;,
+          productName.trim()
+        ];
+        if (template.showMaterial !&#x3D;&#x3D; false) {
+          row.push(v.gmat_name || &#x27;-&#x27;);
+        }
+        row.push([v.prov_color, v.prov_size].filter(Boolean).join(&#x27; / &#x27;) || &#x27;-&#x27;);
+        row.push(&#x60;$ ${v.prov_suggestedminimumsellingprice.toLocaleString(&#x27;es-AR&#x27;, { minimumFractionDigits: 2, maximumFractionDigits: 2 })}&#x60;);
+        if (template.showAvailability) {
+          row.push(v.prov_stock &gt; 0 ? &#x27;Disponible&#x27; : &#x27;Agotado&#x27;);
+        }
+        return row;
+      });
+
+      const dynamicColumnStyles: any &#x3D; {};
+      let colIdx &#x3D; 0;
+      // SKU
+      dynamicColumnStyles[colIdx++] &#x3D; { cellWidth: 32 };
+      // Producto
+      dynamicColumnStyles[colIdx++] &#x3D; { cellWidth: &#x27;auto&#x27; };
+      // Material
+      if (template.showMaterial !&#x3D;&#x3D; false) {
+        dynamicColumnStyles[colIdx++] &#x3D; { cellWidth: 28 };
+      }
+      // Color/Talle (Specs)
+      dynamicColumnStyles[colIdx++] &#x3D; { cellWidth: 28 };
+      // Precio (Alineación derecha)
+      dynamicColumnStyles[colIdx++] &#x3D; { cellWidth: 28, halign: &#x27;right&#x27; };
+      // Estado (si está, alineación centro)
+      if (template.showAvailability) {
+        dynamicColumnStyles[colIdx++] &#x3D; { cellWidth: 25, halign: &#x27;center&#x27; };
+      }
+
+      autoTable(doc, {
+        head: [tableHeaders],
+        body: tableRows,
+        startY: startY,
+        theme: &#x27;striped&#x27;,
+        headStyles: {
+          fillColor: this.hexToRgb(template.primaryColor || &#x27;#262626&#x27;),
+          textColor: this.hexToRgb(template.textColor || &#x27;#ffffff&#x27;),
+          fontStyle: &#x27;bold&#x27;,
+          fontSize: 10
+        },
+        bodyStyles: {
+          fontSize: 9,
+          textColor: [50, 50, 50]
+        },
+        columnStyles: dynamicColumnStyles,
+        margin: { left: 14, right: 14 },
+        didDrawPage: (data) &#x3D;&gt; {
+          doc.setFont(&#x27;helvetica&#x27;, &#x27;normal&#x27;);
+          doc.setFontSize(8);
+          doc.setTextColor(150, 150, 150);
+          doc.text(&#x27;Generado automáticamente por ATS Market&#x27;, 14, 287);
+          doc.text(&#x60;Página ${data.pageNumber}&#x60;, 180, 287);
+        }
+      });
+
+      const formattedDate &#x3D; new Date().toISOString().slice(0, 10);
+      doc.save(&#x60;lista_precios_${companyName.toLowerCase().replace(/\s+/g, &#x27;_&#x27;)}_${formattedDate}.pdf&#x60;);
+      
+      this._messageService.success(&#x27;Exportación Exitosa&#x27;, &#x27;El PDF de precios se ha descargado correctamente.&#x27;);
+      this.isExportModalVisible &#x3D; false;
+    } catch (err) {
+      console.error(&#x27;Error al generar PDF:&#x27;, err);
+      this._messageService.error(&#x27;Error&#x27;, &#x27;No se pudo generar el documento PDF.&#x27;);
+    } finally {
+      this.isGeneratingPdf &#x3D; false;
+    }
+  }
+}
+</code></pre>
+    </div>
+
+    <div class="tab-pane fade " id="templateData">
+        <pre class="line-numbers"><code class="language-html">&lt;div class&#x3D;&quot;products-dashboard-wrapper&quot;&gt;
+
+    &lt;div class&#x3D;&quot;dashboard-header&quot;&gt;
+        &lt;div class&#x3D;&quot;header-titles&quot;&gt;
+            &lt;h1 class&#x3D;&quot;page-title&quot;&gt;Presentaciones de Productos&lt;/h1&gt;
+            &lt;p class&#x3D;&quot;page-subtitle&quot;&gt;Administra y exporta las variaciones (SKUs) y precios del catálogo de tu tienda.&lt;/p&gt;
+        &lt;/div&gt;
+
+        &lt;div class&#x3D;&quot;header-actions&quot;&gt;
+            &lt;nz-input-group [nzPrefix]&#x3D;&quot;prefixIconSearch&quot; nzSize&#x3D;&quot;large&quot; style&#x3D;&quot;width: 320px; margin-right: 16px;&quot;&gt;
+                &lt;input type&#x3D;&quot;text&quot; nz-input placeholder&#x3D;&quot;Buscar por SKU, nombre, talle, color o producto...&quot; 
+                    [(ngModel)]&#x3D;&quot;searchTerm&quot; (ngModelChange)&#x3D;&quot;applyFilters()&quot; /&gt;
+            &lt;/nz-input-group&gt;
+
+            &lt;button nz-button nzType&#x3D;&quot;primary&quot; nzSize&#x3D;&quot;large&quot; (click)&#x3D;&quot;openExportModal()&quot;&gt;
+                &lt;span nz-icon nzType&#x3D;&quot;download&quot;&gt;&lt;/span&gt; Exportar Catálogo
+            &lt;/button&gt;
+
+            &lt;ng-template #prefixIconSearch&gt;
+                &lt;span nz-icon nzType&#x3D;&quot;search&quot;&gt;&lt;/span&gt;
+            &lt;/ng-template&gt;
+        &lt;/div&gt;
+    &lt;/div&gt;
+
+    &lt;!-- PREMIUM FILTER BAR --&gt;
+    &lt;div class&#x3D;&quot;premium-filter-bar&quot;&gt;
+        &lt;!-- Estado de Stock Filter --&gt;
+        &lt;div class&#x3D;&quot;filter-item&quot;&gt;
+            &lt;span class&#x3D;&quot;filter-label&quot;&gt;Estado de Stock&lt;/span&gt;
+            &lt;nz-select [(ngModel)]&#x3D;&quot;stockStatus&quot; (ngModelChange)&#x3D;&quot;applyFilters()&quot; nzSize&#x3D;&quot;large&quot; style&#x3D;&quot;width: 260px;&quot;&gt;
+                &lt;nz-option nzValue&#x3D;&quot;ALL&quot; nzLabel&#x3D;&quot;Todos los estados&quot;&gt;&lt;/nz-option&gt;
+                &lt;nz-option nzValue&#x3D;&quot;IN_STOCK&quot; nzLabel&#x3D;&quot;Con Stock&quot;&gt;&lt;/nz-option&gt;
+                &lt;nz-option nzValue&#x3D;&quot;OUT_OF_STOCK&quot; nzLabel&#x3D;&quot;Sin Stock&quot;&gt;&lt;/nz-option&gt;
+            &lt;/nz-select&gt;
+        &lt;/div&gt;
+
+        &lt;!-- Botones de Acción --&gt;
+        &lt;div style&#x3D;&quot;display: flex; gap: 8px; align-self: flex-end; margin-bottom: 2px;&quot;&gt;
+            &lt;button nz-button nzType&#x3D;&quot;default&quot; nzSize&#x3D;&quot;large&quot; (click)&#x3D;&quot;resetFilters()&quot; style&#x3D;&quot;border-radius: 8px;&quot;&gt;
+                &lt;span nz-icon nzType&#x3D;&quot;reload&quot;&gt;&lt;/span&gt; Limpiar
+            &lt;/button&gt;
+        &lt;/div&gt;
+    &lt;/div&gt;
+
+    &lt;!-- MAIN PRODUCTS TABLE --&gt;
+    &lt;nz-card class&#x3D;&quot;premium-card&quot; [nzBordered]&#x3D;&quot;false&quot;&gt;
+        
+        &lt;!-- EMPTY STATE --&gt;
+        &lt;div class&#x3D;&quot;empty-state&quot; *ngIf&#x3D;&quot;filteredVariations.length &#x3D;&#x3D;&#x3D; 0 &amp;&amp; !isFetching&quot;&gt;
+            &lt;nz-empty nzNotFoundImage&#x3D;&quot;https://gw.alipayobjects.com/zos/antfincdn/ZHrcdLPrvN/empty.svg&quot;
+                nzNotFoundContent&#x3D;&quot;No se encontraron presentaciones que coincidan con la búsqueda.&quot;&gt;
+            &lt;/nz-empty&gt;
+        &lt;/div&gt;
+
+        &lt;!-- TABLE --&gt;
+        &lt;nz-table 
+            #variationsTable 
+            [nzData]&#x3D;&quot;filteredVariations&quot; 
+            nzSize&#x3D;&quot;middle&quot; 
+            [(nzPageIndex)]&#x3D;&quot;pageIndex&quot;
+            [(nzPageSize)]&#x3D;&quot;pageSize&quot;
+            [nzLoading]&#x3D;&quot;isFetching&quot;
+            [nzScroll]&#x3D;&quot;{ x: &#x27;1000px&#x27;, y: &#x27;calc(100vh - 380px)&#x27; }&quot;
+            *ngIf&#x3D;&quot;filteredVariations.length &gt; 0 || isFetching&quot;&gt;
+            &lt;thead&gt;
+                &lt;tr&gt;
+                    &lt;th nzWidth&#x3D;&quot;80px&quot;&gt;Imagen&lt;/th&gt;
+                    &lt;th nzWidth&#x3D;&quot;150px&quot;&gt;SKU&lt;/th&gt;
+                    &lt;th nzWidth&#x3D;&quot;220px&quot;&gt;Presentación&lt;/th&gt;
+                    &lt;th nzWidth&#x3D;&quot;220px&quot;&gt;Producto Maestro&lt;/th&gt;
+                    &lt;th nzWidth&#x3D;&quot;150px&quot;&gt;Material&lt;/th&gt;
+                    &lt;th nzWidth&#x3D;&quot;150px&quot;&gt;Color / Talle&lt;/th&gt;
+                    &lt;th nzWidth&#x3D;&quot;140px&quot; nzAlign&#x3D;&quot;right&quot;&gt;Precio Sugerido&lt;/th&gt;
+                    &lt;th nzWidth&#x3D;&quot;120px&quot; nzAlign&#x3D;&quot;center&quot;&gt;Stock&lt;/th&gt;
+                    &lt;th nzWidth&#x3D;&quot;100px&quot; nzAlign&#x3D;&quot;right&quot;&gt;Acciones&lt;/th&gt;
+                &lt;/tr&gt;
+            &lt;/thead&gt;
+            &lt;tbody&gt;
+                &lt;tr *ngFor&#x3D;&quot;let data of variationsTable.data&quot; class&#x3D;&quot;clickable-row&quot; (click)&#x3D;&quot;editVariation(data)&quot;&gt;
+                    &lt;td&gt;
+                        &lt;div class&#x3D;&quot;product-cell&quot;&gt;
+                            &lt;nz-avatar nzIcon&#x3D;&quot;picture&quot;
+                                [nzSrc]&#x3D;&quot;data.prov_image || &#x27;https://api.dicebear.com/7.x/shapes/svg?seed&#x3D;&#x27; + data.prov_name&quot;
+                                style&#x3D;&quot;background-color: #f7f9fc; border: 1px solid #d9d9d9;&quot;&gt;&lt;/nz-avatar&gt;
+                        &lt;/div&gt;
+                    &lt;/td&gt;
+                    &lt;td&gt;
+                        &lt;span class&#x3D;&quot;sku-cell&quot;&gt;{{ data.prov_sku || &#x27;N/A&#x27; }}&lt;/span&gt;
+                    &lt;/td&gt;
+                    &lt;td&gt;
+                        &lt;span style&#x3D;&quot;font-weight: 500; color: #262626; font-size: 15px;&quot;&gt;{{ data.prov_name }}&lt;/span&gt;
+                    &lt;/td&gt;
+                    &lt;td&gt;
+                        &lt;span style&#x3D;&quot;color: #595959; font-size: 14px;&quot;&gt;{{ data.pro_name || &#x27;N/A&#x27; }}&lt;/span&gt;
+                    &lt;/td&gt;
+                    &lt;td&gt;{{ data.gmat_name || &#x27;N/A&#x27; }}&lt;/td&gt;
+                    &lt;td&gt;
+                        &lt;div style&#x3D;&quot;display: flex; gap: 4px; flex-wrap: wrap;&quot;&gt;
+                            &lt;nz-tag *ngIf&#x3D;&quot;data.prov_color&quot; nzColor&#x3D;&quot;blue&quot;&gt;{{ data.prov_color }}&lt;/nz-tag&gt;
+                            &lt;nz-tag *ngIf&#x3D;&quot;data.prov_size&quot; nzColor&#x3D;&quot;purple&quot;&gt;{{ data.prov_size }}&lt;/nz-tag&gt;
+                            &lt;span *ngIf&#x3D;&quot;!data.prov_color &amp;&amp; !data.prov_size&quot;&gt;-&lt;/span&gt;
+                        &lt;/div&gt;
+                    &lt;/td&gt;
+                    &lt;td nzAlign&#x3D;&quot;right&quot; style&#x3D;&quot;font-weight: 600; color: #1890ff; font-size: 15px;&quot;&gt;
+                        $ {{ data.prov_suggestedminimumsellingprice | number:&#x27;1.2-2&#x27; }}
+                    &lt;/td&gt;
+                    &lt;td nzAlign&#x3D;&quot;center&quot;&gt;
+                        &lt;nz-tag [nzColor]&#x3D;&quot;data.prov_stock &gt; 0 ? &#x27;green&#x27; : &#x27;red&#x27;&quot;&gt;
+                            {{ data.prov_stock &gt; 0 ? data.prov_stock + &#x27; un&#x27; : &#x27;Sin Stock&#x27; }}
+                        &lt;/nz-tag&gt;
+                    &lt;/td&gt;
+                    &lt;td nzAlign&#x3D;&quot;right&quot; (click)&#x3D;&quot;$event.stopPropagation()&quot;&gt;
+                        &lt;button nz-button nzType&#x3D;&quot;text&quot; nzShape&#x3D;&quot;circle&quot; nzTooltipTitle&#x3D;&quot;Editar&quot; nz-tooltip
+                            (click)&#x3D;&quot;editVariation(data)&quot;&gt;
+                            &lt;span nz-icon nzType&#x3D;&quot;edit&quot; style&#x3D;&quot;color: #1890ff; font-size: 16px;&quot;&gt;&lt;/span&gt;
+                        &lt;/button&gt;
+                    &lt;/td&gt;
+                &lt;/tr&gt;
+            &lt;/tbody&gt;
+        &lt;/nz-table&gt;
+    &lt;/nz-card&gt;
+&lt;/div&gt;
+
+&lt;!-- MODAL DE CONFIGURACIÓN DE EXPORTACIÓN --&gt;
+&lt;nz-modal
+    [(nzVisible)]&#x3D;&quot;isExportModalVisible&quot;
+    nzTitle&#x3D;&quot;Configurar Exportación de Catálogo&quot;
+    [nzFooter]&#x3D;&quot;modalFooter&quot;
+    (nzOnCancel)&#x3D;&quot;isExportModalVisible &#x3D; false&quot;
+    nzWidth&#x3D;&quot;540px&quot;&gt;
+    
+    &lt;ng-container *nzModalContent&gt;
+        &lt;div class&#x3D;&quot;export-config-form&quot; style&#x3D;&quot;display: flex; flex-direction: column; gap: 16px; padding: 8px 0;&quot;&gt;
+            &lt;div&gt;
+                &lt;span style&#x3D;&quot;display: block; font-weight: 600; color: #262626; margin-bottom: 8px;&quot;&gt;Formato de Archivo:&lt;/span&gt;
+                &lt;nz-select [(ngModel)]&#x3D;&quot;exportType&quot; nzSize&#x3D;&quot;large&quot; style&#x3D;&quot;width: 100%;&quot;&gt;
+                    &lt;nz-option nzValue&#x3D;&quot;PDF&quot; nzLabel&#x3D;&quot;📄 Documento PDF (Lista de Precios Comercial)&quot;&gt;&lt;/nz-option&gt;
+                    &lt;nz-option nzValue&#x3D;&quot;CSV&quot; nzLabel&#x3D;&quot;📊 Hoja de Cálculo CSV (Para Excel / Hojas de Cálculo)&quot;&gt;&lt;/nz-option&gt;
+                &lt;/nz-select&gt;
+            &lt;/div&gt;
+
+            &lt;!-- TEMPLATE SELECTOR --&gt;
+            &lt;div *ngIf&#x3D;&quot;exportType &#x3D;&#x3D;&#x3D; &#x27;PDF&#x27;&quot; style&#x3D;&quot;background-color: #f9f9f9; padding: 12px; border-radius: 8px; border: 1px dashed #d9d9d9;&quot;&gt;
+                &lt;span style&#x3D;&quot;display: block; font-weight: 600; color: #262626; margin-bottom: 8px;&quot;&gt;Plantilla de Reporte:&lt;/span&gt;
+                
+                &lt;div *ngIf&#x3D;&quot;!isCreatingNewTemplate&quot; style&#x3D;&quot;display: flex; gap: 8px; align-items: center;&quot;&gt;
+                    &lt;nz-select [(ngModel)]&#x3D;&quot;selectedTemplateId&quot; (ngModelChange)&#x3D;&quot;onTemplateChange($event)&quot; style&#x3D;&quot;flex: 1;&quot; nzSize&#x3D;&quot;large&quot;&gt;
+                        &lt;nz-option *ngFor&#x3D;&quot;let t of reportTemplates&quot; [nzValue]&#x3D;&quot;t.id&quot; [nzLabel]&#x3D;&quot;t.name&quot;&gt;&lt;/nz-option&gt;
+                    &lt;/nz-select&gt;
+                    &lt;button nz-button nzType&#x3D;&quot;default&quot; nzSize&#x3D;&quot;large&quot; (click)&#x3D;&quot;enableCreateTemplateMode()&quot; nzTooltipTitle&#x3D;&quot;Nueva plantilla&quot; nz-tooltip&gt;
+                        &lt;span nz-icon nzType&#x3D;&quot;plus&quot;&gt;&lt;/span&gt;
+                    &lt;/button&gt;
+                    &lt;button nz-button nzType&#x3D;&quot;default&quot; nzDanger nzSize&#x3D;&quot;large&quot; (click)&#x3D;&quot;deleteActiveTemplate()&quot; [disabled]&#x3D;&quot;reportTemplates.length &lt;&#x3D; 1&quot; nzTooltipTitle&#x3D;&quot;Eliminar plantilla&quot; nz-tooltip&gt;
+                        &lt;span nz-icon nzType&#x3D;&quot;delete&quot;&gt;&lt;/span&gt;
+                    &lt;/button&gt;
+                &lt;/div&gt;
+
+                &lt;!-- Create Inline Form --&gt;
+                &lt;div *ngIf&#x3D;&quot;isCreatingNewTemplate&quot; style&#x3D;&quot;display: flex; flex-direction: column; gap: 8px;&quot;&gt;
+                    &lt;input nz-input placeholder&#x3D;&quot;Nombre de la nueva plantilla (ej: Catálogo Mayorista)&quot; [(ngModel)]&#x3D;&quot;newTemplateName&quot; nzSize&#x3D;&quot;large&quot; /&gt;
+                    &lt;div style&#x3D;&quot;display: flex; gap: 8px; justify-content: flex-end;&quot;&gt;
+                        &lt;button nz-button nzType&#x3D;&quot;text&quot; nzSize&#x3D;&quot;small&quot; (click)&#x3D;&quot;cancelCreateTemplate()&quot;&gt;Cancelar&lt;/button&gt;
+                        &lt;button nz-button nzType&#x3D;&quot;primary&quot; nzSize&#x3D;&quot;small&quot; (click)&#x3D;&quot;confirmCreateTemplate()&quot;&gt;Crear&lt;/button&gt;
+                    &lt;/div&gt;
+                &lt;/div&gt;
+            &lt;/div&gt;
+
+            &lt;!-- PDF OPTIONS --&gt;
+            &lt;div *ngIf&#x3D;&quot;exportType &#x3D;&#x3D;&#x3D; &#x27;PDF&#x27; &amp;&amp; activeTemplate&quot; style&#x3D;&quot;border-top: 1px solid #f0f0f0; padding-top: 16px; display: flex; flex-direction: column; gap: 12px;&quot;&gt;
+                &lt;div&gt;
+                    &lt;span style&#x3D;&quot;display: block; font-weight: 600; color: #262626; margin-bottom: 4px;&quot;&gt;Título del PDF:&lt;/span&gt;
+                    &lt;input nz-input [(ngModel)]&#x3D;&quot;activeTemplate.title&quot; placeholder&#x3D;&quot;Ej: CATÁLOGO DE PRECIOS&quot; nzSize&#x3D;&quot;large&quot; /&gt;
+                &lt;/div&gt;
+
+                &lt;div&gt;
+                    &lt;span style&#x3D;&quot;display: block; font-weight: 600; color: #262626; margin-bottom: 4px;&quot;&gt;Formato de Fecha y Hora en Cabecera:&lt;/span&gt;
+                    &lt;nz-select [(ngModel)]&#x3D;&quot;activeTemplate.dateFormat&quot; style&#x3D;&quot;width: 100%;&quot;&gt;
+                        &lt;nz-option nzValue&#x3D;&quot;full&quot; nzLabel&#x3D;&quot;Fecha y Hora Completa&quot;&gt;&lt;/nz-option&gt;
+                        &lt;nz-option nzValue&#x3D;&quot;date&quot; nzLabel&#x3D;&quot;Solo Fecha&quot;&gt;&lt;/nz-option&gt;
+                        &lt;nz-option nzValue&#x3D;&quot;none&quot; nzLabel&#x3D;&quot;No mostrar fecha/hora&quot;&gt;&lt;/nz-option&gt;
+                    &lt;/nz-select&gt;
+                &lt;/div&gt;
+
+                &lt;div *ngIf&#x3D;&quot;activeTemplate.dateFormat &#x3D;&#x3D;&#x3D; &#x27;full&#x27;&quot;&gt;
+                    &lt;span style&#x3D;&quot;display: block; font-weight: 600; color: #262626; margin-bottom: 4px;&quot;&gt;Formato de Hora:&lt;/span&gt;
+                    &lt;nz-select [(ngModel)]&#x3D;&quot;activeTemplate.timeFormat&quot; style&#x3D;&quot;width: 100%;&quot;&gt;
+                        &lt;nz-option nzValue&#x3D;&quot;12h&quot; nzLabel&#x3D;&quot;12 Horas (a. m. / p. m. - ej: 08:17 p. m.)&quot;&gt;&lt;/nz-option&gt;
+                        &lt;nz-option nzValue&#x3D;&quot;24h&quot; nzLabel&#x3D;&quot;24 Horas (ej: 20:17)&quot;&gt;&lt;/nz-option&gt;
+                    &lt;/nz-select&gt;
+                &lt;/div&gt;
+
+                &lt;div style&#x3D;&quot;display: grid; grid-template-columns: 1fr 1fr; gap: 12px; margin-top: 4px; margin-bottom: 4px;&quot;&gt;
+                    &lt;div style&#x3D;&quot;display: flex; align-items: center; gap: 8px;&quot;&gt;
+                        &lt;span style&#x3D;&quot;font-weight: 600; color: #262626; font-size: 13px;&quot;&gt;Color Fondo:&lt;/span&gt;
+                        &lt;input type&#x3D;&quot;color&quot; [(ngModel)]&#x3D;&quot;activeTemplate.primaryColor&quot; style&#x3D;&quot;width: 40px; height: 32px; padding: 0; border: 1px solid #d9d9d9; border-radius: 6px; cursor: pointer; background: none;&quot; /&gt;
+                        &lt;span style&#x3D;&quot;font-family: monospace; color: #595959; font-weight: 600; font-size: 12px;&quot;&gt;{{ activeTemplate.primaryColor | uppercase }}&lt;/span&gt;
+                    &lt;/div&gt;
+                    &lt;div style&#x3D;&quot;display: flex; align-items: center; gap: 8px;&quot;&gt;
+                        &lt;span style&#x3D;&quot;font-weight: 600; color: #262626; font-size: 13px;&quot;&gt;Color Texto:&lt;/span&gt;
+                        &lt;input type&#x3D;&quot;color&quot; [(ngModel)]&#x3D;&quot;activeTemplate.textColor&quot; style&#x3D;&quot;width: 40px; height: 32px; padding: 0; border: 1px solid #d9d9d9; border-radius: 6px; cursor: pointer; background: none;&quot; /&gt;
+                        &lt;span style&#x3D;&quot;font-family: monospace; color: #595959; font-weight: 600; font-size: 12px;&quot;&gt;{{ activeTemplate.textColor | uppercase }}&lt;/span&gt;
+                    &lt;/div&gt;
+                &lt;/div&gt;
+
+                &lt;div *ngIf&#x3D;&quot;activeTemplate.includeQr &amp;&amp; activeCompany?.cmp_slug&quot;&gt;
+                    &lt;span style&#x3D;&quot;display: block; font-weight: 600; color: #262626; margin-bottom: 4px;&quot;&gt;Etiqueta del Código QR:&lt;/span&gt;
+                    &lt;input nz-input [(ngModel)]&#x3D;&quot;activeTemplate.qrLabel&quot; placeholder&#x3D;&quot;Ej: ESCANEA PARA COMPRAR&quot; nzSize&#x3D;&quot;large&quot; /&gt;
+                &lt;/div&gt;
+
+                &lt;div&gt;
+                    &lt;span style&#x3D;&quot;display: block; font-weight: 600; color: #262626; margin-bottom: 8px;&quot;&gt;Renombrar Columnas:&lt;/span&gt;
+                    &lt;div style&#x3D;&quot;display: grid; grid-template-columns: 1fr 1fr; gap: 8px;&quot;&gt;
+                        &lt;div&gt;
+                            &lt;span style&#x3D;&quot;font-size: 12px; color: #8c8c8c; display: block; margin-bottom: 2px;&quot;&gt;Columna SKU:&lt;/span&gt;
+                            &lt;input nz-input [(ngModel)]&#x3D;&quot;activeTemplate.columns.sku&quot; nzSize&#x3D;&quot;default&quot; /&gt;
+                        &lt;/div&gt;
+                        &lt;div&gt;
+                            &lt;span style&#x3D;&quot;font-size: 12px; color: #8c8c8c; display: block; margin-bottom: 2px;&quot;&gt;Columna Producto:&lt;/span&gt;
+                            &lt;input nz-input [(ngModel)]&#x3D;&quot;activeTemplate.columns.product&quot; nzSize&#x3D;&quot;default&quot; /&gt;
+                        &lt;/div&gt;
+                        &lt;div *ngIf&#x3D;&quot;activeTemplate.showMaterial&quot;&gt;
+                            &lt;span style&#x3D;&quot;font-size: 12px; color: #8c8c8c; display: block; margin-bottom: 2px;&quot;&gt;Columna Material:&lt;/span&gt;
+                            &lt;input nz-input [(ngModel)]&#x3D;&quot;activeTemplate.columns.material&quot; nzSize&#x3D;&quot;default&quot; /&gt;
+                        &lt;/div&gt;
+                        &lt;div&gt;
+                            &lt;span style&#x3D;&quot;font-size: 12px; color: #8c8c8c; display: block; margin-bottom: 2px;&quot;&gt;Columna Color/Talle:&lt;/span&gt;
+                            &lt;input nz-input [(ngModel)]&#x3D;&quot;activeTemplate.columns.specs&quot; nzSize&#x3D;&quot;default&quot; /&gt;
+                        &lt;/div&gt;
+                        &lt;div&gt;
+                            &lt;span style&#x3D;&quot;font-size: 12px; color: #8c8c8c; display: block; margin-bottom: 2px;&quot;&gt;Columna Precio:&lt;/span&gt;
+                            &lt;input nz-input [(ngModel)]&#x3D;&quot;activeTemplate.columns.price&quot; nzSize&#x3D;&quot;default&quot; /&gt;
+                        &lt;/div&gt;
+                        &lt;div *ngIf&#x3D;&quot;activeTemplate.showAvailability&quot;&gt;
+                            &lt;span style&#x3D;&quot;font-size: 12px; color: #8c8c8c; display: block; margin-bottom: 2px;&quot;&gt;Columna Disponibilidad:&lt;/span&gt;
+                            &lt;input nz-input [(ngModel)]&#x3D;&quot;activeTemplate.columns.status&quot; nzSize&#x3D;&quot;default&quot; /&gt;
+                        &lt;/div&gt;
+                    &lt;/div&gt;
+                &lt;/div&gt;
+
+                &lt;div style&#x3D;&quot;display: flex; flex-direction: column; gap: 8px; margin-top: 4px;&quot;&gt;
+                    &lt;label nz-checkbox [(ngModel)]&#x3D;&quot;activeTemplate.showAvailability&quot;&gt;
+                        Mostrar columna &quot;Disponibilidad&quot; (Disponible / Agotado)
+                    &lt;/label&gt;
+
+                    &lt;label nz-checkbox [(ngModel)]&#x3D;&quot;activeTemplate.showMaterial&quot;&gt;
+                        Mostrar columna &quot;Material&quot;
+                    &lt;/label&gt;
+
+                    &lt;label nz-checkbox [(ngModel)]&#x3D;&quot;activeTemplate.showZeroPriceItems&quot;&gt;
+                        Mostrar artículos con precio $0 o sin precio cargado
+                    &lt;/label&gt;
+                    
+                    &lt;label nz-checkbox [(ngModel)]&#x3D;&quot;activeTemplate.includeContact&quot;&gt;
+                        Incluir contacto de la Tienda (Email: {{ activeCompany?.cmp_email || &#x27;N/A&#x27; }}, Tel: {{ activeCompany?.cmp_phone || &#x27;N/A&#x27; }})
+                    &lt;/label&gt;
+                    
+                    &lt;label nz-checkbox [(ngModel)]&#x3D;&quot;activeTemplate.includeQr&quot; [nzDisabled]&#x3D;&quot;!activeCompany?.cmp_slug&quot;&gt;
+                        Incluir código QR con enlace de compra al Market
+                    &lt;/label&gt;
+                &lt;/div&gt;
+            &lt;/div&gt;
+            
+            &lt;!-- CSV OPTIONS --&gt;
+            &lt;div *ngIf&#x3D;&quot;exportType &#x3D;&#x3D;&#x3D; &#x27;CSV&#x27;&quot; style&#x3D;&quot;border-top: 1px solid #f0f0f0; padding-top: 16px; color: #8c8c8c; font-size: 13px;&quot;&gt;
+                Se exportará un archivo CSV codificado con UTF-8 BOM y delimitador de punto y coma (;) compatible con Microsoft Excel.
+            &lt;/div&gt;
+        &lt;/div&gt;
+    &lt;/ng-container&gt;
+
+    &lt;ng-template #modalFooter&gt;
+        &lt;button nz-button nzType&#x3D;&quot;default&quot; (click)&#x3D;&quot;isExportModalVisible &#x3D; false&quot;&gt;Cancelar&lt;/button&gt;
+        &lt;button *ngIf&#x3D;&quot;exportType &#x3D;&#x3D;&#x3D; &#x27;PDF&#x27;&quot; nz-button nzType&#x3D;&quot;dashed&quot; [nzLoading]&#x3D;&quot;isGeneratingPdf&quot; (click)&#x3D;&quot;saveReportTemplates()&quot; style&#x3D;&quot;border-color: #1890ff; color: #1890ff;&quot;&gt;
+            &lt;span nz-icon nzType&#x3D;&quot;save&quot;&gt;&lt;/span&gt; Guardar Plantillas
+        &lt;/button&gt;
+        &lt;button nz-button nzType&#x3D;&quot;primary&quot; [nzLoading]&#x3D;&quot;isGeneratingPdf&quot; (click)&#x3D;&quot;confirmExport()&quot;&gt;
+            &lt;span nz-icon nzType&#x3D;&quot;download&quot;&gt;&lt;/span&gt; Exportar ahora
+        &lt;/button&gt;
+    &lt;/ng-template&gt;
+&lt;/nz-modal&gt;
+</code></pre>
+    </div>
+
+    <div class="tab-pane fade " id="styleData">
+                <p class="comment">
+                    <code>./products-variations.component.scss</code>
+                </p>
+                <pre class="line-numbers"><code class="language-scss">.products-dashboard-wrapper {
+    padding: 24px;
+    background-color: #f7f9fc;
+    min-height: calc(100vh - 64px);
+}
+
+.dashboard-header {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    margin-bottom: 32px;
+    flex-wrap: wrap;
+    gap: 16px;
+
+    .page-title {
+        font-size: 28px;
+        font-weight: 600;
+        color: #1f1f1f;
+        margin-bottom: 4px;
+    }
+
+    .page-subtitle {
+        color: #8c8c8c;
+        font-size: 15px;
+        margin: 0;
+    }
+
+    .header-actions {
+        display: flex;
+        align-items: center;
+    }
+}
+
+.premium-filter-bar {
+    display: flex;
+    align-items: center;
+    gap: 16px;
+    background: #ffffff;
+    padding: 16px 24px;
+    border-radius: 12px;
+    box-shadow: 0 4px 24px rgba(0, 0, 0, 0.02);
+    margin-bottom: 24px;
+    border: 1px solid #f0f0f0;
+    flex-wrap: wrap;
+
+    .filter-item {
+        display: flex;
+        flex-direction: column;
+        gap: 6px;
+        flex: 1;
+        min-width: 200px;
+
+        .filter-label {
+            font-size: 13px;
+            font-weight: 500;
+            color: #8c8c8c;
+            text-transform: uppercase;
+            letter-spacing: 0.5px;
+        }
+
+        nz-select {
+            width: 100%;
+        }
+    }
+}
+
+.premium-card {
+    border-radius: 12px;
+    box-shadow: 0 4px 24px rgba(0, 0, 0, 0.04);
+    
+    :host ::ng-deep .ant-card-body {
+        padding: 0;
+    }
+}
+
+.clickable-row {
+    cursor: pointer;
+    transition: background 0.2s;
+
+    &amp;:hover {
+        background-color: #f9f9f9 !important;
+    }
+}
+
+.product-cell {
+    display: flex;
+    align-items: center;
+    gap: 12px;
+}
+
+.sku-cell {
+    font-family: &#x27;SFMono-Regular&#x27;, Consolas, &#x27;Liberation Mono&#x27;, Menlo, monospace;
+    font-weight: 600;
+    color: #595959;
+    font-size: 13px;
+    background-color: #f5f5f5;
+    padding: 4px 8px;
+    border-radius: 6px;
+    border: 1px solid #e8e8e8;
+}
+
+.empty-state {
+    padding: 80px 0;
+}
+
+@media (max-width: 768px) {
+    .products-dashboard-wrapper {
+        padding: 16px;
+    }
+
+    .dashboard-header {
+        margin-bottom: 20px;
+        flex-direction: column;
+        align-items: flex-start;
+        
+        .header-actions {
+            width: 100%;
+            flex-direction: column;
+            align-items: stretch;
+            gap: 12px;
+            
+            nz-input-group {
+                width: 100% !important;
+                margin-right: 0 !important;
+            }
+
+            button {
+                width: 100%;
+            }
+        }
+    }
+
+    .premium-filter-bar {
+        padding: 16px;
+        gap: 12px;
+        flex-direction: column;
+        align-items: stretch;
+
+        .filter-item {
+            min-width: 100%;
+        }
+
+        div {
+            width: 100%;
+            flex-direction: column;
+            
+            button {
+                width: 100%;
+            }
+        }
+    }
+}
+</code></pre>
+    </div>
+
+    <div class="tab-pane fade " id="tree">
+        <div id="tree-container"></div>
+        <div class="tree-legend">
+            <div class="title">
+                <b>Legend</b>
+            </div>
+            <div>
+                <div class="color htmlelement"></div><span>Elemento HTML</span>
+            </div>
+            <div>
+                <div class="color component"></div><span>Componente</span>
+            </div>
+            <div>
+                <div class="color directive"></div><span>Elemento HTML com diretiva</span>
+            </div>
+        </div>
+    </div>
+
+    
+</div>
+
+<script src="../js/libs/vis-network.min.js"></script>
+<script src="../js/libs/htmlparser.js"></script>
+<script src="../js/libs/deep-iterator.js"></script>
+<script>
+        var COMPONENT_TEMPLATE = '<div><div class="products-dashboard-wrapper">    <div class="dashboard-header">        <div class="header-titles">            <h1 class="page-title">Presentaciones de Productos</h1>            <p class="page-subtitle">Administra y exporta las variaciones (SKUs) y precios del catálogo de tu tienda.</p>        </div>        <div class="header-actions">            <nz-input-group [nzPrefix]="prefixIconSearch" nzSize="large" style="width: 320px; margin-right: 16px;">                <input type="text" nz-input placeholder="Buscar por SKU, nombre, talle, color o producto..."                     [(ngModel)]="searchTerm" (ngModelChange)="applyFilters()" />            </nz-input-group>            <button nz-button nzType="primary" nzSize="large" (click)="openExportModal()">                <span nz-icon nzType="download"></span> Exportar Catálogo            </button>            <ng-template #prefixIconSearch>                <span nz-icon nzType="search"></span>            </ng-template>        </div>    </div>    <!-- PREMIUM FILTER BAR -->    <div class="premium-filter-bar">        <!-- Estado de Stock Filter -->        <div class="filter-item">            <span class="filter-label">Estado de Stock</span>            <nz-select [(ngModel)]="stockStatus" (ngModelChange)="applyFilters()" nzSize="large" style="width: 260px;">                <nz-option nzValue="ALL" nzLabel="Todos los estados"></nz-option>                <nz-option nzValue="IN_STOCK" nzLabel="Con Stock"></nz-option>                <nz-option nzValue="OUT_OF_STOCK" nzLabel="Sin Stock"></nz-option>            </nz-select>        </div>        <!-- Botones de Acción -->        <div style="display: flex; gap: 8px; align-self: flex-end; margin-bottom: 2px;">            <button nz-button nzType="default" nzSize="large" (click)="resetFilters()" style="border-radius: 8px;">                <span nz-icon nzType="reload"></span> Limpiar            </button>        </div>    </div>    <!-- MAIN PRODUCTS TABLE -->    <nz-card class="premium-card" [nzBordered]="false">                <!-- EMPTY STATE -->        <div class="empty-state" *ngIf="filteredVariations.length === 0 && !isFetching">            <nz-empty nzNotFoundImage="https://gw.alipayobjects.com/zos/antfincdn/ZHrcdLPrvN/empty.svg"                nzNotFoundContent="No se encontraron presentaciones que coincidan con la búsqueda.">            </nz-empty>        </div>        <!-- TABLE -->        <nz-table             #variationsTable             [nzData]="filteredVariations"             nzSize="middle"             [(nzPageIndex)]="pageIndex"            [(nzPageSize)]="pageSize"            [nzLoading]="isFetching"            [nzScroll]="{ x: \'1000px\', y: \'calc(100vh - 380px)\' }"            *ngIf="filteredVariations.length > 0 || isFetching">            <thead>                <tr>                    <th nzWidth="80px">Imagen</th>                    <th nzWidth="150px">SKU</th>                    <th nzWidth="220px">Presentación</th>                    <th nzWidth="220px">Producto Maestro</th>                    <th nzWidth="150px">Material</th>                    <th nzWidth="150px">Color / Talle</th>                    <th nzWidth="140px" nzAlign="right">Precio Sugerido</th>                    <th nzWidth="120px" nzAlign="center">Stock</th>                    <th nzWidth="100px" nzAlign="right">Acciones</th>                </tr>            </thead>            <tbody>                <tr *ngFor="let data of variationsTable.data" class="clickable-row" (click)="editVariation(data)">                    <td>                        <div class="product-cell">                            <nz-avatar nzIcon="picture"                                [nzSrc]="data.prov_image || \'https://api.dicebear.com/7.x/shapes/svg?seed=\' + data.prov_name"                                style="background-color: #f7f9fc; border: 1px solid #d9d9d9;"></nz-avatar>                        </div>                    </td>                    <td>                        <span class="sku-cell">{{ data.prov_sku || \'N/A\' }}</span>                    </td>                    <td>                        <span style="font-weight: 500; color: #262626; font-size: 15px;">{{ data.prov_name }}</span>                    </td>                    <td>                        <span style="color: #595959; font-size: 14px;">{{ data.pro_name || \'N/A\' }}</span>                    </td>                    <td>{{ data.gmat_name || \'N/A\' }}</td>                    <td>                        <div style="display: flex; gap: 4px; flex-wrap: wrap;">                            <nz-tag *ngIf="data.prov_color" nzColor="blue">{{ data.prov_color }}</nz-tag>                            <nz-tag *ngIf="data.prov_size" nzColor="purple">{{ data.prov_size }}</nz-tag>                            <span *ngIf="!data.prov_color && !data.prov_size">-</span>                        </div>                    </td>                    <td nzAlign="right" style="font-weight: 600; color: #1890ff; font-size: 15px;">                        $ {{ data.prov_suggestedminimumsellingprice | number:\'1.2-2\' }}                    </td>                    <td nzAlign="center">                        <nz-tag [nzColor]="data.prov_stock > 0 ? \'green\' : \'red\'">                            {{ data.prov_stock > 0 ? data.prov_stock + \' un\' : \'Sin Stock\' }}                        </nz-tag>                    </td>                    <td nzAlign="right" (click)="$event.stopPropagation()">                        <button nz-button nzType="text" nzShape="circle" nzTooltipTitle="Editar" nz-tooltip                            (click)="editVariation(data)">                            <span nz-icon nzType="edit" style="color: #1890ff; font-size: 16px;"></span>                        </button>                    </td>                </tr>            </tbody>        </nz-table>    </nz-card></div><!-- MODAL DE CONFIGURACIÓN DE EXPORTACIÓN --><nz-modal    [(nzVisible)]="isExportModalVisible"    nzTitle="Configurar Exportación de Catálogo"    [nzFooter]="modalFooter"    (nzOnCancel)="isExportModalVisible = false"    nzWidth="540px">        <ng-container *nzModalContent>        <div class="export-config-form" style="display: flex; flex-direction: column; gap: 16px; padding: 8px 0;">            <div>                <span style="display: block; font-weight: 600; color: #262626; margin-bottom: 8px;">Formato de Archivo:</span>                <nz-select [(ngModel)]="exportType" nzSize="large" style="width: 100%;">                    <nz-option nzValue="PDF" nzLabel="📄 Documento PDF (Lista de Precios Comercial)"></nz-option>                    <nz-option nzValue="CSV" nzLabel="📊 Hoja de Cálculo CSV (Para Excel / Hojas de Cálculo)"></nz-option>                </nz-select>            </div>            <!-- TEMPLATE SELECTOR -->            <div *ngIf="exportType === \'PDF\'" style="background-color: #f9f9f9; padding: 12px; border-radius: 8px; border: 1px dashed #d9d9d9;">                <span style="display: block; font-weight: 600; color: #262626; margin-bottom: 8px;">Plantilla de Reporte:</span>                                <div *ngIf="!isCreatingNewTemplate" style="display: flex; gap: 8px; align-items: center;">                    <nz-select [(ngModel)]="selectedTemplateId" (ngModelChange)="onTemplateChange($event)" style="flex: 1;" nzSize="large">                        <nz-option *ngFor="let t of reportTemplates" [nzValue]="t.id" [nzLabel]="t.name"></nz-option>                    </nz-select>                    <button nz-button nzType="default" nzSize="large" (click)="enableCreateTemplateMode()" nzTooltipTitle="Nueva plantilla" nz-tooltip>                        <span nz-icon nzType="plus"></span>                    </button>                    <button nz-button nzType="default" nzDanger nzSize="large" (click)="deleteActiveTemplate()" [disabled]="reportTemplates.length <= 1" nzTooltipTitle="Eliminar plantilla" nz-tooltip>                        <span nz-icon nzType="delete"></span>                    </button>                </div>                <!-- Create Inline Form -->                <div *ngIf="isCreatingNewTemplate" style="display: flex; flex-direction: column; gap: 8px;">                    <input nz-input placeholder="Nombre de la nueva plantilla (ej: Catálogo Mayorista)" [(ngModel)]="newTemplateName" nzSize="large" />                    <div style="display: flex; gap: 8px; justify-content: flex-end;">                        <button nz-button nzType="text" nzSize="small" (click)="cancelCreateTemplate()">Cancelar</button>                        <button nz-button nzType="primary" nzSize="small" (click)="confirmCreateTemplate()">Crear</button>                    </div>                </div>            </div>            <!-- PDF OPTIONS -->            <div *ngIf="exportType === \'PDF\' && activeTemplate" style="border-top: 1px solid #f0f0f0; padding-top: 16px; display: flex; flex-direction: column; gap: 12px;">                <div>                    <span style="display: block; font-weight: 600; color: #262626; margin-bottom: 4px;">Título del PDF:</span>                    <input nz-input [(ngModel)]="activeTemplate.title" placeholder="Ej: CATÁLOGO DE PRECIOS" nzSize="large" />                </div>                <div>                    <span style="display: block; font-weight: 600; color: #262626; margin-bottom: 4px;">Formato de Fecha y Hora en Cabecera:</span>                    <nz-select [(ngModel)]="activeTemplate.dateFormat" style="width: 100%;">                        <nz-option nzValue="full" nzLabel="Fecha y Hora Completa"></nz-option>                        <nz-option nzValue="date" nzLabel="Solo Fecha"></nz-option>                        <nz-option nzValue="none" nzLabel="No mostrar fecha/hora"></nz-option>                    </nz-select>                </div>                <div *ngIf="activeTemplate.dateFormat === \'full\'">                    <span style="display: block; font-weight: 600; color: #262626; margin-bottom: 4px;">Formato de Hora:</span>                    <nz-select [(ngModel)]="activeTemplate.timeFormat" style="width: 100%;">                        <nz-option nzValue="12h" nzLabel="12 Horas (a. m. / p. m. - ej: 08:17 p. m.)"></nz-option>                        <nz-option nzValue="24h" nzLabel="24 Horas (ej: 20:17)"></nz-option>                    </nz-select>                </div>                <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 12px; margin-top: 4px; margin-bottom: 4px;">                    <div style="display: flex; align-items: center; gap: 8px;">                        <span style="font-weight: 600; color: #262626; font-size: 13px;">Color Fondo:</span>                        <input type="color" [(ngModel)]="activeTemplate.primaryColor" style="width: 40px; height: 32px; padding: 0; border: 1px solid #d9d9d9; border-radius: 6px; cursor: pointer; background: none;" />                        <span style="font-family: monospace; color: #595959; font-weight: 600; font-size: 12px;">{{ activeTemplate.primaryColor | uppercase }}</span>                    </div>                    <div style="display: flex; align-items: center; gap: 8px;">                        <span style="font-weight: 600; color: #262626; font-size: 13px;">Color Texto:</span>                        <input type="color" [(ngModel)]="activeTemplate.textColor" style="width: 40px; height: 32px; padding: 0; border: 1px solid #d9d9d9; border-radius: 6px; cursor: pointer; background: none;" />                        <span style="font-family: monospace; color: #595959; font-weight: 600; font-size: 12px;">{{ activeTemplate.textColor | uppercase }}</span>                    </div>                </div>                <div *ngIf="activeTemplate.includeQr && activeCompany?.cmp_slug">                    <span style="display: block; font-weight: 600; color: #262626; margin-bottom: 4px;">Etiqueta del Código QR:</span>                    <input nz-input [(ngModel)]="activeTemplate.qrLabel" placeholder="Ej: ESCANEA PARA COMPRAR" nzSize="large" />                </div>                <div>                    <span style="display: block; font-weight: 600; color: #262626; margin-bottom: 8px;">Renombrar Columnas:</span>                    <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 8px;">                        <div>                            <span style="font-size: 12px; color: #8c8c8c; display: block; margin-bottom: 2px;">Columna SKU:</span>                            <input nz-input [(ngModel)]="activeTemplate.columns.sku" nzSize="default" />                        </div>                        <div>                            <span style="font-size: 12px; color: #8c8c8c; display: block; margin-bottom: 2px;">Columna Producto:</span>                            <input nz-input [(ngModel)]="activeTemplate.columns.product" nzSize="default" />                        </div>                        <div *ngIf="activeTemplate.showMaterial">                            <span style="font-size: 12px; color: #8c8c8c; display: block; margin-bottom: 2px;">Columna Material:</span>                            <input nz-input [(ngModel)]="activeTemplate.columns.material" nzSize="default" />                        </div>                        <div>                            <span style="font-size: 12px; color: #8c8c8c; display: block; margin-bottom: 2px;">Columna Color/Talle:</span>                            <input nz-input [(ngModel)]="activeTemplate.columns.specs" nzSize="default" />                        </div>                        <div>                            <span style="font-size: 12px; color: #8c8c8c; display: block; margin-bottom: 2px;">Columna Precio:</span>                            <input nz-input [(ngModel)]="activeTemplate.columns.price" nzSize="default" />                        </div>                        <div *ngIf="activeTemplate.showAvailability">                            <span style="font-size: 12px; color: #8c8c8c; display: block; margin-bottom: 2px;">Columna Disponibilidad:</span>                            <input nz-input [(ngModel)]="activeTemplate.columns.status" nzSize="default" />                        </div>                    </div>                </div>                <div style="display: flex; flex-direction: column; gap: 8px; margin-top: 4px;">                    <label nz-checkbox [(ngModel)]="activeTemplate.showAvailability">                        Mostrar columna "Disponibilidad" (Disponible / Agotado)                    </label>                    <label nz-checkbox [(ngModel)]="activeTemplate.showMaterial">                        Mostrar columna "Material"                    </label>                    <label nz-checkbox [(ngModel)]="activeTemplate.showZeroPriceItems">                        Mostrar artículos con precio $0 o sin precio cargado                    </label>                                        <label nz-checkbox [(ngModel)]="activeTemplate.includeContact">                        Incluir contacto de la Tienda (Email: {{ activeCompany?.cmp_email || \'N/A\' }}, Tel: {{ activeCompany?.cmp_phone || \'N/A\' }})                    </label>                                        <label nz-checkbox [(ngModel)]="activeTemplate.includeQr" [nzDisabled]="!activeCompany?.cmp_slug">                        Incluir código QR con enlace de compra al Market                    </label>                </div>            </div>                        <!-- CSV OPTIONS -->            <div *ngIf="exportType === \'CSV\'" style="border-top: 1px solid #f0f0f0; padding-top: 16px; color: #8c8c8c; font-size: 13px;">                Se exportará un archivo CSV codificado con UTF-8 BOM y delimitador de punto y coma (;) compatible con Microsoft Excel.            </div>        </div>    </ng-container>    <ng-template #modalFooter>        <button nz-button nzType="default" (click)="isExportModalVisible = false">Cancelar</button>        <button *ngIf="exportType === \'PDF\'" nz-button nzType="dashed" [nzLoading]="isGeneratingPdf" (click)="saveReportTemplates()" style="border-color: #1890ff; color: #1890ff;">            <span nz-icon nzType="save"></span> Guardar Plantillas        </button>        <button nz-button nzType="primary" [nzLoading]="isGeneratingPdf" (click)="confirmExport()">            <span nz-icon nzType="download"></span> Exportar ahora        </button>    </ng-template></nz-modal></div>'
+    var COMPONENTS = [{'name': 'AccountConfirmedComponent', 'selector': 'app-account-confirmed'},{'name': 'AccountCreatedComponent', 'selector': 'app-account-created'},{'name': 'AddressesComponent', 'selector': 'app-addresses'},{'name': 'AnalyticsComponent', 'selector': 'app-analytics'},{'name': 'AppComponent', 'selector': 'app-root'},{'name': 'ApplicationBarComponent', 'selector': 'app-application-bar'},{'name': 'ApplicationLayoutComponent', 'selector': 'app-application-layout'},{'name': 'AuthLayoutComponent', 'selector': 'app-auth-layout'},{'name': 'BarcodeScannerComponent', 'selector': 'app-barcode-scanner'},{'name': 'CameraComponent', 'selector': 'app-camera'},{'name': 'CartComponent', 'selector': 'app-cart'},{'name': 'CatalogComponent', 'selector': 'app-catalog'},{'name': 'CategoriesComponent', 'selector': 'app-categories'},{'name': 'CategoriesListComponent', 'selector': 'app-categories-list'},{'name': 'CheckoutComponent', 'selector': 'app-checkout'},{'name': 'CompanyComponent', 'selector': 'app-company'},{'name': 'CompanySettingsComponent', 'selector': 'app-company-settings'},{'name': 'CouponsComponent', 'selector': 'app-coupons'},{'name': 'CustomersComponent', 'selector': 'app-customers'},{'name': 'DistPriceListComponent', 'selector': 'app-dist-price-list'},{'name': 'FinancesComponent', 'selector': 'app-finances'},{'name': 'ForgotPasswordComponent', 'selector': 'app-forgot-password'},{'name': 'GlobalCategoriesComponent', 'selector': 'app-global-categories'},{'name': 'GlobalCategoryComponent', 'selector': 'app-global-category'},{'name': 'GlobalItemComponent', 'selector': 'app-global-item'},{'name': 'GlobalItemsComponent', 'selector': 'app-global-items'},{'name': 'GlobalMaterialComponent', 'selector': 'app-global-material'},{'name': 'GlobalMaterialsComponent', 'selector': 'app-global-materials'},{'name': 'HomeStoreComponent', 'selector': 'app-home'},{'name': 'InventoryAuditComponent', 'selector': 'app-inventory-audit'},{'name': 'ItemsComponent', 'selector': 'app-items'},{'name': 'LoginComponent', 'selector': 'app-login'},{'name': 'MapPickerComponent', 'selector': 'app-map-picker'},{'name': 'MarketHomeComponent', 'selector': 'app-market-home'},{'name': 'MaterialComponent', 'selector': 'app-material'},{'name': 'MaterialsComponent', 'selector': 'app-materials'},{'name': 'MenuItemComponent', 'selector': 'app-menu-item'},{'name': 'MenuItemsComponent', 'selector': 'app-menu-items'},{'name': 'MpPaymentBrickComponent', 'selector': 'app-mp-payment-brick'},{'name': 'MyCompaniesComponent', 'selector': 'app-my-companies'},{'name': 'MyFavoritesComponent', 'selector': 'app-my-favorites'},{'name': 'MyPurchasesComponent', 'selector': 'app-my-purchases'},{'name': 'NavBarComponent', 'selector': 'app-nav-bar'},{'name': 'OrdersReceivedComponent', 'selector': 'app-orders-received'},{'name': 'PriceListComponent', 'selector': 'app-price-list'},{'name': 'ProductComponent', 'selector': 'app-product'},{'name': 'ProductDetailComponent', 'selector': 'app-product-detail'},{'name': 'ProductsComponent', 'selector': 'app-products'},{'name': 'ProductsVariationsComponent', 'selector': 'app-products-variations'},{'name': 'ProductVariationComponent', 'selector': 'app-product-variation'},{'name': 'PublicLayoutComponent', 'selector': 'app-public-layout'},{'name': 'RegisterComponent', 'selector': 'app-register'},{'name': 'ResetPasswordComponent', 'selector': 'app-reset-password'},{'name': 'SideBarComponent', 'selector': 'app-side-bar'},{'name': 'SsoCallbackComponent', 'selector': 'app-sso-callback'},{'name': 'StoreCatalogComponent', 'selector': 'app-store'},{'name': 'SuperAdminComponent', 'selector': 'app-super-admin'},{'name': 'SupplierComponent', 'selector': 'app-supplier'},{'name': 'SuppliersComponent', 'selector': 'app-suppliers'},{'name': 'UserLayoutComponent', 'selector': 'app-user-layout'},{'name': 'UserRolCompanyComponent', 'selector': 'app-user-rol-company'},{'name': 'WarehousesComponent', 'selector': 'app-warehouses'}];
+    var DIRECTIVES = [{'name': 'ImagePreloadDirective', 'selector': 'img[default]'}];
+    var ACTUAL_COMPONENT = {'name': 'ProductsVariationsComponent'};
+</script>
+<script src="../js/tree.js"></script>
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+                   </div><div class="search-results">
+    <div class="has-results">
+        <h1 class="search-results-title"><span class='search-results-count'></span> resultados correspondentes "<span class='search-query'></span>"</h1>
+        <ul class="search-results-list"></ul>
+    </div>
+    <div class="no-results">
+        <h1 class="search-results-title">Nenhum resultado correspondente "<span class='search-query'></span>"</h1>
+    </div>
+</div>
+</div>
+               <!-- END CONTENT -->
+           </div>
+       </div>
+
+          
+<div class="compodoc-lang-switch">
+  <select id="compodoc-lang-select" aria-label="Seleccionar idioma">
+    <option value="es" >🇪🇸 Español</option>
+    <option value="en" >🇺🇸 English</option>
+    <option value="pt" selected>🇧🇷 Português</option>
+  </select>
+</div>
+
+          <label class="dark-mode-switch">
+               <input type="checkbox">
+               <span class="slider">
+                    <svg class="slider-icon" viewBox="0 0 24 24" fill="none" height="20" stroke="#000" stroke-linecap="round" stroke-linejoin="round" stroke-width="2" width="20" xmlns="http://www.w3.org/2000/svg">
+                    <path d="M21 12.79A9 9 0 1111.21 3 7 7 0 0021 12.79z"></path>
+                    </svg>
+               </span>
+          </label>
+
+       <script>
+            var COMPODOC_CURRENT_PAGE_DEPTH = 1;
+            var COMPODOC_CURRENT_PAGE_CONTEXT = 'component';
+            var COMPODOC_CURRENT_PAGE_URL = 'ProductsVariationsComponent.html';
+            var MAX_SEARCH_RESULTS = 15;
+       </script>
+
+       <script>
+               $darkModeToggleSwitchers = document.querySelectorAll('.dark-mode-switch input');
+               var updateDarkModeSwitchOffset = function () {
+                    var content = document.querySelector('.content');
+                    var scrollbarWidth = 0;
+
+                    if (content) {
+                         scrollbarWidth = Math.max(0, content.offsetWidth - content.clientWidth);
+                    }
+
+                    document.documentElement.style.setProperty(
+                         '--content-scrollbar-width',
+                         scrollbarWidth + 'px'
+                    );
+               };
+
+               updateDarkModeSwitchOffset();
+               requestAnimationFrame(updateDarkModeSwitchOffset);
+               window.addEventListener('resize', updateDarkModeSwitchOffset);
+
+               checkToggle(darkModeState);
+               if ($darkModeToggleSwitchers.length > 0) {
+                    for (var i = 0; i < $darkModeToggleSwitchers.length; i++) {
+                         $darkModeToggleSwitchers[i].addEventListener('change', function (event) {
+                              darkModeState = !darkModeState;
+                              toggleDarkMode(darkModeState);
+                         });
+                    }
+               }
+          </script>
+
+       <script src="../js/libs/custom-elements.min.js"></script>
+       <script src="../js/libs/lit-html.js"></script>
+
+       <script src="../js/menu-wc.js" defer></script>
+
+       <script src="../js/libs/bootstrap-native.js"></script>
+
+       <script src="../js/libs/es6-shim.min.js"></script>
+       <script src="../js/libs/EventDispatcher.js"></script>
+       <script src="../js/libs/promise.min.js"></script>
+
+       <script src="../js/compodoc.js"></script>
+
+       <script src="../js/tabs.js"></script>
+       <script src="../js/menu.js"></script>
+       <script src="../js/libs/clipboard.min.js"></script>
+       <script src="../js/libs/prism.js"></script>
+       <script src="../js/sourceCode.js"></script>
+          <script src="../js/search/search.js"></script>
+          <script src="../js/search/lunr.min.js"></script>
+          <script src="../js/search/search-lunr.js"></script>
+          <script src="../js/search/search_index.js"></script>
+       <script src="../js/lazy-load-graphs.js"></script>
+
+
+    
+<script id="compodoc-lang-script">
+(function() {
+  var CURRENT_LANG = "pt";
+  var ADDITIONAL_DOCS_MAP = {"es":["01.-introducción-y-arquitectura-general.html","02.-autenticación-y-control-de-accesos.html","03.-catálogo-público-y-exploración-de-tiendas.html","04.-carrito-de-compras-y-checkout-multitienda.html","05.-gestión-de-empresas,-roles-y-configuración.html","06.-inventario,-productos,-variaciones-y-almacenes.html","07.-gestión-de-pedidos,-compras-y-cupones.html","08.-analíticas-de-negocio,-finanzas-y-proveedores.html"],"en":["01.-introduction-and-general-architecture.html","02.-authentication-and-access-control.html","03.-public-catalog-and-store-exploration.html","04.-shopping-cart-and-multi-store-checkout.html","05.-company-management,-roles-and-configuration.html","06.-inventory,-products,-variations-and-warehouses.html","07.-orders-management,-purchases-and-coupons.html","08.-business-analytics,-finances-and-suppliers.html"],"pt":["01.-introdução-e-arquitetura-geral.html","02.-autenticação-e-controle-de-acesso.html","03.-catálogo-público-e-exploração-de-lojas.html","04.-carrinho-de-compras-e-checkout-multiloja.html","05.-gestão-de-empresas,-funções-e-configuração.html","06.-estoque,-produtos,-variações-e-armazéns.html","07.-gestão-de-pedidos,-compras-e-cupons.html","08.-análise-de-negócios,-finanças-e-fornecedores.html"]};
+
+  var select = document.getElementById('compodoc-lang-select');
+  if (!select) return;
+
+  try {
+    localStorage.setItem('compodoc_lang', CURRENT_LANG);
+  } catch (e) {}
+
+  select.addEventListener('change', function(e) {
+    var targetLang = e.target.value;
+    if (targetLang === CURRENT_LANG) return;
+
+    try {
+      localStorage.setItem('compodoc_lang', targetLang);
+    } catch (err) {}
+
+    var href = window.location.href;
+    var pathname = window.location.pathname;
+
+    // Manejo especial para páginas de additional-documentation
+    if (pathname.indexOf('/additional-documentation/') !== -1) {
+      var segments = pathname.split('/');
+      var currentFile = decodeURIComponent(segments[segments.length - 1]);
+      
+      var currentList = ADDITIONAL_DOCS_MAP[CURRENT_LANG] || [];
+      var targetList = ADDITIONAL_DOCS_MAP[targetLang] || [];
+      var foundIndex = -1;
+
+      var prefixMatch = currentFile.match(/^(\d{2}\.-)/);
+      if (prefixMatch) {
+        var prefix = prefixMatch[1];
+        for (var i = 0; i < targetList.length; i++) {
+          if (targetList[i].startsWith(prefix)) {
+            foundIndex = i;
+            break;
+          }
+        }
+      }
+      if (foundIndex === -1) {
+        for (var j = 0; j < currentList.length; j++) {
+          if (currentList[j] === currentFile) {
+            foundIndex = j;
+            break;
+          }
+        }
+      }
+
+      var targetFile = (foundIndex !== -1 && targetList[foundIndex]) 
+        ? targetList[foundIndex] 
+        : (targetList[0] || 'index.html');
+
+      var targetSubpath = '/' + targetLang + '/additional-documentation/' + targetFile;
+      var currentSubpath = '/' + CURRENT_LANG + '/additional-documentation/' + segments[segments.length - 1];
+
+      if (href.indexOf(currentSubpath) !== -1) {
+        window.location.href = href.replace(currentSubpath, targetSubpath);
+        return;
+      }
+    }
+
+    // Páginas estándar
+    var standardReplace = href.replace('/' + CURRENT_LANG + '/', '/' + targetLang + '/');
+    if (standardReplace !== href) {
+      window.location.href = standardReplace;
+    } else {
+      var depth = (typeof COMPODOC_CURRENT_PAGE_DEPTH !== 'undefined') ? COMPODOC_CURRENT_PAGE_DEPTH : 0;
+      var prefixPath = '';
+      for (var k = 0; k <= depth; k++) {
+        prefixPath += '../';
+      }
+      window.location.href = prefixPath + targetLang + '/index.html';
+    }
+  });
+})();
+</script>
+
+</body>
+</html>

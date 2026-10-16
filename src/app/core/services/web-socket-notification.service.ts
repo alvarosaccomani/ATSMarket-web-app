@@ -5,6 +5,11 @@ import { environment } from '../../../environments/environment';
 import { NotificationInterface } from '@interfaces/notification/notification.interface';
 import { NotificationsService } from './notifications.service';
 
+/**
+ * @description Servicio de comunicación en tiempo real mediante WebSockets (Socket.IO) y BroadcastChannel.
+ * Facilita la distribución instantánea de notificaciones push, alertas de nuevos pedidos, cambios de estado
+ * de órdenes y mensajería de chat entre compradores, comercios y repartidores sin necesidad de sondeo continuo.
+ */
 @Injectable({
   providedIn: 'root'
 })
@@ -13,22 +18,39 @@ export class WebSocketNotificationService implements OnDestroy {
   private socket: Socket | null = null;
   private channel: BroadcastChannel;
   
-  // Observables para el estado y flujo de notificaciones
+  /**
+   * @description Sujeto reactivo con el listado completo de notificaciones recibidas.
+   */
   private notificationsSubject = new BehaviorSubject<NotificationInterface[]>([]);
+  /**
+   * @description Observable de notificaciones históricas y en sesión.
+   */
   public notifications$ = this.notificationsSubject.asObservable();
 
+  /**
+   * @description Sujeto con el conteo numérico de notificaciones no leídas.
+   */
   private unreadCountSubject = new BehaviorSubject<number>(0);
+  /**
+   * @description Observable del contador de notificaciones pendientes de lectura para insignias visuales (badges).
+   */
   public unreadCount$ = this.unreadCountSubject.asObservable();
 
-  // Canal específico para notificaciones entrantes individuales en tiempo real
+  /**
+   * @description Canal emisor para notificaciones individuales entrantes en tiempo real.
+   */
   private incomingNotificationSubject = new Subject<NotificationInterface>();
   public incomingNotification$ = this.incomingNotificationSubject.asObservable();
 
-  // Canal específico para actualizaciones de órdenes en tiempo real
+  /**
+   * @description Canal de eventos en vivo con actualizaciones de estado de órdenes logísticas.
+   */
   private orderUpdatesSubject = new Subject<{ ord_uuid: string, status: string, notes?: string }>();
   public orderUpdates$ = this.orderUpdatesSubject.asObservable();
 
-  // Canal específico para mensajes de chat en tiempo real
+  /**
+   * @description Canal de eventos en tiempo real para mensajes entrantes del chat de soporte/pedido.
+   */
   private chatMessagesSubject = new Subject<any>();
   public chatMessages$ = this.chatMessagesSubject.asObservable();
 

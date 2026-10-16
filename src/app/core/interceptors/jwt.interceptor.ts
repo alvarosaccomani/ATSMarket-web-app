@@ -3,8 +3,13 @@ import { inject } from '@angular/core';
 import { SessionService } from '@services/session.service';
 
 /**
- * Interceptor funcional que adjunta el token JWT de la sesión activa
- * en el encabezado Authorization para todas las peticiones salientes.
+ * @description Interceptor funcional que inyecta automáticamente el token de autenticación JWT
+ * en la cabecera 'Authorization: Bearer <token>' para todas las peticiones HTTP salientes hacia la API.
+ * Resuelve el token consultando SessionService y recurre a localStorage como mecanismo de respaldo.
+ *
+ * @param req Petición HTTP saliente que será clonada y modificada.
+ * @param next Siguiente eslabón en la cadena de ejecución de interceptores.
+ * @returns {Observable<HttpEvent<unknown>>} Petición con encabezado de autorización adjunto si el token está presente.
  */
 export const jwtInterceptor: HttpInterceptorFn = (req, next) => {
   const sessionService = inject(SessionService);

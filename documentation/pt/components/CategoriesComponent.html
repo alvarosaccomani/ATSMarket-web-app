@@ -1,0 +1,2591 @@
+<!doctype html>
+<html class="no-js" lang="">
+    <head>
+        <meta charset="utf-8">
+        <meta http-equiv="x-ua-compatible" content="ie=edge">
+        <title>ATSMarket Web App</title>
+        <meta name="description" content="">
+        <meta name="viewport" content="width=device-width, initial-scale=1">
+
+        <link rel="icon" type="image/x-icon" href="../images/favicon.ico">
+	   <link rel="stylesheet" href="../styles/style.css">
+        <link rel="stylesheet" href="../styles/dark.css">
+    
+<style id="compodoc-lang-styles">
+  .compodoc-lang-switch {
+    position: fixed;
+    top: 15px;
+    right: calc(90px + var(--content-scrollbar-width, 0px));
+    z-index: 1050;
+    display: inline-block;
+  }
+  @media (max-width: 767px) {
+    .compodoc-lang-switch {
+      top: 8px;
+      right: 60px;
+    }
+  }
+  #compodoc-lang-select {
+    height: 34px;
+    padding: 0 12px;
+    border-radius: 17px;
+    border: 1px solid #d9d9d9;
+    background-color: #ffffff;
+    color: #1f1f1f;
+    font-size: 13px;
+    font-family: inherit;
+    font-weight: 500;
+    cursor: pointer;
+    outline: none;
+    box-shadow: 0 2px 6px rgba(0, 0, 0, 0.08);
+    transition: all 0.3s cubic-bezier(0.645, 0.045, 0.355, 1);
+    -webkit-appearance: none;
+    -moz-appearance: none;
+    appearance: none;
+    padding-right: 26px;
+    background-image: url("data:image/svg+xml;charset=UTF-8,%3csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 24 24' fill='none' stroke='%23666' stroke-width='2' stroke-linecap='round' stroke-linejoin='round'%3e%3cpolyline points='6 9 12 15 18 9'%3e%3c/polyline%3e%3c/svg%3e");
+    background-repeat: no-repeat;
+    background-position: right 8px center;
+    background-size: 14px;
+  }
+  #compodoc-lang-select:hover, #compodoc-lang-select:focus {
+    border-color: #5cc0ae;
+    box-shadow: 0 2px 8px rgba(92, 192, 174, 0.25);
+  }
+  body.dark .compodoc-lang-switch #compodoc-lang-select {
+    background-color: #2c3e50;
+    color: #ecf0f1;
+    border: 1px solid #4a627a;
+    box-shadow: 0 2px 6px rgba(0, 0, 0, 0.35);
+    background-image: url("data:image/svg+xml;charset=UTF-8,%3csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 24 24' fill='none' stroke='%23ecf0f1' stroke-width='2' stroke-linecap='round' stroke-linejoin='round'%3e%3cpolyline points='6 9 12 15 18 9'%3e%3c/polyline%3e%3c/svg%3e");
+  }
+  body.dark .compodoc-lang-switch #compodoc-lang-select option {
+    background-color: #2c3e50;
+    color: #ecf0f1;
+  }
+</style>
+
+</head>
+    <body>
+          <script>
+               // Blocking script to avoid flickering dark mode
+               // Dark mode toggle button
+               var useDark = window.matchMedia('(prefers-color-scheme: dark)');
+               var darkModeState = useDark.matches;
+               var $darkModeToggleSwitchers = document.querySelectorAll('.dark-mode-switch input');
+               var $darkModeToggles = document.querySelectorAll('.dark-mode-switch');
+               var darkModeStateLocal = localStorage.getItem('compodoc_darkmode-state');
+
+               function checkToggle(check) {
+                    for (var i = 0; i < $darkModeToggleSwitchers.length; i++) {
+                         $darkModeToggleSwitchers[i].checked = check;
+                    }
+               }
+
+               function toggleDarkMode(state) {
+                    if (window.localStorage) {
+                         localStorage.setItem('compodoc_darkmode-state', state);
+                    }
+
+                    checkToggle(state);
+
+                    const hasClass = document.body.classList.contains('dark');
+
+                    if (state) {
+                         for (var i = 0; i < $darkModeToggles.length; i++) {
+                              $darkModeToggles[i].classList.add('dark');
+                         }
+                         if (!hasClass) {
+                              document.body.classList.add('dark');
+                         }
+                    } else {
+                         for (var i = 0; i < $darkModeToggles.length; i++) {
+                              $darkModeToggles[i].classList.remove('dark');
+                         }
+                         if (hasClass) {
+                              document.body.classList.remove('dark');
+                         }
+                    }
+               }
+
+               useDark.addEventListener('change', function (evt) {
+                    toggleDarkMode(evt.matches);
+               });
+               if (darkModeStateLocal) {
+                    darkModeState = darkModeStateLocal === 'true';
+               }
+               toggleDarkMode(darkModeState);
+          </script>
+          <script>
+              // --- Iframe navigation tracking for Template Playground ---
+              function sendCurrentUrlToParent() {
+                  if (window.parent && window.parent !== window) {
+                      window.parent.postMessage({
+                          type: 'compodoc-iframe-navigate',
+                          url: window.location.pathname + window.location.hash
+                      }, '*');
+                  }
+              }
+              window.addEventListener('hashchange', sendCurrentUrlToParent, false);
+              window.addEventListener('popstate', sendCurrentUrlToParent, false);
+              window.addEventListener('DOMContentLoaded', sendCurrentUrlToParent, false);
+          </script>
+
+        <div class="navbar navbar-default navbar-fixed-top d-md-none p-0">
+               <div class="d-flex">
+                    <a href="../" class="navbar-brand">ATSMarket Web App</a>
+                    <button type="button" class="btn btn-default btn-menu ion-ios-menu" id="btn-menu"></button>
+               </div>
+        </div>
+
+        <div class="xs-menu menu" id="mobile-menu">
+                <div id="book-search-input" role="search">
+    <input type="text" placeholder="Digite para pesquisar">
+    <button type="button"
+        class="search-input-clear"
+        aria-label="Clear search"
+        data-search-input-clear>&times;</button>
+</div>
+            <compodoc-menu></compodoc-menu>
+        </div>
+
+        <div class="container-fluid main">
+           <div class="row main">
+               <div class="d-none d-md-block menu">
+                   <compodoc-menu mode="normal"></compodoc-menu>
+               </div>
+               <!-- START CONTENT -->
+               <div class="content component">
+                   <div class="content-data">
+
+
+
+
+
+
+
+
+<ol class="breadcrumb">
+  <li class="breadcrumb-item">Componentes</li>
+  <li class="breadcrumb-item"
+  >
+  CategoriesComponent</li>
+</ol>
+
+<div class="io-file io-file-path" data-compodoc="entity-file-path">
+    <span class="icon ion-ios-document" aria-hidden="true"></span>
+    <code>src/app/application/categories/categories.component.ts</code>
+</div>
+
+<ul class="nav nav-tabs" role="tablist">
+        <li class="nav-item">
+            <a href="#info" class="nav-link active"
+                role="tab" id="info-tab" data-bs-toggle="tab" data-link="info">Info</a>
+        </li>
+        <li class="nav-item">
+            <a href="#api" class="nav-link"
+                role="tab" id="api-tab" data-bs-toggle="tab" data-link="api">API</a>
+        </li>
+        <li class="nav-item">
+            <a href="#source" class="nav-link"
+                role="tab" id="source-tab" data-bs-toggle="tab" data-link="source">Source</a>
+        </li>
+        <li class="nav-item">
+            <a href="#templateData" class="nav-link"
+                role="tab" id="templateData-tab" data-bs-toggle="tab" data-link="template">Template</a>
+        </li>
+        <li class="nav-item">
+            <a href="#styleData" class="nav-link"
+                role="tab" id="styleData-tab" data-bs-toggle="tab" data-link="style">Styles</a>
+        </li>
+        <li class="nav-item">
+            <a href="#tree" class="nav-link"
+                role="tab" id="tree-tab" data-bs-toggle="tab" data-link="dom-tree">DOM Tree</a>
+        </li>
+</ul>
+
+<div class="tab-content">
+    <div class="tab-pane fade active in" id="info">
+
+
+    <p class="comment">
+        <h3>Implementa</h3>
+    </p>
+    <p class="comment">
+                    <code><a href="https://angular.dev/api/core/OnInit" target="_blank" >OnInit</a></code>
+                    <code><a href="https://angular.dev/api/core/OnDestroy" target="_blank" >OnDestroy</a></code>
+    </p>
+
+
+<section data-compodoc="block-metadata">
+    <h3>Metadata</h3>
+    <table class="table table-sm table-hover metadata">
+        <tbody>
+
+
+
+
+
+
+
+
+
+
+
+
+            <tr>
+                <td class="col-md-3">selector</td>
+                <td class="col-md-9"><code>app-categories</code></td>
+            </tr>
+
+            <tr>
+                <td class="col-md-3">standalone</td>
+                <td class="col-md-9"><code>true</code></td>
+            </tr>
+
+            <tr>
+                <td class="col-md-3">imports</td>
+                <td class="col-md-9">
+                        <div>        <code><a href="https://angular.dev/api/common/CommonModule" target="_blank" >CommonModule</a></code>
+</div>
+                        <div>        <code><a href="https://angular.dev/api/forms/FormsModule" target="_blank" >FormsModule</a></code>
+</div>
+                        <div>        <code><a href="https://angular.dev/api/forms/ReactiveFormsModule" target="_blank" >ReactiveFormsModule</a></code>
+</div>
+                        <div>        <code><a href="https://angular.dev/api/router/RouterModule" target="_blank" >RouterModule</a></code>
+</div>
+                        <div>    <code>NzTableModule</code>
+</div>
+                        <div>    <code>NzCardModule</code>
+</div>
+                        <div>    <code>NzButtonModule</code>
+</div>
+                        <div>    <code>NzIconModule</code>
+</div>
+                        <div>    <code>NzDrawerModule</code>
+</div>
+                        <div>    <code>NzDividerModule</code>
+</div>
+                        <div>    <code>NzDescriptionsModule</code>
+</div>
+                        <div>    <code>NzTagModule</code>
+</div>
+                        <div>    <code>NzInputModule</code>
+</div>
+                        <div>    <code>NzAvatarModule</code>
+</div>
+                        <div>    <code>NzFormModule</code>
+</div>
+                        <div>    <code>NzSpinModule</code>
+</div>
+                        <div>    <code>NzSelectModule</code>
+</div>
+                </td>
+            </tr>
+
+            <tr>
+                <td class="col-md-3">styleUrls</td>
+                <td class="col-md-9"><code>./categories.component.scss</code></td>
+            </tr>
+
+
+
+
+            <tr>
+                <td class="col-md-3">templateUrl</td>
+                <td class="col-md-9"><code>./categories.component.html</code></td>
+            </tr>
+
+
+
+            <tr>
+                <td class="col-md-3">styleUrl</td>
+                <td class="col-md-9"><code>./categories.component.scss</code></td>
+            </tr>
+
+
+
+
+
+        </tbody>
+    </table>
+</section>
+
+        <section data-compodoc="block-relationships">
+            <h3>Relationships</h3>
+
+            <div class="row pt-3">
+                <div class="col-sm-6">
+                    <h4>Used by</h4>
+                        <p class="comment"><i>Nenhum resultado correspondente.</i></p>
+                </div>
+
+                <div class="col-sm-6">
+                    <h4>Depends on</h4>
+                        <ul class="list-unstyled relationships-list">
+                                <li>
+                                            <code><a href="https://angular.dev/api/common/CommonModule" target="_blank" >CommonModule</a></code>
+                                </li>
+                                <li>
+                                            <code><a href="https://angular.dev/api/forms/FormsModule" target="_blank" >FormsModule</a></code>
+                                </li>
+                                <li>
+                                            <code><a href="https://angular.dev/api/forms/ReactiveFormsModule" target="_blank" >ReactiveFormsModule</a></code>
+                                </li>
+                                <li>
+                                            <code><a href="https://angular.dev/api/router/RouterModule" target="_blank" >RouterModule</a></code>
+                                </li>
+                                <li>
+                                        <code>NzTableModule</code>
+                                </li>
+                                <li>
+                                        <code>NzCardModule</code>
+                                </li>
+                                <li>
+                                        <code>NzButtonModule</code>
+                                </li>
+                                <li>
+                                        <code>NzIconModule</code>
+                                </li>
+                                <li>
+                                        <code>NzDrawerModule</code>
+                                </li>
+                                <li>
+                                        <code>NzDividerModule</code>
+                                </li>
+                                <li>
+                                        <code>NzDescriptionsModule</code>
+                                </li>
+                                <li>
+                                        <code>NzTagModule</code>
+                                </li>
+                                <li>
+                                        <code>NzInputModule</code>
+                                </li>
+                                <li>
+                                        <code>NzAvatarModule</code>
+                                </li>
+                                <li>
+                                        <code>NzFormModule</code>
+                                </li>
+                                <li>
+                                        <code>NzSpinModule</code>
+                                </li>
+                                <li>
+                                        <code>NzSelectModule</code>
+                                </li>
+                                <li>
+                                            <code><a href="https://angular.dev/api/core/OnInit" target="_blank" >OnInit</a></code>
+                                </li>
+                                <li>
+                                            <code><a href="https://angular.dev/api/core/OnDestroy" target="_blank" >OnDestroy</a></code>
+                                </li>
+                        </ul>
+                </div>
+            </div>
+        </section>
+</div>
+
+    <div class="tab-pane fade " id="api">    <section data-compodoc="block-index">
+    <h3 id="index">Index</h3>
+        <table class="table table-sm table-bordered index-table">
+            <tbody>
+                <tr>
+                    <td class="col-md-3">
+                        <h6><b>Propriedades</b></h6>
+                    </td>
+                    <td class="col-md-9">
+                        <ul class="index-list">
+                            <li>
+                                <span class="reference-badge reference-badge--property" aria-hidden="true">P</span>
+                                    <span class="modifier">Public</span>
+                                <a href="#categoryForm" >categoryForm</a>
+                            </li>
+                            <li>
+                                <span class="reference-badge reference-badge--property" aria-hidden="true">P</span>
+                                    <span class="modifier">Public</span>
+                                <a href="#cmp_uuid" >cmp_uuid</a>
+                            </li>
+                            <li>
+                                <span class="reference-badge reference-badge--property" aria-hidden="true">P</span>
+                                    <span class="modifier">Private</span>
+                                <a href="#destroy$" >destroy$</a>
+                            </li>
+                            <li>
+                                <span class="reference-badge reference-badge--property" aria-hidden="true">P</span>
+                                    <span class="modifier">Public</span>
+                                <a href="#filteredCategories$" >filteredCategories$</a>
+                            </li>
+                            <li>
+                                <span class="reference-badge reference-badge--property" aria-hidden="true">P</span>
+                                    <span class="modifier">Public</span>
+                                <a href="#globalCategories" >globalCategories</a>
+                            </li>
+                            <li>
+                                <span class="reference-badge reference-badge--property" aria-hidden="true">P</span>
+                                    <span class="modifier">Public</span>
+                                <a href="#isDrawerVisible" >isDrawerVisible</a>
+                            </li>
+                            <li>
+                                <span class="reference-badge reference-badge--property" aria-hidden="true">P</span>
+                                    <span class="modifier">Public</span>
+                                <a href="#isEditing" >isEditing</a>
+                            </li>
+                            <li>
+                                <span class="reference-badge reference-badge--property" aria-hidden="true">P</span>
+                                    <span class="modifier">Public</span>
+                                <a href="#isLoading" >isLoading</a>
+                            </li>
+                            <li>
+                                <span class="reference-badge reference-badge--property" aria-hidden="true">P</span>
+                                    <span class="modifier">Public</span>
+                                <a href="#itemsList" >itemsList</a>
+                            </li>
+                            <li>
+                                <span class="reference-badge reference-badge--property" aria-hidden="true">P</span>
+                                    <span class="modifier">Private</span>
+                                <a href="#refreshData$" >refreshData$</a>
+                            </li>
+                            <li>
+                                <span class="reference-badge reference-badge--property" aria-hidden="true">P</span>
+                                    <span class="modifier">Private</span>
+                                <a href="#searchTerm$" >searchTerm$</a>
+                            </li>
+                            <li>
+                                <span class="reference-badge reference-badge--property" aria-hidden="true">P</span>
+                                    <span class="modifier">Public</span>
+                                <a href="#selectedCategory" >selectedCategory</a>
+                            </li>
+                            <li>
+                                <span class="reference-badge reference-badge--property" aria-hidden="true">P</span>
+                                    <span class="modifier">Public</span>
+                                <a href="#selectedItmUuid" >selectedItmUuid</a>
+                            </li>
+                            <li>
+                                <span class="reference-badge reference-badge--property" aria-hidden="true">P</span>
+                                    <span class="modifier">Private</span>
+                                <a href="#selectedItmUuid$" >selectedItmUuid$</a>
+                            </li>
+                        </ul>
+                    </td>
+                </tr>
+            </tbody>
+        </table>
+
+        <table class="table table-sm table-bordered index-table">
+            <tbody>
+                <tr>
+                    <td class="col-md-3">
+                        <h6><b>Métodos</b></h6>
+                    </td>
+                    <td class="col-md-9">
+                        <ul class="index-list">
+                            <li>
+                                <span class="reference-badge reference-badge--method" aria-hidden="true">M</span>
+                                    <span class="modifier">Public</span>
+                                <a href="#closeDrawer" >closeDrawer</a>
+                            </li>
+                            <li>
+                                <span class="reference-badge reference-badge--method" aria-hidden="true">M</span>
+                                    <span class="modifier">Public</span>
+                                <a href="#enableEditing" >enableEditing</a>
+                            </li>
+                            <li>
+                                <span class="reference-badge reference-badge--method" aria-hidden="true">M</span>
+                                    <span class="modifier">Public</span>
+                                <a href="#getGlobalCategoryName" >getGlobalCategoryName</a>
+                            </li>
+                            <li>
+                                <span class="reference-badge reference-badge--method" aria-hidden="true">M</span>
+                                    <span class="modifier">Private</span>
+                                <a href="#loadInitialData" >loadInitialData</a>
+                            </li>
+                            <li>
+                                <span class="reference-badge reference-badge--method" aria-hidden="true">M</span>
+                                <a href="#ngOnDestroy" >ngOnDestroy</a>
+                            </li>
+                            <li>
+                                <span class="reference-badge reference-badge--method" aria-hidden="true">M</span>
+                                <a href="#ngOnInit" >ngOnInit</a>
+                            </li>
+                            <li>
+                                <span class="reference-badge reference-badge--method" aria-hidden="true">M</span>
+                                    <span class="modifier">Public</span>
+                                <a href="#onDeleteCategory" >onDeleteCategory</a>
+                            </li>
+                            <li>
+                                <span class="reference-badge reference-badge--method" aria-hidden="true">M</span>
+                                    <span class="modifier">Public</span>
+                                <a href="#onItemChange" >onItemChange</a>
+                            </li>
+                            <li>
+                                <span class="reference-badge reference-badge--method" aria-hidden="true">M</span>
+                                    <span class="modifier">Public</span>
+                                <a href="#onSave" >onSave</a>
+                            </li>
+                            <li>
+                                <span class="reference-badge reference-badge--method" aria-hidden="true">M</span>
+                                    <span class="modifier">Public</span>
+                                <a href="#onSearch" >onSearch</a>
+                            </li>
+                            <li>
+                                <span class="reference-badge reference-badge--method" aria-hidden="true">M</span>
+                                    <span class="modifier">Public</span>
+                                <a href="#openCategoryDetail" >openCategoryDetail</a>
+                            </li>
+                            <li>
+                                <span class="reference-badge reference-badge--method" aria-hidden="true">M</span>
+                                    <span class="modifier">Public</span>
+                                <a href="#openCreateDrawer" >openCreateDrawer</a>
+                            </li>
+                        </ul>
+                    </td>
+                </tr>
+            </tbody>
+        </table>
+
+
+
+
+
+</section>
+
+    <section data-compodoc="block-constructor">
+    <h3 id="constructor">Construtor</h3>
+        <table class="table table-sm table-bordered">
+            <tbody>
+                <tr>
+                    <td class="col-md-4">
+<code>constructor(fb: <a href="https://angular.dev/api/forms/FormBuilder" target="_blank">FormBuilder</a>, _sessionService: <a href="../injectables/SessionService.html" target="_self">SessionService</a>, _categoriesService: <a href="../injectables/CategoriesService.html" target="_self">CategoriesService</a>, _itemsService: <a href="../injectables/ItemsService.html" target="_self">ItemsService</a>, _globalCategoriesService: <a href="../injectables/GlobalCategoriesService.html" target="_self">GlobalCategoriesService</a>, _messageService: <a href="../injectables/MessageService.html" target="_self">MessageService</a>)</code>
+                    </td>
+                </tr>
+                        <tr>
+                            <td class="col-md-4">
+                                <div class="io-line">Definido em <a href="" data-line="81" class="link-to-prism">src/app/application/categories/categories.component.ts:81</a></div>
+                            </td>
+                        </tr>
+
+                <tr>
+                    <td class="col-md-4">
+                            <div>
+                                    <b>Parâmetros :</b>
+                                    <table class="params">
+                                        <thead>
+                                            <tr>
+                                                <td>Nome</td>
+                                                    <td>Tipo</td>
+                                                <td>Opcional</td>
+                                            </tr>
+                                        </thead>
+                                        <tbody>
+                                                <tr>
+                                                        <td>fb</td>
+                                                  
+                                                        <td>
+                                                                        <code><a href="https://angular.dev/api/forms/FormBuilder" target="_blank" >FormBuilder</a></code>
+                                                        </td>
+                                                  
+                                                    <td>
+                                                            Não
+                                                    </td>
+                                                    
+                                                </tr>
+                                                <tr>
+                                                        <td>_sessionService</td>
+                                                  
+                                                        <td>
+                                                                        <code><a href="../injectables/SessionService.html" target="_self" >SessionService</a></code>
+                                                        </td>
+                                                  
+                                                    <td>
+                                                            Não
+                                                    </td>
+                                                    
+                                                </tr>
+                                                <tr>
+                                                        <td>_categoriesService</td>
+                                                  
+                                                        <td>
+                                                                        <code><a href="../injectables/CategoriesService.html" target="_self" >CategoriesService</a></code>
+                                                        </td>
+                                                  
+                                                    <td>
+                                                            Não
+                                                    </td>
+                                                    
+                                                </tr>
+                                                <tr>
+                                                        <td>_itemsService</td>
+                                                  
+                                                        <td>
+                                                                        <code><a href="../injectables/ItemsService.html" target="_self" >ItemsService</a></code>
+                                                        </td>
+                                                  
+                                                    <td>
+                                                            Não
+                                                    </td>
+                                                    
+                                                </tr>
+                                                <tr>
+                                                        <td>_globalCategoriesService</td>
+                                                  
+                                                        <td>
+                                                                        <code><a href="../injectables/GlobalCategoriesService.html" target="_self" >GlobalCategoriesService</a></code>
+                                                        </td>
+                                                  
+                                                    <td>
+                                                            Não
+                                                    </td>
+                                                    
+                                                </tr>
+                                                <tr>
+                                                        <td>_messageService</td>
+                                                  
+                                                        <td>
+                                                                        <code><a href="../injectables/MessageService.html" target="_self" >MessageService</a></code>
+                                                        </td>
+                                                  
+                                                    <td>
+                                                            Não
+                                                    </td>
+                                                    
+                                                </tr>
+                                        </tbody>
+                                    </table>
+                            </div>
+                    </td>
+                </tr>
+            </tbody>
+        </table>
+</section>
+
+
+
+
+
+    <section data-compodoc="block-methods">
+    
+    <h3 id="methods">
+        Métodos
+    </h3>
+    <table class="table table-sm table-bordered">
+        <tbody>
+            <tr>
+                <td class="col-md-4">
+                    <a name="closeDrawer"></a>
+                    <span class="name">
+                            <span class="modifier">Public</span>
+                        <span ><b>closeDrawer</b></span>
+                        <a href="#closeDrawer"><span class="icon ion-ios-link"></span></a>
+                    </span>
+                </td>
+            </tr>
+            <tr>
+                <td class="col-md-4">
+                        <span class="modifier-icon icon ion-ios-reset"></span>
+                    <code>closeDrawer()</code>
+                </td>
+            </tr>
+
+
+                    <tr>
+                        <td class="col-md-4">
+                            <div class="io-line">Definido em <a href="" data-line="214"
+                                    class="link-to-prism">src/app/application/categories/categories.component.ts:214</a></div>
+                        </td>
+                    </tr>
+
+
+            <tr>
+                <td class="col-md-4">
+
+                        <div class="io-description">
+                            <b>Retorna : </b>        <code><a href="https://www.typescriptlang.org/docs/handbook/basic-types.html" target="_blank" >void</a></code>
+
+                        </div>
+                </td>
+            </tr>
+        </tbody>
+    </table>
+    <table class="table table-sm table-bordered">
+        <tbody>
+            <tr>
+                <td class="col-md-4">
+                    <a name="enableEditing"></a>
+                    <span class="name">
+                            <span class="modifier">Public</span>
+                        <span ><b>enableEditing</b></span>
+                        <a href="#enableEditing"><span class="icon ion-ios-link"></span></a>
+                    </span>
+                </td>
+            </tr>
+            <tr>
+                <td class="col-md-4">
+                        <span class="modifier-icon icon ion-ios-reset"></span>
+                    <code>enableEditing()</code>
+                </td>
+            </tr>
+
+
+                    <tr>
+                        <td class="col-md-4">
+                            <div class="io-line">Definido em <a href="" data-line="210"
+                                    class="link-to-prism">src/app/application/categories/categories.component.ts:210</a></div>
+                        </td>
+                    </tr>
+
+
+            <tr>
+                <td class="col-md-4">
+
+                        <div class="io-description">
+                            <b>Retorna : </b>        <code><a href="https://www.typescriptlang.org/docs/handbook/basic-types.html" target="_blank" >void</a></code>
+
+                        </div>
+                </td>
+            </tr>
+        </tbody>
+    </table>
+    <table class="table table-sm table-bordered">
+        <tbody>
+            <tr>
+                <td class="col-md-4">
+                    <a name="getGlobalCategoryName"></a>
+                    <span class="name">
+                            <span class="modifier">Public</span>
+                        <span ><b>getGlobalCategoryName</b></span>
+                        <a href="#getGlobalCategoryName"><span class="icon ion-ios-link"></span></a>
+                    </span>
+                </td>
+            </tr>
+            <tr>
+                <td class="col-md-4">
+                        <span class="modifier-icon icon ion-ios-reset"></span>
+                    <code>getGlobalCategoryName(gcat_uuid: <a href="https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/string" target="_blank">string</a>)</code>
+                </td>
+            </tr>
+
+
+                    <tr>
+                        <td class="col-md-4">
+                            <div class="io-line">Definido em <a href="" data-line="283"
+                                    class="link-to-prism">src/app/application/categories/categories.component.ts:283</a></div>
+                        </td>
+                    </tr>
+
+
+            <tr>
+                <td class="col-md-4">
+
+                            <div class="io-description">
+                                <b>Parâmetros :</b>
+                                
+                                <table class="params">
+                                    <thead>
+                                        <tr>
+                                            <td>Nome</td>
+                                                <td>Tipo</td>
+                                            <td>Opcional</td>
+                                        </tr>
+                                    </thead>
+                                    <tbody>
+                                        <tr>
+                                                <td>gcat_uuid</td>
+                                            <td>
+                                                            <code><a href="https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/string" target="_blank" >string</a></code>
+                                            </td>
+
+                                            <td>
+                                                    Não
+                                            </td>
+
+
+                                        </tr>
+                                    </tbody>
+                                </table>
+                            </div>
+                        <div class="io-description">
+                            <b>Retorna : </b>        <code><a href="https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/string" target="_blank" >string</a></code>
+
+                        </div>
+                            <div class="io-description">
+                                
+                            </div>
+                </td>
+            </tr>
+        </tbody>
+    </table>
+    <table class="table table-sm table-bordered">
+        <tbody>
+            <tr>
+                <td class="col-md-4">
+                    <a name="loadInitialData"></a>
+                    <span class="name">
+                            <span class="modifier">Private</span>
+                        <span ><b>loadInitialData</b></span>
+                        <a href="#loadInitialData"><span class="icon ion-ios-link"></span></a>
+                    </span>
+                </td>
+            </tr>
+            <tr>
+                <td class="col-md-4">
+                        <span class="modifier-icon icon ion-ios-reset"></span>
+                    <code>loadInitialData()</code>
+                </td>
+            </tr>
+
+
+                    <tr>
+                        <td class="col-md-4">
+                            <div class="io-line">Definido em <a href="" data-line="147"
+                                    class="link-to-prism">src/app/application/categories/categories.component.ts:147</a></div>
+                        </td>
+                    </tr>
+
+
+            <tr>
+                <td class="col-md-4">
+
+                        <div class="io-description">
+                            <b>Retorna : </b>        <code><a href="https://www.typescriptlang.org/docs/handbook/basic-types.html" target="_blank" >void</a></code>
+
+                        </div>
+                </td>
+            </tr>
+        </tbody>
+    </table>
+    <table class="table table-sm table-bordered">
+        <tbody>
+            <tr>
+                <td class="col-md-4">
+                    <a name="ngOnDestroy"></a>
+                    <span class="name">
+                        <span ><b>ngOnDestroy</b></span>
+                        <a href="#ngOnDestroy"><span class="icon ion-ios-link"></span></a>
+                    </span>
+                </td>
+            </tr>
+            <tr>
+                <td class="col-md-4">
+<code>ngOnDestroy()</code>
+                </td>
+            </tr>
+
+
+                    <tr>
+                        <td class="col-md-4">
+                            <div class="io-line">Definido em <a href="" data-line="289"
+                                    class="link-to-prism">src/app/application/categories/categories.component.ts:289</a></div>
+                        </td>
+                    </tr>
+
+
+            <tr>
+                <td class="col-md-4">
+
+                        <div class="io-description">
+                            <b>Retorna : </b>        <code><a href="https://www.typescriptlang.org/docs/handbook/basic-types.html" target="_blank" >void</a></code>
+
+                        </div>
+                </td>
+            </tr>
+        </tbody>
+    </table>
+    <table class="table table-sm table-bordered">
+        <tbody>
+            <tr>
+                <td class="col-md-4">
+                    <a name="ngOnInit"></a>
+                    <span class="name">
+                        <span ><b>ngOnInit</b></span>
+                        <a href="#ngOnInit"><span class="icon ion-ios-link"></span></a>
+                    </span>
+                </td>
+            </tr>
+            <tr>
+                <td class="col-md-4">
+<code>ngOnInit()</code>
+                </td>
+            </tr>
+
+
+                    <tr>
+                        <td class="col-md-4">
+                            <div class="io-line">Definido em <a href="" data-line="92"
+                                    class="link-to-prism">src/app/application/categories/categories.component.ts:92</a></div>
+                        </td>
+                    </tr>
+
+
+            <tr>
+                <td class="col-md-4">
+
+                        <div class="io-description">
+                            <b>Retorna : </b>        <code><a href="https://www.typescriptlang.org/docs/handbook/basic-types.html" target="_blank" >void</a></code>
+
+                        </div>
+                </td>
+            </tr>
+        </tbody>
+    </table>
+    <table class="table table-sm table-bordered">
+        <tbody>
+            <tr>
+                <td class="col-md-4">
+                    <a name="onDeleteCategory"></a>
+                    <span class="name">
+                            <span class="modifier">Public</span>
+                        <span ><b>onDeleteCategory</b></span>
+                        <a href="#onDeleteCategory"><span class="icon ion-ios-link"></span></a>
+                    </span>
+                </td>
+            </tr>
+            <tr>
+                <td class="col-md-4">
+                        <span class="modifier-icon icon ion-ios-reset"></span>
+                    <code>onDeleteCategory(category: <a href="../interfaces/CategoryInterface.html" target="_self">CategoryInterface</a>)</code>
+                </td>
+            </tr>
+
+
+                    <tr>
+                        <td class="col-md-4">
+                            <div class="io-line">Definido em <a href="" data-line="260"
+                                    class="link-to-prism">src/app/application/categories/categories.component.ts:260</a></div>
+                        </td>
+                    </tr>
+
+
+            <tr>
+                <td class="col-md-4">
+
+                            <div class="io-description">
+                                <b>Parâmetros :</b>
+                                
+                                <table class="params">
+                                    <thead>
+                                        <tr>
+                                            <td>Nome</td>
+                                                <td>Tipo</td>
+                                            <td>Opcional</td>
+                                        </tr>
+                                    </thead>
+                                    <tbody>
+                                        <tr>
+                                                <td>category</td>
+                                            <td>
+                                                            <code><a href="../interfaces/CategoryInterface.html" target="_self" >CategoryInterface</a></code>
+                                            </td>
+
+                                            <td>
+                                                    Não
+                                            </td>
+
+
+                                        </tr>
+                                    </tbody>
+                                </table>
+                            </div>
+                        <div class="io-description">
+                            <b>Retorna : </b>        <code><a href="https://www.typescriptlang.org/docs/handbook/basic-types.html" target="_blank" >void</a></code>
+
+                        </div>
+                            <div class="io-description">
+                                
+                            </div>
+                </td>
+            </tr>
+        </tbody>
+    </table>
+    <table class="table table-sm table-bordered">
+        <tbody>
+            <tr>
+                <td class="col-md-4">
+                    <a name="onItemChange"></a>
+                    <span class="name">
+                            <span class="modifier">Public</span>
+                        <span ><b>onItemChange</b></span>
+                        <a href="#onItemChange"><span class="icon ion-ios-link"></span></a>
+                    </span>
+                </td>
+            </tr>
+            <tr>
+                <td class="col-md-4">
+                        <span class="modifier-icon icon ion-ios-reset"></span>
+                    <code>onItemChange(itmUuid: <a href="https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/string" target="_blank">string</a>)</code>
+                </td>
+            </tr>
+
+
+                    <tr>
+                        <td class="col-md-4">
+                            <div class="io-line">Definido em <a href="" data-line="174"
+                                    class="link-to-prism">src/app/application/categories/categories.component.ts:174</a></div>
+                        </td>
+                    </tr>
+
+
+            <tr>
+                <td class="col-md-4">
+
+                            <div class="io-description">
+                                <b>Parâmetros :</b>
+                                
+                                <table class="params">
+                                    <thead>
+                                        <tr>
+                                            <td>Nome</td>
+                                                <td>Tipo</td>
+                                            <td>Opcional</td>
+                                        </tr>
+                                    </thead>
+                                    <tbody>
+                                        <tr>
+                                                <td>itmUuid</td>
+                                            <td>
+                                                            <code><a href="https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/string" target="_blank" >string</a></code>
+                                            </td>
+
+                                            <td>
+                                                    Não
+                                            </td>
+
+
+                                        </tr>
+                                    </tbody>
+                                </table>
+                            </div>
+                        <div class="io-description">
+                            <b>Retorna : </b>        <code><a href="https://www.typescriptlang.org/docs/handbook/basic-types.html" target="_blank" >void</a></code>
+
+                        </div>
+                            <div class="io-description">
+                                
+                            </div>
+                </td>
+            </tr>
+        </tbody>
+    </table>
+    <table class="table table-sm table-bordered">
+        <tbody>
+            <tr>
+                <td class="col-md-4">
+                    <a name="onSave"></a>
+                    <span class="name">
+                            <span class="modifier">Public</span>
+                        <span ><b>onSave</b></span>
+                        <a href="#onSave"><span class="icon ion-ios-link"></span></a>
+                    </span>
+                </td>
+            </tr>
+            <tr>
+                <td class="col-md-4">
+                        <span class="modifier-icon icon ion-ios-reset"></span>
+                    <code>onSave()</code>
+                </td>
+            </tr>
+
+
+                    <tr>
+                        <td class="col-md-4">
+                            <div class="io-line">Definido em <a href="" data-line="222"
+                                    class="link-to-prism">src/app/application/categories/categories.component.ts:222</a></div>
+                        </td>
+                    </tr>
+
+
+            <tr>
+                <td class="col-md-4">
+
+                        <div class="io-description">
+                            <b>Retorna : </b>        <code><a href="https://www.typescriptlang.org/docs/handbook/basic-types.html" target="_blank" >void</a></code>
+
+                        </div>
+                </td>
+            </tr>
+        </tbody>
+    </table>
+    <table class="table table-sm table-bordered">
+        <tbody>
+            <tr>
+                <td class="col-md-4">
+                    <a name="onSearch"></a>
+                    <span class="name">
+                            <span class="modifier">Public</span>
+                        <span ><b>onSearch</b></span>
+                        <a href="#onSearch"><span class="icon ion-ios-link"></span></a>
+                    </span>
+                </td>
+            </tr>
+            <tr>
+                <td class="col-md-4">
+                        <span class="modifier-icon icon ion-ios-reset"></span>
+                    <code>onSearch(term: <a href="https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/string" target="_blank">string</a>)</code>
+                </td>
+            </tr>
+
+
+                    <tr>
+                        <td class="col-md-4">
+                            <div class="io-line">Definido em <a href="" data-line="179"
+                                    class="link-to-prism">src/app/application/categories/categories.component.ts:179</a></div>
+                        </td>
+                    </tr>
+
+
+            <tr>
+                <td class="col-md-4">
+
+                            <div class="io-description">
+                                <b>Parâmetros :</b>
+                                
+                                <table class="params">
+                                    <thead>
+                                        <tr>
+                                            <td>Nome</td>
+                                                <td>Tipo</td>
+                                            <td>Opcional</td>
+                                        </tr>
+                                    </thead>
+                                    <tbody>
+                                        <tr>
+                                                <td>term</td>
+                                            <td>
+                                                            <code><a href="https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/string" target="_blank" >string</a></code>
+                                            </td>
+
+                                            <td>
+                                                    Não
+                                            </td>
+
+
+                                        </tr>
+                                    </tbody>
+                                </table>
+                            </div>
+                        <div class="io-description">
+                            <b>Retorna : </b>        <code><a href="https://www.typescriptlang.org/docs/handbook/basic-types.html" target="_blank" >void</a></code>
+
+                        </div>
+                            <div class="io-description">
+                                
+                            </div>
+                </td>
+            </tr>
+        </tbody>
+    </table>
+    <table class="table table-sm table-bordered">
+        <tbody>
+            <tr>
+                <td class="col-md-4">
+                    <a name="openCategoryDetail"></a>
+                    <span class="name">
+                            <span class="modifier">Public</span>
+                        <span ><b>openCategoryDetail</b></span>
+                        <a href="#openCategoryDetail"><span class="icon ion-ios-link"></span></a>
+                    </span>
+                </td>
+            </tr>
+            <tr>
+                <td class="col-md-4">
+                        <span class="modifier-icon icon ion-ios-reset"></span>
+                    <code>openCategoryDetail(category: <a href="../interfaces/CategoryInterface.html" target="_self">CategoryInterface</a>)</code>
+                </td>
+            </tr>
+
+
+                    <tr>
+                        <td class="col-md-4">
+                            <div class="io-line">Definido em <a href="" data-line="203"
+                                    class="link-to-prism">src/app/application/categories/categories.component.ts:203</a></div>
+                        </td>
+                    </tr>
+
+
+            <tr>
+                <td class="col-md-4">
+
+                            <div class="io-description">
+                                <b>Parâmetros :</b>
+                                
+                                <table class="params">
+                                    <thead>
+                                        <tr>
+                                            <td>Nome</td>
+                                                <td>Tipo</td>
+                                            <td>Opcional</td>
+                                        </tr>
+                                    </thead>
+                                    <tbody>
+                                        <tr>
+                                                <td>category</td>
+                                            <td>
+                                                            <code><a href="../interfaces/CategoryInterface.html" target="_self" >CategoryInterface</a></code>
+                                            </td>
+
+                                            <td>
+                                                    Não
+                                            </td>
+
+
+                                        </tr>
+                                    </tbody>
+                                </table>
+                            </div>
+                        <div class="io-description">
+                            <b>Retorna : </b>        <code><a href="https://www.typescriptlang.org/docs/handbook/basic-types.html" target="_blank" >void</a></code>
+
+                        </div>
+                            <div class="io-description">
+                                
+                            </div>
+                </td>
+            </tr>
+        </tbody>
+    </table>
+    <table class="table table-sm table-bordered">
+        <tbody>
+            <tr>
+                <td class="col-md-4">
+                    <a name="openCreateDrawer"></a>
+                    <span class="name">
+                            <span class="modifier">Public</span>
+                        <span ><b>openCreateDrawer</b></span>
+                        <a href="#openCreateDrawer"><span class="icon ion-ios-link"></span></a>
+                    </span>
+                </td>
+            </tr>
+            <tr>
+                <td class="col-md-4">
+                        <span class="modifier-icon icon ion-ios-reset"></span>
+                    <code>openCreateDrawer()</code>
+                </td>
+            </tr>
+
+
+                    <tr>
+                        <td class="col-md-4">
+                            <div class="io-line">Definido em <a href="" data-line="183"
+                                    class="link-to-prism">src/app/application/categories/categories.component.ts:183</a></div>
+                        </td>
+                    </tr>
+
+
+            <tr>
+                <td class="col-md-4">
+
+                        <div class="io-description">
+                            <b>Retorna : </b>        <code><a href="https://www.typescriptlang.org/docs/handbook/basic-types.html" target="_blank" >void</a></code>
+
+                        </div>
+                </td>
+            </tr>
+        </tbody>
+    </table>
+</section>
+
+    <section data-compodoc="block-properties">
+    
+    <h3 id="inputs">
+        Propriedades
+    </h3>
+    <table class="table table-sm table-bordered">
+        <tbody>
+            <tr>
+                <td class="col-md-4">
+                    <a name="categoryForm"></a>
+                    <span class="name">
+                            <span class="modifier">Public</span>
+                        <span ><b>categoryForm</b></span>
+                        <a href="#categoryForm"><span class="icon ion-ios-link"></span></a>
+                    </span>
+                </td>
+            </tr>
+                <tr>
+                    <td class="col-md-4">
+                        <i>Tipo : </i>        <code><a href="https://angular.dev/api/forms/FormGroup" target="_blank" >FormGroup</a></code>
+
+                    </td>
+                </tr>
+                    <tr>
+                        <td class="col-md-4">
+                                <div class="io-line">Definido em <a href="" data-line="60" class="link-to-prism">src/app/application/categories/categories.component.ts:60</a></div>
+                        </td>
+                    </tr>
+
+
+        </tbody>
+    </table>
+    <table class="table table-sm table-bordered">
+        <tbody>
+            <tr>
+                <td class="col-md-4">
+                    <a name="cmp_uuid"></a>
+                    <span class="name">
+                            <span class="modifier">Public</span>
+                        <span ><b>cmp_uuid</b></span>
+                        <a href="#cmp_uuid"><span class="icon ion-ios-link"></span></a>
+                    </span>
+                </td>
+            </tr>
+                <tr>
+                    <td class="col-md-4">
+                        <i>Tipo : </i>        <code><a href="https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/string" target="_blank" >string</a></code>
+
+                    </td>
+                </tr>
+                    <tr>
+                        <td class="col-md-4">
+                                <div class="io-line">Definido em <a href="" data-line="59" class="link-to-prism">src/app/application/categories/categories.component.ts:59</a></div>
+                        </td>
+                    </tr>
+
+
+        </tbody>
+    </table>
+    <table class="table table-sm table-bordered">
+        <tbody>
+            <tr>
+                <td class="col-md-4">
+                    <a name="destroy$"></a>
+                    <span class="name">
+                            <span class="modifier">Private</span>
+                        <span ><b>destroy$</b></span>
+                        <a href="#destroy$"><span class="icon ion-ios-link"></span></a>
+                    </span>
+                </td>
+            </tr>
+                <tr>
+                    <td class="col-md-4">
+                        <i>Tipo : </i>    <code>unknown</code>
+
+                    </td>
+                </tr>
+                <tr>
+                    <td class="col-md-4">
+                        <i>Valor padrão : </i><code>new Subject&lt;void&gt;()</code>
+                    </td>
+                </tr>
+                    <tr>
+                        <td class="col-md-4">
+                                <div class="io-line">Definido em <a href="" data-line="81" class="link-to-prism">src/app/application/categories/categories.component.ts:81</a></div>
+                        </td>
+                    </tr>
+
+
+        </tbody>
+    </table>
+    <table class="table table-sm table-bordered">
+        <tbody>
+            <tr>
+                <td class="col-md-4">
+                    <a name="filteredCategories$"></a>
+                    <span class="name">
+                            <span class="modifier">Public</span>
+                        <span ><b>filteredCategories$</b></span>
+                        <a href="#filteredCategories$"><span class="icon ion-ios-link"></span></a>
+                    </span>
+                </td>
+            </tr>
+                <tr>
+                    <td class="col-md-4">
+                        <i>Tipo : </i>    <code>Observable&lt;CategoryInterface[]&gt;</code>
+
+                    </td>
+                </tr>
+                    <tr>
+                        <td class="col-md-4">
+                                <div class="io-line">Definido em <a href="" data-line="73" class="link-to-prism">src/app/application/categories/categories.component.ts:73</a></div>
+                        </td>
+                    </tr>
+
+
+        </tbody>
+    </table>
+    <table class="table table-sm table-bordered">
+        <tbody>
+            <tr>
+                <td class="col-md-4">
+                    <a name="globalCategories"></a>
+                    <span class="name">
+                            <span class="modifier">Public</span>
+                        <span ><b>globalCategories</b></span>
+                        <a href="#globalCategories"><span class="icon ion-ios-link"></span></a>
+                    </span>
+                </td>
+            </tr>
+                <tr>
+                    <td class="col-md-4">
+                        <i>Tipo : </i>    <code>GlobalCategoryInterface[]</code>
+
+                    </td>
+                </tr>
+                <tr>
+                    <td class="col-md-4">
+                        <i>Valor padrão : </i><code>[]</code>
+                    </td>
+                </tr>
+                    <tr>
+                        <td class="col-md-4">
+                                <div class="io-line">Definido em <a href="" data-line="64" class="link-to-prism">src/app/application/categories/categories.component.ts:64</a></div>
+                        </td>
+                    </tr>
+
+
+        </tbody>
+    </table>
+    <table class="table table-sm table-bordered">
+        <tbody>
+            <tr>
+                <td class="col-md-4">
+                    <a name="isDrawerVisible"></a>
+                    <span class="name">
+                            <span class="modifier">Public</span>
+                        <span ><b>isDrawerVisible</b></span>
+                        <a href="#isDrawerVisible"><span class="icon ion-ios-link"></span></a>
+                    </span>
+                </td>
+            </tr>
+                <tr>
+                    <td class="col-md-4">
+                        <i>Tipo : </i>    <code>unknown</code>
+
+                    </td>
+                </tr>
+                <tr>
+                    <td class="col-md-4">
+                        <i>Valor padrão : </i><code>false</code>
+                    </td>
+                </tr>
+                    <tr>
+                        <td class="col-md-4">
+                                <div class="io-line">Definido em <a href="" data-line="77" class="link-to-prism">src/app/application/categories/categories.component.ts:77</a></div>
+                        </td>
+                    </tr>
+
+
+        </tbody>
+    </table>
+    <table class="table table-sm table-bordered">
+        <tbody>
+            <tr>
+                <td class="col-md-4">
+                    <a name="isEditing"></a>
+                    <span class="name">
+                            <span class="modifier">Public</span>
+                        <span ><b>isEditing</b></span>
+                        <a href="#isEditing"><span class="icon ion-ios-link"></span></a>
+                    </span>
+                </td>
+            </tr>
+                <tr>
+                    <td class="col-md-4">
+                        <i>Tipo : </i>    <code>unknown</code>
+
+                    </td>
+                </tr>
+                <tr>
+                    <td class="col-md-4">
+                        <i>Valor padrão : </i><code>false</code>
+                    </td>
+                </tr>
+                    <tr>
+                        <td class="col-md-4">
+                                <div class="io-line">Definido em <a href="" data-line="78" class="link-to-prism">src/app/application/categories/categories.component.ts:78</a></div>
+                        </td>
+                    </tr>
+
+
+        </tbody>
+    </table>
+    <table class="table table-sm table-bordered">
+        <tbody>
+            <tr>
+                <td class="col-md-4">
+                    <a name="isLoading"></a>
+                    <span class="name">
+                            <span class="modifier">Public</span>
+                        <span ><b>isLoading</b></span>
+                        <a href="#isLoading"><span class="icon ion-ios-link"></span></a>
+                    </span>
+                </td>
+            </tr>
+                <tr>
+                    <td class="col-md-4">
+                        <i>Tipo : </i>    <code>unknown</code>
+
+                    </td>
+                </tr>
+                <tr>
+                    <td class="col-md-4">
+                        <i>Valor padrão : </i><code>false</code>
+                    </td>
+                </tr>
+                    <tr>
+                        <td class="col-md-4">
+                                <div class="io-line">Definido em <a href="" data-line="79" class="link-to-prism">src/app/application/categories/categories.component.ts:79</a></div>
+                        </td>
+                    </tr>
+
+
+        </tbody>
+    </table>
+    <table class="table table-sm table-bordered">
+        <tbody>
+            <tr>
+                <td class="col-md-4">
+                    <a name="itemsList"></a>
+                    <span class="name">
+                            <span class="modifier">Public</span>
+                        <span ><b>itemsList</b></span>
+                        <a href="#itemsList"><span class="icon ion-ios-link"></span></a>
+                    </span>
+                </td>
+            </tr>
+                <tr>
+                    <td class="col-md-4">
+                        <i>Tipo : </i>        <code><a href="../interfaces/ItemInterface.html" target="_self" >ItemInterface[]</a></code>
+
+                    </td>
+                </tr>
+                <tr>
+                    <td class="col-md-4">
+                        <i>Valor padrão : </i><code>[]</code>
+                    </td>
+                </tr>
+                    <tr>
+                        <td class="col-md-4">
+                                <div class="io-line">Definido em <a href="" data-line="63" class="link-to-prism">src/app/application/categories/categories.component.ts:63</a></div>
+                        </td>
+                    </tr>
+
+
+        </tbody>
+    </table>
+    <table class="table table-sm table-bordered">
+        <tbody>
+            <tr>
+                <td class="col-md-4">
+                    <a name="refreshData$"></a>
+                    <span class="name">
+                            <span class="modifier">Private</span>
+                        <span ><b>refreshData$</b></span>
+                        <a href="#refreshData$"><span class="icon ion-ios-link"></span></a>
+                    </span>
+                </td>
+            </tr>
+                <tr>
+                    <td class="col-md-4">
+                        <i>Tipo : </i>    <code>unknown</code>
+
+                    </td>
+                </tr>
+                <tr>
+                    <td class="col-md-4">
+                        <i>Valor padrão : </i><code>new BehaviorSubject&lt;void&gt;(undefined)</code>
+                    </td>
+                </tr>
+                    <tr>
+                        <td class="col-md-4">
+                                <div class="io-line">Definido em <a href="" data-line="72" class="link-to-prism">src/app/application/categories/categories.component.ts:72</a></div>
+                        </td>
+                    </tr>
+
+
+        </tbody>
+    </table>
+    <table class="table table-sm table-bordered">
+        <tbody>
+            <tr>
+                <td class="col-md-4">
+                    <a name="searchTerm$"></a>
+                    <span class="name">
+                            <span class="modifier">Private</span>
+                        <span ><b>searchTerm$</b></span>
+                        <a href="#searchTerm$"><span class="icon ion-ios-link"></span></a>
+                    </span>
+                </td>
+            </tr>
+                <tr>
+                    <td class="col-md-4">
+                        <i>Tipo : </i>    <code>unknown</code>
+
+                    </td>
+                </tr>
+                <tr>
+                    <td class="col-md-4">
+                        <i>Valor padrão : </i><code>new BehaviorSubject&lt;string&gt;(&#x27;&#x27;)</code>
+                    </td>
+                </tr>
+                    <tr>
+                        <td class="col-md-4">
+                                <div class="io-line">Definido em <a href="" data-line="71" class="link-to-prism">src/app/application/categories/categories.component.ts:71</a></div>
+                        </td>
+                    </tr>
+
+
+        </tbody>
+    </table>
+    <table class="table table-sm table-bordered">
+        <tbody>
+            <tr>
+                <td class="col-md-4">
+                    <a name="selectedCategory"></a>
+                    <span class="name">
+                            <span class="modifier">Public</span>
+                        <span ><b>selectedCategory</b></span>
+                        <a href="#selectedCategory"><span class="icon ion-ios-link"></span></a>
+                    </span>
+                </td>
+            </tr>
+                <tr>
+                    <td class="col-md-4">
+                        <i>Tipo : </i>    <code>CategoryInterface | null</code>
+
+                    </td>
+                </tr>
+                <tr>
+                    <td class="col-md-4">
+                        <i>Valor padrão : </i><code>null</code>
+                    </td>
+                </tr>
+                    <tr>
+                        <td class="col-md-4">
+                                <div class="io-line">Definido em <a href="" data-line="76" class="link-to-prism">src/app/application/categories/categories.component.ts:76</a></div>
+                        </td>
+                    </tr>
+
+
+        </tbody>
+    </table>
+    <table class="table table-sm table-bordered">
+        <tbody>
+            <tr>
+                <td class="col-md-4">
+                    <a name="selectedItmUuid"></a>
+                    <span class="name">
+                            <span class="modifier">Public</span>
+                        <span ><b>selectedItmUuid</b></span>
+                        <a href="#selectedItmUuid"><span class="icon ion-ios-link"></span></a>
+                    </span>
+                </td>
+            </tr>
+                <tr>
+                    <td class="col-md-4">
+                        <i>Tipo : </i>    <code>string | null</code>
+
+                    </td>
+                </tr>
+                <tr>
+                    <td class="col-md-4">
+                        <i>Valor padrão : </i><code>null</code>
+                    </td>
+                </tr>
+                    <tr>
+                        <td class="col-md-4">
+                                <div class="io-line">Definido em <a href="" data-line="67" class="link-to-prism">src/app/application/categories/categories.component.ts:67</a></div>
+                        </td>
+                    </tr>
+
+
+        </tbody>
+    </table>
+    <table class="table table-sm table-bordered">
+        <tbody>
+            <tr>
+                <td class="col-md-4">
+                    <a name="selectedItmUuid$"></a>
+                    <span class="name">
+                            <span class="modifier">Private</span>
+                        <span ><b>selectedItmUuid$</b></span>
+                        <a href="#selectedItmUuid$"><span class="icon ion-ios-link"></span></a>
+                    </span>
+                </td>
+            </tr>
+                <tr>
+                    <td class="col-md-4">
+                        <i>Tipo : </i>    <code>unknown</code>
+
+                    </td>
+                </tr>
+                <tr>
+                    <td class="col-md-4">
+                        <i>Valor padrão : </i><code>new BehaviorSubject&lt;string&gt;(&#x27;&#x27;)</code>
+                    </td>
+                </tr>
+                    <tr>
+                        <td class="col-md-4">
+                                <div class="io-line">Definido em <a href="" data-line="70" class="link-to-prism">src/app/application/categories/categories.component.ts:70</a></div>
+                        </td>
+                    </tr>
+
+
+        </tbody>
+    </table>
+</section>
+
+</div>
+
+
+    <div class="tab-pane fade  tab-source-code" id="source">
+        <pre class="line-numbers compodoc-sourcecode"><code class="language-typescript">import { Component, OnInit, OnDestroy } from &#x27;@angular/core&#x27;;
+import { CommonModule } from &#x27;@angular/common&#x27;;
+import { FormsModule, ReactiveFormsModule, FormBuilder, FormGroup, Validators } from &#x27;@angular/forms&#x27;;
+import { RouterModule } from &#x27;@angular/router&#x27;;
+import { Observable, map, combineLatest, BehaviorSubject, switchMap, of, Subject, takeUntil } from &#x27;rxjs&#x27;;
+
+// NG-ZORRO
+import { NzTableModule } from &#x27;ng-zorro-antd/table&#x27;;
+import { NzCardModule } from &#x27;ng-zorro-antd/card&#x27;;
+import { NzButtonModule } from &#x27;ng-zorro-antd/button&#x27;;
+import { NzIconModule } from &#x27;ng-zorro-antd/icon&#x27;;
+import { NzDrawerModule } from &#x27;ng-zorro-antd/drawer&#x27;;
+import { NzDividerModule } from &#x27;ng-zorro-antd/divider&#x27;;
+import { NzDescriptionsModule } from &#x27;ng-zorro-antd/descriptions&#x27;;
+import { NzTagModule } from &#x27;ng-zorro-antd/tag&#x27;;
+import { NzInputModule } from &#x27;ng-zorro-antd/input&#x27;;
+import { NzAvatarModule } from &#x27;ng-zorro-antd/avatar&#x27;;
+import { NzFormModule } from &#x27;ng-zorro-antd/form&#x27;;
+import { NzSpinModule } from &#x27;ng-zorro-antd/spin&#x27;;
+import { NzSelectModule } from &#x27;ng-zorro-antd/select&#x27;;
+
+// Interfaces and Services
+import { CategoryInterface } from &#x27;@interfaces/category&#x27;;
+import { ItemInterface } from &#x27;@interfaces/item&#x27;;
+import { GlobalCategoryInterface } from &#x27;@interfaces/global-category&#x27;;
+import { SessionService } from &#x27;@services/session.service&#x27;;
+import { CategoriesService } from &#x27;@services/categories.service&#x27;;
+import { ItemsService } from &#x27;@services/items.service&#x27;;
+import { GlobalCategoriesService } from &#x27;@services/global-categories.service&#x27;;
+import { MessageService } from &#x27;@services/message.service&#x27;;
+
+@Component({
+  selector: &#x27;app-categories&#x27;,
+  standalone: true,
+  imports: [
+    CommonModule,
+    FormsModule,
+    ReactiveFormsModule,
+    RouterModule,
+    NzTableModule,
+    NzCardModule,
+    NzButtonModule,
+    NzIconModule,
+    NzDrawerModule,
+    NzDividerModule,
+    NzDescriptionsModule,
+    NzTagModule,
+    NzInputModule,
+    NzAvatarModule,
+    NzFormModule,
+    NzSpinModule,
+    NzSelectModule
+  ],
+  templateUrl: &#x27;./categories.component.html&#x27;,
+  styleUrl: &#x27;./categories.component.scss&#x27;
+})
+export class CategoriesComponent implements OnInit, OnDestroy {
+
+  public cmp_uuid!: string;
+  public categoryForm!: FormGroup;
+  
+  // Lists
+  public itemsList: ItemInterface[] &#x3D; [];
+  public globalCategories: GlobalCategoryInterface[] &#x3D; [];
+  
+  // Selection
+  public selectedItmUuid: string | null &#x3D; null;
+
+  // Reactive streams
+  private selectedItmUuid$ &#x3D; new BehaviorSubject&lt;string&gt;(&#x27;&#x27;);
+  private searchTerm$ &#x3D; new BehaviorSubject&lt;string&gt;(&#x27;&#x27;);
+  private refreshData$ &#x3D; new BehaviorSubject&lt;void&gt;(undefined);
+  public filteredCategories$!: Observable&lt;CategoryInterface[]&gt;;
+
+  // Drawer Control
+  public selectedCategory: CategoryInterface | null &#x3D; null;
+  public isDrawerVisible &#x3D; false;
+  public isEditing &#x3D; false;
+  public isLoading &#x3D; false;
+
+  private destroy$ &#x3D; new Subject&lt;void&gt;();
+
+  constructor(
+    private fb: FormBuilder,
+    private _sessionService: SessionService,
+    private _categoriesService: CategoriesService,
+    private _itemsService: ItemsService,
+    private _globalCategoriesService: GlobalCategoriesService,
+    private _messageService: MessageService
+  ) { }
+
+  ngOnInit(): void {
+    this.cmp_uuid &#x3D; this._sessionService.getCompany().cmp_uuid;
+
+    // Form Initialization
+    this.categoryForm &#x3D; this.fb.group({
+      cmp_uuid: [this.cmp_uuid],
+      itm_uuid: [&#x27;&#x27;, [Validators.required]],
+      cat_uuid: [&#x27;&#x27;],
+      gitm_uuid: [null, [Validators.required]],
+      gcat_uuid: [null, [Validators.required]],
+      cat_name: [&#x27;&#x27;, [Validators.required, Validators.minLength(2)]],
+      cat_description: [&#x27;&#x27;]
+    });
+
+    // Listen to global category selection changes to auto-map gitm_uuid
+    this.categoryForm.get(&#x27;gcat_uuid&#x27;)?.valueChanges
+      .pipe(takeUntil(this.destroy$))
+      .subscribe(gcatUuid &#x3D;&gt; {
+        if (gcatUuid) {
+          const found &#x3D; this.globalCategories.find(gc &#x3D;&gt; gc.gcat_uuid &#x3D;&#x3D;&#x3D; gcatUuid);
+          if (found) {
+            this.categoryForm.patchValue({ gitm_uuid: found.gitm_uuid }, { emitEvent: false });
+          }
+        }
+      });
+
+    // Pre-load items and global categories
+    this.loadInitialData();
+
+    // Reactive categories list stream
+    this.filteredCategories$ &#x3D; combineLatest([
+      this.selectedItmUuid$.asObservable(),
+      this.refreshData$.asObservable(),
+      this.searchTerm$.asObservable()
+    ]).pipe(
+      switchMap(([itmUuid, _, term]) &#x3D;&gt; {
+        if (!itmUuid) return of({ data: [] as CategoryInterface[], term });
+        this.isLoading &#x3D; true;
+        return this._categoriesService.getCategories(this.cmp_uuid, itmUuid).pipe(
+          map(res &#x3D;&gt; ({ data: res.data || [], term }))
+        );
+      }),
+      map(({ data, term }) &#x3D;&gt; {
+        this.isLoading &#x3D; false;
+        if (!term.trim()) return data;
+        
+        const lowTerm &#x3D; term.toLowerCase();
+        return data.filter(cat &#x3D;&gt; 
+          cat.cat_name.toLowerCase().includes(lowTerm) || 
+          (cat.cat_description &amp;&amp; cat.cat_description.toLowerCase().includes(lowTerm))
+        );
+      })
+    );
+  }
+
+  private loadInitialData(): void {
+    // Load local items (rubros)
+    this._itemsService.getItems(this.cmp_uuid).subscribe({
+      next: (res) &#x3D;&gt; {
+        this.itemsList &#x3D; res.data || [];
+        if (this.itemsList.length &gt; 0) {
+          // Select the first item by default
+          this.selectedItmUuid &#x3D; this.itemsList[0].itm_uuid;
+          this.selectedItmUuid$.next(this.selectedItmUuid);
+        }
+      },
+      error: (err) &#x3D;&gt; {
+        console.error(&#x27;Error loading items:&#x27;, err);
+      }
+    });
+
+    // Load global categories for mapping
+    this._globalCategoriesService.getGlobalCategories().subscribe({
+      next: (res) &#x3D;&gt; {
+        this.globalCategories &#x3D; res.data || [];
+      },
+      error: (err) &#x3D;&gt; {
+        console.error(&#x27;Error loading global categories:&#x27;, err);
+      }
+    });
+  }
+
+  public onItemChange(itmUuid: string): void {
+    this.selectedItmUuid$.next(itmUuid);
+    this.refreshData$.next();
+  }
+
+  public onSearch(term: string): void {
+    this.searchTerm$.next(term);
+  }
+
+  public openCreateDrawer(): void {
+    if (!this.selectedItmUuid) {
+      this._messageService.error(&#x27;Error&#x27;, &#x27;Debes seleccionar un rubro antes de crear una categoría.&#x27;);
+      return;
+    }
+    
+    this.selectedCategory &#x3D; null;
+    this.isEditing &#x3D; true;
+    this.categoryForm.reset({
+      cmp_uuid: this.cmp_uuid,
+      itm_uuid: this.selectedItmUuid,
+      cat_uuid: &#x27;&#x27;,
+      gitm_uuid: null,
+      gcat_uuid: null,
+      cat_name: &#x27;&#x27;,
+      cat_description: &#x27;&#x27;
+    });
+    this.isDrawerVisible &#x3D; true;
+  }
+
+  public openCategoryDetail(category: CategoryInterface): void {
+    this.selectedCategory &#x3D; category;
+    this.isEditing &#x3D; false;
+    this.categoryForm.patchValue(category);
+    this.isDrawerVisible &#x3D; true;
+  }
+
+  public enableEditing(): void {
+    this.isEditing &#x3D; true;
+  }
+
+  public closeDrawer(): void {
+    this.isDrawerVisible &#x3D; false;
+    setTimeout(() &#x3D;&gt; {
+      this.selectedCategory &#x3D; null;
+      this.isEditing &#x3D; false;
+    }, 300);
+  }
+
+  public onSave(): void {
+    if (this.categoryForm.valid) {
+      const data &#x3D; this.categoryForm.value;
+      const cat_uuid &#x3D; data.cat_uuid;
+
+      this.isLoading &#x3D; true;
+
+      const request$ &#x3D; cat_uuid
+        ? this._categoriesService.updateCategory(this.cmp_uuid, this.selectedItmUuid!, cat_uuid, data)
+        : this._categoriesService.saveCategory(data);
+
+      request$.subscribe({
+        next: () &#x3D;&gt; {
+          const successMsg &#x3D; cat_uuid
+            ? &#x27;La categoría ha sido actualizada correctamente.&#x27;
+            : &#x27;La categoría ha sido creada exitosamente.&#x27;;
+
+          this._messageService.success(&#x27;¡Éxito!&#x27;, successMsg);
+          this.isLoading &#x3D; false;
+          this.closeDrawer();
+          this.refreshData$.next(); // Reload table
+        },
+        error: (err) &#x3D;&gt; {
+          console.error(err);
+          this._messageService.error(&#x27;Error&#x27;, err.error?.error || &#x27;Hubo un problema al guardar la categoría.&#x27;);
+          this.isLoading &#x3D; false;
+        }
+      });
+    } else {
+      Object.values(this.categoryForm.controls).forEach(control &#x3D;&gt; {
+        if (control.invalid) {
+          control.markAsDirty();
+          control.updateValueAndValidity({ onlySelf: true });
+        }
+      });
+    }
+  }
+
+  public onDeleteCategory(category: CategoryInterface): void {
+    this._messageService.confirm(
+      &#x27;¿Estás seguro?&#x27;,
+      &#x60;Esta acción eliminará permanentemente la categoría: ${category.cat_name}&#x60;,
+      () &#x3D;&gt; {
+        this.isLoading &#x3D; true;
+        this._categoriesService.deleteCategory(this.cmp_uuid, category.itm_uuid, category.cat_uuid).subscribe({
+          next: () &#x3D;&gt; {
+            this._messageService.success(&#x27;¡Eliminado!&#x27;, &#x27;La categoría ha sido eliminada correctamente.&#x27;);
+            this.isLoading &#x3D; false;
+            this.closeDrawer();
+            this.refreshData$.next(); // Reload table
+          },
+          error: (err) &#x3D;&gt; {
+            console.error(err);
+            this._messageService.error(&#x27;Error&#x27;, err.error?.error || &#x27;No se pudo eliminar la categoría.&#x27;);
+            this.isLoading &#x3D; false;
+          }
+        });
+      }
+    );
+  }
+
+  public getGlobalCategoryName(gcat_uuid: string): string {
+    if (!gcat_uuid) return &#x27;Sin Grupo&#x27;;
+    const found &#x3D; this.globalCategories.find(gc &#x3D;&gt; gc.gcat_uuid &#x3D;&#x3D;&#x3D; gcat_uuid);
+    return found ? found.gcat_name : &#x27;Sin Grupo&#x27;;
+  }
+
+  ngOnDestroy(): void {
+    this.destroy$.next();
+    this.destroy$.complete();
+  }
+}
+</code></pre>
+    </div>
+
+    <div class="tab-pane fade " id="templateData">
+        <pre class="line-numbers"><code class="language-html">&lt;div class&#x3D;&quot;categories-dashboard-wrapper&quot;&gt;
+    &lt;div class&#x3D;&quot;dashboard-header&quot;&gt;
+        &lt;div class&#x3D;&quot;header-titles&quot;&gt;
+            &lt;h1 class&#x3D;&quot;page-title&quot;&gt;Maestro de Categorías&lt;/h1&gt;
+            &lt;p class&#x3D;&quot;page-subtitle&quot;&gt;Administra las categorías de productos correspondientes a cada rubro de tu comercio.&lt;/p&gt;
+        &lt;/div&gt;
+
+        &lt;div class&#x3D;&quot;header-actions&quot;&gt;
+            &lt;!-- SELECTOR DE RUBRO (LOCAL ITEM) --&gt;
+            &lt;span style&#x3D;&quot;font-weight: 600; margin-right: 8px; color: #595959;&quot;&gt;Rubro:&lt;/span&gt;
+            &lt;nz-select 
+                [(ngModel)]&#x3D;&quot;selectedItmUuid&quot; 
+                (ngModelChange)&#x3D;&quot;onItemChange($event)&quot; 
+                nzPlaceHolder&#x3D;&quot;Seleccionar Rubro...&quot; 
+                nzSize&#x3D;&quot;large&quot; 
+                style&#x3D;&quot;width: 250px; margin-right: 16px;&quot;&gt;
+                &lt;nz-option *ngFor&#x3D;&quot;let item of itemsList&quot; [nzLabel]&#x3D;&quot;item.itm_name&quot; [nzValue]&#x3D;&quot;item.itm_uuid&quot;&gt;&lt;/nz-option&gt;
+            &lt;/nz-select&gt;
+
+            &lt;nz-input-group [nzPrefix]&#x3D;&quot;prefixIconSearch&quot; nzSize&#x3D;&quot;large&quot; style&#x3D;&quot;width: 280px; margin-right: 16px;&quot;&gt;
+                &lt;input type&#x3D;&quot;text&quot; nz-input placeholder&#x3D;&quot;Buscar por nombre o descripción...&quot; 
+                    (input)&#x3D;&quot;onSearch(txtSearch.value)&quot; #txtSearch /&gt;
+            &lt;/nz-input-group&gt;
+
+            &lt;button 
+                nz-button 
+                nzType&#x3D;&quot;primary&quot; 
+                nzSize&#x3D;&quot;large&quot; 
+                [disabled]&#x3D;&quot;!selectedItmUuid&quot;
+                (click)&#x3D;&quot;openCreateDrawer()&quot;&gt;
+                &lt;span nz-icon nzType&#x3D;&quot;plus&quot;&gt;&lt;/span&gt; Agregar Categoría
+            &lt;/button&gt;
+
+            &lt;ng-template #prefixIconSearch&gt;
+                &lt;span nz-icon nzType&#x3D;&quot;search&quot;&gt;&lt;/span&gt;
+            &lt;/ng-template&gt;
+        &lt;/div&gt;
+    &lt;/div&gt;
+
+    &lt;!-- MAIN CATEGORIES CARD AND TABLE --&gt;
+    &lt;nz-card class&#x3D;&quot;premium-card&quot; [nzBordered]&#x3D;&quot;false&quot;&gt;
+        &lt;nz-spin [nzSpinning]&#x3D;&quot;isLoading &amp;&amp; !isDrawerVisible&quot;&gt;
+            &lt;nz-table 
+                #categoriesTable 
+                [nzData]&#x3D;&quot;(filteredCategories$ | async) || []&quot; 
+                nzSize&#x3D;&quot;middle&quot; 
+                [nzPageSize]&#x3D;&quot;20&quot;
+                [nzScroll]&#x3D;&quot;{ y: &#x27;calc(100vh - 310px)&#x27; }&quot;&gt;
+                &lt;thead&gt;
+                    &lt;tr&gt;
+                        &lt;th nzWidth&#x3D;&quot;40%&quot;&gt;Nombre de la Categoría&lt;/th&gt;
+                        &lt;th nzWidth&#x3D;&quot;25%&quot;&gt;Clasificación Global&lt;/th&gt;
+                        &lt;th nzWidth&#x3D;&quot;20%&quot;&gt;Fecha Registro&lt;/th&gt;
+                        &lt;th nzWidth&#x3D;&quot;15%&quot; nzAlign&#x3D;&quot;right&quot;&gt;Acciones&lt;/th&gt;
+                    &lt;/tr&gt;
+                &lt;/thead&gt;
+                &lt;tbody&gt;
+                    &lt;tr *ngFor&#x3D;&quot;let data of categoriesTable.data&quot; class&#x3D;&quot;clickable-row&quot; (click)&#x3D;&quot;openCategoryDetail(data)&quot;&gt;
+                        &lt;td&gt;
+                            &lt;div class&#x3D;&quot;category-cell&quot;&gt;
+                                &lt;nz-avatar nzIcon&#x3D;&quot;tags&quot;
+                                    [nzSrc]&#x3D;&quot;&#x27;https://api.dicebear.com/7.x/initials/svg?seed&#x3D;&#x27; + data.cat_name&quot;
+                                    style&#x3D;&quot;background-color: #e6f7ff; border: 1px solid #91d5ff; color: #1890ff;&quot;&gt;&lt;/nz-avatar&gt;
+                                &lt;div class&#x3D;&quot;category-info&quot;&gt;
+                                    &lt;span class&#x3D;&quot;category-name&quot;&gt;{{ data.cat_name }}&lt;/span&gt;
+                                    &lt;span class&#x3D;&quot;category-uuid&quot;&gt;REF: {{ data.cat_uuid.substring(0,8) }}&lt;/span&gt;
+                                &lt;/div&gt;
+                            &lt;/div&gt;
+                        &lt;/td&gt;
+                        &lt;td&gt;
+                            &lt;nz-tag [nzColor]&#x3D;&quot;data.gcat_uuid ? &#x27;blue&#x27; : &#x27;default&#x27;&quot;&gt;
+                                {{ getGlobalCategoryName(data.gcat_uuid) }}
+                            &lt;/nz-tag&gt;
+                        &lt;/td&gt;
+                        &lt;td&gt;
+                            &lt;span class&#x3D;&quot;date-cell&quot;&gt;{{ data.cat_createdat | date:&#x27;dd/MM/yyyy&#x27; }}&lt;/span&gt;
+                        &lt;/td&gt;
+                        &lt;td nzAlign&#x3D;&quot;right&quot; (click)&#x3D;&quot;$event.stopPropagation()&quot;&gt;
+                            &lt;button nz-button nzType&#x3D;&quot;link&quot; (click)&#x3D;&quot;openCategoryDetail(data)&quot;&gt;Ver Ficha&lt;/button&gt;
+                        &lt;/td&gt;
+                    &lt;/tr&gt;
+                    &lt;tr *ngIf&#x3D;&quot;categoriesTable.data.length &#x3D;&#x3D;&#x3D; 0 &amp;&amp; selectedItmUuid&quot;&gt;
+                        &lt;td colspan&#x3D;&quot;4&quot; style&#x3D;&quot;text-align: center; padding: 48px; color: #bfbfbf;&quot;&gt;
+                            &lt;span nz-icon nzType&#x3D;&quot;info-circle&quot; style&#x3D;&quot;font-size: 24px; margin-bottom: 8px; display: block;&quot;&gt;&lt;/span&gt;
+                            No hay categorías cargadas en este rubro. Haz clic en &quot;Agregar Categoría&quot; para comenzar.
+                        &lt;/td&gt;
+                    &lt;/tr&gt;
+                    &lt;tr *ngIf&#x3D;&quot;!selectedItmUuid&quot;&gt;
+                        &lt;td colspan&#x3D;&quot;4&quot; style&#x3D;&quot;text-align: center; padding: 48px; color: #bfbfbf;&quot;&gt;
+                            &lt;span nz-icon nzType&#x3D;&quot;shop&quot; style&#x3D;&quot;font-size: 24px; margin-bottom: 8px; display: block;&quot;&gt;&lt;/span&gt;
+                            Selecciona un rubro arriba para visualizar sus categorías.
+                        &lt;/td&gt;
+                    &lt;/tr&gt;
+                &lt;/tbody&gt;
+            &lt;/nz-table&gt;
+        &lt;/nz-spin&gt;
+    &lt;/nz-card&gt;
+&lt;/div&gt;
+
+&lt;!-- DRAWER: VER / CREAR / EDITAR CATEGORÍA --&gt;
+&lt;nz-drawer 
+    [nzVisible]&#x3D;&quot;isDrawerVisible&quot; 
+    nzPlacement&#x3D;&quot;right&quot; 
+    [nzTitle]&#x3D;&quot;drawerTitle&quot; 
+    [nzWidth]&#x3D;&quot;&#x27;500px&#x27;&quot; 
+    (nzOnClose)&#x3D;&quot;closeDrawer()&quot;&gt;
+    &lt;ng-container *nzDrawerContent&gt;
+        &lt;nz-spin [nzSpinning]&#x3D;&quot;isLoading&quot;&gt;
+            &lt;div class&#x3D;&quot;drawer-content-wrapper&quot;&gt;
+                
+                &lt;!-- MODO VISTA DETALLADA --&gt;
+                &lt;div *ngIf&#x3D;&quot;selectedCategory &amp;&amp; !isEditing&quot; class&#x3D;&quot;view-mode-container&quot;&gt;
+                    &lt;div class&#x3D;&quot;profile-header&quot;&gt;
+                        &lt;nz-avatar [nzSize]&#x3D;&quot;64&quot; nzIcon&#x3D;&quot;tags&quot; style&#x3D;&quot;background-color: #e6f7ff; border: 1px solid #91d5ff; color: #1890ff;&quot;&gt;&lt;/nz-avatar&gt;
+                        &lt;div class&#x3D;&quot;profile-header-info&quot;&gt;
+                            &lt;h2&gt;{{ selectedCategory.cat_name }}&lt;/h2&gt;
+                            &lt;span style&#x3D;&quot;color: #8c8c8c;&quot;&gt;ID: {{ selectedCategory.cat_uuid }}&lt;/span&gt;
+                        &lt;/div&gt;
+                    &lt;/div&gt;
+
+                    &lt;nz-divider&gt;&lt;/nz-divider&gt;
+
+                    &lt;nz-descriptions nzTitle&#x3D;&quot;Información de la Categoría&quot; [nzColumn]&#x3D;&quot;1&quot; nzSize&#x3D;&quot;small&quot;&gt;
+                        &lt;nz-descriptions-item nzTitle&#x3D;&quot;Nombre&quot;&gt;{{ selectedCategory.cat_name }}&lt;/nz-descriptions-item&gt;
+                        &lt;nz-descriptions-item nzTitle&#x3D;&quot;Descripción&quot;&gt;
+                            {{ selectedCategory.cat_description || &#x27;Sin descripción detallada.&#x27; }}
+                        &lt;/nz-descriptions-item&gt;
+                        &lt;nz-descriptions-item nzTitle&#x3D;&quot;Clasificación Global Relacionada&quot;&gt;
+                            &lt;nz-tag nzColor&#x3D;&quot;blue&quot;&gt;{{ getGlobalCategoryName(selectedCategory.gcat_uuid) }}&lt;/nz-tag&gt;
+                        &lt;/nz-descriptions-item&gt;
+                    &lt;/nz-descriptions&gt;
+
+                    &lt;nz-divider&gt;&lt;/nz-divider&gt;
+
+                    &lt;nz-descriptions nzTitle&#x3D;&quot;Auditoría&quot; [nzColumn]&#x3D;&quot;1&quot; nzSize&#x3D;&quot;small&quot;&gt;
+                        &lt;nz-descriptions-item nzTitle&#x3D;&quot;Creado&quot;&gt;{{ selectedCategory.cat_createdat | date:&#x27;medium&#x27; }}&lt;/nz-descriptions-item&gt;
+                        &lt;nz-descriptions-item nzTitle&#x3D;&quot;Última Modificación&quot;&gt;{{ selectedCategory.cat_updatedat | date:&#x27;medium&#x27; }}&lt;/nz-descriptions-item&gt;
+                    &lt;/nz-descriptions&gt;
+
+                    &lt;div style&#x3D;&quot;margin-top: 32px; display: flex; gap: 8px;&quot;&gt;
+                        &lt;button nz-button nzType&#x3D;&quot;primary&quot; nzBlock (click)&#x3D;&quot;enableEditing()&quot;&gt;
+                            &lt;span nz-icon nzType&#x3D;&quot;edit&quot;&gt;&lt;/span&gt; Editar
+                        &lt;/button&gt;
+                        &lt;button nz-button nzDanger nzBlock (click)&#x3D;&quot;onDeleteCategory(selectedCategory)&quot;&gt;
+                            &lt;span nz-icon nzType&#x3D;&quot;delete&quot;&gt;&lt;/span&gt; Eliminar
+                        &lt;/button&gt;
+                    &lt;/div&gt;
+                &lt;/div&gt;
+
+                &lt;!-- MODO FORMULARIO (EDICIÓN Y CREACIÓN) --&gt;
+                &lt;form *ngIf&#x3D;&quot;isEditing&quot; [formGroup]&#x3D;&quot;categoryForm&quot; (ngSubmit)&#x3D;&quot;onSave()&quot; nz-form nzLayout&#x3D;&quot;vertical&quot;&gt;
+                    &lt;div class&#x3D;&quot;form-mode-container&quot;&gt;
+                        &lt;div class&#x3D;&quot;profile-header&quot;&gt;
+                            &lt;nz-avatar [nzSize]&#x3D;&quot;64&quot; nzIcon&#x3D;&quot;form&quot; style&#x3D;&quot;background-color: #f9f0ff; border: 1px solid #d3adf7; color: #722ed1;&quot;&gt;&lt;/nz-avatar&gt;
+                            &lt;div class&#x3D;&quot;profile-header-info&quot;&gt;
+                                &lt;h2&gt;{{ selectedCategory ? &#x27;Editar Categoría&#x27; : &#x27;Nueva Categoría&#x27; }}&lt;/h2&gt;
+                                &lt;p style&#x3D;&quot;color: #8c8c8c; margin: 0; font-size: 13px;&quot;&gt;Completá los datos de la categoría para el catálogo.&lt;/p&gt;
+                            &lt;/div&gt;
+                        &lt;/div&gt;
+
+                        &lt;nz-divider&gt;&lt;/nz-divider&gt;
+
+                        &lt;!-- MAPEO A CATEGORÍA GLOBAL --&gt;
+                        &lt;nz-form-item&gt;
+                            &lt;nz-form-label nzRequired nzFor&#x3D;&quot;gcat_uuid&quot; style&#x3D;&quot;font-weight: 600;&quot;&gt;Categoría Global (Mapeo Marketplace)&lt;/nz-form-label&gt;
+                            &lt;nz-form-control nzErrorTip&#x3D;&quot;Seleccionar la categoría global es obligatorio para el mapeo.&quot;&gt;
+                                &lt;nz-select formControlName&#x3D;&quot;gcat_uuid&quot; id&#x3D;&quot;gcat_uuid&quot; placeholder&#x3D;&quot;Selecciona la categoría del marketplace...&quot; nzShowSearch nzSize&#x3D;&quot;large&quot;&gt;
+                                    &lt;nz-option *ngFor&#x3D;&quot;let gcat of globalCategories&quot; [nzLabel]&#x3D;&quot;gcat.gcat_name&quot; [nzValue]&#x3D;&quot;gcat.gcat_uuid&quot;&gt;&lt;/nz-option&gt;
+                                &lt;/nz-select&gt;
+                            &lt;/nz-form-control&gt;
+                        &lt;/nz-form-item&gt;
+
+                        &lt;nz-form-item&gt;
+                            &lt;nz-form-label nzRequired nzFor&#x3D;&quot;cat_name&quot; style&#x3D;&quot;font-weight: 600;&quot;&gt;Nombre de la Categoría&lt;/nz-form-label&gt;
+                            &lt;nz-form-control nzErrorTip&#x3D;&quot;El nombre es obligatorio y debe tener al menos 2 caracteres.&quot;&gt;
+                                &lt;input nz-input formControlName&#x3D;&quot;cat_name&quot; id&#x3D;&quot;cat_name&quot; placeholder&#x3D;&quot;Ej: Remeras, Pantalones, Accesorios...&quot; nzSize&#x3D;&quot;large&quot; /&gt;
+                            &lt;/nz-form-control&gt;
+                        &lt;/nz-form-item&gt;
+
+                        &lt;nz-form-item&gt;
+                            &lt;nz-form-label nzFor&#x3D;&quot;cat_description&quot; style&#x3D;&quot;font-weight: 600;&quot;&gt;Descripción&lt;/nz-form-label&gt;
+                            &lt;nz-form-control&gt;
+                                &lt;textarea nz-input formControlName&#x3D;&quot;cat_description&quot; id&#x3D;&quot;cat_description&quot; placeholder&#x3D;&quot;Detalla qué tipos de productos integran esta categoría...&quot; [nzAutosize]&#x3D;&quot;{ minRows: 4, maxRows: 6 }&quot;&gt;&lt;/textarea&gt;
+                            &lt;/nz-form-control&gt;
+                        &lt;/nz-form-item&gt;
+
+                        &lt;div style&#x3D;&quot;margin-top: 32px; display: flex; gap: 8px;&quot;&gt;
+                            &lt;button nz-button nzType&#x3D;&quot;primary&quot; nzBlock type&#x3D;&quot;submit&quot; [nzLoading]&#x3D;&quot;isLoading&quot;&gt;
+                                &lt;span nz-icon nzType&#x3D;&quot;save&quot;&gt;&lt;/span&gt; Guardar
+                            &lt;/button&gt;
+                            &lt;button nz-button nzType&#x3D;&quot;default&quot; nzBlock type&#x3D;&quot;button&quot; (click)&#x3D;&quot;selectedCategory ? (isEditing &#x3D; false) : closeDrawer()&quot;&gt;
+                                Cancelar
+                            &lt;/button&gt;
+                        &lt;/div&gt;
+                    &lt;/div&gt;
+                &lt;/form&gt;
+
+            &lt;/div&gt;
+        &lt;/nz-spin&gt;
+    &lt;/ng-container&gt;
+
+    &lt;ng-template #drawerTitle&gt;
+        {{ selectedCategory ? (isEditing ? &#x27;Editar Categoría&#x27; : &#x27;Ficha Técnica de Categoría&#x27;) : &#x27;Agregar Nueva Categoría&#x27; }}
+    &lt;/ng-template&gt;
+&lt;/nz-drawer&gt;
+</code></pre>
+    </div>
+
+    <div class="tab-pane fade " id="styleData">
+                <p class="comment">
+                    <code>./categories.component.scss</code>
+                </p>
+                <pre class="line-numbers"><code class="language-scss">.categories-dashboard-wrapper {
+    padding: 24px;
+    background-color: #f7f9fc;
+    height: calc(100vh - 64px); 
+    display: flex;
+    flex-direction: column;
+    overflow: hidden;
+}
+
+.dashboard-header {
+    flex-shrink: 0;
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    margin-bottom: 24px;
+    gap: 16px;
+
+    .header-titles {
+        flex: 1;
+    }
+
+    .page-title {
+        font-size: 28px;
+        font-weight: 600;
+        color: #1f1f1f;
+        margin-bottom: 4px;
+    }
+
+    .page-subtitle {
+        color: #8c8c8c;
+        font-size: 15px;
+        margin: 0;
+    }
+
+    .header-actions {
+        display: flex;
+        align-items: center;
+    }
+}
+
+.premium-card {
+    border-radius: 12px;
+    box-shadow: 0 4px 24px rgba(0, 0, 0, 0.04);
+    flex: 1;
+    display: flex;
+    flex-direction: column;
+    overflow: hidden;
+
+    ::ng-deep .ant-card-body {
+        flex: 1;
+        display: flex;
+        flex-direction: column;
+        padding: 0;
+        overflow: hidden;
+    }
+}
+
+::ng-deep .ant-table-wrapper, 
+::ng-deep .ant-spin-nested-loading, 
+::ng-deep .ant-spin-container, 
+::ng-deep .ant-table {
+    height: 100%;
+}
+
+.clickable-row {
+    cursor: pointer;
+    transition: background-color 0.2s;
+
+    &amp;:hover {
+        background-color: #fafafa;
+    }
+}
+
+.category-cell {
+    display: flex;
+    align-items: center;
+    gap: 12px;
+
+    .category-info {
+        display: flex;
+        flex-direction: column;
+
+        .category-name {
+            font-weight: 600;
+            color: #262626;
+        }
+
+        .category-uuid {
+            font-size: 11px;
+            color: #8c8c8c;
+            font-family: monospace;
+        }
+    }
+}
+
+.date-cell {
+    color: #595959;
+}
+
+// DRAWER STYLES
+.drawer-content-wrapper {
+    display: flex;
+    flex-direction: column;
+}
+
+.profile-header {
+    display: flex;
+    align-items: center;
+    gap: 16px;
+
+    .profile-header-info {
+        h2 {
+            margin: 0 0 4px 0;
+            font-weight: 600;
+        }
+    }
+}
+
+.view-mode-container, .form-mode-container {
+    display: flex;
+    flex-direction: column;
+    width: 100%;
+}
+</code></pre>
+    </div>
+
+    <div class="tab-pane fade " id="tree">
+        <div id="tree-container"></div>
+        <div class="tree-legend">
+            <div class="title">
+                <b>Legend</b>
+            </div>
+            <div>
+                <div class="color htmlelement"></div><span>Elemento HTML</span>
+            </div>
+            <div>
+                <div class="color component"></div><span>Componente</span>
+            </div>
+            <div>
+                <div class="color directive"></div><span>Elemento HTML com diretiva</span>
+            </div>
+        </div>
+    </div>
+
+    
+</div>
+
+<script src="../js/libs/vis-network.min.js"></script>
+<script src="../js/libs/htmlparser.js"></script>
+<script src="../js/libs/deep-iterator.js"></script>
+<script>
+        var COMPONENT_TEMPLATE = '<div><div class="categories-dashboard-wrapper">    <div class="dashboard-header">        <div class="header-titles">            <h1 class="page-title">Maestro de Categorías</h1>            <p class="page-subtitle">Administra las categorías de productos correspondientes a cada rubro de tu comercio.</p>        </div>        <div class="header-actions">            <!-- SELECTOR DE RUBRO (LOCAL ITEM) -->            <span style="font-weight: 600; margin-right: 8px; color: #595959;">Rubro:</span>            <nz-select                 [(ngModel)]="selectedItmUuid"                 (ngModelChange)="onItemChange($event)"                 nzPlaceHolder="Seleccionar Rubro..."                 nzSize="large"                 style="width: 250px; margin-right: 16px;">                <nz-option *ngFor="let item of itemsList" [nzLabel]="item.itm_name" [nzValue]="item.itm_uuid"></nz-option>            </nz-select>            <nz-input-group [nzPrefix]="prefixIconSearch" nzSize="large" style="width: 280px; margin-right: 16px;">                <input type="text" nz-input placeholder="Buscar por nombre o descripción..."                     (input)="onSearch(txtSearch.value)" #txtSearch />            </nz-input-group>            <button                 nz-button                 nzType="primary"                 nzSize="large"                 [disabled]="!selectedItmUuid"                (click)="openCreateDrawer()">                <span nz-icon nzType="plus"></span> Agregar Categoría            </button>            <ng-template #prefixIconSearch>                <span nz-icon nzType="search"></span>            </ng-template>        </div>    </div>    <!-- MAIN CATEGORIES CARD AND TABLE -->    <nz-card class="premium-card" [nzBordered]="false">        <nz-spin [nzSpinning]="isLoading && !isDrawerVisible">            <nz-table                 #categoriesTable                 [nzData]="(filteredCategories$ | async) || []"                 nzSize="middle"                 [nzPageSize]="20"                [nzScroll]="{ y: \'calc(100vh - 310px)\' }">                <thead>                    <tr>                        <th nzWidth="40%">Nombre de la Categoría</th>                        <th nzWidth="25%">Clasificación Global</th>                        <th nzWidth="20%">Fecha Registro</th>                        <th nzWidth="15%" nzAlign="right">Acciones</th>                    </tr>                </thead>                <tbody>                    <tr *ngFor="let data of categoriesTable.data" class="clickable-row" (click)="openCategoryDetail(data)">                        <td>                            <div class="category-cell">                                <nz-avatar nzIcon="tags"                                    [nzSrc]="\'https://api.dicebear.com/7.x/initials/svg?seed=\' + data.cat_name"                                    style="background-color: #e6f7ff; border: 1px solid #91d5ff; color: #1890ff;"></nz-avatar>                                <div class="category-info">                                    <span class="category-name">{{ data.cat_name }}</span>                                    <span class="category-uuid">REF: {{ data.cat_uuid.substring(0,8) }}</span>                                </div>                            </div>                        </td>                        <td>                            <nz-tag [nzColor]="data.gcat_uuid ? \'blue\' : \'default\'">                                {{ getGlobalCategoryName(data.gcat_uuid) }}                            </nz-tag>                        </td>                        <td>                            <span class="date-cell">{{ data.cat_createdat | date:\'dd/MM/yyyy\' }}</span>                        </td>                        <td nzAlign="right" (click)="$event.stopPropagation()">                            <button nz-button nzType="link" (click)="openCategoryDetail(data)">Ver Ficha</button>                        </td>                    </tr>                    <tr *ngIf="categoriesTable.data.length === 0 && selectedItmUuid">                        <td colspan="4" style="text-align: center; padding: 48px; color: #bfbfbf;">                            <span nz-icon nzType="info-circle" style="font-size: 24px; margin-bottom: 8px; display: block;"></span>                            No hay categorías cargadas en este rubro. Haz clic en "Agregar Categoría" para comenzar.                        </td>                    </tr>                    <tr *ngIf="!selectedItmUuid">                        <td colspan="4" style="text-align: center; padding: 48px; color: #bfbfbf;">                            <span nz-icon nzType="shop" style="font-size: 24px; margin-bottom: 8px; display: block;"></span>                            Selecciona un rubro arriba para visualizar sus categorías.                        </td>                    </tr>                </tbody>            </nz-table>        </nz-spin>    </nz-card></div><!-- DRAWER: VER / CREAR / EDITAR CATEGORÍA --><nz-drawer     [nzVisible]="isDrawerVisible"     nzPlacement="right"     [nzTitle]="drawerTitle"     [nzWidth]="\'500px\'"     (nzOnClose)="closeDrawer()">    <ng-container *nzDrawerContent>        <nz-spin [nzSpinning]="isLoading">            <div class="drawer-content-wrapper">                                <!-- MODO VISTA DETALLADA -->                <div *ngIf="selectedCategory && !isEditing" class="view-mode-container">                    <div class="profile-header">                        <nz-avatar [nzSize]="64" nzIcon="tags" style="background-color: #e6f7ff; border: 1px solid #91d5ff; color: #1890ff;"></nz-avatar>                        <div class="profile-header-info">                            <h2>{{ selectedCategory.cat_name }}</h2>                            <span style="color: #8c8c8c;">ID: {{ selectedCategory.cat_uuid }}</span>                        </div>                    </div>                    <nz-divider></nz-divider>                    <nz-descriptions nzTitle="Información de la Categoría" [nzColumn]="1" nzSize="small">                        <nz-descriptions-item nzTitle="Nombre">{{ selectedCategory.cat_name }}</nz-descriptions-item>                        <nz-descriptions-item nzTitle="Descripción">                            {{ selectedCategory.cat_description || \'Sin descripción detallada.\' }}                        </nz-descriptions-item>                        <nz-descriptions-item nzTitle="Clasificación Global Relacionada">                            <nz-tag nzColor="blue">{{ getGlobalCategoryName(selectedCategory.gcat_uuid) }}</nz-tag>                        </nz-descriptions-item>                    </nz-descriptions>                    <nz-divider></nz-divider>                    <nz-descriptions nzTitle="Auditoría" [nzColumn]="1" nzSize="small">                        <nz-descriptions-item nzTitle="Creado">{{ selectedCategory.cat_createdat | date:\'medium\' }}</nz-descriptions-item>                        <nz-descriptions-item nzTitle="Última Modificación">{{ selectedCategory.cat_updatedat | date:\'medium\' }}</nz-descriptions-item>                    </nz-descriptions>                    <div style="margin-top: 32px; display: flex; gap: 8px;">                        <button nz-button nzType="primary" nzBlock (click)="enableEditing()">                            <span nz-icon nzType="edit"></span> Editar                        </button>                        <button nz-button nzDanger nzBlock (click)="onDeleteCategory(selectedCategory)">                            <span nz-icon nzType="delete"></span> Eliminar                        </button>                    </div>                </div>                <!-- MODO FORMULARIO (EDICIÓN Y CREACIÓN) -->                <form *ngIf="isEditing" [formGroup]="categoryForm" (ngSubmit)="onSave()" nz-form nzLayout="vertical">                    <div class="form-mode-container">                        <div class="profile-header">                            <nz-avatar [nzSize]="64" nzIcon="form" style="background-color: #f9f0ff; border: 1px solid #d3adf7; color: #722ed1;"></nz-avatar>                            <div class="profile-header-info">                                <h2>{{ selectedCategory ? \'Editar Categoría\' : \'Nueva Categoría\' }}</h2>                                <p style="color: #8c8c8c; margin: 0; font-size: 13px;">Completá los datos de la categoría para el catálogo.</p>                            </div>                        </div>                        <nz-divider></nz-divider>                        <!-- MAPEO A CATEGORÍA GLOBAL -->                        <nz-form-item>                            <nz-form-label nzRequired nzFor="gcat_uuid" style="font-weight: 600;">Categoría Global (Mapeo Marketplace)</nz-form-label>                            <nz-form-control nzErrorTip="Seleccionar la categoría global es obligatorio para el mapeo.">                                <nz-select formControlName="gcat_uuid" id="gcat_uuid" placeholder="Selecciona la categoría del marketplace..." nzShowSearch nzSize="large">                                    <nz-option *ngFor="let gcat of globalCategories" [nzLabel]="gcat.gcat_name" [nzValue]="gcat.gcat_uuid"></nz-option>                                </nz-select>                            </nz-form-control>                        </nz-form-item>                        <nz-form-item>                            <nz-form-label nzRequired nzFor="cat_name" style="font-weight: 600;">Nombre de la Categoría</nz-form-label>                            <nz-form-control nzErrorTip="El nombre es obligatorio y debe tener al menos 2 caracteres.">                                <input nz-input formControlName="cat_name" id="cat_name" placeholder="Ej: Remeras, Pantalones, Accesorios..." nzSize="large" />                            </nz-form-control>                        </nz-form-item>                        <nz-form-item>                            <nz-form-label nzFor="cat_description" style="font-weight: 600;">Descripción</nz-form-label>                            <nz-form-control>                                <textarea nz-input formControlName="cat_description" id="cat_description" placeholder="Detalla qué tipos de productos integran esta categoría..." [nzAutosize]="{ minRows: 4, maxRows: 6 }"></textarea>                            </nz-form-control>                        </nz-form-item>                        <div style="margin-top: 32px; display: flex; gap: 8px;">                            <button nz-button nzType="primary" nzBlock type="submit" [nzLoading]="isLoading">                                <span nz-icon nzType="save"></span> Guardar                            </button>                            <button nz-button nzType="default" nzBlock type="button" (click)="selectedCategory ? (isEditing = false) : closeDrawer()">                                Cancelar                            </button>                        </div>                    </div>                </form>            </div>        </nz-spin>    </ng-container>    <ng-template #drawerTitle>        {{ selectedCategory ? (isEditing ? \'Editar Categoría\' : \'Ficha Técnica de Categoría\') : \'Agregar Nueva Categoría\' }}    </ng-template></nz-drawer></div>'
+    var COMPONENTS = [{'name': 'AccountConfirmedComponent', 'selector': 'app-account-confirmed'},{'name': 'AccountCreatedComponent', 'selector': 'app-account-created'},{'name': 'AddressesComponent', 'selector': 'app-addresses'},{'name': 'AnalyticsComponent', 'selector': 'app-analytics'},{'name': 'AppComponent', 'selector': 'app-root'},{'name': 'ApplicationBarComponent', 'selector': 'app-application-bar'},{'name': 'ApplicationLayoutComponent', 'selector': 'app-application-layout'},{'name': 'AuthLayoutComponent', 'selector': 'app-auth-layout'},{'name': 'BarcodeScannerComponent', 'selector': 'app-barcode-scanner'},{'name': 'CameraComponent', 'selector': 'app-camera'},{'name': 'CartComponent', 'selector': 'app-cart'},{'name': 'CatalogComponent', 'selector': 'app-catalog'},{'name': 'CategoriesComponent', 'selector': 'app-categories'},{'name': 'CategoriesListComponent', 'selector': 'app-categories-list'},{'name': 'CheckoutComponent', 'selector': 'app-checkout'},{'name': 'CompanyComponent', 'selector': 'app-company'},{'name': 'CompanySettingsComponent', 'selector': 'app-company-settings'},{'name': 'CouponsComponent', 'selector': 'app-coupons'},{'name': 'CustomersComponent', 'selector': 'app-customers'},{'name': 'DistPriceListComponent', 'selector': 'app-dist-price-list'},{'name': 'FinancesComponent', 'selector': 'app-finances'},{'name': 'ForgotPasswordComponent', 'selector': 'app-forgot-password'},{'name': 'GlobalCategoriesComponent', 'selector': 'app-global-categories'},{'name': 'GlobalCategoryComponent', 'selector': 'app-global-category'},{'name': 'GlobalItemComponent', 'selector': 'app-global-item'},{'name': 'GlobalItemsComponent', 'selector': 'app-global-items'},{'name': 'GlobalMaterialComponent', 'selector': 'app-global-material'},{'name': 'GlobalMaterialsComponent', 'selector': 'app-global-materials'},{'name': 'HomeStoreComponent', 'selector': 'app-home'},{'name': 'InventoryAuditComponent', 'selector': 'app-inventory-audit'},{'name': 'ItemsComponent', 'selector': 'app-items'},{'name': 'LoginComponent', 'selector': 'app-login'},{'name': 'MapPickerComponent', 'selector': 'app-map-picker'},{'name': 'MarketHomeComponent', 'selector': 'app-market-home'},{'name': 'MaterialComponent', 'selector': 'app-material'},{'name': 'MaterialsComponent', 'selector': 'app-materials'},{'name': 'MenuItemComponent', 'selector': 'app-menu-item'},{'name': 'MenuItemsComponent', 'selector': 'app-menu-items'},{'name': 'MpPaymentBrickComponent', 'selector': 'app-mp-payment-brick'},{'name': 'MyCompaniesComponent', 'selector': 'app-my-companies'},{'name': 'MyFavoritesComponent', 'selector': 'app-my-favorites'},{'name': 'MyPurchasesComponent', 'selector': 'app-my-purchases'},{'name': 'NavBarComponent', 'selector': 'app-nav-bar'},{'name': 'OrdersReceivedComponent', 'selector': 'app-orders-received'},{'name': 'PriceListComponent', 'selector': 'app-price-list'},{'name': 'ProductComponent', 'selector': 'app-product'},{'name': 'ProductDetailComponent', 'selector': 'app-product-detail'},{'name': 'ProductsComponent', 'selector': 'app-products'},{'name': 'ProductsVariationsComponent', 'selector': 'app-products-variations'},{'name': 'ProductVariationComponent', 'selector': 'app-product-variation'},{'name': 'PublicLayoutComponent', 'selector': 'app-public-layout'},{'name': 'RegisterComponent', 'selector': 'app-register'},{'name': 'ResetPasswordComponent', 'selector': 'app-reset-password'},{'name': 'SideBarComponent', 'selector': 'app-side-bar'},{'name': 'SsoCallbackComponent', 'selector': 'app-sso-callback'},{'name': 'StoreCatalogComponent', 'selector': 'app-store'},{'name': 'SuperAdminComponent', 'selector': 'app-super-admin'},{'name': 'SupplierComponent', 'selector': 'app-supplier'},{'name': 'SuppliersComponent', 'selector': 'app-suppliers'},{'name': 'UserLayoutComponent', 'selector': 'app-user-layout'},{'name': 'UserRolCompanyComponent', 'selector': 'app-user-rol-company'},{'name': 'WarehousesComponent', 'selector': 'app-warehouses'}];
+    var DIRECTIVES = [{'name': 'ImagePreloadDirective', 'selector': 'img[default]'}];
+    var ACTUAL_COMPONENT = {'name': 'CategoriesComponent'};
+</script>
+<script src="../js/tree.js"></script>
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+                   </div><div class="search-results">
+    <div class="has-results">
+        <h1 class="search-results-title"><span class='search-results-count'></span> resultados correspondentes "<span class='search-query'></span>"</h1>
+        <ul class="search-results-list"></ul>
+    </div>
+    <div class="no-results">
+        <h1 class="search-results-title">Nenhum resultado correspondente "<span class='search-query'></span>"</h1>
+    </div>
+</div>
+</div>
+               <!-- END CONTENT -->
+           </div>
+       </div>
+
+          
+<div class="compodoc-lang-switch">
+  <select id="compodoc-lang-select" aria-label="Seleccionar idioma">
+    <option value="es" >🇪🇸 Español</option>
+    <option value="en" >🇺🇸 English</option>
+    <option value="pt" selected>🇧🇷 Português</option>
+  </select>
+</div>
+
+          <label class="dark-mode-switch">
+               <input type="checkbox">
+               <span class="slider">
+                    <svg class="slider-icon" viewBox="0 0 24 24" fill="none" height="20" stroke="#000" stroke-linecap="round" stroke-linejoin="round" stroke-width="2" width="20" xmlns="http://www.w3.org/2000/svg">
+                    <path d="M21 12.79A9 9 0 1111.21 3 7 7 0 0021 12.79z"></path>
+                    </svg>
+               </span>
+          </label>
+
+       <script>
+            var COMPODOC_CURRENT_PAGE_DEPTH = 1;
+            var COMPODOC_CURRENT_PAGE_CONTEXT = 'component';
+            var COMPODOC_CURRENT_PAGE_URL = 'CategoriesComponent.html';
+            var MAX_SEARCH_RESULTS = 15;
+       </script>
+
+       <script>
+               $darkModeToggleSwitchers = document.querySelectorAll('.dark-mode-switch input');
+               var updateDarkModeSwitchOffset = function () {
+                    var content = document.querySelector('.content');
+                    var scrollbarWidth = 0;
+
+                    if (content) {
+                         scrollbarWidth = Math.max(0, content.offsetWidth - content.clientWidth);
+                    }
+
+                    document.documentElement.style.setProperty(
+                         '--content-scrollbar-width',
+                         scrollbarWidth + 'px'
+                    );
+               };
+
+               updateDarkModeSwitchOffset();
+               requestAnimationFrame(updateDarkModeSwitchOffset);
+               window.addEventListener('resize', updateDarkModeSwitchOffset);
+
+               checkToggle(darkModeState);
+               if ($darkModeToggleSwitchers.length > 0) {
+                    for (var i = 0; i < $darkModeToggleSwitchers.length; i++) {
+                         $darkModeToggleSwitchers[i].addEventListener('change', function (event) {
+                              darkModeState = !darkModeState;
+                              toggleDarkMode(darkModeState);
+                         });
+                    }
+               }
+          </script>
+
+       <script src="../js/libs/custom-elements.min.js"></script>
+       <script src="../js/libs/lit-html.js"></script>
+
+       <script src="../js/menu-wc.js" defer></script>
+
+       <script src="../js/libs/bootstrap-native.js"></script>
+
+       <script src="../js/libs/es6-shim.min.js"></script>
+       <script src="../js/libs/EventDispatcher.js"></script>
+       <script src="../js/libs/promise.min.js"></script>
+
+       <script src="../js/compodoc.js"></script>
+
+       <script src="../js/tabs.js"></script>
+       <script src="../js/menu.js"></script>
+       <script src="../js/libs/clipboard.min.js"></script>
+       <script src="../js/libs/prism.js"></script>
+       <script src="../js/sourceCode.js"></script>
+          <script src="../js/search/search.js"></script>
+          <script src="../js/search/lunr.min.js"></script>
+          <script src="../js/search/search-lunr.js"></script>
+          <script src="../js/search/search_index.js"></script>
+       <script src="../js/lazy-load-graphs.js"></script>
+
+
+    
+<script id="compodoc-lang-script">
+(function() {
+  var CURRENT_LANG = "pt";
+  var ADDITIONAL_DOCS_MAP = {"es":["01.-introducción-y-arquitectura-general.html","02.-autenticación-y-control-de-accesos.html","03.-catálogo-público-y-exploración-de-tiendas.html","04.-carrito-de-compras-y-checkout-multitienda.html","05.-gestión-de-empresas,-roles-y-configuración.html","06.-inventario,-productos,-variaciones-y-almacenes.html","07.-gestión-de-pedidos,-compras-y-cupones.html","08.-analíticas-de-negocio,-finanzas-y-proveedores.html"],"en":["01.-introduction-and-general-architecture.html","02.-authentication-and-access-control.html","03.-public-catalog-and-store-exploration.html","04.-shopping-cart-and-multi-store-checkout.html","05.-company-management,-roles-and-configuration.html","06.-inventory,-products,-variations-and-warehouses.html","07.-orders-management,-purchases-and-coupons.html","08.-business-analytics,-finances-and-suppliers.html"],"pt":["01.-introdução-e-arquitetura-geral.html","02.-autenticação-e-controle-de-acesso.html","03.-catálogo-público-e-exploração-de-lojas.html","04.-carrinho-de-compras-e-checkout-multiloja.html","05.-gestão-de-empresas,-funções-e-configuração.html","06.-estoque,-produtos,-variações-e-armazéns.html","07.-gestão-de-pedidos,-compras-e-cupons.html","08.-análise-de-negócios,-finanças-e-fornecedores.html"]};
+
+  var select = document.getElementById('compodoc-lang-select');
+  if (!select) return;
+
+  try {
+    localStorage.setItem('compodoc_lang', CURRENT_LANG);
+  } catch (e) {}
+
+  select.addEventListener('change', function(e) {
+    var targetLang = e.target.value;
+    if (targetLang === CURRENT_LANG) return;
+
+    try {
+      localStorage.setItem('compodoc_lang', targetLang);
+    } catch (err) {}
+
+    var href = window.location.href;
+    var pathname = window.location.pathname;
+
+    // Manejo especial para páginas de additional-documentation
+    if (pathname.indexOf('/additional-documentation/') !== -1) {
+      var segments = pathname.split('/');
+      var currentFile = decodeURIComponent(segments[segments.length - 1]);
+      
+      var currentList = ADDITIONAL_DOCS_MAP[CURRENT_LANG] || [];
+      var targetList = ADDITIONAL_DOCS_MAP[targetLang] || [];
+      var foundIndex = -1;
+
+      var prefixMatch = currentFile.match(/^(\d{2}\.-)/);
+      if (prefixMatch) {
+        var prefix = prefixMatch[1];
+        for (var i = 0; i < targetList.length; i++) {
+          if (targetList[i].startsWith(prefix)) {
+            foundIndex = i;
+            break;
+          }
+        }
+      }
+      if (foundIndex === -1) {
+        for (var j = 0; j < currentList.length; j++) {
+          if (currentList[j] === currentFile) {
+            foundIndex = j;
+            break;
+          }
+        }
+      }
+
+      var targetFile = (foundIndex !== -1 && targetList[foundIndex]) 
+        ? targetList[foundIndex] 
+        : (targetList[0] || 'index.html');
+
+      var targetSubpath = '/' + targetLang + '/additional-documentation/' + targetFile;
+      var currentSubpath = '/' + CURRENT_LANG + '/additional-documentation/' + segments[segments.length - 1];
+
+      if (href.indexOf(currentSubpath) !== -1) {
+        window.location.href = href.replace(currentSubpath, targetSubpath);
+        return;
+      }
+    }
+
+    // Páginas estándar
+    var standardReplace = href.replace('/' + CURRENT_LANG + '/', '/' + targetLang + '/');
+    if (standardReplace !== href) {
+      window.location.href = standardReplace;
+    } else {
+      var depth = (typeof COMPODOC_CURRENT_PAGE_DEPTH !== 'undefined') ? COMPODOC_CURRENT_PAGE_DEPTH : 0;
+      var prefixPath = '';
+      for (var k = 0; k <= depth; k++) {
+        prefixPath += '../';
+      }
+      window.location.href = prefixPath + targetLang + '/index.html';
+    }
+  });
+})();
+</script>
+
+</body>
+</html>

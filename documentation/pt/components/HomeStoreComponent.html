@@ -1,0 +1,2520 @@
+<!doctype html>
+<html class="no-js" lang="">
+    <head>
+        <meta charset="utf-8">
+        <meta http-equiv="x-ua-compatible" content="ie=edge">
+        <title>ATSMarket Web App</title>
+        <meta name="description" content="">
+        <meta name="viewport" content="width=device-width, initial-scale=1">
+
+        <link rel="icon" type="image/x-icon" href="../images/favicon.ico">
+	   <link rel="stylesheet" href="../styles/style.css">
+        <link rel="stylesheet" href="../styles/dark.css">
+    
+<style id="compodoc-lang-styles">
+  .compodoc-lang-switch {
+    position: fixed;
+    top: 15px;
+    right: calc(90px + var(--content-scrollbar-width, 0px));
+    z-index: 1050;
+    display: inline-block;
+  }
+  @media (max-width: 767px) {
+    .compodoc-lang-switch {
+      top: 8px;
+      right: 60px;
+    }
+  }
+  #compodoc-lang-select {
+    height: 34px;
+    padding: 0 12px;
+    border-radius: 17px;
+    border: 1px solid #d9d9d9;
+    background-color: #ffffff;
+    color: #1f1f1f;
+    font-size: 13px;
+    font-family: inherit;
+    font-weight: 500;
+    cursor: pointer;
+    outline: none;
+    box-shadow: 0 2px 6px rgba(0, 0, 0, 0.08);
+    transition: all 0.3s cubic-bezier(0.645, 0.045, 0.355, 1);
+    -webkit-appearance: none;
+    -moz-appearance: none;
+    appearance: none;
+    padding-right: 26px;
+    background-image: url("data:image/svg+xml;charset=UTF-8,%3csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 24 24' fill='none' stroke='%23666' stroke-width='2' stroke-linecap='round' stroke-linejoin='round'%3e%3cpolyline points='6 9 12 15 18 9'%3e%3c/polyline%3e%3c/svg%3e");
+    background-repeat: no-repeat;
+    background-position: right 8px center;
+    background-size: 14px;
+  }
+  #compodoc-lang-select:hover, #compodoc-lang-select:focus {
+    border-color: #5cc0ae;
+    box-shadow: 0 2px 8px rgba(92, 192, 174, 0.25);
+  }
+  body.dark .compodoc-lang-switch #compodoc-lang-select {
+    background-color: #2c3e50;
+    color: #ecf0f1;
+    border: 1px solid #4a627a;
+    box-shadow: 0 2px 6px rgba(0, 0, 0, 0.35);
+    background-image: url("data:image/svg+xml;charset=UTF-8,%3csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 24 24' fill='none' stroke='%23ecf0f1' stroke-width='2' stroke-linecap='round' stroke-linejoin='round'%3e%3cpolyline points='6 9 12 15 18 9'%3e%3c/polyline%3e%3c/svg%3e");
+  }
+  body.dark .compodoc-lang-switch #compodoc-lang-select option {
+    background-color: #2c3e50;
+    color: #ecf0f1;
+  }
+</style>
+
+</head>
+    <body>
+          <script>
+               // Blocking script to avoid flickering dark mode
+               // Dark mode toggle button
+               var useDark = window.matchMedia('(prefers-color-scheme: dark)');
+               var darkModeState = useDark.matches;
+               var $darkModeToggleSwitchers = document.querySelectorAll('.dark-mode-switch input');
+               var $darkModeToggles = document.querySelectorAll('.dark-mode-switch');
+               var darkModeStateLocal = localStorage.getItem('compodoc_darkmode-state');
+
+               function checkToggle(check) {
+                    for (var i = 0; i < $darkModeToggleSwitchers.length; i++) {
+                         $darkModeToggleSwitchers[i].checked = check;
+                    }
+               }
+
+               function toggleDarkMode(state) {
+                    if (window.localStorage) {
+                         localStorage.setItem('compodoc_darkmode-state', state);
+                    }
+
+                    checkToggle(state);
+
+                    const hasClass = document.body.classList.contains('dark');
+
+                    if (state) {
+                         for (var i = 0; i < $darkModeToggles.length; i++) {
+                              $darkModeToggles[i].classList.add('dark');
+                         }
+                         if (!hasClass) {
+                              document.body.classList.add('dark');
+                         }
+                    } else {
+                         for (var i = 0; i < $darkModeToggles.length; i++) {
+                              $darkModeToggles[i].classList.remove('dark');
+                         }
+                         if (hasClass) {
+                              document.body.classList.remove('dark');
+                         }
+                    }
+               }
+
+               useDark.addEventListener('change', function (evt) {
+                    toggleDarkMode(evt.matches);
+               });
+               if (darkModeStateLocal) {
+                    darkModeState = darkModeStateLocal === 'true';
+               }
+               toggleDarkMode(darkModeState);
+          </script>
+          <script>
+              // --- Iframe navigation tracking for Template Playground ---
+              function sendCurrentUrlToParent() {
+                  if (window.parent && window.parent !== window) {
+                      window.parent.postMessage({
+                          type: 'compodoc-iframe-navigate',
+                          url: window.location.pathname + window.location.hash
+                      }, '*');
+                  }
+              }
+              window.addEventListener('hashchange', sendCurrentUrlToParent, false);
+              window.addEventListener('popstate', sendCurrentUrlToParent, false);
+              window.addEventListener('DOMContentLoaded', sendCurrentUrlToParent, false);
+          </script>
+
+        <div class="navbar navbar-default navbar-fixed-top d-md-none p-0">
+               <div class="d-flex">
+                    <a href="../" class="navbar-brand">ATSMarket Web App</a>
+                    <button type="button" class="btn btn-default btn-menu ion-ios-menu" id="btn-menu"></button>
+               </div>
+        </div>
+
+        <div class="xs-menu menu" id="mobile-menu">
+                <div id="book-search-input" role="search">
+    <input type="text" placeholder="Digite para pesquisar">
+    <button type="button"
+        class="search-input-clear"
+        aria-label="Clear search"
+        data-search-input-clear>&times;</button>
+</div>
+            <compodoc-menu></compodoc-menu>
+        </div>
+
+        <div class="container-fluid main">
+           <div class="row main">
+               <div class="d-none d-md-block menu">
+                   <compodoc-menu mode="normal"></compodoc-menu>
+               </div>
+               <!-- START CONTENT -->
+               <div class="content component">
+                   <div class="content-data">
+
+
+
+
+
+
+
+
+<ol class="breadcrumb">
+  <li class="breadcrumb-item">Componentes</li>
+  <li class="breadcrumb-item"
+  >
+  HomeStoreComponent</li>
+</ol>
+
+<div class="io-file io-file-path" data-compodoc="entity-file-path">
+    <span class="icon ion-ios-document" aria-hidden="true"></span>
+    <code>src/app/public/home-store/home-store.component.ts</code>
+</div>
+
+<ul class="nav nav-tabs" role="tablist">
+        <li class="nav-item">
+            <a href="#info" class="nav-link active"
+                role="tab" id="info-tab" data-bs-toggle="tab" data-link="info">Info</a>
+        </li>
+        <li class="nav-item">
+            <a href="#api" class="nav-link"
+                role="tab" id="api-tab" data-bs-toggle="tab" data-link="api">API</a>
+        </li>
+        <li class="nav-item">
+            <a href="#source" class="nav-link"
+                role="tab" id="source-tab" data-bs-toggle="tab" data-link="source">Source</a>
+        </li>
+        <li class="nav-item">
+            <a href="#templateData" class="nav-link"
+                role="tab" id="templateData-tab" data-bs-toggle="tab" data-link="template">Template</a>
+        </li>
+        <li class="nav-item">
+            <a href="#styleData" class="nav-link"
+                role="tab" id="styleData-tab" data-bs-toggle="tab" data-link="style">Styles</a>
+        </li>
+        <li class="nav-item">
+            <a href="#tree" class="nav-link"
+                role="tab" id="tree-tab" data-bs-toggle="tab" data-link="dom-tree">DOM Tree</a>
+        </li>
+</ul>
+
+<div class="tab-content">
+    <div class="tab-pane fade active in" id="info">
+
+
+
+
+<section data-compodoc="block-metadata">
+    <h3>Metadata</h3>
+    <table class="table table-sm table-hover metadata">
+        <tbody>
+
+
+
+
+
+
+
+
+
+
+
+
+            <tr>
+                <td class="col-md-3">selector</td>
+                <td class="col-md-9"><code>app-home</code></td>
+            </tr>
+
+            <tr>
+                <td class="col-md-3">standalone</td>
+                <td class="col-md-9"><code>true</code></td>
+            </tr>
+
+            <tr>
+                <td class="col-md-3">imports</td>
+                <td class="col-md-9">
+                        <div>        <code><a href="https://angular.dev/api/common/CommonModule" target="_blank" >CommonModule</a></code>
+</div>
+                        <div>        <code><a href="https://angular.dev/api/router/RouterLink" target="_blank" >RouterLink</a></code>
+</div>
+                        <div>    <code>NzGridModule</code>
+</div>
+                        <div>    <code>NzCardModule</code>
+</div>
+                        <div>    <code>NzCarouselModule</code>
+</div>
+                        <div>    <code>NzDividerModule</code>
+</div>
+                        <div>    <code>NzButtonModule</code>
+</div>
+                        <div>    <code>NzIconModule</code>
+</div>
+                        <div>    <code>NzModalModule</code>
+</div>
+                        <div>    <code>NzSpinModule</code>
+</div>
+                        <div>    <code>NzEmptyModule</code>
+</div>
+                </td>
+            </tr>
+
+            <tr>
+                <td class="col-md-3">styleUrls</td>
+                <td class="col-md-9"><code>./home-store.component.scss</code></td>
+            </tr>
+
+
+
+
+            <tr>
+                <td class="col-md-3">templateUrl</td>
+                <td class="col-md-9"><code>./home-store.component.html</code></td>
+            </tr>
+
+
+
+            <tr>
+                <td class="col-md-3">styleUrl</td>
+                <td class="col-md-9"><code>./home-store.component.scss</code></td>
+            </tr>
+
+
+
+
+
+        </tbody>
+    </table>
+</section>
+
+        <section data-compodoc="block-relationships">
+            <h3>Relationships</h3>
+
+            <div class="row pt-3">
+                <div class="col-sm-6">
+                    <h4>Used by</h4>
+                        <p class="comment"><i>Nenhum resultado correspondente.</i></p>
+                </div>
+
+                <div class="col-sm-6">
+                    <h4>Depends on</h4>
+                        <ul class="list-unstyled relationships-list">
+                                <li>
+                                            <code><a href="https://angular.dev/api/common/CommonModule" target="_blank" >CommonModule</a></code>
+                                </li>
+                                <li>
+                                            <code><a href="https://angular.dev/api/router/RouterLink" target="_blank" >RouterLink</a></code>
+                                </li>
+                                <li>
+                                        <code>NzGridModule</code>
+                                </li>
+                                <li>
+                                        <code>NzCardModule</code>
+                                </li>
+                                <li>
+                                        <code>NzCarouselModule</code>
+                                </li>
+                                <li>
+                                        <code>NzDividerModule</code>
+                                </li>
+                                <li>
+                                        <code>NzButtonModule</code>
+                                </li>
+                                <li>
+                                        <code>NzIconModule</code>
+                                </li>
+                                <li>
+                                        <code>NzModalModule</code>
+                                </li>
+                                <li>
+                                        <code>NzSpinModule</code>
+                                </li>
+                                <li>
+                                        <code>NzEmptyModule</code>
+                                </li>
+                        </ul>
+                </div>
+            </div>
+        </section>
+</div>
+
+    <div class="tab-pane fade " id="api">    <section data-compodoc="block-index">
+    <h3 id="index">Index</h3>
+        <table class="table table-sm table-bordered index-table">
+            <tbody>
+                <tr>
+                    <td class="col-md-3">
+                        <h6><b>Propriedades</b></h6>
+                    </td>
+                    <td class="col-md-9">
+                        <ul class="index-list">
+                            <li>
+                                <span class="reference-badge reference-badge--property" aria-hidden="true">P</span>
+                                    <span class="modifier">Public</span>
+                                <a href="#categorias" >categorias</a>
+                            </li>
+                            <li>
+                                <span class="reference-badge reference-badge--property" aria-hidden="true">P</span>
+                                    <span class="modifier">Public</span>
+                                <a href="#companieSlug" >companieSlug</a>
+                            </li>
+                            <li>
+                                <span class="reference-badge reference-badge--property" aria-hidden="true">P</span>
+                                    <span class="modifier">Public</span>
+                                <a href="#destacados" >destacados</a>
+                            </li>
+                            <li>
+                                <span class="reference-badge reference-badge--property" aria-hidden="true">P</span>
+                                    <span class="modifier">Public</span>
+                                <a href="#isSettingsLoading" >isSettingsLoading</a>
+                            </li>
+                            <li>
+                                <span class="reference-badge reference-badge--property" aria-hidden="true">P</span>
+                                    <span class="modifier">Public</span>
+                                <a href="#store" >store</a>
+                            </li>
+                            <li>
+                                <span class="reference-badge reference-badge--property" aria-hidden="true">P</span>
+                                    <span class="modifier">Public</span>
+                                <a href="#storeSettings" >storeSettings</a>
+                            </li>
+                        </ul>
+                    </td>
+                </tr>
+            </tbody>
+        </table>
+
+        <table class="table table-sm table-bordered index-table">
+            <tbody>
+                <tr>
+                    <td class="col-md-3">
+                        <h6><b>Métodos</b></h6>
+                    </td>
+                    <td class="col-md-9">
+                        <ul class="index-list">
+                            <li>
+                                <span class="reference-badge reference-badge--method" aria-hidden="true">M</span>
+                                    <span class="modifier">Public</span>
+                                <a href="#agregarAlCarrito" >agregarAlCarrito</a>
+                            </li>
+                            <li>
+                                <span class="reference-badge reference-badge--method" aria-hidden="true">M</span>
+                                    <span class="modifier">Public</span>
+                                <a href="#consultarPrecio" >consultarPrecio</a>
+                            </li>
+                            <li>
+                                <span class="reference-badge reference-badge--method" aria-hidden="true">M</span>
+                                    <span class="modifier">Public</span>
+                                <a href="#getGoogleMapsLink" >getGoogleMapsLink</a>
+                            </li>
+                            <li>
+                                <span class="reference-badge reference-badge--method" aria-hidden="true">M</span>
+                                    <span class="modifier">Public</span>
+                                <a href="#getSetting" >getSetting</a>
+                            </li>
+                            <li>
+                                <span class="reference-badge reference-badge--method" aria-hidden="true">M</span>
+                                    <span class="modifier">Public</span>
+                                <a href="#goToStoreCatalog" >goToStoreCatalog</a>
+                            </li>
+                            <li>
+                                <span class="reference-badge reference-badge--method" aria-hidden="true">M</span>
+                                    <span class="modifier">Public</span>
+                                <a href="#loadCategoriasPrincipales" >loadCategoriasPrincipales</a>
+                            </li>
+                            <li>
+                                <span class="reference-badge reference-badge--method" aria-hidden="true">M</span>
+                                    <span class="modifier">Private</span>
+                                <a href="#loadProductosDestacados" >loadProductosDestacados</a>
+                            </li>
+                            <li>
+                                <span class="reference-badge reference-badge--method" aria-hidden="true">M</span>
+                                <a href="#ngOnInit" >ngOnInit</a>
+                            </li>
+                            <li>
+                                <span class="reference-badge reference-badge--method" aria-hidden="true">M</span>
+                                    <span class="modifier">Public</span>
+                                <a href="#openProductDetail" >openProductDetail</a>
+                            </li>
+                        </ul>
+                    </td>
+                </tr>
+            </tbody>
+        </table>
+
+
+
+
+
+</section>
+
+    <section data-compodoc="block-constructor">
+    <h3 id="constructor">Construtor</h3>
+        <table class="table table-sm table-bordered">
+            <tbody>
+                <tr>
+                    <td class="col-md-4">
+<code>constructor(route: <a href="https://angular.dev/api/router/ActivatedRoute" target="_blank">ActivatedRoute</a>, router: <a href="https://angular.dev/api/router/Router" target="_blank">Router</a>, _storeContext: <a href="../injectables/StoreContextService.html" target="_self">StoreContextService</a>, _cartService: <a href="../injectables/CartService.html" target="_self">CartService</a>, _productVariationsService: <a href="../injectables/ProductVariationsService.html" target="_self">ProductVariationsService</a>, _categoriesService: <a href="../injectables/CategoriesService.html" target="_self">CategoriesService</a>, titleService: <a href="https://angular.dev/api/platform-browser/Title" target="_blank">Title</a>, metaService: <a href="https://angular.dev/api/platform-browser/Meta" target="_blank">Meta</a>, _analyticsService: <a href="../injectables/AnalyticsService.html" target="_self">AnalyticsService</a>, message: <a href="../injectables/MessageService.html" target="_self">NzMessageService</a>)</code>
+                    </td>
+                </tr>
+                        <tr>
+                            <td class="col-md-4">
+                                <div class="io-line">Definido em <a href="" data-line="59" class="link-to-prism">src/app/public/home-store/home-store.component.ts:59</a></div>
+                            </td>
+                        </tr>
+
+                <tr>
+                    <td class="col-md-4">
+                            <div>
+                                    <b>Parâmetros :</b>
+                                    <table class="params">
+                                        <thead>
+                                            <tr>
+                                                <td>Nome</td>
+                                                    <td>Tipo</td>
+                                                <td>Opcional</td>
+                                            </tr>
+                                        </thead>
+                                        <tbody>
+                                                <tr>
+                                                        <td>route</td>
+                                                  
+                                                        <td>
+                                                                        <code><a href="https://angular.dev/api/router/ActivatedRoute" target="_blank" >ActivatedRoute</a></code>
+                                                        </td>
+                                                  
+                                                    <td>
+                                                            Não
+                                                    </td>
+                                                    
+                                                </tr>
+                                                <tr>
+                                                        <td>router</td>
+                                                  
+                                                        <td>
+                                                                        <code><a href="https://angular.dev/api/router/Router" target="_blank" >Router</a></code>
+                                                        </td>
+                                                  
+                                                    <td>
+                                                            Não
+                                                    </td>
+                                                    
+                                                </tr>
+                                                <tr>
+                                                        <td>_storeContext</td>
+                                                  
+                                                        <td>
+                                                                        <code><a href="../injectables/StoreContextService.html" target="_self" >StoreContextService</a></code>
+                                                        </td>
+                                                  
+                                                    <td>
+                                                            Não
+                                                    </td>
+                                                    
+                                                </tr>
+                                                <tr>
+                                                        <td>_cartService</td>
+                                                  
+                                                        <td>
+                                                                        <code><a href="../injectables/CartService.html" target="_self" >CartService</a></code>
+                                                        </td>
+                                                  
+                                                    <td>
+                                                            Não
+                                                    </td>
+                                                    
+                                                </tr>
+                                                <tr>
+                                                        <td>_productVariationsService</td>
+                                                  
+                                                        <td>
+                                                                        <code><a href="../injectables/ProductVariationsService.html" target="_self" >ProductVariationsService</a></code>
+                                                        </td>
+                                                  
+                                                    <td>
+                                                            Não
+                                                    </td>
+                                                    
+                                                </tr>
+                                                <tr>
+                                                        <td>_categoriesService</td>
+                                                  
+                                                        <td>
+                                                                        <code><a href="../injectables/CategoriesService.html" target="_self" >CategoriesService</a></code>
+                                                        </td>
+                                                  
+                                                    <td>
+                                                            Não
+                                                    </td>
+                                                    
+                                                </tr>
+                                                <tr>
+                                                        <td>titleService</td>
+                                                  
+                                                        <td>
+                                                                        <code><a href="https://angular.dev/api/platform-browser/Title" target="_blank" >Title</a></code>
+                                                        </td>
+                                                  
+                                                    <td>
+                                                            Não
+                                                    </td>
+                                                    
+                                                </tr>
+                                                <tr>
+                                                        <td>metaService</td>
+                                                  
+                                                        <td>
+                                                                        <code><a href="https://angular.dev/api/platform-browser/Meta" target="_blank" >Meta</a></code>
+                                                        </td>
+                                                  
+                                                    <td>
+                                                            Não
+                                                    </td>
+                                                    
+                                                </tr>
+                                                <tr>
+                                                        <td>_analyticsService</td>
+                                                  
+                                                        <td>
+                                                                        <code><a href="../injectables/AnalyticsService.html" target="_self" >AnalyticsService</a></code>
+                                                        </td>
+                                                  
+                                                    <td>
+                                                            Não
+                                                    </td>
+                                                    
+                                                </tr>
+                                                <tr>
+                                                        <td>message</td>
+                                                  
+                                                        <td>
+                                                                        <code><a href="../injectables/MessageService.html" target="_self" >NzMessageService</a></code>
+                                                        </td>
+                                                  
+                                                    <td>
+                                                            Não
+                                                    </td>
+                                                    
+                                                </tr>
+                                        </tbody>
+                                    </table>
+                            </div>
+                    </td>
+                </tr>
+            </tbody>
+        </table>
+</section>
+
+
+
+
+
+    <section data-compodoc="block-methods">
+    
+    <h3 id="methods">
+        Métodos
+    </h3>
+    <table class="table table-sm table-bordered">
+        <tbody>
+            <tr>
+                <td class="col-md-4">
+                    <a name="agregarAlCarrito"></a>
+                    <span class="name">
+                            <span class="modifier">Public</span>
+                        <span ><b>agregarAlCarrito</b></span>
+                        <a href="#agregarAlCarrito"><span class="icon ion-ios-link"></span></a>
+                    </span>
+                </td>
+            </tr>
+            <tr>
+                <td class="col-md-4">
+                        <span class="modifier-icon icon ion-ios-reset"></span>
+                    <code>agregarAlCarrito(producto: <a href="../interfaces/ProductVariationInterface.html" target="_self">ProductVariationInterface</a>)</code>
+                </td>
+            </tr>
+
+
+                    <tr>
+                        <td class="col-md-4">
+                            <div class="io-line">Definido em <a href="" data-line="158"
+                                    class="link-to-prism">src/app/public/home-store/home-store.component.ts:158</a></div>
+                        </td>
+                    </tr>
+
+
+            <tr>
+                <td class="col-md-4">
+
+                            <div class="io-description">
+                                <b>Parâmetros :</b>
+                                
+                                <table class="params">
+                                    <thead>
+                                        <tr>
+                                            <td>Nome</td>
+                                                <td>Tipo</td>
+                                            <td>Opcional</td>
+                                        </tr>
+                                    </thead>
+                                    <tbody>
+                                        <tr>
+                                                <td>producto</td>
+                                            <td>
+                                                            <code><a href="../interfaces/ProductVariationInterface.html" target="_self" >ProductVariationInterface</a></code>
+                                            </td>
+
+                                            <td>
+                                                    Não
+                                            </td>
+
+
+                                        </tr>
+                                    </tbody>
+                                </table>
+                            </div>
+                        <div class="io-description">
+                            <b>Retorna : </b>        <code><a href="https://www.typescriptlang.org/docs/handbook/basic-types.html" target="_blank" >void</a></code>
+
+                        </div>
+                            <div class="io-description">
+                                
+                            </div>
+                </td>
+            </tr>
+        </tbody>
+    </table>
+    <table class="table table-sm table-bordered">
+        <tbody>
+            <tr>
+                <td class="col-md-4">
+                    <a name="consultarPrecio"></a>
+                    <span class="name">
+                            <span class="modifier">Public</span>
+                        <span ><b>consultarPrecio</b></span>
+                        <a href="#consultarPrecio"><span class="icon ion-ios-link"></span></a>
+                    </span>
+                </td>
+            </tr>
+            <tr>
+                <td class="col-md-4">
+                        <span class="modifier-icon icon ion-ios-reset"></span>
+                    <code>consultarPrecio(producto: <a href="../interfaces/ProductVariationInterface.html" target="_self">ProductVariationInterface</a>)</code>
+                </td>
+            </tr>
+
+
+                    <tr>
+                        <td class="col-md-4">
+                            <div class="io-line">Definido em <a href="" data-line="145"
+                                    class="link-to-prism">src/app/public/home-store/home-store.component.ts:145</a></div>
+                        </td>
+                    </tr>
+
+
+            <tr>
+                <td class="col-md-4">
+
+                            <div class="io-description">
+                                <b>Parâmetros :</b>
+                                
+                                <table class="params">
+                                    <thead>
+                                        <tr>
+                                            <td>Nome</td>
+                                                <td>Tipo</td>
+                                            <td>Opcional</td>
+                                        </tr>
+                                    </thead>
+                                    <tbody>
+                                        <tr>
+                                                <td>producto</td>
+                                            <td>
+                                                            <code><a href="../interfaces/ProductVariationInterface.html" target="_self" >ProductVariationInterface</a></code>
+                                            </td>
+
+                                            <td>
+                                                    Não
+                                            </td>
+
+
+                                        </tr>
+                                    </tbody>
+                                </table>
+                            </div>
+                        <div class="io-description">
+                            <b>Retorna : </b>        <code><a href="https://www.typescriptlang.org/docs/handbook/basic-types.html" target="_blank" >void</a></code>
+
+                        </div>
+                            <div class="io-description">
+                                
+                            </div>
+                </td>
+            </tr>
+        </tbody>
+    </table>
+    <table class="table table-sm table-bordered">
+        <tbody>
+            <tr>
+                <td class="col-md-4">
+                    <a name="getGoogleMapsLink"></a>
+                    <span class="name">
+                            <span class="modifier">Public</span>
+                        <span ><b>getGoogleMapsLink</b></span>
+                        <a href="#getGoogleMapsLink"><span class="icon ion-ios-link"></span></a>
+                    </span>
+                </td>
+            </tr>
+            <tr>
+                <td class="col-md-4">
+                        <span class="modifier-icon icon ion-ios-reset"></span>
+                    <code>getGoogleMapsLink(store: <a href="../interfaces/CompanyInterface.html" target="_self">CompanyInterface</a>)</code>
+                </td>
+            </tr>
+
+
+                    <tr>
+                        <td class="col-md-4">
+                            <div class="io-line">Definido em <a href="" data-line="180"
+                                    class="link-to-prism">src/app/public/home-store/home-store.component.ts:180</a></div>
+                        </td>
+                    </tr>
+
+
+            <tr>
+                <td class="col-md-4">
+
+                            <div class="io-description">
+                                <b>Parâmetros :</b>
+                                
+                                <table class="params">
+                                    <thead>
+                                        <tr>
+                                            <td>Nome</td>
+                                                <td>Tipo</td>
+                                            <td>Opcional</td>
+                                        </tr>
+                                    </thead>
+                                    <tbody>
+                                        <tr>
+                                                <td>store</td>
+                                            <td>
+                                                            <code><a href="../interfaces/CompanyInterface.html" target="_self" >CompanyInterface</a></code>
+                                            </td>
+
+                                            <td>
+                                                    Não
+                                            </td>
+
+
+                                        </tr>
+                                    </tbody>
+                                </table>
+                            </div>
+                        <div class="io-description">
+                            <b>Retorna : </b>        <code><a href="https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/string" target="_blank" >string</a></code>
+
+                        </div>
+                            <div class="io-description">
+                                
+                            </div>
+                </td>
+            </tr>
+        </tbody>
+    </table>
+    <table class="table table-sm table-bordered">
+        <tbody>
+            <tr>
+                <td class="col-md-4">
+                    <a name="getSetting"></a>
+                    <span class="name">
+                            <span class="modifier">Public</span>
+                        <span ><b>getSetting</b></span>
+                        <a href="#getSetting"><span class="icon ion-ios-link"></span></a>
+                    </span>
+                </td>
+            </tr>
+            <tr>
+                <td class="col-md-4">
+                        <span class="modifier-icon icon ion-ios-reset"></span>
+                    <code>getSetting(key: <a href="https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/string" target="_blank">string</a>, defaultValue: <a href="https://www.typescriptlang.org/docs/handbook/basic-types.html" target="_blank">any</a>)</code>
+                </td>
+            </tr>
+
+
+                    <tr>
+                        <td class="col-md-4">
+                            <div class="io-line">Definido em <a href="" data-line="194"
+                                    class="link-to-prism">src/app/public/home-store/home-store.component.ts:194</a></div>
+                        </td>
+                    </tr>
+
+
+            <tr>
+                <td class="col-md-4">
+                        <div class="io-description"><p>Obtiene un valor de configuración con un valor por defecto</p>
+</div>
+
+                            <div class="io-description">
+                                <b>Parâmetros :</b>
+                                
+                                <table class="params">
+                                    <thead>
+                                        <tr>
+                                            <td>Nome</td>
+                                                <td>Tipo</td>
+                                            <td>Opcional</td>
+                                        </tr>
+                                    </thead>
+                                    <tbody>
+                                        <tr>
+                                                <td>key</td>
+                                            <td>
+                                                            <code><a href="https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/string" target="_blank" >string</a></code>
+                                            </td>
+
+                                            <td>
+                                                    Não
+                                            </td>
+
+
+                                        </tr>
+                                        <tr>
+                                                <td>defaultValue</td>
+                                            <td>
+                                                            <code><a href="https://www.typescriptlang.org/docs/handbook/basic-types.html" target="_blank" >any</a></code>
+                                            </td>
+
+                                            <td>
+                                                    Não
+                                            </td>
+
+
+                                        </tr>
+                                    </tbody>
+                                </table>
+                            </div>
+                        <div class="io-description">
+                            <b>Retorna : </b>        <code><a href="https://www.typescriptlang.org/docs/handbook/basic-types.html" target="_blank" >any</a></code>
+
+                        </div>
+                            <div class="io-description">
+                                
+                            </div>
+                </td>
+            </tr>
+        </tbody>
+    </table>
+    <table class="table table-sm table-bordered">
+        <tbody>
+            <tr>
+                <td class="col-md-4">
+                    <a name="goToStoreCatalog"></a>
+                    <span class="name">
+                            <span class="modifier">Public</span>
+                        <span ><b>goToStoreCatalog</b></span>
+                        <a href="#goToStoreCatalog"><span class="icon ion-ios-link"></span></a>
+                    </span>
+                </td>
+            </tr>
+            <tr>
+                <td class="col-md-4">
+                        <span class="modifier-icon icon ion-ios-reset"></span>
+                    <code>goToStoreCatalog()</code>
+                </td>
+            </tr>
+
+
+                    <tr>
+                        <td class="col-md-4">
+                            <div class="io-line">Definido em <a href="" data-line="176"
+                                    class="link-to-prism">src/app/public/home-store/home-store.component.ts:176</a></div>
+                        </td>
+                    </tr>
+
+
+            <tr>
+                <td class="col-md-4">
+
+                        <div class="io-description">
+                            <b>Retorna : </b>        <code><a href="https://www.typescriptlang.org/docs/handbook/basic-types.html" target="_blank" >void</a></code>
+
+                        </div>
+                </td>
+            </tr>
+        </tbody>
+    </table>
+    <table class="table table-sm table-bordered">
+        <tbody>
+            <tr>
+                <td class="col-md-4">
+                    <a name="loadCategoriasPrincipales"></a>
+                    <span class="name">
+                            <span class="modifier">Public</span>
+                        <span ><b>loadCategoriasPrincipales</b></span>
+                        <a href="#loadCategoriasPrincipales"><span class="icon ion-ios-link"></span></a>
+                    </span>
+                </td>
+            </tr>
+            <tr>
+                <td class="col-md-4">
+                        <span class="modifier-icon icon ion-ios-reset"></span>
+                    <code>loadCategoriasPrincipales(cmpUuid: <a href="https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/string" target="_blank">string</a>)</code>
+                </td>
+            </tr>
+
+
+                    <tr>
+                        <td class="col-md-4">
+                            <div class="io-line">Definido em <a href="" data-line="114"
+                                    class="link-to-prism">src/app/public/home-store/home-store.component.ts:114</a></div>
+                        </td>
+                    </tr>
+
+
+            <tr>
+                <td class="col-md-4">
+
+                            <div class="io-description">
+                                <b>Parâmetros :</b>
+                                
+                                <table class="params">
+                                    <thead>
+                                        <tr>
+                                            <td>Nome</td>
+                                                <td>Tipo</td>
+                                            <td>Opcional</td>
+                                        </tr>
+                                    </thead>
+                                    <tbody>
+                                        <tr>
+                                                <td>cmpUuid</td>
+                                            <td>
+                                                            <code><a href="https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/string" target="_blank" >string</a></code>
+                                            </td>
+
+                                            <td>
+                                                    Não
+                                            </td>
+
+
+                                        </tr>
+                                    </tbody>
+                                </table>
+                            </div>
+                        <div class="io-description">
+                            <b>Retorna : </b>        <code><a href="https://www.typescriptlang.org/docs/handbook/basic-types.html" target="_blank" >void</a></code>
+
+                        </div>
+                            <div class="io-description">
+                                
+                            </div>
+                </td>
+            </tr>
+        </tbody>
+    </table>
+    <table class="table table-sm table-bordered">
+        <tbody>
+            <tr>
+                <td class="col-md-4">
+                    <a name="loadProductosDestacados"></a>
+                    <span class="name">
+                            <span class="modifier">Private</span>
+                        <span ><b>loadProductosDestacados</b></span>
+                        <a href="#loadProductosDestacados"><span class="icon ion-ios-link"></span></a>
+                    </span>
+                </td>
+            </tr>
+            <tr>
+                <td class="col-md-4">
+                        <span class="modifier-icon icon ion-ios-reset"></span>
+                    <code>loadProductosDestacados(cmpUuid: <a href="https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/string" target="_blank">string</a>)</code>
+                </td>
+            </tr>
+
+
+                    <tr>
+                        <td class="col-md-4">
+                            <div class="io-line">Definido em <a href="" data-line="132"
+                                    class="link-to-prism">src/app/public/home-store/home-store.component.ts:132</a></div>
+                        </td>
+                    </tr>
+
+
+            <tr>
+                <td class="col-md-4">
+
+                            <div class="io-description">
+                                <b>Parâmetros :</b>
+                                
+                                <table class="params">
+                                    <thead>
+                                        <tr>
+                                            <td>Nome</td>
+                                                <td>Tipo</td>
+                                            <td>Opcional</td>
+                                        </tr>
+                                    </thead>
+                                    <tbody>
+                                        <tr>
+                                                <td>cmpUuid</td>
+                                            <td>
+                                                            <code><a href="https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/string" target="_blank" >string</a></code>
+                                            </td>
+
+                                            <td>
+                                                    Não
+                                            </td>
+
+
+                                        </tr>
+                                    </tbody>
+                                </table>
+                            </div>
+                        <div class="io-description">
+                            <b>Retorna : </b>        <code><a href="https://www.typescriptlang.org/docs/handbook/basic-types.html" target="_blank" >void</a></code>
+
+                        </div>
+                            <div class="io-description">
+                                
+                            </div>
+                </td>
+            </tr>
+        </tbody>
+    </table>
+    <table class="table table-sm table-bordered">
+        <tbody>
+            <tr>
+                <td class="col-md-4">
+                    <a name="ngOnInit"></a>
+                    <span class="name">
+                        <span ><b>ngOnInit</b></span>
+                        <a href="#ngOnInit"><span class="icon ion-ios-link"></span></a>
+                    </span>
+                </td>
+            </tr>
+            <tr>
+                <td class="col-md-4">
+<code>ngOnInit()</code>
+                </td>
+            </tr>
+
+
+                    <tr>
+                        <td class="col-md-4">
+                            <div class="io-line">Definido em <a href="" data-line="74"
+                                    class="link-to-prism">src/app/public/home-store/home-store.component.ts:74</a></div>
+                        </td>
+                    </tr>
+
+
+            <tr>
+                <td class="col-md-4">
+
+                        <div class="io-description">
+                            <b>Retorna : </b>        <code><a href="https://www.typescriptlang.org/docs/handbook/basic-types.html" target="_blank" >void</a></code>
+
+                        </div>
+                </td>
+            </tr>
+        </tbody>
+    </table>
+    <table class="table table-sm table-bordered">
+        <tbody>
+            <tr>
+                <td class="col-md-4">
+                    <a name="openProductDetail"></a>
+                    <span class="name">
+                            <span class="modifier">Public</span>
+                        <span ><b>openProductDetail</b></span>
+                        <a href="#openProductDetail"><span class="icon ion-ios-link"></span></a>
+                    </span>
+                </td>
+            </tr>
+            <tr>
+                <td class="col-md-4">
+                        <span class="modifier-icon icon ion-ios-reset"></span>
+                    <code>openProductDetail(producto: <a href="../interfaces/ProductVariationInterface.html" target="_self">ProductVariationInterface</a>)</code>
+                </td>
+            </tr>
+
+
+                    <tr>
+                        <td class="col-md-4">
+                            <div class="io-line">Definido em <a href="" data-line="187"
+                                    class="link-to-prism">src/app/public/home-store/home-store.component.ts:187</a></div>
+                        </td>
+                    </tr>
+
+
+            <tr>
+                <td class="col-md-4">
+
+                            <div class="io-description">
+                                <b>Parâmetros :</b>
+                                
+                                <table class="params">
+                                    <thead>
+                                        <tr>
+                                            <td>Nome</td>
+                                                <td>Tipo</td>
+                                            <td>Opcional</td>
+                                        </tr>
+                                    </thead>
+                                    <tbody>
+                                        <tr>
+                                                <td>producto</td>
+                                            <td>
+                                                            <code><a href="../interfaces/ProductVariationInterface.html" target="_self" >ProductVariationInterface</a></code>
+                                            </td>
+
+                                            <td>
+                                                    Não
+                                            </td>
+
+
+                                        </tr>
+                                    </tbody>
+                                </table>
+                            </div>
+                        <div class="io-description">
+                            <b>Retorna : </b>        <code><a href="https://www.typescriptlang.org/docs/handbook/basic-types.html" target="_blank" >void</a></code>
+
+                        </div>
+                            <div class="io-description">
+                                
+                            </div>
+                </td>
+            </tr>
+        </tbody>
+    </table>
+</section>
+
+    <section data-compodoc="block-properties">
+    
+    <h3 id="inputs">
+        Propriedades
+    </h3>
+    <table class="table table-sm table-bordered">
+        <tbody>
+            <tr>
+                <td class="col-md-4">
+                    <a name="categorias"></a>
+                    <span class="name">
+                            <span class="modifier">Public</span>
+                        <span ><b>categorias</b></span>
+                        <a href="#categorias"><span class="icon ion-ios-link"></span></a>
+                    </span>
+                </td>
+            </tr>
+                <tr>
+                    <td class="col-md-4">
+                        <i>Tipo : </i>    <code>CategoryInterface[]</code>
+
+                    </td>
+                </tr>
+                <tr>
+                    <td class="col-md-4">
+                        <i>Valor padrão : </i><code>[]</code>
+                    </td>
+                </tr>
+                    <tr>
+                        <td class="col-md-4">
+                                <div class="io-line">Definido em <a href="" data-line="54" class="link-to-prism">src/app/public/home-store/home-store.component.ts:54</a></div>
+                        </td>
+                    </tr>
+
+
+        </tbody>
+    </table>
+    <table class="table table-sm table-bordered">
+        <tbody>
+            <tr>
+                <td class="col-md-4">
+                    <a name="companieSlug"></a>
+                    <span class="name">
+                            <span class="modifier">Public</span>
+                        <span ><b>companieSlug</b></span>
+                        <a href="#companieSlug"><span class="icon ion-ios-link"></span></a>
+                    </span>
+                </td>
+            </tr>
+                <tr>
+                    <td class="col-md-4">
+                        <i>Tipo : </i>        <code><a href="https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/string" target="_blank" >string</a></code>
+
+                    </td>
+                </tr>
+                <tr>
+                    <td class="col-md-4">
+                        <i>Valor padrão : </i><code>&#x27;&#x27;</code>
+                    </td>
+                </tr>
+                    <tr>
+                        <td class="col-md-4">
+                                <div class="io-line">Definido em <a href="" data-line="49" class="link-to-prism">src/app/public/home-store/home-store.component.ts:49</a></div>
+                        </td>
+                    </tr>
+
+
+        </tbody>
+    </table>
+    <table class="table table-sm table-bordered">
+        <tbody>
+            <tr>
+                <td class="col-md-4">
+                    <a name="destacados"></a>
+                    <span class="name">
+                            <span class="modifier">Public</span>
+                        <span ><b>destacados</b></span>
+                        <a href="#destacados"><span class="icon ion-ios-link"></span></a>
+                    </span>
+                </td>
+            </tr>
+                <tr>
+                    <td class="col-md-4">
+                        <i>Tipo : </i>        <code><a href="../interfaces/ProductVariationInterface.html" target="_self" >ProductVariationInterface[]</a></code>
+
+                    </td>
+                </tr>
+                <tr>
+                    <td class="col-md-4">
+                        <i>Valor padrão : </i><code>[]</code>
+                    </td>
+                </tr>
+                    <tr>
+                        <td class="col-md-4">
+                                <div class="io-line">Definido em <a href="" data-line="51" class="link-to-prism">src/app/public/home-store/home-store.component.ts:51</a></div>
+                        </td>
+                    </tr>
+
+
+        </tbody>
+    </table>
+    <table class="table table-sm table-bordered">
+        <tbody>
+            <tr>
+                <td class="col-md-4">
+                    <a name="isSettingsLoading"></a>
+                    <span class="name">
+                            <span class="modifier">Public</span>
+                        <span ><b>isSettingsLoading</b></span>
+                        <a href="#isSettingsLoading"><span class="icon ion-ios-link"></span></a>
+                    </span>
+                </td>
+            </tr>
+                <tr>
+                    <td class="col-md-4">
+                        <i>Tipo : </i>        <code><a href="https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/boolean" target="_blank" >boolean</a></code>
+
+                    </td>
+                </tr>
+                <tr>
+                    <td class="col-md-4">
+                        <i>Valor padrão : </i><code>true</code>
+                    </td>
+                </tr>
+                    <tr>
+                        <td class="col-md-4">
+                                <div class="io-line">Definido em <a href="" data-line="59" class="link-to-prism">src/app/public/home-store/home-store.component.ts:59</a></div>
+                        </td>
+                    </tr>
+
+
+        </tbody>
+    </table>
+    <table class="table table-sm table-bordered">
+        <tbody>
+            <tr>
+                <td class="col-md-4">
+                    <a name="store"></a>
+                    <span class="name">
+                            <span class="modifier">Public</span>
+                        <span ><b>store</b></span>
+                        <a href="#store"><span class="icon ion-ios-link"></span></a>
+                    </span>
+                </td>
+            </tr>
+                <tr>
+                    <td class="col-md-4">
+                        <i>Tipo : </i>        <code><a href="../interfaces/CompanyInterface.html" target="_self" >CompanyInterface | null</a></code>
+
+                    </td>
+                </tr>
+                <tr>
+                    <td class="col-md-4">
+                        <i>Valor padrão : </i><code>null</code>
+                    </td>
+                </tr>
+                    <tr>
+                        <td class="col-md-4">
+                                <div class="io-line">Definido em <a href="" data-line="55" class="link-to-prism">src/app/public/home-store/home-store.component.ts:55</a></div>
+                        </td>
+                    </tr>
+
+
+        </tbody>
+    </table>
+    <table class="table table-sm table-bordered">
+        <tbody>
+            <tr>
+                <td class="col-md-4">
+                    <a name="storeSettings"></a>
+                    <span class="name">
+                            <span class="modifier">Public</span>
+                        <span ><b>storeSettings</b></span>
+                        <a href="#storeSettings"><span class="icon ion-ios-link"></span></a>
+                    </span>
+                </td>
+            </tr>
+                <tr>
+                    <td class="col-md-4">
+                        <i>Tipo : </i>    <code>{  }</code>
+
+                    </td>
+                </tr>
+                <tr>
+                    <td class="col-md-4">
+                        <i>Valor padrão : </i><code>{}</code>
+                    </td>
+                </tr>
+                    <tr>
+                        <td class="col-md-4">
+                                <div class="io-line">Definido em <a href="" data-line="58" class="link-to-prism">src/app/public/home-store/home-store.component.ts:58</a></div>
+                        </td>
+                    </tr>
+
+
+        </tbody>
+    </table>
+</section>
+
+</div>
+
+
+    <div class="tab-pane fade  tab-source-code" id="source">
+        <pre class="line-numbers compodoc-sourcecode"><code class="language-typescript">import { Component } from &#x27;@angular/core&#x27;;
+import { Title, Meta } from &#x27;@angular/platform-browser&#x27;;
+import { CommonModule } from &#x27;@angular/common&#x27;;
+import { ActivatedRoute, ParamMap, Router, RouterLink } from &#x27;@angular/router&#x27;;
+import { switchMap } from &#x27;rxjs/operators&#x27;;
+import { of } from &#x27;rxjs&#x27;;
+
+import { NzButtonModule } from &#x27;ng-zorro-antd/button&#x27;;
+import { NzCardModule } from &#x27;ng-zorro-antd/card&#x27;;
+import { NzCarouselModule } from &#x27;ng-zorro-antd/carousel&#x27;;
+import { NzDividerModule } from &#x27;ng-zorro-antd/divider&#x27;;
+import { NzIconModule } from &#x27;ng-zorro-antd/icon&#x27;;
+import { NzModalModule } from &#x27;ng-zorro-antd/modal&#x27;;
+import { NzGridModule } from &#x27;ng-zorro-antd/grid&#x27;;
+import { NzMessageService } from &#x27;ng-zorro-antd/message&#x27;;
+import { NzSpinModule } from &#x27;ng-zorro-antd/spin&#x27;;
+import { NzEmptyModule } from &#x27;ng-zorro-antd/empty&#x27;;
+
+import { ProductVariationInterface } from &#x27;@interfaces/product-variation&#x27;;
+import { CategoryInterface } from &#x27;@interfaces/category.interface&#x27;;
+import { StoreContextService } from &#x27;@services/store-context.service&#x27;;
+import { CartService } from &#x27;@services/cart.service&#x27;;
+import { ProductVariationsService } from &#x27;@services/product-variations.service&#x27;;
+import { CategoriesService } from &#x27;@services/categories.service&#x27;;
+import { AnalyticsService } from &#x27;@services/analytics.service&#x27;;
+import { CompanyInterface } from &#x27;@interfaces/company&#x27;;
+
+@Component({
+  selector: &#x27;app-home&#x27;,
+  standalone: true,
+  imports: [
+    CommonModule,
+    RouterLink,
+    NzGridModule,
+    NzCardModule,
+    NzCarouselModule,
+    NzDividerModule,
+    NzButtonModule,
+    NzIconModule,
+    NzModalModule,
+    NzSpinModule,
+    NzEmptyModule
+  ],
+  templateUrl: &#x27;./home-store.component.html&#x27;,
+  styleUrl: &#x27;./home-store.component.scss&#x27;
+})
+export class HomeStoreComponent {
+
+  public companieSlug: string &#x3D; &#x27;&#x27;;
+  // Propiedad para los productos destacados en el Home
+  public destacados: ProductVariationInterface[] &#x3D; [];
+
+  // Propiedad para las categorías que se mostrarán en la grilla del Home
+  public categorias: CategoryInterface[] &#x3D; [];
+  public store: CompanyInterface | null &#x3D; null;
+
+  // Almacena las configuraciones de la tienda (clave: valor)
+  public storeSettings: { [key: string]: any } &#x3D; {};
+  public isSettingsLoading: boolean &#x3D; true;
+
+  constructor(
+    private route: ActivatedRoute,
+    private router: Router,
+    private _storeContext: StoreContextService,
+    private _cartService: CartService,
+    private _productVariationsService: ProductVariationsService,
+    private _categoriesService: CategoriesService,
+    private titleService: Title,
+    private metaService: Meta,
+    private _analyticsService: AnalyticsService,
+    private message: NzMessageService
+  ) { }
+
+  ngOnInit(): void {
+    // Escucha el slug de la URL para guardar referencia si es necesario
+    this.route.paramMap.subscribe(params &#x3D;&gt; {
+      this.companieSlug &#x3D; params.get(&#x27;slug&#x27;) || &#x27;&#x27;;
+    });
+
+    // Suscribirse a las configuraciones globales detectadas por el Layout
+    this._storeContext.storeSettings$.subscribe(settings &#x3D;&gt; {
+      this.storeSettings &#x3D; settings;
+    });
+
+    this._storeContext.isLoading$.subscribe(loading &#x3D;&gt; {
+      this.isSettingsLoading &#x3D; loading;
+    });
+
+    // 1. Suscribirse reactivamente a la tienda activa para cargar sus productos destacados y categorías principales
+    this._storeContext.activeStore$.subscribe(store &#x3D;&gt; {
+      if (store &amp;&amp; store.cmp_uuid) {
+        this.store &#x3D; store; // Guardar referencia de la tienda activa
+        
+        // Tracking: Registrar visita a la tienda
+        this._analyticsService.trackEvent(store.cmp_uuid, &#x27;PAGE_VIEW&#x27;).subscribe({
+          error: (err) &#x3D;&gt; console.error(&#x27;Error tracking page view:&#x27;, err)
+        });
+
+        // SEO: Configurar el título del documento y meta description dinámicamente
+        this.titleService.setTitle(&#x60;${store.cmp_name} | ATSMarket&#x60;);
+        if (store.cmp_description) {
+          this.metaService.updateTag({ name: &#x27;description&#x27;, content: store.cmp_description });
+        }
+
+        this.loadProductosDestacados(store.cmp_uuid);
+        this.loadCategoriasPrincipales(store.cmp_uuid);
+      }
+    });
+
+    
+  }
+
+  // Simulación de carga de datos (reemplazar con llamadas al backend)
+  public loadCategoriasPrincipales(cmpUuid: string): void {
+    this._categoriesService.getCategories(cmpUuid, &#x27;&#x27;).subscribe({
+      next: (res: any) &#x3D;&gt; {
+        if (res &amp;&amp; res.data) {
+          this.categorias &#x3D; res.data.map((cat: any) &#x3D;&gt; ({
+            nombre: cat.cat_name,
+            descripcion: cat.cat_description || &#x27;&#x27;,
+            imagenUrl: cat.gcat_image || &#x27;https://placehold.co/400x400/eeeeee/8c8c8c?text&#x3D;Categor%C3%ADa&#x27;,
+            link: &#x60;/public/store-catalog/${this.companieSlug}?category&#x3D;${cat.cat_uuid}&#x60;
+          }));
+        }
+      },
+      error: (err) &#x3D;&gt; {
+        console.error(&#x27;Error al cargar categorías principales:&#x27;, err);
+      }
+    });
+  }
+
+  private loadProductosDestacados(cmpUuid: string): void {
+    this._productVariationsService.getProductsVariations(cmpUuid, &#x27;&#x27;, &#x27;&#x27;, true).subscribe({
+      next: (res) &#x3D;&gt; {
+        if (res &amp;&amp; res.data) {
+          this.destacados &#x3D; res.data;
+        }
+      },
+      error: (err) &#x3D;&gt; {
+        console.error(&#x27;Error al cargar productos destacados:&#x27;, err);
+      }
+    });
+  }
+
+  public consultarPrecio(producto: ProductVariationInterface): void {
+    const whatsapp &#x3D; this.getSetting(&#x27;STORE_WHATSAPP&#x27;, &#x27;&#x27;);
+    const message &#x3D; &#x60;Hola, me interesa el producto: ${producto.prov_name} (Ref: ${producto.prov_sku})&#x60;;
+
+    if (whatsapp) {
+      const url &#x3D; &#x60;https://wa.me/${whatsapp}?text&#x3D;${encodeURIComponent(message)}&#x60;;
+      window.open(url, &#x27;_blank&#x27;);
+    } else {
+      // Fallback si no hay WhatsApp configurado
+      alert(&#x60;Consulta por &quot;${producto.prov_name}&quot; (Ref: ${producto.prov_sku}). Contacte con la tienda para más información.&#x60;);
+    }
+  }
+
+  public agregarAlCarrito(producto: ProductVariationInterface): void {
+    // Validar stock si no se permiten pedidos sin stock
+    const allowBackorders &#x3D; this.getSetting(&#x27;ALLOW_BACKORDERS&#x27;, true);
+    if (!allowBackorders &amp;&amp; producto.prov_stock &lt;&#x3D; 0) {
+      this.message.error(&#x27;Lo sentimos, este producto no tiene stock disponible.&#x27;);
+      return;
+    }
+
+    this._cartService.addToCart(producto, 1);
+
+    // Tracking: Registrar adición al carrito
+    if (this.store &amp;&amp; this.store.cmp_uuid) {
+      this._analyticsService.trackEvent(this.store.cmp_uuid, &#x27;ADD_TO_CART&#x27;, producto.prov_uuid).subscribe({
+        error: (err) &#x3D;&gt; console.error(&#x27;Error tracking add to cart:&#x27;, err)
+      });
+    }
+  }
+
+  public goToStoreCatalog(): void {
+    this.router.navigate([&#x27;/public/store-catalog&#x27;, this.companieSlug]);
+  }
+
+  public getGoogleMapsLink(store: CompanyInterface): string {
+    if (store.cmp_lat &amp;&amp; store.cmp_lng) {
+      return &#x60;https://www.google.com/maps/search/?api&#x3D;1&amp;query&#x3D;${store.cmp_lat},${store.cmp_lng}&#x60;;
+    }
+    return &#x60;https://www.google.com/maps/search/?api&#x3D;1&amp;query&#x3D;${encodeURIComponent(store.cmp_address)}&#x60;;
+  }
+
+  public openProductDetail(producto: ProductVariationInterface): void {
+    this.router.navigate([&#x27;/public/store-catalog&#x27;, this.companieSlug, &#x27;product&#x27;, producto.prov_uuid]);
+  }
+
+  /**
+   * Obtiene un valor de configuración con un valor por defecto
+   */
+  public getSetting(key: string, defaultValue: any): any {
+    return this._storeContext.getSetting(key, defaultValue);
+  }
+}
+</code></pre>
+    </div>
+
+    <div class="tab-pane fade " id="templateData">
+        <pre class="line-numbers"><code class="language-html">&lt;nz-spin [nzSpinning]&#x3D;&quot;isSettingsLoading&quot;&gt;
+    &lt;!-- Hero Banner Premium de la Tienda --&gt;
+    &lt;div *ngIf&#x3D;&quot;store&quot; class&#x3D;&quot;store-hero-banner&quot;
+        [ngStyle]&#x3D;&quot;{&#x27;background-image&#x27;: store.cmp_banner ? &#x27;url(&#x27; + store.cmp_banner + &#x27;)&#x27; : &#x27;none&#x27;}&quot;&gt;
+        &lt;div class&#x3D;&quot;store-hero-overlay&quot; *ngIf&#x3D;&quot;store.cmp_banner&quot;&gt;&lt;/div&gt;
+        &lt;div class&#x3D;&quot;store-hero-content&quot;&gt;
+            &lt;div class&#x3D;&quot;brand-card&quot;&gt;
+                &lt;img [src]&#x3D;&quot;store.cmp_logo ? store.cmp_logo : &#x27;https://placehold.co/150x150/eeeeee/8c8c8c?text&#x3D;Logo&#x27;&quot;
+                    [alt]&#x3D;&quot;store.cmp_name&quot; class&#x3D;&quot;store-logo&quot;&gt;
+                &lt;div class&#x3D;&quot;store-info&quot;&gt;
+                    &lt;h1 class&#x3D;&quot;store-name&quot;&gt;{{ store.cmp_name }}&lt;/h1&gt;
+                    &lt;p class&#x3D;&quot;store-description&quot;&gt;{{ store.cmp_description || &#x27;Explora nuestro catálogo oficial.&#x27; }}&lt;/p&gt;
+                    
+                    &lt;!-- Redes Sociales Dinámicas --&gt;
+                    &lt;div class&#x3D;&quot;store-socials&quot; style&#x3D;&quot;margin-top: 16px; display: flex; gap: 12px; justify-content: center;&quot;&gt;
+                        &lt;a *ngIf&#x3D;&quot;store.cmp_whatsapp&quot; [href]&#x3D;&quot;&#x27;https://wa.me/&#x27; + store.cmp_whatsapp&quot; target&#x3D;&quot;_blank&quot; class&#x3D;&quot;social-icon wa&quot; title&#x3D;&quot;WhatsApp&quot;&gt;
+                            &lt;span nz-icon nzType&#x3D;&quot;whatsapp&quot; nzTheme&#x3D;&quot;outline&quot;&gt;&lt;/span&gt;
+                        &lt;/a&gt;
+                        &lt;a *ngIf&#x3D;&quot;store.cmp_instagram&quot; [href]&#x3D;&quot;&#x27;https://instagram.com/&#x27; + store.cmp_instagram&quot; target&#x3D;&quot;_blank&quot; class&#x3D;&quot;social-icon ig&quot; title&#x3D;&quot;Instagram&quot;&gt;
+                            &lt;span nz-icon nzType&#x3D;&quot;instagram&quot; nzTheme&#x3D;&quot;outline&quot;&gt;&lt;/span&gt;
+                        &lt;/a&gt;
+                        &lt;a *ngIf&#x3D;&quot;store.cmp_facebook&quot; [href]&#x3D;&quot;&#x27;https://facebook.com/&#x27; + store.cmp_facebook&quot; target&#x3D;&quot;_blank&quot; class&#x3D;&quot;social-icon fb&quot; title&#x3D;&quot;Facebook&quot;&gt;
+                            &lt;span nz-icon nzType&#x3D;&quot;facebook&quot; nzTheme&#x3D;&quot;outline&quot;&gt;&lt;/span&gt;
+                        &lt;/a&gt;
+                    &lt;/div&gt;
+                &lt;/div&gt;
+            &lt;/div&gt;
+        &lt;/div&gt;
+    &lt;/div&gt;
+
+    &lt;div class&#x3D;&quot;main-content-wrapper&quot;&gt;
+
+        &lt;div class&#x3D;&quot;section-container nz-py-lg&quot;&gt;
+            &lt;h2 class&#x3D;&quot;section-title&quot;&gt;{{ getSetting(&#x27;HOME_CATEGORIES_TITLE&#x27;, &#x27;Nuestras Categorías Principales&#x27;) }}&lt;/h2&gt;
+
+            &lt;div nz-row [nzGutter]&#x3D;&quot;[24, 24]&quot; *ngIf&#x3D;&quot;categorias.length &gt; 0&quot;&gt;
+                &lt;div nz-col [nzXs]&#x3D;&quot;24&quot; [nzSm]&#x3D;&quot;12&quot; [nzLg]&#x3D;&quot;8&quot; *ngFor&#x3D;&quot;let cat of categorias&quot;&gt;
+                    &lt;a [routerLink]&#x3D;&quot;cat.link&quot;&gt;
+                        &lt;nz-card [nzHoverable]&#x3D;&quot;true&quot; class&#x3D;&quot;premium-category-card&quot; [nzCover]&#x3D;&quot;coverCatTemplate&quot;&gt;
+                            &lt;ng-template #coverCatTemplate&gt;
+                                &lt;div class&#x3D;&quot;category-image-wrapper&quot;&gt;
+                                    &lt;img [alt]&#x3D;&quot;cat.nombre&quot; 
+                                        [src]&#x3D;&quot;cat.imagenUrl ? cat.imagenUrl : &#x27;https://placehold.co/400x225/eeeeee/8c8c8c?text&#x3D;Categor%C3%ADa&#x27;&quot; 
+                                        class&#x3D;&quot;category-card-image&quot; /&gt;
+                                &lt;/div&gt;
+                            &lt;/ng-template&gt;
+
+                            &lt;div class&#x3D;&quot;category-info&quot;&gt;
+                                &lt;h3 class&#x3D;&quot;category-title&quot;&gt;{{ cat.nombre }}&lt;/h3&gt;
+                                &lt;p class&#x3D;&quot;category-desc&quot;&gt;{{ cat.descripcion || &#x27;Explorar productos de esta categoría.&#x27; }}&lt;/p&gt;
+                            &lt;/div&gt;
+
+                            &lt;div class&#x3D;&quot;category-footer&quot;&gt;
+                                &lt;span&gt;Ver Colección&lt;/span&gt;
+                                &lt;span nz-icon nzType&#x3D;&quot;arrow-right&quot; class&#x3D;&quot;category-card-arrow&quot;&gt;&lt;/span&gt;
+                            &lt;/div&gt;
+                        &lt;/nz-card&gt;
+                    &lt;/a&gt;
+                &lt;/div&gt;
+            &lt;/div&gt;
+
+            &lt;nz-empty *ngIf&#x3D;&quot;categorias.length &#x3D;&#x3D;&#x3D; 0&quot; 
+                nzNotFoundContent&#x3D;&quot;Este comercio aún no posee categorías principales definidas.&quot; 
+                class&#x3D;&quot;empty-state-premium&quot;&gt;
+            &lt;/nz-empty&gt;
+        &lt;/div&gt;
+
+        &lt;nz-divider&gt;&lt;/nz-divider&gt;
+
+        &lt;div class&#x3D;&quot;section-container bg-light nz-py-lg&quot;&gt;
+            &lt;h2 class&#x3D;&quot;section-title&quot;&gt;{{ getSetting(&#x27;HOME_FEATURED_TITLE&#x27;, &#x27;Productos de la Semana&#x27;) }}&lt;/h2&gt;
+
+            &lt;div nz-row [nzGutter]&#x3D;&quot;[24, 24]&quot; *ngIf&#x3D;&quot;destacados.length &gt; 0&quot;&gt;
+                &lt;div nz-col [nzXs]&#x3D;&quot;24&quot; [nzSm]&#x3D;&quot;12&quot; [nzMd]&#x3D;&quot;12&quot; [nzLg]&#x3D;&quot;8&quot; [nzXl]&#x3D;&quot;6&quot;
+                    *ngFor&#x3D;&quot;let prod of destacados | slice:0:getSetting(&#x27;HOME_FEATURED_COUNT&#x27;, 8)&quot;&gt;
+                    
+                    &lt;nz-card [nzHoverable]&#x3D;&quot;true&quot; class&#x3D;&quot;premium-product-card&quot; [nzCover]&#x3D;&quot;coverProdTemplate&quot;
+                        [nzBodyStyle]&#x3D;&quot;{ padding: &#x27;16px&#x27; }&quot;&gt;
+                        &lt;ng-template #coverProdTemplate&gt;
+                            &lt;div class&#x3D;&quot;card-image-wrapper&quot; (click)&#x3D;&quot;openProductDetail(prod)&quot; style&#x3D;&quot;cursor: pointer;&quot;&gt;
+                                &lt;img [alt]&#x3D;&quot;prod.prov_name&quot; 
+                                    [src]&#x3D;&quot;prod.prov_image ? prod.prov_image : &#x27;https://placehold.co/400x400/eeeeee/8c8c8c?text&#x3D;Sin+Foto&#x27;&quot; 
+                                    class&#x3D;&quot;product-card-image&quot; /&gt;
+                            &lt;/div&gt;
+                        &lt;/ng-template&gt;
+
+                        &lt;nz-card-meta [nzTitle]&#x3D;&quot;prod.prov_name&quot; 
+                            [nzDescription]&#x3D;&quot;&#x27;Ref: &#x27; + (prod.prov_sku || &#x27;N/A&#x27;)&quot; (click)&#x3D;&quot;openProductDetail(prod)&quot; style&#x3D;&quot;cursor: pointer;&quot;&gt;
+                        &lt;/nz-card-meta&gt;
+
+                        &lt;div class&#x3D;&quot;product-pricing&quot; style&#x3D;&quot;margin-top: 12px; display: flex; align-items: center; justify-content: space-between;&quot;&gt;
+                            &lt;span class&#x3D;&quot;price-tag&quot;&gt;{{ getSetting(&#x27;CURRENCY&#x27;, &#x27;$&#x27;) }} {{ prod.prov_suggestedminimumsellingprice | number:&#x27;1.2-2&#x27; }}&lt;/span&gt;
+                            
+                            &lt;!-- Mini Stars indicator on card --&gt;
+                            &lt;span *ngIf&#x3D;&quot;prod.prov_reviewscount &amp;&amp; prod.prov_reviewscount &gt; 0&quot; style&#x3D;&quot;font-size: 12px; font-weight: 600; color: #fa8c16; display: flex; align-items: center; gap: 4px;&quot;&gt;
+                                &lt;span nz-icon nzType&#x3D;&quot;star&quot; nzTheme&#x3D;&quot;fill&quot;&gt;&lt;/span&gt; 
+                                {{ prod.prov_averagerating || 0 }} 
+                                &lt;span style&#x3D;&quot;color: #8c8c8c; font-weight: 500; font-size: 11px;&quot;&gt;({{ prod.prov_reviewscount }})&lt;/span&gt;
+                            &lt;/span&gt;
+                            &lt;span *ngIf&#x3D;&quot;!prod.prov_reviewscount || prod.prov_reviewscount &#x3D;&#x3D;&#x3D; 0&quot; style&#x3D;&quot;font-size: 11px; font-weight: 600; color: #8c8c8c; background: #f5f5f5; padding: 2px 6px; border-radius: 4px;&quot;&gt;
+                                Nuevo
+                            &lt;/span&gt;
+                        &lt;/div&gt;
+
+                        &lt;div class&#x3D;&quot;product-actions&quot; style&#x3D;&quot;margin-top: 16px; display: flex; gap: 8px;&quot;&gt;
+                            &lt;button nz-button nzType&#x3D;&quot;default&quot; (click)&#x3D;&quot;openProductDetail(prod)&quot; style&#x3D;&quot;flex: 1;&quot;&gt;
+                                Detalles
+                            &lt;/button&gt;
+                            &lt;button nz-button nzType&#x3D;&quot;primary&quot; 
+                                [disabled]&#x3D;&quot;!getSetting(&#x27;ALLOW_BACKORDERS&#x27;, true) &amp;&amp; prod.prov_stock &lt;&#x3D; 0&quot;
+                                (click)&#x3D;&quot;agregarAlCarrito(prod)&quot; style&#x3D;&quot;flex: 1;&quot;&gt;
+                                Comprar &lt;span nz-icon nzType&#x3D;&quot;shopping-cart&quot;&gt;&lt;/span&gt;
+                            &lt;/button&gt;
+                        &lt;/div&gt;
+                    &lt;/nz-card&gt;
+                &lt;/div&gt;
+            &lt;/div&gt;
+
+            &lt;nz-empty *ngIf&#x3D;&quot;destacados.length &#x3D;&#x3D;&#x3D; 0&quot; 
+                nzNotFoundContent&#x3D;&quot;Este comercio aún no posee productos destacados esta semana.&quot; 
+                class&#x3D;&quot;empty-state-premium&quot;&gt;
+                &lt;button nz-button nzType&#x3D;&quot;primary&quot; (click)&#x3D;&quot;goToStoreCatalog()&quot;&gt;Ver Catálogo General&lt;/button&gt;
+            &lt;/nz-empty&gt;
+        &lt;/div&gt;
+
+        &lt;div class&#x3D;&quot;section-container nz-py-lg info-section&quot;&gt;
+            &lt;div nz-row [nzGutter]&#x3D;&quot;[32, 32]&quot;&gt;
+                &lt;div nz-col [nzXs]&#x3D;&quot;24&quot; [nzMd]&#x3D;&quot;8&quot;&gt;
+                    &lt;div class&#x3D;&quot;info-block&quot;&gt;
+                        &lt;span nz-icon [nzType]&#x3D;&quot;getSetting(&#x27;HOME_INFO_BLOCK_1_ICON&#x27;, &#x27;environment&#x27;)&quot; nzTheme&#x3D;&quot;outline&quot;
+                            class&#x3D;&quot;info-icon&quot;&gt;&lt;/span&gt;
+                        &lt;h3&gt;{{ getSetting(&#x27;HOME_INFO_BLOCK_1_TITLE&#x27;, &#x27;Auténtica Fe&#x27;) }}&lt;/h3&gt;
+                        &lt;p&gt;{{ getSetting(&#x27;HOME_INFO_BLOCK_1_DESC&#x27;, &#x27;Artículos seleccionados desde el corazón de Luján.&#x27;) }}&lt;/p&gt;
+                    &lt;/div&gt;
+                &lt;/div&gt;
+                &lt;div nz-col [nzXs]&#x3D;&quot;24&quot; [nzMd]&#x3D;&quot;8&quot;&gt;
+                    &lt;div class&#x3D;&quot;info-block&quot;&gt;
+                        &lt;span nz-icon [nzType]&#x3D;&quot;getSetting(&#x27;HOME_INFO_BLOCK_2_ICON&#x27;, &#x27;tag&#x27;)&quot; nzTheme&#x3D;&quot;outline&quot;
+                            class&#x3D;&quot;info-icon&quot;&gt;&lt;/span&gt;
+                        &lt;h3&gt;{{ getSetting(&#x27;HOME_INFO_BLOCK_2_TITLE&#x27;, &#x27;Consulta Discreta&#x27;) }}&lt;/h3&gt;
+                        &lt;p&gt;{{ getSetting(&#x27;HOME_INFO_BLOCK_2_DESC&#x27;, &#x27;Precios disponibles instantáneamente al solicitarlos.&#x27;) }}&lt;/p&gt;
+                    &lt;/div&gt;
+                &lt;/div&gt;
+                &lt;div nz-col [nzXs]&#x3D;&quot;24&quot; [nzMd]&#x3D;&quot;8&quot;&gt;
+                    &lt;div class&#x3D;&quot;info-block&quot;&gt;
+                        &lt;span nz-icon [nzType]&#x3D;&quot;getSetting(&#x27;HOME_INFO_BLOCK_3_ICON&#x27;, &#x27;rocket&#x27;)&quot; nzTheme&#x3D;&quot;outline&quot;
+                            class&#x3D;&quot;info-icon&quot;&gt;&lt;/span&gt;
+                        &lt;h3&gt;{{ getSetting(&#x27;HOME_INFO_BLOCK_3_TITLE&#x27;, &#x27;Envío Rápido&#x27;) }}&lt;/h3&gt;
+                        &lt;p&gt;{{ getSetting(&#x27;HOME_INFO_BLOCK_3_DESC&#x27;, &#x27;Despachamos tu pedido en menos de 24 horas.&#x27;) }}&lt;/p&gt;
+                    &lt;/div&gt;
+                &lt;/div&gt;
+            &lt;/div&gt;
+        &lt;/div&gt;
+
+        &lt;!-- Footer de la Tienda --&gt;
+        &lt;footer *ngIf&#x3D;&quot;store&quot; class&#x3D;&quot;store-footer&quot;&gt;
+            &lt;nz-divider&gt;&lt;/nz-divider&gt;
+            &lt;div nz-row [nzGutter]&#x3D;&quot;[32, 32]&quot; style&#x3D;&quot;padding: 40px 0;&quot;&gt;
+                &lt;div nz-col [nzXs]&#x3D;&quot;24&quot; [nzMd]&#x3D;&quot;8&quot; class&#x3D;&quot;footer-col&quot;&gt;
+                    &lt;h3 class&#x3D;&quot;footer-title&quot;&gt;{{ store.cmp_name }}&lt;/h3&gt;
+                    &lt;p class&#x3D;&quot;footer-desc&quot;&gt;{{ store.cmp_description || &#x27;Tu tienda oficial de confianza.&#x27; }}&lt;/p&gt;
+                &lt;/div&gt;
+                &lt;div nz-col [nzXs]&#x3D;&quot;24&quot; [nzMd]&#x3D;&quot;8&quot; class&#x3D;&quot;footer-col&quot;&gt;
+                    &lt;h3 class&#x3D;&quot;footer-title&quot;&gt;Contacto&lt;/h3&gt;
+                    &lt;ul class&#x3D;&quot;footer-links&quot;&gt;
+                        &lt;li *ngIf&#x3D;&quot;store.cmp_email&quot;&gt;&lt;span nz-icon nzType&#x3D;&quot;mail&quot;&gt;&lt;/span&gt; {{ store.cmp_email }}&lt;/li&gt;
+                        &lt;li *ngIf&#x3D;&quot;store.cmp_phone&quot;&gt;&lt;span nz-icon nzType&#x3D;&quot;phone&quot;&gt;&lt;/span&gt; {{ store.cmp_phone }}&lt;/li&gt;
+                        &lt;li *ngIf&#x3D;&quot;store.cmp_address&quot;&gt;
+                            &lt;a [href]&#x3D;&quot;getGoogleMapsLink(store)&quot; target&#x3D;&quot;_blank&quot; class&#x3D;&quot;maps-link&quot; style&#x3D;&quot;color: inherit; text-decoration: none; display: inline-flex; align-items: center; gap: 8px; transition: color 0.3s ease;&quot;&gt;
+                                &lt;span nz-icon nzType&#x3D;&quot;environment&quot;&gt;&lt;/span&gt; {{ store.cmp_address }}
+                            &lt;/a&gt;
+                        &lt;/li&gt;
+                    &lt;/ul&gt;
+                &lt;/div&gt;
+                &lt;div nz-col [nzXs]&#x3D;&quot;24&quot; [nzMd]&#x3D;&quot;8&quot; class&#x3D;&quot;footer-col&quot;&gt;
+                    &lt;h3 class&#x3D;&quot;footer-title&quot;&gt;Seguinos&lt;/h3&gt;
+                    &lt;div class&#x3D;&quot;footer-social-row&quot;&gt;
+                        &lt;a *ngIf&#x3D;&quot;store.cmp_whatsapp&quot; [href]&#x3D;&quot;&#x27;https://wa.me/&#x27; + store.cmp_whatsapp&quot; target&#x3D;&quot;_blank&quot; class&#x3D;&quot;footer-social-btn wa&quot;&gt;
+                            &lt;span nz-icon nzType&#x3D;&quot;whatsapp&quot;&gt;&lt;/span&gt; WhatsApp
+                        &lt;/a&gt;
+                        &lt;a *ngIf&#x3D;&quot;store.cmp_instagram&quot; [href]&#x3D;&quot;&#x27;https://instagram.com/&#x27; + store.cmp_instagram&quot; target&#x3D;&quot;_blank&quot; class&#x3D;&quot;footer-social-btn ig&quot;&gt;
+                            &lt;span nz-icon nzType&#x3D;&quot;instagram&quot;&gt;&lt;/span&gt; Instagram
+                        &lt;/a&gt;
+                        &lt;a *ngIf&#x3D;&quot;store.cmp_facebook&quot; [href]&#x3D;&quot;&#x27;https://facebook.com/&#x27; + store.cmp_facebook&quot; target&#x3D;&quot;_blank&quot; class&#x3D;&quot;footer-social-btn fb&quot;&gt;
+                            &lt;span nz-icon nzType&#x3D;&quot;facebook&quot;&gt;&lt;/span&gt; Facebook
+                        &lt;/a&gt;
+                    &lt;/div&gt;
+                &lt;/div&gt;
+            &lt;/div&gt;
+            &lt;div class&#x3D;&quot;footer-copyright&quot;&gt;
+                &lt;p&gt;© {{ store.cmp_name }} - Todos los derechos reservados. Powered by ATSMarket.&lt;/p&gt;
+            &lt;/div&gt;
+        &lt;/footer&gt;
+    &lt;/div&gt;
+&lt;/nz-spin&gt;</code></pre>
+    </div>
+
+    <div class="tab-pane fade " id="styleData">
+                <p class="comment">
+                    <code>./home-store.component.scss</code>
+                </p>
+                <pre class="line-numbers"><code class="language-scss">/* Estilos generales del contenedor */
+.main-content-wrapper {
+    padding: 24px;
+    max-width: 1200px;
+    margin: 0 auto;
+}
+
+.section-container {
+    padding: 40px 0;
+}
+
+.section-title {
+    text-align: center;
+    margin-bottom: 30px;
+    font-size: 2em;
+    font-weight: 300;
+}
+
+/* Hero Banner Premium de la Tienda */
+.store-hero-banner {
+    position: relative;
+    background: linear-gradient(135deg, #1f1f1f 0%, #141414 100%);
+    background-size: cover;
+    background-position: center;
+    min-height: 400px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    padding: 60px 24px;
+    border-bottom: 1px solid rgba(255, 255, 255, 0.1);
+    overflow: hidden;
+
+    .store-hero-overlay {
+        position: absolute;
+        top: 0;
+        left: 0;
+        width: 100%;
+        height: 100%;
+        background: radial-gradient(circle, rgba(0, 0, 0, 0.5) 0%, rgba(0, 0, 0, 0.85) 100%);
+        z-index: 1;
+        backdrop-filter: blur(4px);
+    }
+
+    .store-hero-content {
+        position: relative;
+        z-index: 2;
+        width: 100%;
+        max-width: 650px;
+        text-align: center;
+
+        .brand-card {
+            background: rgba(255, 255, 255, 0.1);
+            backdrop-filter: blur(20px);
+            -webkit-backdrop-filter: blur(20px);
+            border: 1px solid rgba(255, 255, 255, 0.2);
+            border-radius: 24px;
+            padding: 40px 32px;
+            box-shadow: 0 20px 40px rgba(0, 0, 0, 0.3);
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            gap: 20px;
+            animation: fadeInScale 0.6s cubic-bezier(0.25, 0.8, 0.25, 1) forwards;
+
+            .store-logo {
+                width: 120px;
+                height: 120px;
+                border-radius: 50%;
+                border: 4px solid rgba(255, 255, 255, 0.8);
+                object-fit: cover;
+                box-shadow: 0 8px 24px rgba(0, 0, 0, 0.25);
+                background-color: #fff;
+                transition: transform 0.3s ease;
+
+                &amp;:hover {
+                    transform: scale(1.05);
+                }
+            }
+
+            .store-info {
+                color: #ffffff;
+
+                .store-name {
+                    margin: 0;
+                    font-size: 32px;
+                    font-weight: 800;
+                    color: #ffffff;
+                    letter-spacing: -0.5px;
+                    line-height: 1.2;
+                }
+
+                .store-description {
+                    margin: 8px 0 0 0;
+                    font-size: 15px;
+                    color: rgba(255, 255, 255, 0.8);
+                    line-height: 1.5;
+                }
+            }
+
+            .store-socials {
+                .social-icon {
+                    width: 44px;
+                    height: 44px;
+                    border-radius: 50%;
+                    background: rgba(255, 255, 255, 0.15);
+                    border: 1px solid rgba(255, 255, 255, 0.25);
+                    color: #ffffff;
+                    display: inline-flex;
+                    align-items: center;
+                    justify-content: center;
+                    font-size: 20px;
+                    transition: all 0.3s cubic-bezier(0.25, 0.8, 0.25, 1);
+                    text-decoration: none;
+
+                    &amp;:hover {
+                        transform: translateY(-3px);
+                        background: #ffffff;
+                        box-shadow: 0 8px 16px rgba(0, 0, 0, 0.2);
+
+                        &amp;.wa {
+                            color: #25d366;
+                            border-color: #25d366;
+                        }
+
+                        &amp;.ig {
+                            color: #e1306c;
+                            border-color: #e1306c;
+                        }
+
+                        &amp;.fb {
+                            color: #1877f2;
+                            border-color: #1877f2;
+                        }
+                    }
+                }
+            }
+        }
+    }
+}
+
+@keyframes fadeInScale {
+    0% {
+        opacity: 0;
+        transform: scale(0.95) translateY(10px);
+    }
+    100% {
+        opacity: 1;
+        transform: scale(1) translateY(0);
+    }
+}
+
+/* Cards de Productos y Categorías */
+.product-image {
+    width: 100%;
+    height: 200px;
+    /* Altura fija para la imagen */
+    object-fit: cover;
+}
+
+/* Premium Category Cards */
+.premium-category-card {
+    border-radius: 16px;
+    overflow: hidden;
+    border: none;
+    box-shadow: 0 4px 16px rgba(0, 0, 0, 0.03);
+    transition: all 0.3s cubic-bezier(0.25, 0.8, 0.25, 1);
+    height: 100%;
+    display: flex;
+    flex-direction: column;
+
+    &amp;:hover {
+        transform: translateY(-6px);
+        box-shadow: 0 16px 32px rgba(0, 0, 0, 0.08);
+
+        .category-image-wrapper img {
+            transform: scale(1.06);
+        }
+
+        .category-card-arrow {
+            transform: translateX(4px);
+            color: var(--ant-primary-color);
+        }
+    }
+
+    ::ng-deep .ant-card-cover {
+        margin: 0 !important;
+    }
+
+    .category-image-wrapper {
+        width: 100%;
+        padding-top: 56.25%; /* 16:9 Aspect Ratio */
+        position: relative;
+        overflow: hidden;
+        background-color: #fafafa;
+
+        img {
+            position: absolute;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            object-fit: cover;
+            transition: transform 0.4s ease;
+        }
+    }
+
+    ::ng-deep .ant-card-body {
+        padding: 20px;
+        flex: 1;
+        display: flex;
+        flex-direction: column;
+        justify-content: space-between;
+    }
+
+    .category-info {
+        .category-title {
+            font-size: 18px;
+            font-weight: 700;
+            color: #262626;
+            margin-bottom: 6px;
+            line-height: 1.3;
+        }
+
+        .category-desc {
+            font-size: 13.5px;
+            color: #8c8c8c;
+            line-height: 1.5;
+            display: -webkit-box;
+            -webkit-line-clamp: 2;
+            line-clamp: 2;
+            -webkit-box-orient: vertical;
+            overflow: hidden;
+            height: 40px; /* Always space for 2 lines */
+        }
+    }
+
+    .category-footer {
+        margin-top: 16px;
+        display: flex;
+        align-items: center;
+        justify-content: space-between;
+        font-weight: 600;
+        font-size: 13px;
+        color: #595959;
+
+        .category-card-arrow {
+            font-size: 16px;
+            transition: transform 0.3s ease, color 0.3s ease;
+        }
+    }
+}
+
+.product-actions {
+    display: flex;
+    justify-content: space-between;
+    margin-top: 10px;
+}
+
+/* Sección de Información de Valor */
+.info-block {
+    text-align: center;
+    padding: 15px;
+}
+
+.info-icon {
+    font-size: 40px;
+    color: #1890ff;
+    /* Color primario de NG-Zorro */
+    margin-bottom: 15px;
+}
+
+/* Cards Premium */
+.premium-product-card {
+    border-radius: 12px;
+    overflow: hidden;
+    border: none;
+    box-shadow: 0 4px 16px rgba(0, 0, 0, 0.04);
+    transition: all 0.3s cubic-bezier(0.25, 0.8, 0.25, 1);
+    display: flex;
+    flex-direction: column;
+    height: 100%;
+
+    &amp;:hover {
+        transform: translateY(-4px);
+        box-shadow: 0 12px 24px rgba(0, 0, 0, 0.08);
+
+        .card-image-wrapper img {
+            transform: scale(1.05);
+        }
+    }
+
+    ::ng-deep .ant-card-cover {
+        margin: 0 !important;
+    }
+
+    .card-image-wrapper {
+        width: 100%;
+        padding-top: 100%;
+        /* Cuadrado 1:1 responsive */
+        position: relative;
+        overflow: hidden;
+        background-color: #fafafa;
+
+        img {
+            position: absolute;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            object-fit: cover;
+            transition: transform 0.4s ease;
+        }
+    }
+
+    ::ng-deep .ant-card-body {
+        flex: 1;
+        display: flex;
+        flex-direction: column;
+    }
+
+    ::ng-deep .ant-card-meta-title {
+        font-size: 16px;
+        font-weight: 600;
+        color: #262626;
+        white-space: normal;
+        display: -webkit-box;
+        -webkit-line-clamp: 2;
+        line-clamp: 2;
+        -webkit-box-orient: vertical;
+        line-height: 1.4;
+        height: 44px;
+        /* Siempre 2 líneas */
+        margin-bottom: 4px;
+    }
+
+    ::ng-deep .ant-card-meta-description {
+        font-size: 13px;
+        color: #8c8c8c;
+    }
+
+    .product-pricing {
+        margin-top: 16px;
+        flex: 1;
+
+        .price-tag {
+            font-size: 22px;
+            font-weight: 700;
+            color: #1890ff;
+        }
+    }
+
+    .product-actions {
+        margin-top: 16px;
+    }
+}
+
+/* Premium Empty State */
+.empty-state-premium {
+    background: #ffffff;
+    border-radius: 20px;
+    padding: 60px 40px;
+    box-shadow: 0 10px 30px rgba(0, 0, 0, 0.02);
+    border: 1px dashed rgba(0, 0, 0, 0.08);
+    margin: 20px 0;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    text-align: center;
+    
+    ::ng-deep .ant-empty-image {
+        height: 100px;
+        margin-bottom: 16px;
+        display: flex;
+        justify-content: center;
+        align-items: center;
+    }
+
+    ::ng-deep .ant-empty-description {
+        font-size: 15px;
+        color: #8c8c8c;
+        font-weight: 500;
+        margin-bottom: 20px;
+    }
+}
+
+/* Premium Footer */
+.store-footer {
+    margin-top: 60px;
+    padding-bottom: 40px;
+
+    .footer-col {
+        display: flex;
+        flex-direction: column;
+        gap: 12px;
+    }
+
+    .footer-title {
+        font-size: 16px;
+        font-weight: 700;
+        color: #262626;
+        margin: 0;
+        text-transform: uppercase;
+        letter-spacing: 0.5px;
+    }
+
+    .footer-desc {
+        color: #8c8c8c;
+        font-size: 14px;
+        line-height: 1.6;
+        margin: 0;
+    }
+
+    .footer-links {
+        list-style: none;
+        padding: 0;
+        margin: 0;
+        display: flex;
+        flex-direction: column;
+        gap: 10px;
+        color: #595959;
+        font-size: 14px;
+
+        li {
+            display: flex;
+            align-items: center;
+            gap: 8px;
+        }
+
+        .maps-link {
+            &amp;:hover {
+                color: var(--ant-primary-color) !important;
+            }
+        }
+    }
+
+    .footer-social-row {
+        display: flex;
+        flex-direction: column;
+        gap: 8px;
+
+        .footer-social-btn {
+            display: inline-flex;
+            align-items: center;
+            gap: 10px;
+            padding: 10px 16px;
+            border-radius: 8px;
+            background: #fafafa;
+            border: 1px solid #f0f0f0;
+            color: #595959;
+            font-size: 14px;
+            font-weight: 600;
+            text-decoration: none;
+            transition: all 0.3s cubic-bezier(0.25, 0.8, 0.25, 1);
+
+            &amp;:hover {
+                transform: translateY(-2px);
+                background: #ffffff;
+                box-shadow: 0 4px 12px rgba(0, 0, 0, 0.05);
+
+                &amp;.wa {
+                    color: #25d366;
+                    border-color: #25d366;
+                    background-color: rgba(37, 211, 102, 0.04);
+                }
+
+                &amp;.ig {
+                    color: #e1306c;
+                    border-color: #e1306c;
+                    background-color: rgba(225, 48, 108, 0.04);
+                }
+
+                &amp;.fb {
+                    color: #1877f2;
+                    border-color: #1877f2;
+                    background-color: rgba(24, 119, 242, 0.04);
+                }
+            }
+        }
+    }
+
+    .footer-copyright {
+        margin-top: 32px;
+        text-align: center;
+        border-top: 1px solid #f0f0f0;
+        padding-top: 24px;
+        color: #bfbfbf;
+        font-size: 13px;
+        font-weight: 500;
+    }
+}</code></pre>
+    </div>
+
+    <div class="tab-pane fade " id="tree">
+        <div id="tree-container"></div>
+        <div class="tree-legend">
+            <div class="title">
+                <b>Legend</b>
+            </div>
+            <div>
+                <div class="color htmlelement"></div><span>Elemento HTML</span>
+            </div>
+            <div>
+                <div class="color component"></div><span>Componente</span>
+            </div>
+            <div>
+                <div class="color directive"></div><span>Elemento HTML com diretiva</span>
+            </div>
+        </div>
+    </div>
+
+    
+</div>
+
+<script src="../js/libs/vis-network.min.js"></script>
+<script src="../js/libs/htmlparser.js"></script>
+<script src="../js/libs/deep-iterator.js"></script>
+<script>
+        var COMPONENT_TEMPLATE = '<div><nz-spin [nzSpinning]="isSettingsLoading">    <!-- Hero Banner Premium de la Tienda -->    <div *ngIf="store" class="store-hero-banner"        [ngStyle]="{\'background-image\': store.cmp_banner ? \'url(\' + store.cmp_banner + \')\' : \'none\'}">        <div class="store-hero-overlay" *ngIf="store.cmp_banner"></div>        <div class="store-hero-content">            <div class="brand-card">                <img [src]="store.cmp_logo ? store.cmp_logo : \'https://placehold.co/150x150/eeeeee/8c8c8c?text=Logo\'"                    [alt]="store.cmp_name" class="store-logo">                <div class="store-info">                    <h1 class="store-name">{{ store.cmp_name }}</h1>                    <p class="store-description">{{ store.cmp_description || \'Explora nuestro catálogo oficial.\' }}</p>                                        <!-- Redes Sociales Dinámicas -->                    <div class="store-socials" style="margin-top: 16px; display: flex; gap: 12px; justify-content: center;">                        <a *ngIf="store.cmp_whatsapp" [href]="\'https://wa.me/\' + store.cmp_whatsapp" target="_blank" class="social-icon wa" title="WhatsApp">                            <span nz-icon nzType="whatsapp" nzTheme="outline"></span>                        </a>                        <a *ngIf="store.cmp_instagram" [href]="\'https://instagram.com/\' + store.cmp_instagram" target="_blank" class="social-icon ig" title="Instagram">                            <span nz-icon nzType="instagram" nzTheme="outline"></span>                        </a>                        <a *ngIf="store.cmp_facebook" [href]="\'https://facebook.com/\' + store.cmp_facebook" target="_blank" class="social-icon fb" title="Facebook">                            <span nz-icon nzType="facebook" nzTheme="outline"></span>                        </a>                    </div>                </div>            </div>        </div>    </div>    <div class="main-content-wrapper">        <div class="section-container nz-py-lg">            <h2 class="section-title">{{ getSetting(\'HOME_CATEGORIES_TITLE\', \'Nuestras Categorías Principales\') }}</h2>            <div nz-row [nzGutter]="[24, 24]" *ngIf="categorias.length > 0">                <div nz-col [nzXs]="24" [nzSm]="12" [nzLg]="8" *ngFor="let cat of categorias">                    <a [routerLink]="cat.link">                        <nz-card [nzHoverable]="true" class="premium-category-card" [nzCover]="coverCatTemplate">                            <ng-template #coverCatTemplate>                                <div class="category-image-wrapper">                                    <img [alt]="cat.nombre"                                         [src]="cat.imagenUrl ? cat.imagenUrl : \'https://placehold.co/400x225/eeeeee/8c8c8c?text=Categor%C3%ADa\'"                                         class="category-card-image" />                                </div>                            </ng-template>                            <div class="category-info">                                <h3 class="category-title">{{ cat.nombre }}</h3>                                <p class="category-desc">{{ cat.descripcion || \'Explorar productos de esta categoría.\' }}</p>                            </div>                            <div class="category-footer">                                <span>Ver Colección</span>                                <span nz-icon nzType="arrow-right" class="category-card-arrow"></span>                            </div>                        </nz-card>                    </a>                </div>            </div>            <nz-empty *ngIf="categorias.length === 0"                 nzNotFoundContent="Este comercio aún no posee categorías principales definidas."                 class="empty-state-premium">            </nz-empty>        </div>        <nz-divider></nz-divider>        <div class="section-container bg-light nz-py-lg">            <h2 class="section-title">{{ getSetting(\'HOME_FEATURED_TITLE\', \'Productos de la Semana\') }}</h2>            <div nz-row [nzGutter]="[24, 24]" *ngIf="destacados.length > 0">                <div nz-col [nzXs]="24" [nzSm]="12" [nzMd]="12" [nzLg]="8" [nzXl]="6"                    *ngFor="let prod of destacados | slice:0:getSetting(\'HOME_FEATURED_COUNT\', 8)">                                        <nz-card [nzHoverable]="true" class="premium-product-card" [nzCover]="coverProdTemplate"                        [nzBodyStyle]="{ padding: \'16px\' }">                        <ng-template #coverProdTemplate>                            <div class="card-image-wrapper" (click)="openProductDetail(prod)" style="cursor: pointer;">                                <img [alt]="prod.prov_name"                                     [src]="prod.prov_image ? prod.prov_image : \'https://placehold.co/400x400/eeeeee/8c8c8c?text=Sin+Foto\'"                                     class="product-card-image" />                            </div>                        </ng-template>                        <nz-card-meta [nzTitle]="prod.prov_name"                             [nzDescription]="\'Ref: \' + (prod.prov_sku || \'N/A\')" (click)="openProductDetail(prod)" style="cursor: pointer;">                        </nz-card-meta>                        <div class="product-pricing" style="margin-top: 12px; display: flex; align-items: center; justify-content: space-between;">                            <span class="price-tag">{{ getSetting(\'CURRENCY\', \'$\') }} {{ prod.prov_suggestedminimumsellingprice | number:\'1.2-2\' }}</span>                                                        <!-- Mini Stars indicator on card -->                            <span *ngIf="prod.prov_reviewscount && prod.prov_reviewscount > 0" style="font-size: 12px; font-weight: 600; color: #fa8c16; display: flex; align-items: center; gap: 4px;">                                <span nz-icon nzType="star" nzTheme="fill"></span>                                 {{ prod.prov_averagerating || 0 }}                                 <span style="color: #8c8c8c; font-weight: 500; font-size: 11px;">({{ prod.prov_reviewscount }})</span>                            </span>                            <span *ngIf="!prod.prov_reviewscount || prod.prov_reviewscount === 0" style="font-size: 11px; font-weight: 600; color: #8c8c8c; background: #f5f5f5; padding: 2px 6px; border-radius: 4px;">                                Nuevo                            </span>                        </div>                        <div class="product-actions" style="margin-top: 16px; display: flex; gap: 8px;">                            <button nz-button nzType="default" (click)="openProductDetail(prod)" style="flex: 1;">                                Detalles                            </button>                            <button nz-button nzType="primary"                                 [disabled]="!getSetting(\'ALLOW_BACKORDERS\', true) && prod.prov_stock <= 0"                                (click)="agregarAlCarrito(prod)" style="flex: 1;">                                Comprar <span nz-icon nzType="shopping-cart"></span>                            </button>                        </div>                    </nz-card>                </div>            </div>            <nz-empty *ngIf="destacados.length === 0"                 nzNotFoundContent="Este comercio aún no posee productos destacados esta semana."                 class="empty-state-premium">                <button nz-button nzType="primary" (click)="goToStoreCatalog()">Ver Catálogo General</button>            </nz-empty>        </div>        <div class="section-container nz-py-lg info-section">            <div nz-row [nzGutter]="[32, 32]">                <div nz-col [nzXs]="24" [nzMd]="8">                    <div class="info-block">                        <span nz-icon [nzType]="getSetting(\'HOME_INFO_BLOCK_1_ICON\', \'environment\')" nzTheme="outline"                            class="info-icon"></span>                        <h3>{{ getSetting(\'HOME_INFO_BLOCK_1_TITLE\', \'Auténtica Fe\') }}</h3>                        <p>{{ getSetting(\'HOME_INFO_BLOCK_1_DESC\', \'Artículos seleccionados desde el corazón de Luján.\') }}</p>                    </div>                </div>                <div nz-col [nzXs]="24" [nzMd]="8">                    <div class="info-block">                        <span nz-icon [nzType]="getSetting(\'HOME_INFO_BLOCK_2_ICON\', \'tag\')" nzTheme="outline"                            class="info-icon"></span>                        <h3>{{ getSetting(\'HOME_INFO_BLOCK_2_TITLE\', \'Consulta Discreta\') }}</h3>                        <p>{{ getSetting(\'HOME_INFO_BLOCK_2_DESC\', \'Precios disponibles instantáneamente al solicitarlos.\') }}</p>                    </div>                </div>                <div nz-col [nzXs]="24" [nzMd]="8">                    <div class="info-block">                        <span nz-icon [nzType]="getSetting(\'HOME_INFO_BLOCK_3_ICON\', \'rocket\')" nzTheme="outline"                            class="info-icon"></span>                        <h3>{{ getSetting(\'HOME_INFO_BLOCK_3_TITLE\', \'Envío Rápido\') }}</h3>                        <p>{{ getSetting(\'HOME_INFO_BLOCK_3_DESC\', \'Despachamos tu pedido en menos de 24 horas.\') }}</p>                    </div>                </div>            </div>        </div>        <!-- Footer de la Tienda -->        <footer *ngIf="store" class="store-footer">            <nz-divider></nz-divider>            <div nz-row [nzGutter]="[32, 32]" style="padding: 40px 0;">                <div nz-col [nzXs]="24" [nzMd]="8" class="footer-col">                    <h3 class="footer-title">{{ store.cmp_name }}</h3>                    <p class="footer-desc">{{ store.cmp_description || \'Tu tienda oficial de confianza.\' }}</p>                </div>                <div nz-col [nzXs]="24" [nzMd]="8" class="footer-col">                    <h3 class="footer-title">Contacto</h3>                    <ul class="footer-links">                        <li *ngIf="store.cmp_email"><span nz-icon nzType="mail"></span> {{ store.cmp_email }}</li>                        <li *ngIf="store.cmp_phone"><span nz-icon nzType="phone"></span> {{ store.cmp_phone }}</li>                        <li *ngIf="store.cmp_address">                            <a [href]="getGoogleMapsLink(store)" target="_blank" class="maps-link" style="color: inherit; text-decoration: none; display: inline-flex; align-items: center; gap: 8px; transition: color 0.3s ease;">                                <span nz-icon nzType="environment"></span> {{ store.cmp_address }}                            </a>                        </li>                    </ul>                </div>                <div nz-col [nzXs]="24" [nzMd]="8" class="footer-col">                    <h3 class="footer-title">Seguinos</h3>                    <div class="footer-social-row">                        <a *ngIf="store.cmp_whatsapp" [href]="\'https://wa.me/\' + store.cmp_whatsapp" target="_blank" class="footer-social-btn wa">                            <span nz-icon nzType="whatsapp"></span> WhatsApp                        </a>                        <a *ngIf="store.cmp_instagram" [href]="\'https://instagram.com/\' + store.cmp_instagram" target="_blank" class="footer-social-btn ig">                            <span nz-icon nzType="instagram"></span> Instagram                        </a>                        <a *ngIf="store.cmp_facebook" [href]="\'https://facebook.com/\' + store.cmp_facebook" target="_blank" class="footer-social-btn fb">                            <span nz-icon nzType="facebook"></span> Facebook                        </a>                    </div>                </div>            </div>            <div class="footer-copyright">                <p>© {{ store.cmp_name }} - Todos los derechos reservados. Powered by ATSMarket.</p>            </div>        </footer>    </div></nz-spin></div>'
+    var COMPONENTS = [{'name': 'AccountConfirmedComponent', 'selector': 'app-account-confirmed'},{'name': 'AccountCreatedComponent', 'selector': 'app-account-created'},{'name': 'AddressesComponent', 'selector': 'app-addresses'},{'name': 'AnalyticsComponent', 'selector': 'app-analytics'},{'name': 'AppComponent', 'selector': 'app-root'},{'name': 'ApplicationBarComponent', 'selector': 'app-application-bar'},{'name': 'ApplicationLayoutComponent', 'selector': 'app-application-layout'},{'name': 'AuthLayoutComponent', 'selector': 'app-auth-layout'},{'name': 'BarcodeScannerComponent', 'selector': 'app-barcode-scanner'},{'name': 'CameraComponent', 'selector': 'app-camera'},{'name': 'CartComponent', 'selector': 'app-cart'},{'name': 'CatalogComponent', 'selector': 'app-catalog'},{'name': 'CategoriesComponent', 'selector': 'app-categories'},{'name': 'CategoriesListComponent', 'selector': 'app-categories-list'},{'name': 'CheckoutComponent', 'selector': 'app-checkout'},{'name': 'CompanyComponent', 'selector': 'app-company'},{'name': 'CompanySettingsComponent', 'selector': 'app-company-settings'},{'name': 'CouponsComponent', 'selector': 'app-coupons'},{'name': 'CustomersComponent', 'selector': 'app-customers'},{'name': 'DistPriceListComponent', 'selector': 'app-dist-price-list'},{'name': 'FinancesComponent', 'selector': 'app-finances'},{'name': 'ForgotPasswordComponent', 'selector': 'app-forgot-password'},{'name': 'GlobalCategoriesComponent', 'selector': 'app-global-categories'},{'name': 'GlobalCategoryComponent', 'selector': 'app-global-category'},{'name': 'GlobalItemComponent', 'selector': 'app-global-item'},{'name': 'GlobalItemsComponent', 'selector': 'app-global-items'},{'name': 'GlobalMaterialComponent', 'selector': 'app-global-material'},{'name': 'GlobalMaterialsComponent', 'selector': 'app-global-materials'},{'name': 'HomeStoreComponent', 'selector': 'app-home'},{'name': 'InventoryAuditComponent', 'selector': 'app-inventory-audit'},{'name': 'ItemsComponent', 'selector': 'app-items'},{'name': 'LoginComponent', 'selector': 'app-login'},{'name': 'MapPickerComponent', 'selector': 'app-map-picker'},{'name': 'MarketHomeComponent', 'selector': 'app-market-home'},{'name': 'MaterialComponent', 'selector': 'app-material'},{'name': 'MaterialsComponent', 'selector': 'app-materials'},{'name': 'MenuItemComponent', 'selector': 'app-menu-item'},{'name': 'MenuItemsComponent', 'selector': 'app-menu-items'},{'name': 'MpPaymentBrickComponent', 'selector': 'app-mp-payment-brick'},{'name': 'MyCompaniesComponent', 'selector': 'app-my-companies'},{'name': 'MyFavoritesComponent', 'selector': 'app-my-favorites'},{'name': 'MyPurchasesComponent', 'selector': 'app-my-purchases'},{'name': 'NavBarComponent', 'selector': 'app-nav-bar'},{'name': 'OrdersReceivedComponent', 'selector': 'app-orders-received'},{'name': 'PriceListComponent', 'selector': 'app-price-list'},{'name': 'ProductComponent', 'selector': 'app-product'},{'name': 'ProductDetailComponent', 'selector': 'app-product-detail'},{'name': 'ProductsComponent', 'selector': 'app-products'},{'name': 'ProductsVariationsComponent', 'selector': 'app-products-variations'},{'name': 'ProductVariationComponent', 'selector': 'app-product-variation'},{'name': 'PublicLayoutComponent', 'selector': 'app-public-layout'},{'name': 'RegisterComponent', 'selector': 'app-register'},{'name': 'ResetPasswordComponent', 'selector': 'app-reset-password'},{'name': 'SideBarComponent', 'selector': 'app-side-bar'},{'name': 'SsoCallbackComponent', 'selector': 'app-sso-callback'},{'name': 'StoreCatalogComponent', 'selector': 'app-store'},{'name': 'SuperAdminComponent', 'selector': 'app-super-admin'},{'name': 'SupplierComponent', 'selector': 'app-supplier'},{'name': 'SuppliersComponent', 'selector': 'app-suppliers'},{'name': 'UserLayoutComponent', 'selector': 'app-user-layout'},{'name': 'UserRolCompanyComponent', 'selector': 'app-user-rol-company'},{'name': 'WarehousesComponent', 'selector': 'app-warehouses'}];
+    var DIRECTIVES = [{'name': 'ImagePreloadDirective', 'selector': 'img[default]'}];
+    var ACTUAL_COMPONENT = {'name': 'HomeStoreComponent'};
+</script>
+<script src="../js/tree.js"></script>
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+                   </div><div class="search-results">
+    <div class="has-results">
+        <h1 class="search-results-title"><span class='search-results-count'></span> resultados correspondentes "<span class='search-query'></span>"</h1>
+        <ul class="search-results-list"></ul>
+    </div>
+    <div class="no-results">
+        <h1 class="search-results-title">Nenhum resultado correspondente "<span class='search-query'></span>"</h1>
+    </div>
+</div>
+</div>
+               <!-- END CONTENT -->
+           </div>
+       </div>
+
+          
+<div class="compodoc-lang-switch">
+  <select id="compodoc-lang-select" aria-label="Seleccionar idioma">
+    <option value="es" >🇪🇸 Español</option>
+    <option value="en" >🇺🇸 English</option>
+    <option value="pt" selected>🇧🇷 Português</option>
+  </select>
+</div>
+
+          <label class="dark-mode-switch">
+               <input type="checkbox">
+               <span class="slider">
+                    <svg class="slider-icon" viewBox="0 0 24 24" fill="none" height="20" stroke="#000" stroke-linecap="round" stroke-linejoin="round" stroke-width="2" width="20" xmlns="http://www.w3.org/2000/svg">
+                    <path d="M21 12.79A9 9 0 1111.21 3 7 7 0 0021 12.79z"></path>
+                    </svg>
+               </span>
+          </label>
+
+       <script>
+            var COMPODOC_CURRENT_PAGE_DEPTH = 1;
+            var COMPODOC_CURRENT_PAGE_CONTEXT = 'component';
+            var COMPODOC_CURRENT_PAGE_URL = 'HomeStoreComponent.html';
+            var MAX_SEARCH_RESULTS = 15;
+       </script>
+
+       <script>
+               $darkModeToggleSwitchers = document.querySelectorAll('.dark-mode-switch input');
+               var updateDarkModeSwitchOffset = function () {
+                    var content = document.querySelector('.content');
+                    var scrollbarWidth = 0;
+
+                    if (content) {
+                         scrollbarWidth = Math.max(0, content.offsetWidth - content.clientWidth);
+                    }
+
+                    document.documentElement.style.setProperty(
+                         '--content-scrollbar-width',
+                         scrollbarWidth + 'px'
+                    );
+               };
+
+               updateDarkModeSwitchOffset();
+               requestAnimationFrame(updateDarkModeSwitchOffset);
+               window.addEventListener('resize', updateDarkModeSwitchOffset);
+
+               checkToggle(darkModeState);
+               if ($darkModeToggleSwitchers.length > 0) {
+                    for (var i = 0; i < $darkModeToggleSwitchers.length; i++) {
+                         $darkModeToggleSwitchers[i].addEventListener('change', function (event) {
+                              darkModeState = !darkModeState;
+                              toggleDarkMode(darkModeState);
+                         });
+                    }
+               }
+          </script>
+
+       <script src="../js/libs/custom-elements.min.js"></script>
+       <script src="../js/libs/lit-html.js"></script>
+
+       <script src="../js/menu-wc.js" defer></script>
+
+       <script src="../js/libs/bootstrap-native.js"></script>
+
+       <script src="../js/libs/es6-shim.min.js"></script>
+       <script src="../js/libs/EventDispatcher.js"></script>
+       <script src="../js/libs/promise.min.js"></script>
+
+       <script src="../js/compodoc.js"></script>
+
+       <script src="../js/tabs.js"></script>
+       <script src="../js/menu.js"></script>
+       <script src="../js/libs/clipboard.min.js"></script>
+       <script src="../js/libs/prism.js"></script>
+       <script src="../js/sourceCode.js"></script>
+          <script src="../js/search/search.js"></script>
+          <script src="../js/search/lunr.min.js"></script>
+          <script src="../js/search/search-lunr.js"></script>
+          <script src="../js/search/search_index.js"></script>
+       <script src="../js/lazy-load-graphs.js"></script>
+
+
+    
+<script id="compodoc-lang-script">
+(function() {
+  var CURRENT_LANG = "pt";
+  var ADDITIONAL_DOCS_MAP = {"es":["01.-introducción-y-arquitectura-general.html","02.-autenticación-y-control-de-accesos.html","03.-catálogo-público-y-exploración-de-tiendas.html","04.-carrito-de-compras-y-checkout-multitienda.html","05.-gestión-de-empresas,-roles-y-configuración.html","06.-inventario,-productos,-variaciones-y-almacenes.html","07.-gestión-de-pedidos,-compras-y-cupones.html","08.-analíticas-de-negocio,-finanzas-y-proveedores.html"],"en":["01.-introduction-and-general-architecture.html","02.-authentication-and-access-control.html","03.-public-catalog-and-store-exploration.html","04.-shopping-cart-and-multi-store-checkout.html","05.-company-management,-roles-and-configuration.html","06.-inventory,-products,-variations-and-warehouses.html","07.-orders-management,-purchases-and-coupons.html","08.-business-analytics,-finances-and-suppliers.html"],"pt":["01.-introdução-e-arquitetura-geral.html","02.-autenticação-e-controle-de-acesso.html","03.-catálogo-público-e-exploração-de-lojas.html","04.-carrinho-de-compras-e-checkout-multiloja.html","05.-gestão-de-empresas,-funções-e-configuração.html","06.-estoque,-produtos,-variações-e-armazéns.html","07.-gestão-de-pedidos,-compras-e-cupons.html","08.-análise-de-negócios,-finanças-e-fornecedores.html"]};
+
+  var select = document.getElementById('compodoc-lang-select');
+  if (!select) return;
+
+  try {
+    localStorage.setItem('compodoc_lang', CURRENT_LANG);
+  } catch (e) {}
+
+  select.addEventListener('change', function(e) {
+    var targetLang = e.target.value;
+    if (targetLang === CURRENT_LANG) return;
+
+    try {
+      localStorage.setItem('compodoc_lang', targetLang);
+    } catch (err) {}
+
+    var href = window.location.href;
+    var pathname = window.location.pathname;
+
+    // Manejo especial para páginas de additional-documentation
+    if (pathname.indexOf('/additional-documentation/') !== -1) {
+      var segments = pathname.split('/');
+      var currentFile = decodeURIComponent(segments[segments.length - 1]);
+      
+      var currentList = ADDITIONAL_DOCS_MAP[CURRENT_LANG] || [];
+      var targetList = ADDITIONAL_DOCS_MAP[targetLang] || [];
+      var foundIndex = -1;
+
+      var prefixMatch = currentFile.match(/^(\d{2}\.-)/);
+      if (prefixMatch) {
+        var prefix = prefixMatch[1];
+        for (var i = 0; i < targetList.length; i++) {
+          if (targetList[i].startsWith(prefix)) {
+            foundIndex = i;
+            break;
+          }
+        }
+      }
+      if (foundIndex === -1) {
+        for (var j = 0; j < currentList.length; j++) {
+          if (currentList[j] === currentFile) {
+            foundIndex = j;
+            break;
+          }
+        }
+      }
+
+      var targetFile = (foundIndex !== -1 && targetList[foundIndex]) 
+        ? targetList[foundIndex] 
+        : (targetList[0] || 'index.html');
+
+      var targetSubpath = '/' + targetLang + '/additional-documentation/' + targetFile;
+      var currentSubpath = '/' + CURRENT_LANG + '/additional-documentation/' + segments[segments.length - 1];
+
+      if (href.indexOf(currentSubpath) !== -1) {
+        window.location.href = href.replace(currentSubpath, targetSubpath);
+        return;
+      }
+    }
+
+    // Páginas estándar
+    var standardReplace = href.replace('/' + CURRENT_LANG + '/', '/' + targetLang + '/');
+    if (standardReplace !== href) {
+      window.location.href = standardReplace;
+    } else {
+      var depth = (typeof COMPODOC_CURRENT_PAGE_DEPTH !== 'undefined') ? COMPODOC_CURRENT_PAGE_DEPTH : 0;
+      var prefixPath = '';
+      for (var k = 0; k <= depth; k++) {
+        prefixPath += '../';
+      }
+      window.location.href = prefixPath + targetLang + '/index.html';
+    }
+  });
+})();
+</script>
+
+</body>
+</html>

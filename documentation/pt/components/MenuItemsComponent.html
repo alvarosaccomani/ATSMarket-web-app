@@ -1,0 +1,1816 @@
+<!doctype html>
+<html class="no-js" lang="">
+    <head>
+        <meta charset="utf-8">
+        <meta http-equiv="x-ua-compatible" content="ie=edge">
+        <title>ATSMarket Web App</title>
+        <meta name="description" content="">
+        <meta name="viewport" content="width=device-width, initial-scale=1">
+
+        <link rel="icon" type="image/x-icon" href="../images/favicon.ico">
+	   <link rel="stylesheet" href="../styles/style.css">
+        <link rel="stylesheet" href="../styles/dark.css">
+    
+<style id="compodoc-lang-styles">
+  .compodoc-lang-switch {
+    position: fixed;
+    top: 15px;
+    right: calc(90px + var(--content-scrollbar-width, 0px));
+    z-index: 1050;
+    display: inline-block;
+  }
+  @media (max-width: 767px) {
+    .compodoc-lang-switch {
+      top: 8px;
+      right: 60px;
+    }
+  }
+  #compodoc-lang-select {
+    height: 34px;
+    padding: 0 12px;
+    border-radius: 17px;
+    border: 1px solid #d9d9d9;
+    background-color: #ffffff;
+    color: #1f1f1f;
+    font-size: 13px;
+    font-family: inherit;
+    font-weight: 500;
+    cursor: pointer;
+    outline: none;
+    box-shadow: 0 2px 6px rgba(0, 0, 0, 0.08);
+    transition: all 0.3s cubic-bezier(0.645, 0.045, 0.355, 1);
+    -webkit-appearance: none;
+    -moz-appearance: none;
+    appearance: none;
+    padding-right: 26px;
+    background-image: url("data:image/svg+xml;charset=UTF-8,%3csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 24 24' fill='none' stroke='%23666' stroke-width='2' stroke-linecap='round' stroke-linejoin='round'%3e%3cpolyline points='6 9 12 15 18 9'%3e%3c/polyline%3e%3c/svg%3e");
+    background-repeat: no-repeat;
+    background-position: right 8px center;
+    background-size: 14px;
+  }
+  #compodoc-lang-select:hover, #compodoc-lang-select:focus {
+    border-color: #5cc0ae;
+    box-shadow: 0 2px 8px rgba(92, 192, 174, 0.25);
+  }
+  body.dark .compodoc-lang-switch #compodoc-lang-select {
+    background-color: #2c3e50;
+    color: #ecf0f1;
+    border: 1px solid #4a627a;
+    box-shadow: 0 2px 6px rgba(0, 0, 0, 0.35);
+    background-image: url("data:image/svg+xml;charset=UTF-8,%3csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 24 24' fill='none' stroke='%23ecf0f1' stroke-width='2' stroke-linecap='round' stroke-linejoin='round'%3e%3cpolyline points='6 9 12 15 18 9'%3e%3c/polyline%3e%3c/svg%3e");
+  }
+  body.dark .compodoc-lang-switch #compodoc-lang-select option {
+    background-color: #2c3e50;
+    color: #ecf0f1;
+  }
+</style>
+
+</head>
+    <body>
+          <script>
+               // Blocking script to avoid flickering dark mode
+               // Dark mode toggle button
+               var useDark = window.matchMedia('(prefers-color-scheme: dark)');
+               var darkModeState = useDark.matches;
+               var $darkModeToggleSwitchers = document.querySelectorAll('.dark-mode-switch input');
+               var $darkModeToggles = document.querySelectorAll('.dark-mode-switch');
+               var darkModeStateLocal = localStorage.getItem('compodoc_darkmode-state');
+
+               function checkToggle(check) {
+                    for (var i = 0; i < $darkModeToggleSwitchers.length; i++) {
+                         $darkModeToggleSwitchers[i].checked = check;
+                    }
+               }
+
+               function toggleDarkMode(state) {
+                    if (window.localStorage) {
+                         localStorage.setItem('compodoc_darkmode-state', state);
+                    }
+
+                    checkToggle(state);
+
+                    const hasClass = document.body.classList.contains('dark');
+
+                    if (state) {
+                         for (var i = 0; i < $darkModeToggles.length; i++) {
+                              $darkModeToggles[i].classList.add('dark');
+                         }
+                         if (!hasClass) {
+                              document.body.classList.add('dark');
+                         }
+                    } else {
+                         for (var i = 0; i < $darkModeToggles.length; i++) {
+                              $darkModeToggles[i].classList.remove('dark');
+                         }
+                         if (hasClass) {
+                              document.body.classList.remove('dark');
+                         }
+                    }
+               }
+
+               useDark.addEventListener('change', function (evt) {
+                    toggleDarkMode(evt.matches);
+               });
+               if (darkModeStateLocal) {
+                    darkModeState = darkModeStateLocal === 'true';
+               }
+               toggleDarkMode(darkModeState);
+          </script>
+          <script>
+              // --- Iframe navigation tracking for Template Playground ---
+              function sendCurrentUrlToParent() {
+                  if (window.parent && window.parent !== window) {
+                      window.parent.postMessage({
+                          type: 'compodoc-iframe-navigate',
+                          url: window.location.pathname + window.location.hash
+                      }, '*');
+                  }
+              }
+              window.addEventListener('hashchange', sendCurrentUrlToParent, false);
+              window.addEventListener('popstate', sendCurrentUrlToParent, false);
+              window.addEventListener('DOMContentLoaded', sendCurrentUrlToParent, false);
+          </script>
+
+        <div class="navbar navbar-default navbar-fixed-top d-md-none p-0">
+               <div class="d-flex">
+                    <a href="../" class="navbar-brand">ATSMarket Web App</a>
+                    <button type="button" class="btn btn-default btn-menu ion-ios-menu" id="btn-menu"></button>
+               </div>
+        </div>
+
+        <div class="xs-menu menu" id="mobile-menu">
+                <div id="book-search-input" role="search">
+    <input type="text" placeholder="Digite para pesquisar">
+    <button type="button"
+        class="search-input-clear"
+        aria-label="Clear search"
+        data-search-input-clear>&times;</button>
+</div>
+            <compodoc-menu></compodoc-menu>
+        </div>
+
+        <div class="container-fluid main">
+           <div class="row main">
+               <div class="d-none d-md-block menu">
+                   <compodoc-menu mode="normal"></compodoc-menu>
+               </div>
+               <!-- START CONTENT -->
+               <div class="content component">
+                   <div class="content-data">
+
+
+
+
+
+
+
+
+<ol class="breadcrumb">
+  <li class="breadcrumb-item">Componentes</li>
+  <li class="breadcrumb-item"
+  >
+  MenuItemsComponent</li>
+</ol>
+
+<div class="io-file io-file-path" data-compodoc="entity-file-path">
+    <span class="icon ion-ios-document" aria-hidden="true"></span>
+    <code>src/app/application/menu-items/menu-items.component.ts</code>
+</div>
+
+<ul class="nav nav-tabs" role="tablist">
+        <li class="nav-item">
+            <a href="#info" class="nav-link active"
+                role="tab" id="info-tab" data-bs-toggle="tab" data-link="info">Info</a>
+        </li>
+        <li class="nav-item">
+            <a href="#api" class="nav-link"
+                role="tab" id="api-tab" data-bs-toggle="tab" data-link="api">API</a>
+        </li>
+        <li class="nav-item">
+            <a href="#source" class="nav-link"
+                role="tab" id="source-tab" data-bs-toggle="tab" data-link="source">Source</a>
+        </li>
+        <li class="nav-item">
+            <a href="#templateData" class="nav-link"
+                role="tab" id="templateData-tab" data-bs-toggle="tab" data-link="template">Template</a>
+        </li>
+        <li class="nav-item">
+            <a href="#styleData" class="nav-link"
+                role="tab" id="styleData-tab" data-bs-toggle="tab" data-link="style">Styles</a>
+        </li>
+        <li class="nav-item">
+            <a href="#tree" class="nav-link"
+                role="tab" id="tree-tab" data-bs-toggle="tab" data-link="dom-tree">DOM Tree</a>
+        </li>
+</ul>
+
+<div class="tab-content">
+    <div class="tab-pane fade active in" id="info">
+
+
+    <p class="comment">
+        <h3>Implementa</h3>
+    </p>
+    <p class="comment">
+                    <code><a href="https://angular.dev/api/core/OnInit" target="_blank" >OnInit</a></code>
+    </p>
+
+
+<section data-compodoc="block-metadata">
+    <h3>Metadata</h3>
+    <table class="table table-sm table-hover metadata">
+        <tbody>
+
+
+
+
+
+
+
+
+
+
+
+
+            <tr>
+                <td class="col-md-3">selector</td>
+                <td class="col-md-9"><code>app-menu-items</code></td>
+            </tr>
+
+            <tr>
+                <td class="col-md-3">standalone</td>
+                <td class="col-md-9"><code>true</code></td>
+            </tr>
+
+            <tr>
+                <td class="col-md-3">imports</td>
+                <td class="col-md-9">
+                        <div>        <code><a href="https://angular.dev/api/common/CommonModule" target="_blank" >CommonModule</a></code>
+</div>
+                        <div>        <code><a href="https://angular.dev/api/forms/FormsModule" target="_blank" >FormsModule</a></code>
+</div>
+                        <div>        <code><a href="https://angular.dev/api/router/RouterModule" target="_blank" >RouterModule</a></code>
+</div>
+                        <div>    <code>NzTableModule</code>
+</div>
+                        <div>    <code>NzCardModule</code>
+</div>
+                        <div>    <code>NzButtonModule</code>
+</div>
+                        <div>    <code>NzIconModule</code>
+</div>
+                        <div>    <code>NzDrawerModule</code>
+</div>
+                        <div>    <code>NzDividerModule</code>
+</div>
+                        <div>    <code>NzDescriptionsModule</code>
+</div>
+                        <div>    <code>NzTagModule</code>
+</div>
+                        <div>    <code>NzInputModule</code>
+</div>
+                        <div>    <code>NzAvatarModule</code>
+</div>
+                        <div>    <code>NzToolTipModule</code>
+</div>
+                </td>
+            </tr>
+
+            <tr>
+                <td class="col-md-3">styleUrls</td>
+                <td class="col-md-9"><code>./menu-items.component.scss</code></td>
+            </tr>
+
+
+
+
+            <tr>
+                <td class="col-md-3">templateUrl</td>
+                <td class="col-md-9"><code>./menu-items.component.html</code></td>
+            </tr>
+
+
+
+            <tr>
+                <td class="col-md-3">styleUrl</td>
+                <td class="col-md-9"><code>./menu-items.component.scss</code></td>
+            </tr>
+
+
+
+
+
+        </tbody>
+    </table>
+</section>
+
+        <section data-compodoc="block-relationships">
+            <h3>Relationships</h3>
+
+            <div class="row pt-3">
+                <div class="col-sm-6">
+                    <h4>Used by</h4>
+                        <p class="comment"><i>Nenhum resultado correspondente.</i></p>
+                </div>
+
+                <div class="col-sm-6">
+                    <h4>Depends on</h4>
+                        <ul class="list-unstyled relationships-list">
+                                <li>
+                                            <code><a href="https://angular.dev/api/common/CommonModule" target="_blank" >CommonModule</a></code>
+                                </li>
+                                <li>
+                                            <code><a href="https://angular.dev/api/forms/FormsModule" target="_blank" >FormsModule</a></code>
+                                </li>
+                                <li>
+                                            <code><a href="https://angular.dev/api/router/RouterModule" target="_blank" >RouterModule</a></code>
+                                </li>
+                                <li>
+                                        <code>NzTableModule</code>
+                                </li>
+                                <li>
+                                        <code>NzCardModule</code>
+                                </li>
+                                <li>
+                                        <code>NzButtonModule</code>
+                                </li>
+                                <li>
+                                        <code>NzIconModule</code>
+                                </li>
+                                <li>
+                                        <code>NzDrawerModule</code>
+                                </li>
+                                <li>
+                                        <code>NzDividerModule</code>
+                                </li>
+                                <li>
+                                        <code>NzDescriptionsModule</code>
+                                </li>
+                                <li>
+                                        <code>NzTagModule</code>
+                                </li>
+                                <li>
+                                        <code>NzInputModule</code>
+                                </li>
+                                <li>
+                                        <code>NzAvatarModule</code>
+                                </li>
+                                <li>
+                                        <code>NzToolTipModule</code>
+                                </li>
+                                <li>
+                                            <code><a href="https://angular.dev/api/core/OnInit" target="_blank" >OnInit</a></code>
+                                </li>
+                        </ul>
+                </div>
+            </div>
+        </section>
+</div>
+
+    <div class="tab-pane fade " id="api">    <section data-compodoc="block-index">
+    <h3 id="index">Index</h3>
+        <table class="table table-sm table-bordered index-table">
+            <tbody>
+                <tr>
+                    <td class="col-md-3">
+                        <h6><b>Propriedades</b></h6>
+                    </td>
+                    <td class="col-md-9">
+                        <ul class="index-list">
+                            <li>
+                                <span class="reference-badge reference-badge--property" aria-hidden="true">P</span>
+                                    <span class="modifier">Private</span>
+                                <a href="#allMenus" >allMenus</a>
+                            </li>
+                            <li>
+                                <span class="reference-badge reference-badge--property" aria-hidden="true">P</span>
+                                    <span class="modifier">Public</span>
+                                <a href="#filteredMenus$" >filteredMenus$</a>
+                            </li>
+                            <li>
+                                <span class="reference-badge reference-badge--property" aria-hidden="true">P</span>
+                                    <span class="modifier">Public</span>
+                                <a href="#isDrawerVisible" >isDrawerVisible</a>
+                            </li>
+                            <li>
+                                <span class="reference-badge reference-badge--property" aria-hidden="true">P</span>
+                                    <span class="modifier">Private</span>
+                                <a href="#refreshData$" >refreshData$</a>
+                            </li>
+                            <li>
+                                <span class="reference-badge reference-badge--property" aria-hidden="true">P</span>
+                                    <span class="modifier">Private</span>
+                                <a href="#searchTerm$" >searchTerm$</a>
+                            </li>
+                            <li>
+                                <span class="reference-badge reference-badge--property" aria-hidden="true">P</span>
+                                    <span class="modifier">Public</span>
+                                <a href="#selectedMenu" >selectedMenu</a>
+                            </li>
+                        </ul>
+                    </td>
+                </tr>
+            </tbody>
+        </table>
+
+        <table class="table table-sm table-bordered index-table">
+            <tbody>
+                <tr>
+                    <td class="col-md-3">
+                        <h6><b>Métodos</b></h6>
+                    </td>
+                    <td class="col-md-9">
+                        <ul class="index-list">
+                            <li>
+                                <span class="reference-badge reference-badge--method" aria-hidden="true">M</span>
+                                    <span class="modifier">Public</span>
+                                <a href="#closeDrawer" >closeDrawer</a>
+                            </li>
+                            <li>
+                                <span class="reference-badge reference-badge--method" aria-hidden="true">M</span>
+                                    <span class="modifier">Public</span>
+                                <a href="#getParentTitle" >getParentTitle</a>
+                            </li>
+                            <li>
+                                <span class="reference-badge reference-badge--method" aria-hidden="true">M</span>
+                                    <span class="modifier">Public</span>
+                                <a href="#moveItem" >moveItem</a>
+                            </li>
+                            <li>
+                                <span class="reference-badge reference-badge--method" aria-hidden="true">M</span>
+                                <a href="#ngOnInit" >ngOnInit</a>
+                            </li>
+                            <li>
+                                <span class="reference-badge reference-badge--method" aria-hidden="true">M</span>
+                                    <span class="modifier">Public</span>
+                                <a href="#onDeleteMenu" >onDeleteMenu</a>
+                            </li>
+                            <li>
+                                <span class="reference-badge reference-badge--method" aria-hidden="true">M</span>
+                                    <span class="modifier">Public</span>
+                                <a href="#onSearch" >onSearch</a>
+                            </li>
+                            <li>
+                                <span class="reference-badge reference-badge--method" aria-hidden="true">M</span>
+                                    <span class="modifier">Public</span>
+                                <a href="#openMenuDetail" >openMenuDetail</a>
+                            </li>
+                        </ul>
+                    </td>
+                </tr>
+            </tbody>
+        </table>
+
+
+
+
+
+</section>
+
+    <section data-compodoc="block-constructor">
+    <h3 id="constructor">Construtor</h3>
+        <table class="table table-sm table-bordered">
+            <tbody>
+                <tr>
+                    <td class="col-md-4">
+<code>constructor(_appMmenusService: <a href="../injectables/AppMenusService.html" target="_self">AppMenusService</a>, _messageService: <a href="../injectables/MessageService.html" target="_self">MessageService</a>)</code>
+                    </td>
+                </tr>
+                        <tr>
+                            <td class="col-md-4">
+                                <div class="io-line">Definido em <a href="" data-line="57" class="link-to-prism">src/app/application/menu-items/menu-items.component.ts:57</a></div>
+                            </td>
+                        </tr>
+
+                <tr>
+                    <td class="col-md-4">
+                            <div>
+                                    <b>Parâmetros :</b>
+                                    <table class="params">
+                                        <thead>
+                                            <tr>
+                                                <td>Nome</td>
+                                                    <td>Tipo</td>
+                                                <td>Opcional</td>
+                                            </tr>
+                                        </thead>
+                                        <tbody>
+                                                <tr>
+                                                        <td>_appMmenusService</td>
+                                                  
+                                                        <td>
+                                                                        <code><a href="../injectables/AppMenusService.html" target="_self" >AppMenusService</a></code>
+                                                        </td>
+                                                  
+                                                    <td>
+                                                            Não
+                                                    </td>
+                                                    
+                                                </tr>
+                                                <tr>
+                                                        <td>_messageService</td>
+                                                  
+                                                        <td>
+                                                                        <code><a href="../injectables/MessageService.html" target="_self" >MessageService</a></code>
+                                                        </td>
+                                                  
+                                                    <td>
+                                                            Não
+                                                    </td>
+                                                    
+                                                </tr>
+                                        </tbody>
+                                    </table>
+                            </div>
+                    </td>
+                </tr>
+            </tbody>
+        </table>
+</section>
+
+
+
+
+
+    <section data-compodoc="block-methods">
+    
+    <h3 id="methods">
+        Métodos
+    </h3>
+    <table class="table table-sm table-bordered">
+        <tbody>
+            <tr>
+                <td class="col-md-4">
+                    <a name="closeDrawer"></a>
+                    <span class="name">
+                            <span class="modifier">Public</span>
+                        <span ><b>closeDrawer</b></span>
+                        <a href="#closeDrawer"><span class="icon ion-ios-link"></span></a>
+                    </span>
+                </td>
+            </tr>
+            <tr>
+                <td class="col-md-4">
+                        <span class="modifier-icon icon ion-ios-reset"></span>
+                    <code>closeDrawer()</code>
+                </td>
+            </tr>
+
+
+                    <tr>
+                        <td class="col-md-4">
+                            <div class="io-line">Definido em <a href="" data-line="96"
+                                    class="link-to-prism">src/app/application/menu-items/menu-items.component.ts:96</a></div>
+                        </td>
+                    </tr>
+
+
+            <tr>
+                <td class="col-md-4">
+
+                        <div class="io-description">
+                            <b>Retorna : </b>        <code><a href="https://www.typescriptlang.org/docs/handbook/basic-types.html" target="_blank" >void</a></code>
+
+                        </div>
+                </td>
+            </tr>
+        </tbody>
+    </table>
+    <table class="table table-sm table-bordered">
+        <tbody>
+            <tr>
+                <td class="col-md-4">
+                    <a name="getParentTitle"></a>
+                    <span class="name">
+                            <span class="modifier">Public</span>
+                        <span ><b>getParentTitle</b></span>
+                        <a href="#getParentTitle"><span class="icon ion-ios-link"></span></a>
+                    </span>
+                </td>
+            </tr>
+            <tr>
+                <td class="col-md-4">
+                        <span class="modifier-icon icon ion-ios-reset"></span>
+                    <code>getParentTitle(parentUuid: string | null)</code>
+                </td>
+            </tr>
+
+
+                    <tr>
+                        <td class="col-md-4">
+                            <div class="io-line">Definido em <a href="" data-line="153"
+                                    class="link-to-prism">src/app/application/menu-items/menu-items.component.ts:153</a></div>
+                        </td>
+                    </tr>
+
+
+            <tr>
+                <td class="col-md-4">
+
+                            <div class="io-description">
+                                <b>Parâmetros :</b>
+                                
+                                <table class="params">
+                                    <thead>
+                                        <tr>
+                                            <td>Nome</td>
+                                                <td>Tipo</td>
+                                            <td>Opcional</td>
+                                        </tr>
+                                    </thead>
+                                    <tbody>
+                                        <tr>
+                                                <td>parentUuid</td>
+                                            <td>
+                                                        <code>string | null</code>
+                                            </td>
+
+                                            <td>
+                                                    Não
+                                            </td>
+
+
+                                        </tr>
+                                    </tbody>
+                                </table>
+                            </div>
+                        <div class="io-description">
+                            <b>Retorna : </b>        <code><a href="https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/string" target="_blank" >string</a></code>
+
+                        </div>
+                            <div class="io-description">
+                                
+                            </div>
+                </td>
+            </tr>
+        </tbody>
+    </table>
+    <table class="table table-sm table-bordered">
+        <tbody>
+            <tr>
+                <td class="col-md-4">
+                    <a name="moveItem"></a>
+                    <span class="name">
+                            <span class="modifier">Public</span>
+                        <span ><b>moveItem</b></span>
+                        <a href="#moveItem"><span class="icon ion-ios-link"></span></a>
+                    </span>
+                </td>
+            </tr>
+            <tr>
+                <td class="col-md-4">
+                        <span class="modifier-icon icon ion-ios-reset"></span>
+                    <code>moveItem(item: <a href="../interfaces/MenuInterface.html" target="_self">MenuInterface</a>, direction: "up" | "down")</code>
+                </td>
+            </tr>
+
+
+                    <tr>
+                        <td class="col-md-4">
+                            <div class="io-line">Definido em <a href="" data-line="121"
+                                    class="link-to-prism">src/app/application/menu-items/menu-items.component.ts:121</a></div>
+                        </td>
+                    </tr>
+
+
+            <tr>
+                <td class="col-md-4">
+
+                            <div class="io-description">
+                                <b>Parâmetros :</b>
+                                
+                                <table class="params">
+                                    <thead>
+                                        <tr>
+                                            <td>Nome</td>
+                                                <td>Tipo</td>
+                                            <td>Opcional</td>
+                                        </tr>
+                                    </thead>
+                                    <tbody>
+                                        <tr>
+                                                <td>item</td>
+                                            <td>
+                                                            <code><a href="../interfaces/MenuInterface.html" target="_self" >MenuInterface</a></code>
+                                            </td>
+
+                                            <td>
+                                                    Não
+                                            </td>
+
+
+                                        </tr>
+                                        <tr>
+                                                <td>direction</td>
+                                            <td>
+                                                        <code>&quot;up&quot; | &quot;down&quot;</code>
+                                            </td>
+
+                                            <td>
+                                                    Não
+                                            </td>
+
+
+                                        </tr>
+                                    </tbody>
+                                </table>
+                            </div>
+                        <div class="io-description">
+                            <b>Retorna : </b>        <code><a href="https://www.typescriptlang.org/docs/handbook/basic-types.html" target="_blank" >void</a></code>
+
+                        </div>
+                            <div class="io-description">
+                                
+                            </div>
+                </td>
+            </tr>
+        </tbody>
+    </table>
+    <table class="table table-sm table-bordered">
+        <tbody>
+            <tr>
+                <td class="col-md-4">
+                    <a name="ngOnInit"></a>
+                    <span class="name">
+                        <span ><b>ngOnInit</b></span>
+                        <a href="#ngOnInit"><span class="icon ion-ios-link"></span></a>
+                    </span>
+                </td>
+            </tr>
+            <tr>
+                <td class="col-md-4">
+<code>ngOnInit()</code>
+                </td>
+            </tr>
+
+
+                    <tr>
+                        <td class="col-md-4">
+                            <div class="io-line">Definido em <a href="" data-line="64"
+                                    class="link-to-prism">src/app/application/menu-items/menu-items.component.ts:64</a></div>
+                        </td>
+                    </tr>
+
+
+            <tr>
+                <td class="col-md-4">
+
+                        <div class="io-description">
+                            <b>Retorna : </b>        <code><a href="https://www.typescriptlang.org/docs/handbook/basic-types.html" target="_blank" >void</a></code>
+
+                        </div>
+                </td>
+            </tr>
+        </tbody>
+    </table>
+    <table class="table table-sm table-bordered">
+        <tbody>
+            <tr>
+                <td class="col-md-4">
+                    <a name="onDeleteMenu"></a>
+                    <span class="name">
+                            <span class="modifier">Public</span>
+                        <span ><b>onDeleteMenu</b></span>
+                        <a href="#onDeleteMenu"><span class="icon ion-ios-link"></span></a>
+                    </span>
+                </td>
+            </tr>
+            <tr>
+                <td class="col-md-4">
+                        <span class="modifier-icon icon ion-ios-reset"></span>
+                    <code>onDeleteMenu(item: <a href="../interfaces/MenuInterface.html" target="_self">MenuInterface</a>)</code>
+                </td>
+            </tr>
+
+
+                    <tr>
+                        <td class="col-md-4">
+                            <div class="io-line">Definido em <a href="" data-line="101"
+                                    class="link-to-prism">src/app/application/menu-items/menu-items.component.ts:101</a></div>
+                        </td>
+                    </tr>
+
+
+            <tr>
+                <td class="col-md-4">
+
+                            <div class="io-description">
+                                <b>Parâmetros :</b>
+                                
+                                <table class="params">
+                                    <thead>
+                                        <tr>
+                                            <td>Nome</td>
+                                                <td>Tipo</td>
+                                            <td>Opcional</td>
+                                        </tr>
+                                    </thead>
+                                    <tbody>
+                                        <tr>
+                                                <td>item</td>
+                                            <td>
+                                                            <code><a href="../interfaces/MenuInterface.html" target="_self" >MenuInterface</a></code>
+                                            </td>
+
+                                            <td>
+                                                    Não
+                                            </td>
+
+
+                                        </tr>
+                                    </tbody>
+                                </table>
+                            </div>
+                        <div class="io-description">
+                            <b>Retorna : </b>        <code><a href="https://www.typescriptlang.org/docs/handbook/basic-types.html" target="_blank" >void</a></code>
+
+                        </div>
+                            <div class="io-description">
+                                
+                            </div>
+                </td>
+            </tr>
+        </tbody>
+    </table>
+    <table class="table table-sm table-bordered">
+        <tbody>
+            <tr>
+                <td class="col-md-4">
+                    <a name="onSearch"></a>
+                    <span class="name">
+                            <span class="modifier">Public</span>
+                        <span ><b>onSearch</b></span>
+                        <a href="#onSearch"><span class="icon ion-ios-link"></span></a>
+                    </span>
+                </td>
+            </tr>
+            <tr>
+                <td class="col-md-4">
+                        <span class="modifier-icon icon ion-ios-reset"></span>
+                    <code>onSearch(term: <a href="https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/string" target="_blank">string</a>)</code>
+                </td>
+            </tr>
+
+
+                    <tr>
+                        <td class="col-md-4">
+                            <div class="io-line">Definido em <a href="" data-line="87"
+                                    class="link-to-prism">src/app/application/menu-items/menu-items.component.ts:87</a></div>
+                        </td>
+                    </tr>
+
+
+            <tr>
+                <td class="col-md-4">
+
+                            <div class="io-description">
+                                <b>Parâmetros :</b>
+                                
+                                <table class="params">
+                                    <thead>
+                                        <tr>
+                                            <td>Nome</td>
+                                                <td>Tipo</td>
+                                            <td>Opcional</td>
+                                        </tr>
+                                    </thead>
+                                    <tbody>
+                                        <tr>
+                                                <td>term</td>
+                                            <td>
+                                                            <code><a href="https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/string" target="_blank" >string</a></code>
+                                            </td>
+
+                                            <td>
+                                                    Não
+                                            </td>
+
+
+                                        </tr>
+                                    </tbody>
+                                </table>
+                            </div>
+                        <div class="io-description">
+                            <b>Retorna : </b>        <code><a href="https://www.typescriptlang.org/docs/handbook/basic-types.html" target="_blank" >void</a></code>
+
+                        </div>
+                            <div class="io-description">
+                                
+                            </div>
+                </td>
+            </tr>
+        </tbody>
+    </table>
+    <table class="table table-sm table-bordered">
+        <tbody>
+            <tr>
+                <td class="col-md-4">
+                    <a name="openMenuDetail"></a>
+                    <span class="name">
+                            <span class="modifier">Public</span>
+                        <span ><b>openMenuDetail</b></span>
+                        <a href="#openMenuDetail"><span class="icon ion-ios-link"></span></a>
+                    </span>
+                </td>
+            </tr>
+            <tr>
+                <td class="col-md-4">
+                        <span class="modifier-icon icon ion-ios-reset"></span>
+                    <code>openMenuDetail(item: <a href="../interfaces/MenuInterface.html" target="_self">MenuInterface</a>)</code>
+                </td>
+            </tr>
+
+
+                    <tr>
+                        <td class="col-md-4">
+                            <div class="io-line">Definido em <a href="" data-line="91"
+                                    class="link-to-prism">src/app/application/menu-items/menu-items.component.ts:91</a></div>
+                        </td>
+                    </tr>
+
+
+            <tr>
+                <td class="col-md-4">
+
+                            <div class="io-description">
+                                <b>Parâmetros :</b>
+                                
+                                <table class="params">
+                                    <thead>
+                                        <tr>
+                                            <td>Nome</td>
+                                                <td>Tipo</td>
+                                            <td>Opcional</td>
+                                        </tr>
+                                    </thead>
+                                    <tbody>
+                                        <tr>
+                                                <td>item</td>
+                                            <td>
+                                                            <code><a href="../interfaces/MenuInterface.html" target="_self" >MenuInterface</a></code>
+                                            </td>
+
+                                            <td>
+                                                    Não
+                                            </td>
+
+
+                                        </tr>
+                                    </tbody>
+                                </table>
+                            </div>
+                        <div class="io-description">
+                            <b>Retorna : </b>        <code><a href="https://www.typescriptlang.org/docs/handbook/basic-types.html" target="_blank" >void</a></code>
+
+                        </div>
+                            <div class="io-description">
+                                
+                            </div>
+                </td>
+            </tr>
+        </tbody>
+    </table>
+</section>
+
+    <section data-compodoc="block-properties">
+    
+    <h3 id="inputs">
+        Propriedades
+    </h3>
+    <table class="table table-sm table-bordered">
+        <tbody>
+            <tr>
+                <td class="col-md-4">
+                    <a name="allMenus"></a>
+                    <span class="name">
+                            <span class="modifier">Private</span>
+                        <span ><b>allMenus</b></span>
+                        <a href="#allMenus"><span class="icon ion-ios-link"></span></a>
+                    </span>
+                </td>
+            </tr>
+                <tr>
+                    <td class="col-md-4">
+                        <i>Tipo : </i>        <code><a href="../interfaces/MenuInterface.html" target="_self" >MenuInterface[]</a></code>
+
+                    </td>
+                </tr>
+                <tr>
+                    <td class="col-md-4">
+                        <i>Valor padrão : </i><code>[]</code>
+                    </td>
+                </tr>
+                    <tr>
+                        <td class="col-md-4">
+                                <div class="io-line">Definido em <a href="" data-line="57" class="link-to-prism">src/app/application/menu-items/menu-items.component.ts:57</a></div>
+                        </td>
+                    </tr>
+
+
+        </tbody>
+    </table>
+    <table class="table table-sm table-bordered">
+        <tbody>
+            <tr>
+                <td class="col-md-4">
+                    <a name="filteredMenus$"></a>
+                    <span class="name">
+                            <span class="modifier">Public</span>
+                        <span ><b>filteredMenus$</b></span>
+                        <a href="#filteredMenus$"><span class="icon ion-ios-link"></span></a>
+                    </span>
+                </td>
+            </tr>
+                <tr>
+                    <td class="col-md-4">
+                        <i>Tipo : </i>        <code><a href="../interfaces/MenuInterface.html" target="_self" >Observable&lt;MenuInterface[]&gt;</a></code>
+
+                    </td>
+                </tr>
+                    <tr>
+                        <td class="col-md-4">
+                                <div class="io-line">Definido em <a href="" data-line="51" class="link-to-prism">src/app/application/menu-items/menu-items.component.ts:51</a></div>
+                        </td>
+                    </tr>
+
+
+        </tbody>
+    </table>
+    <table class="table table-sm table-bordered">
+        <tbody>
+            <tr>
+                <td class="col-md-4">
+                    <a name="isDrawerVisible"></a>
+                    <span class="name">
+                            <span class="modifier">Public</span>
+                        <span ><b>isDrawerVisible</b></span>
+                        <a href="#isDrawerVisible"><span class="icon ion-ios-link"></span></a>
+                    </span>
+                </td>
+            </tr>
+                <tr>
+                    <td class="col-md-4">
+                        <i>Tipo : </i>    <code>unknown</code>
+
+                    </td>
+                </tr>
+                <tr>
+                    <td class="col-md-4">
+                        <i>Valor padrão : </i><code>false</code>
+                    </td>
+                </tr>
+                    <tr>
+                        <td class="col-md-4">
+                                <div class="io-line">Definido em <a href="" data-line="55" class="link-to-prism">src/app/application/menu-items/menu-items.component.ts:55</a></div>
+                        </td>
+                    </tr>
+
+
+        </tbody>
+    </table>
+    <table class="table table-sm table-bordered">
+        <tbody>
+            <tr>
+                <td class="col-md-4">
+                    <a name="refreshData$"></a>
+                    <span class="name">
+                            <span class="modifier">Private</span>
+                        <span ><b>refreshData$</b></span>
+                        <a href="#refreshData$"><span class="icon ion-ios-link"></span></a>
+                    </span>
+                </td>
+            </tr>
+                <tr>
+                    <td class="col-md-4">
+                        <i>Tipo : </i>    <code>unknown</code>
+
+                    </td>
+                </tr>
+                <tr>
+                    <td class="col-md-4">
+                        <i>Valor padrão : </i><code>new BehaviorSubject&lt;void&gt;(undefined)</code>
+                    </td>
+                </tr>
+                    <tr>
+                        <td class="col-md-4">
+                                <div class="io-line">Definido em <a href="" data-line="50" class="link-to-prism">src/app/application/menu-items/menu-items.component.ts:50</a></div>
+                        </td>
+                    </tr>
+
+
+        </tbody>
+    </table>
+    <table class="table table-sm table-bordered">
+        <tbody>
+            <tr>
+                <td class="col-md-4">
+                    <a name="searchTerm$"></a>
+                    <span class="name">
+                            <span class="modifier">Private</span>
+                        <span ><b>searchTerm$</b></span>
+                        <a href="#searchTerm$"><span class="icon ion-ios-link"></span></a>
+                    </span>
+                </td>
+            </tr>
+                <tr>
+                    <td class="col-md-4">
+                        <i>Tipo : </i>    <code>unknown</code>
+
+                    </td>
+                </tr>
+                <tr>
+                    <td class="col-md-4">
+                        <i>Valor padrão : </i><code>new BehaviorSubject&lt;string&gt;(&#x27;&#x27;)</code>
+                    </td>
+                </tr>
+                    <tr>
+                        <td class="col-md-4">
+                                <div class="io-line">Definido em <a href="" data-line="49" class="link-to-prism">src/app/application/menu-items/menu-items.component.ts:49</a></div>
+                        </td>
+                    </tr>
+
+
+        </tbody>
+    </table>
+    <table class="table table-sm table-bordered">
+        <tbody>
+            <tr>
+                <td class="col-md-4">
+                    <a name="selectedMenu"></a>
+                    <span class="name">
+                            <span class="modifier">Public</span>
+                        <span ><b>selectedMenu</b></span>
+                        <a href="#selectedMenu"><span class="icon ion-ios-link"></span></a>
+                    </span>
+                </td>
+            </tr>
+                <tr>
+                    <td class="col-md-4">
+                        <i>Tipo : </i>        <code><a href="../interfaces/MenuInterface.html" target="_self" >MenuInterface | null</a></code>
+
+                    </td>
+                </tr>
+                <tr>
+                    <td class="col-md-4">
+                        <i>Valor padrão : </i><code>null</code>
+                    </td>
+                </tr>
+                    <tr>
+                        <td class="col-md-4">
+                                <div class="io-line">Definido em <a href="" data-line="54" class="link-to-prism">src/app/application/menu-items/menu-items.component.ts:54</a></div>
+                        </td>
+                    </tr>
+
+
+        </tbody>
+    </table>
+</section>
+
+</div>
+
+
+    <div class="tab-pane fade  tab-source-code" id="source">
+        <pre class="line-numbers compodoc-sourcecode"><code class="language-typescript">import { Component, OnInit } from &#x27;@angular/core&#x27;;
+import { CommonModule } from &#x27;@angular/common&#x27;;
+import { FormsModule } from &#x27;@angular/forms&#x27;;
+import { RouterModule } from &#x27;@angular/router&#x27;;
+import { Observable, map, combineLatest, BehaviorSubject, switchMap, tap } from &#x27;rxjs&#x27;;
+
+// NG-ZORRO
+import { NzTableModule } from &#x27;ng-zorro-antd/table&#x27;;
+import { NzCardModule } from &#x27;ng-zorro-antd/card&#x27;;
+import { NzButtonModule } from &#x27;ng-zorro-antd/button&#x27;;
+import { NzIconModule } from &#x27;ng-zorro-antd/icon&#x27;;
+import { NzDrawerModule } from &#x27;ng-zorro-antd/drawer&#x27;;
+import { NzDividerModule } from &#x27;ng-zorro-antd/divider&#x27;;
+import { NzDescriptionsModule } from &#x27;ng-zorro-antd/descriptions&#x27;;
+import { NzTagModule } from &#x27;ng-zorro-antd/tag&#x27;;
+import { NzInputModule } from &#x27;ng-zorro-antd/input&#x27;;
+import { NzAvatarModule } from &#x27;ng-zorro-antd/avatar&#x27;;
+import { NzToolTipModule } from &#x27;ng-zorro-antd/tooltip&#x27;;
+
+import { MenuInterface } from &#x27;@interfaces/menu&#x27;;
+import { AppMenusService } from &#x27;@services/app-menus.service&#x27;;
+import { MessageService } from &#x27;@services/message.service&#x27;;
+
+@Component({
+  selector: &#x27;app-menu-items&#x27;,
+  standalone: true,
+  imports: [
+    CommonModule,
+    FormsModule,
+    RouterModule,
+    NzTableModule,
+    NzCardModule,
+    NzButtonModule,
+    NzIconModule,
+    NzDrawerModule,
+    NzDividerModule,
+    NzDescriptionsModule,
+    NzTagModule,
+    NzInputModule,
+    NzAvatarModule,
+    NzToolTipModule
+  ],
+  templateUrl: &#x27;./menu-items.component.html&#x27;,
+  styleUrl: &#x27;./menu-items.component.scss&#x27;
+})
+export class MenuItemsComponent implements OnInit {
+
+  // Flujo de datos reactivo
+  private searchTerm$ &#x3D; new BehaviorSubject&lt;string&gt;(&#x27;&#x27;);
+  private refreshData$ &#x3D; new BehaviorSubject&lt;void&gt;(undefined);
+  public filteredMenus$!: Observable&lt;MenuInterface[]&gt;;
+
+  // Control del Drawer
+  public selectedMenu: MenuInterface | null &#x3D; null;
+  public isDrawerVisible &#x3D; false;
+
+  private allMenus: MenuInterface[] &#x3D; [];
+
+  constructor(
+    private _appMmenusService: AppMenusService,
+    private _messageService: MessageService
+  ) { }
+
+  ngOnInit(): void {
+    // Combinamos la carga de datos con el filtro de búsqueda
+    this.filteredMenus$ &#x3D; combineLatest([
+      this.refreshData$.pipe(
+        switchMap(() &#x3D;&gt; this._appMmenusService.getMenus()),
+        tap(results &#x3D;&gt; this.allMenus &#x3D; results.data)
+      ),
+      this.searchTerm$.asObservable()
+    ]).pipe(
+      map(([results, term]) &#x3D;&gt; {
+        const items &#x3D; results.data;
+        if (!term.trim()) return items;
+        
+        const lowTerm &#x3D; term.toLowerCase();
+        return items.filter(i &#x3D;&gt; 
+          (i.mnu_title?.toLowerCase().includes(lowTerm) ?? false) || 
+          (i.mnu_description?.toLowerCase().includes(lowTerm) ?? false) ||
+          (i.mnu_route?.toLowerCase().includes(lowTerm) ?? false)
+        );
+      })
+    );
+  }
+
+  public onSearch(term: string): void {
+    this.searchTerm$.next(term);
+  }
+
+  public openMenuDetail(item: MenuInterface): void {
+    this.selectedMenu &#x3D; item;
+    this.isDrawerVisible &#x3D; true;
+  }
+
+  public closeDrawer(): void {
+    this.isDrawerVisible &#x3D; false;
+    setTimeout(() &#x3D;&gt; this.selectedMenu &#x3D; null, 300);
+  }
+
+  public onDeleteMenu(item: MenuInterface): void {
+    this._messageService.confirm(
+      &#x27;¿Estás seguro?&#x27;,
+      &#x60;Esta acción eliminará permanentemente el ítem de menú: ${item.mnu_title}&#x60;,
+      () &#x3D;&gt; {
+        this._appMmenusService.deleteMenu(item.mnu_uuid!).subscribe({
+          next: () &#x3D;&gt; {
+            this._messageService.success(&#x27;¡Eliminado!&#x27;, &#x27;El ítem de menú ha sido eliminado correctamente.&#x27;);
+            this.closeDrawer();
+            this.refreshData$.next();
+          },
+          error: (err: any) &#x3D;&gt; {
+            this._messageService.error(&#x27;Error&#x27;, &#x27;No se pudo eliminar el ítem de menú.&#x27;);
+            console.error(err);
+          }
+        });
+      }
+    );
+  }
+
+  public moveItem(item: MenuInterface, direction: &#x27;up&#x27; | &#x27;down&#x27;): void {
+    const currentIndex &#x3D; this.allMenus.findIndex(m &#x3D;&gt; m.mnu_uuid &#x3D;&#x3D;&#x3D; item.mnu_uuid);
+    if (currentIndex &#x3D;&#x3D;&#x3D; -1) return;
+
+    const targetIndex &#x3D; direction &#x3D;&#x3D;&#x3D; &#x27;up&#x27; ? currentIndex - 1 : currentIndex + 1;
+    if (targetIndex &lt; 0 || targetIndex &gt;&#x3D; this.allMenus.length) return;
+
+    const targetItem &#x3D; this.allMenus[targetIndex];
+
+    // Intercambiamos los órdenes
+    const currentOrder &#x3D; item.mnu_order || 0;
+    const targetOrder &#x3D; targetItem.mnu_order || 0;
+
+    // Si los órdenes son iguales, forzamos una diferencia
+    const newCurrentOrder &#x3D; targetOrder;
+    const newTargetOrder &#x3D; currentOrder &#x3D;&#x3D;&#x3D; targetOrder ? targetOrder + (direction &#x3D;&#x3D;&#x3D; &#x27;up&#x27; ? 1 : -1) : currentOrder;
+
+    // Actualizamos ambos ítems
+    const update1 &#x3D; this._appMmenusService.updateMenu(item.mnu_uuid!, { mnu_order: newCurrentOrder });
+    const update2 &#x3D; this._appMmenusService.updateMenu(targetItem.mnu_uuid!, { mnu_order: newTargetOrder });
+
+    combineLatest([update1, update2]).subscribe({
+      next: () &#x3D;&gt; {
+        this.refreshData$.next();
+      },
+      error: (err) &#x3D;&gt; {
+        this._messageService.error(&#x27;Error&#x27;, &#x27;No se pudo actualizar el orden.&#x27;);
+        console.error(err);
+      }
+    });
+  }
+
+  public getParentTitle(parentUuid: string | null): string {
+    if (!parentUuid) return &#x27;Raíz&#x27;;
+    const parent &#x3D; this.allMenus.find(m &#x3D;&gt; m.mnu_uuid &#x3D;&#x3D;&#x3D; parentUuid);
+    return parent ? parent.mnu_title || &#x27;Sin título&#x27; : &#x27;Desconocido&#x27;;
+  }
+}
+</code></pre>
+    </div>
+
+    <div class="tab-pane fade " id="templateData">
+        <pre class="line-numbers"><code class="language-html">&lt;div class&#x3D;&quot;items-dashboard-wrapper&quot;&gt;
+    &lt;div class&#x3D;&quot;dashboard-header&quot;&gt;
+        &lt;div class&#x3D;&quot;header-titles&quot;&gt;
+            &lt;h1 class&#x3D;&quot;page-title&quot;&gt;Gestión de Menús&lt;/h1&gt;
+            &lt;p class&#x3D;&quot;page-subtitle&quot;&gt;Configuración dinámica de la navegación del sistema.&lt;/p&gt;
+        &lt;/div&gt;
+
+        &lt;div class&#x3D;&quot;header-actions&quot;&gt;
+            &lt;nz-input-group [nzPrefix]&#x3D;&quot;prefixIconSearch&quot; nzSize&#x3D;&quot;large&quot; style&#x3D;&quot;width: 320px; margin-right: 16px;&quot;&gt;
+                &lt;input type&#x3D;&quot;text&quot; nz-input placeholder&#x3D;&quot;Buscar ítem de menú...&quot; 
+                    (input)&#x3D;&quot;onSearch(txtSearch.value)&quot; #txtSearch /&gt;
+            &lt;/nz-input-group&gt;
+
+            &lt;button nz-button nzType&#x3D;&quot;primary&quot; nzSize&#x3D;&quot;large&quot; [routerLink]&#x3D;&quot;[&#x27;/application/menu-item/new&#x27;]&quot;&gt;
+                &lt;span nz-icon nzType&#x3D;&quot;plus&quot;&gt;&lt;/span&gt; Nuevo Ítem
+            &lt;/button&gt;
+
+            &lt;ng-template #prefixIconSearch&gt;
+                &lt;span nz-icon nzType&#x3D;&quot;search&quot;&gt;&lt;/span&gt;
+            &lt;/ng-template&gt;
+        &lt;/div&gt;
+    &lt;/div&gt;
+
+    &lt;nz-card class&#x3D;&quot;premium-card&quot; [nzBordered]&#x3D;&quot;false&quot;&gt;
+        &lt;nz-table 
+            #menuTable 
+            [nzData]&#x3D;&quot;(filteredMenus$ | async) || []&quot; 
+            nzSize&#x3D;&quot;middle&quot; 
+            [nzPageSize]&#x3D;&quot;20&quot;
+            [nzScroll]&#x3D;&quot;{ y: &#x27;calc(100vh - 310px)&#x27; }&quot;&gt;
+            &lt;thead&gt;
+                &lt;tr&gt;
+                    &lt;th nzWidth&#x3D;&quot;20%&quot;&gt;Título / Icono&lt;/th&gt;
+                    &lt;th nzWidth&#x3D;&quot;15%&quot;&gt;Ruta&lt;/th&gt;
+                    &lt;th nzWidth&#x3D;&quot;15%&quot;&gt;Padre&lt;/th&gt;
+                    &lt;th nzWidth&#x3D;&quot;10%&quot;&gt;Orden&lt;/th&gt;
+                    &lt;th nzWidth&#x3D;&quot;10%&quot;&gt;Solo Tienda&lt;/th&gt;
+                    &lt;th nzWidth&#x3D;&quot;15%&quot;&gt;Estado&lt;/th&gt;
+                    &lt;th nzWidth&#x3D;&quot;15%&quot;&gt;Acciones&lt;/th&gt;
+                &lt;/tr&gt;
+            &lt;/thead&gt;
+            &lt;tbody&gt;
+                &lt;tr *ngFor&#x3D;&quot;let data of menuTable.data&quot; class&#x3D;&quot;clickable-row&quot; (click)&#x3D;&quot;openMenuDetail(data)&quot;&gt;
+                    &lt;td&gt;
+                        &lt;div class&#x3D;&quot;item-cell&quot;&gt;
+                            &lt;nz-avatar [nzIcon]&#x3D;&quot;data.mnu_icon || &#x27;menu&#x27;&quot;
+                                style&#x3D;&quot;background-color: #f0f5ff; border: 1px solid #adc6ff; color: #2f54eb;&quot;&gt;&lt;/nz-avatar&gt;
+                            &lt;div class&#x3D;&quot;item-info&quot;&gt;
+                                &lt;span class&#x3D;&quot;item-name&quot;&gt;{{ data.mnu_title }}&lt;/span&gt;
+                                &lt;span class&#x3D;&quot;item-uuid&quot;&gt;UUID: {{ data.mnu_uuid?.substring(0,8) }}&lt;/span&gt;
+                            &lt;/div&gt;
+                        &lt;/div&gt;
+                    &lt;/td&gt;
+                    &lt;td&gt;
+                        &lt;code class&#x3D;&quot;route-tag&quot;&gt;{{ data.mnu_route || &#x27;(Sin ruta)&#x27; }}&lt;/code&gt;
+                    &lt;/td&gt;
+                    &lt;td&gt;
+                        &lt;nz-tag [nzColor]&#x3D;&quot;data.mnu_parent_uuid ? &#x27;purple&#x27; : &#x27;default&#x27;&quot;&gt;
+                            {{ getParentTitle(data.mnu_parent_uuid) }}
+                        &lt;/nz-tag&gt;
+                    &lt;/td&gt;
+                    &lt;td&gt;
+                        &lt;div style&#x3D;&quot;display: flex; align-items: center; gap: 8px;&quot;&gt;
+                            &lt;nz-tag nzColor&#x3D;&quot;blue&quot;&gt;{{ data.mnu_order }}&lt;/nz-tag&gt;
+                            &lt;div style&#x3D;&quot;display: flex; flex-direction: column;&quot;&gt;
+                                &lt;button nz-button nzType&#x3D;&quot;text&quot; nzSize&#x3D;&quot;small&quot; (click)&#x3D;&quot;$event.stopPropagation(); moveItem(data, &#x27;up&#x27;)&quot; style&#x3D;&quot;height: 14px; line-height: 1;&quot;&gt;
+                                    &lt;span nz-icon nzType&#x3D;&quot;caret-up&quot; style&#x3D;&quot;font-size: 10px;&quot;&gt;&lt;/span&gt;
+                                &lt;/button&gt;
+                                &lt;button nz-button nzType&#x3D;&quot;text&quot; nzSize&#x3D;&quot;small&quot; (click)&#x3D;&quot;$event.stopPropagation(); moveItem(data, &#x27;down&#x27;)&quot; style&#x3D;&quot;height: 14px; line-height: 1;&quot;&gt;
+                                    &lt;span nz-icon nzType&#x3D;&quot;caret-down&quot; style&#x3D;&quot;font-size: 10px;&quot;&gt;&lt;/span&gt;
+                                &lt;/button&gt;
+                            &lt;/div&gt;
+                        &lt;/div&gt;
+                    &lt;/td&gt;
+                    &lt;td&gt;
+                        &lt;span nz-icon [nzType]&#x3D;&quot;data.mnu_showifcompanyactive ? &#x27;check-circle&#x27; : &#x27;minus-circle&#x27;&quot; 
+                            [style.color]&#x3D;&quot;data.mnu_showifcompanyactive ? &#x27;#52c41a&#x27; : &#x27;#d9d9d9&#x27;&quot;&gt;&lt;/span&gt;
+                    &lt;/td&gt;
+                    &lt;td&gt;
+                        &lt;nz-tag [nzColor]&#x3D;&quot;data.mnu_active ? &#x27;success&#x27; : &#x27;error&#x27;&quot;&gt;
+                            {{ data.mnu_active ? &#x27;Activo&#x27; : &#x27;Inactivo&#x27; }}
+                        &lt;/nz-tag&gt;
+                    &lt;/td&gt;
+                    &lt;td&gt;
+                        &lt;button nz-button nzType&#x3D;&quot;link&quot; (click)&#x3D;&quot;$event.stopPropagation(); openMenuDetail(data)&quot;&gt;Detalles&lt;/button&gt;
+                    &lt;/td&gt;
+                &lt;/tr&gt;
+            &lt;/tbody&gt;
+        &lt;/nz-table&gt;
+    &lt;/nz-card&gt;
+&lt;/div&gt;
+
+&lt;!-- Drawer de Detalles --&gt;
+&lt;nz-drawer [nzVisible]&#x3D;&quot;isDrawerVisible&quot; nzPlacement&#x3D;&quot;right&quot; nzTitle&#x3D;&quot;Detalle de Ítem de Menú&quot; [nzWidth]&#x3D;&quot;&#x27;500px&#x27;&quot; (nzOnClose)&#x3D;&quot;closeDrawer()&quot;&gt;
+    &lt;ng-container *nzDrawerContent&gt;
+        &lt;div *ngIf&#x3D;&quot;selectedMenu&quot; class&#x3D;&quot;drawer-content-wrapper&quot;&gt;
+            &lt;div class&#x3D;&quot;profile-header&quot;&gt;
+                &lt;nz-avatar [nzSize]&#x3D;&quot;64&quot; [nzIcon]&#x3D;&quot;selectedMenu.mnu_icon || &#x27;menu&#x27;&quot; style&#x3D;&quot;background-color: #fafafa; border: 1px solid #e8e8e8; color: #1890ff;&quot;&gt;&lt;/nz-avatar&gt;
+                &lt;div class&#x3D;&quot;profile-header-info&quot;&gt;
+                    &lt;h2&gt;{{ selectedMenu.mnu_title }}&lt;/h2&gt;
+                    &lt;span style&#x3D;&quot;color: #8c8c8c;&quot;&gt;ID: {{ selectedMenu.mnu_uuid }}&lt;/span&gt;
+                &lt;/div&gt;
+            &lt;/div&gt;
+
+            &lt;nz-divider&gt;&lt;/nz-divider&gt;
+
+            &lt;nz-descriptions nzTitle&#x3D;&quot;Configuración&quot; [nzColumn]&#x3D;&quot;1&quot; nzSize&#x3D;&quot;small&quot;&gt;
+                &lt;nz-descriptions-item nzTitle&#x3D;&quot;Título&quot;&gt;{{ selectedMenu.mnu_title }}&lt;/nz-descriptions-item&gt;
+                &lt;nz-descriptions-item nzTitle&#x3D;&quot;Ruta&quot;&gt;
+                    &lt;code&gt;{{ selectedMenu.mnu_route || &#x27;N/A&#x27; }}&lt;/code&gt;
+                &lt;/nz-descriptions-item&gt;
+                &lt;nz-descriptions-item nzTitle&#x3D;&quot;Icono&quot;&gt;{{ selectedMenu.mnu_icon || &#x27;N/A&#x27; }}&lt;/nz-descriptions-item&gt;
+                &lt;nz-descriptions-item nzTitle&#x3D;&quot;Orden&quot;&gt;{{ selectedMenu.mnu_order }}&lt;/nz-descriptions-item&gt;
+                &lt;nz-descriptions-item nzTitle&#x3D;&quot;Padre&quot;&gt;{{ selectedMenu.mnu_parent_uuid || &#x27;Raíz (Nivel 0)&#x27; }}&lt;/nz-descriptions-item&gt;
+                &lt;nz-descriptions-item nzTitle&#x3D;&quot;Descripción&quot;&gt;
+                    {{ selectedMenu.mnu_description || &#x27;Sin descripción.&#x27; }}
+                &lt;/nz-descriptions-item&gt;
+            &lt;/nz-descriptions&gt;
+
+            &lt;nz-divider&gt;&lt;/nz-divider&gt;
+
+            &lt;nz-descriptions nzTitle&#x3D;&quot;Auditoría&quot; [nzColumn]&#x3D;&quot;1&quot; nzSize&#x3D;&quot;small&quot;&gt;
+                &lt;nz-descriptions-item nzTitle&#x3D;&quot;Creado&quot;&gt;{{ selectedMenu.mnu_createdat | date:&#x27;medium&#x27; }}&lt;/nz-descriptions-item&gt;
+                &lt;nz-descriptions-item nzTitle&#x3D;&quot;Última Modificación&quot;&gt;{{ selectedMenu.mnu_updatedat | date:&#x27;medium&#x27; }}&lt;/nz-descriptions-item&gt;
+            &lt;/nz-descriptions&gt;
+
+            &lt;div style&#x3D;&quot;margin-top: 32px; display: flex; gap: 8px;&quot;&gt;
+                &lt;button nz-button nzType&#x3D;&quot;primary&quot; nzBlock [routerLink]&#x3D;&quot;[&#x27;/application/menu-item&#x27;, selectedMenu.mnu_uuid]&quot;&gt;Editar Ítem&lt;/button&gt;
+                &lt;button nz-button nzDanger nzBlock (click)&#x3D;&quot;onDeleteMenu(selectedMenu)&quot;&gt;Eliminar&lt;/button&gt;
+            &lt;/div&gt;
+        &lt;/div&gt;
+    &lt;/ng-container&gt;
+&lt;/nz-drawer&gt;
+</code></pre>
+    </div>
+
+    <div class="tab-pane fade " id="styleData">
+                <p class="comment">
+                    <code>./menu-items.component.scss</code>
+                </p>
+                <pre class="line-numbers"><code class="language-scss">.items-dashboard-wrapper {
+    padding: 24px;
+    background-color: #f7f9fc;
+    height: calc(100vh - 64px); 
+    display: flex;
+    flex-direction: column;
+    overflow: hidden;
+}
+
+.dashboard-header {
+    flex-shrink: 0;
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    margin-bottom: 24px;
+    gap: 16px;
+
+    .page-title {
+        font-size: 28px;
+        font-weight: 600;
+        color: #1f1f1f;
+        margin-bottom: 4px;
+    }
+
+    .page-subtitle {
+        color: #8c8c8c;
+        font-size: 15px;
+        margin: 0;
+    }
+}
+
+.premium-card {
+    border-radius: 12px;
+    box-shadow: 0 4px 24px rgba(0, 0, 0, 0.04);
+    flex: 1;
+    display: flex;
+    flex-direction: column;
+    overflow: hidden;
+
+    ::ng-deep .ant-card-body {
+        flex: 1;
+        display: flex;
+        flex-direction: column;
+        padding: 0;
+        overflow: hidden;
+    }
+}
+
+::ng-deep .ant-table-wrapper, 
+::ng-deep .ant-spin-nested-loading, 
+::ng-deep .ant-spin-container, 
+::ng-deep .ant-table {
+    height: 100%;
+}
+
+.clickable-row {
+    cursor: pointer;
+    transition: background-color 0.2s;
+
+    &amp;:hover {
+        background-color: #fafafa;
+    }
+}
+
+.item-cell {
+    display: flex;
+    align-items: center;
+    gap: 12px;
+
+    .item-info {
+        display: flex;
+        flex-direction: column;
+
+        .item-name {
+            font-weight: 600;
+            color: #262626;
+        }
+
+        .item-uuid {
+            font-size: 11px;
+            color: #8c8c8c;
+            font-family: monospace;
+        }
+    }
+}
+
+.route-tag {
+    background-color: #f5f5f5;
+    padding: 2px 6px;
+    border-radius: 4px;
+    font-size: 12px;
+    color: #000;
+    font-family: &#x27;SFMono-Regular&#x27;, Consolas, &#x27;Liberation Mono&#x27;, Menlo, monospace;
+}
+
+// DRAWER STYLES
+.drawer-content-wrapper {
+    display: flex;
+    flex-direction: column;
+}
+
+.profile-header {
+    display: flex;
+    align-items: center;
+    gap: 16px;
+
+    .profile-header-info {
+        h2 {
+            margin: 0 0 4px 0;
+            font-weight: 600;
+        }
+    }
+}
+</code></pre>
+    </div>
+
+    <div class="tab-pane fade " id="tree">
+        <div id="tree-container"></div>
+        <div class="tree-legend">
+            <div class="title">
+                <b>Legend</b>
+            </div>
+            <div>
+                <div class="color htmlelement"></div><span>Elemento HTML</span>
+            </div>
+            <div>
+                <div class="color component"></div><span>Componente</span>
+            </div>
+            <div>
+                <div class="color directive"></div><span>Elemento HTML com diretiva</span>
+            </div>
+        </div>
+    </div>
+
+    
+</div>
+
+<script src="../js/libs/vis-network.min.js"></script>
+<script src="../js/libs/htmlparser.js"></script>
+<script src="../js/libs/deep-iterator.js"></script>
+<script>
+        var COMPONENT_TEMPLATE = '<div><div class="items-dashboard-wrapper">    <div class="dashboard-header">        <div class="header-titles">            <h1 class="page-title">Gestión de Menús</h1>            <p class="page-subtitle">Configuración dinámica de la navegación del sistema.</p>        </div>        <div class="header-actions">            <nz-input-group [nzPrefix]="prefixIconSearch" nzSize="large" style="width: 320px; margin-right: 16px;">                <input type="text" nz-input placeholder="Buscar ítem de menú..."                     (input)="onSearch(txtSearch.value)" #txtSearch />            </nz-input-group>            <button nz-button nzType="primary" nzSize="large" [routerLink]="[\'/application/menu-item/new\']">                <span nz-icon nzType="plus"></span> Nuevo Ítem            </button>            <ng-template #prefixIconSearch>                <span nz-icon nzType="search"></span>            </ng-template>        </div>    </div>    <nz-card class="premium-card" [nzBordered]="false">        <nz-table             #menuTable             [nzData]="(filteredMenus$ | async) || []"             nzSize="middle"             [nzPageSize]="20"            [nzScroll]="{ y: \'calc(100vh - 310px)\' }">            <thead>                <tr>                    <th nzWidth="20%">Título / Icono</th>                    <th nzWidth="15%">Ruta</th>                    <th nzWidth="15%">Padre</th>                    <th nzWidth="10%">Orden</th>                    <th nzWidth="10%">Solo Tienda</th>                    <th nzWidth="15%">Estado</th>                    <th nzWidth="15%">Acciones</th>                </tr>            </thead>            <tbody>                <tr *ngFor="let data of menuTable.data" class="clickable-row" (click)="openMenuDetail(data)">                    <td>                        <div class="item-cell">                            <nz-avatar [nzIcon]="data.mnu_icon || \'menu\'"                                style="background-color: #f0f5ff; border: 1px solid #adc6ff; color: #2f54eb;"></nz-avatar>                            <div class="item-info">                                <span class="item-name">{{ data.mnu_title }}</span>                                <span class="item-uuid">UUID: {{ data.mnu_uuid?.substring(0,8) }}</span>                            </div>                        </div>                    </td>                    <td>                        <code class="route-tag">{{ data.mnu_route || \'(Sin ruta)\' }}</code>                    </td>                    <td>                        <nz-tag [nzColor]="data.mnu_parent_uuid ? \'purple\' : \'default\'">                            {{ getParentTitle(data.mnu_parent_uuid) }}                        </nz-tag>                    </td>                    <td>                        <div style="display: flex; align-items: center; gap: 8px;">                            <nz-tag nzColor="blue">{{ data.mnu_order }}</nz-tag>                            <div style="display: flex; flex-direction: column;">                                <button nz-button nzType="text" nzSize="small" (click)="$event.stopPropagation(); moveItem(data, \'up\')" style="height: 14px; line-height: 1;">                                    <span nz-icon nzType="caret-up" style="font-size: 10px;"></span>                                </button>                                <button nz-button nzType="text" nzSize="small" (click)="$event.stopPropagation(); moveItem(data, \'down\')" style="height: 14px; line-height: 1;">                                    <span nz-icon nzType="caret-down" style="font-size: 10px;"></span>                                </button>                            </div>                        </div>                    </td>                    <td>                        <span nz-icon [nzType]="data.mnu_showifcompanyactive ? \'check-circle\' : \'minus-circle\'"                             [style.color]="data.mnu_showifcompanyactive ? \'#52c41a\' : \'#d9d9d9\'"></span>                    </td>                    <td>                        <nz-tag [nzColor]="data.mnu_active ? \'success\' : \'error\'">                            {{ data.mnu_active ? \'Activo\' : \'Inactivo\' }}                        </nz-tag>                    </td>                    <td>                        <button nz-button nzType="link" (click)="$event.stopPropagation(); openMenuDetail(data)">Detalles</button>                    </td>                </tr>            </tbody>        </nz-table>    </nz-card></div><!-- Drawer de Detalles --><nz-drawer [nzVisible]="isDrawerVisible" nzPlacement="right" nzTitle="Detalle de Ítem de Menú" [nzWidth]="\'500px\'" (nzOnClose)="closeDrawer()">    <ng-container *nzDrawerContent>        <div *ngIf="selectedMenu" class="drawer-content-wrapper">            <div class="profile-header">                <nz-avatar [nzSize]="64" [nzIcon]="selectedMenu.mnu_icon || \'menu\'" style="background-color: #fafafa; border: 1px solid #e8e8e8; color: #1890ff;"></nz-avatar>                <div class="profile-header-info">                    <h2>{{ selectedMenu.mnu_title }}</h2>                    <span style="color: #8c8c8c;">ID: {{ selectedMenu.mnu_uuid }}</span>                </div>            </div>            <nz-divider></nz-divider>            <nz-descriptions nzTitle="Configuración" [nzColumn]="1" nzSize="small">                <nz-descriptions-item nzTitle="Título">{{ selectedMenu.mnu_title }}</nz-descriptions-item>                <nz-descriptions-item nzTitle="Ruta">                    <code>{{ selectedMenu.mnu_route || \'N/A\' }}</code>                </nz-descriptions-item>                <nz-descriptions-item nzTitle="Icono">{{ selectedMenu.mnu_icon || \'N/A\' }}</nz-descriptions-item>                <nz-descriptions-item nzTitle="Orden">{{ selectedMenu.mnu_order }}</nz-descriptions-item>                <nz-descriptions-item nzTitle="Padre">{{ selectedMenu.mnu_parent_uuid || \'Raíz (Nivel 0)\' }}</nz-descriptions-item>                <nz-descriptions-item nzTitle="Descripción">                    {{ selectedMenu.mnu_description || \'Sin descripción.\' }}                </nz-descriptions-item>            </nz-descriptions>            <nz-divider></nz-divider>            <nz-descriptions nzTitle="Auditoría" [nzColumn]="1" nzSize="small">                <nz-descriptions-item nzTitle="Creado">{{ selectedMenu.mnu_createdat | date:\'medium\' }}</nz-descriptions-item>                <nz-descriptions-item nzTitle="Última Modificación">{{ selectedMenu.mnu_updatedat | date:\'medium\' }}</nz-descriptions-item>            </nz-descriptions>            <div style="margin-top: 32px; display: flex; gap: 8px;">                <button nz-button nzType="primary" nzBlock [routerLink]="[\'/application/menu-item\', selectedMenu.mnu_uuid]">Editar Ítem</button>                <button nz-button nzDanger nzBlock (click)="onDeleteMenu(selectedMenu)">Eliminar</button>            </div>        </div>    </ng-container></nz-drawer></div>'
+    var COMPONENTS = [{'name': 'AccountConfirmedComponent', 'selector': 'app-account-confirmed'},{'name': 'AccountCreatedComponent', 'selector': 'app-account-created'},{'name': 'AddressesComponent', 'selector': 'app-addresses'},{'name': 'AnalyticsComponent', 'selector': 'app-analytics'},{'name': 'AppComponent', 'selector': 'app-root'},{'name': 'ApplicationBarComponent', 'selector': 'app-application-bar'},{'name': 'ApplicationLayoutComponent', 'selector': 'app-application-layout'},{'name': 'AuthLayoutComponent', 'selector': 'app-auth-layout'},{'name': 'BarcodeScannerComponent', 'selector': 'app-barcode-scanner'},{'name': 'CameraComponent', 'selector': 'app-camera'},{'name': 'CartComponent', 'selector': 'app-cart'},{'name': 'CatalogComponent', 'selector': 'app-catalog'},{'name': 'CategoriesComponent', 'selector': 'app-categories'},{'name': 'CategoriesListComponent', 'selector': 'app-categories-list'},{'name': 'CheckoutComponent', 'selector': 'app-checkout'},{'name': 'CompanyComponent', 'selector': 'app-company'},{'name': 'CompanySettingsComponent', 'selector': 'app-company-settings'},{'name': 'CouponsComponent', 'selector': 'app-coupons'},{'name': 'CustomersComponent', 'selector': 'app-customers'},{'name': 'DistPriceListComponent', 'selector': 'app-dist-price-list'},{'name': 'FinancesComponent', 'selector': 'app-finances'},{'name': 'ForgotPasswordComponent', 'selector': 'app-forgot-password'},{'name': 'GlobalCategoriesComponent', 'selector': 'app-global-categories'},{'name': 'GlobalCategoryComponent', 'selector': 'app-global-category'},{'name': 'GlobalItemComponent', 'selector': 'app-global-item'},{'name': 'GlobalItemsComponent', 'selector': 'app-global-items'},{'name': 'GlobalMaterialComponent', 'selector': 'app-global-material'},{'name': 'GlobalMaterialsComponent', 'selector': 'app-global-materials'},{'name': 'HomeStoreComponent', 'selector': 'app-home'},{'name': 'InventoryAuditComponent', 'selector': 'app-inventory-audit'},{'name': 'ItemsComponent', 'selector': 'app-items'},{'name': 'LoginComponent', 'selector': 'app-login'},{'name': 'MapPickerComponent', 'selector': 'app-map-picker'},{'name': 'MarketHomeComponent', 'selector': 'app-market-home'},{'name': 'MaterialComponent', 'selector': 'app-material'},{'name': 'MaterialsComponent', 'selector': 'app-materials'},{'name': 'MenuItemComponent', 'selector': 'app-menu-item'},{'name': 'MenuItemsComponent', 'selector': 'app-menu-items'},{'name': 'MpPaymentBrickComponent', 'selector': 'app-mp-payment-brick'},{'name': 'MyCompaniesComponent', 'selector': 'app-my-companies'},{'name': 'MyFavoritesComponent', 'selector': 'app-my-favorites'},{'name': 'MyPurchasesComponent', 'selector': 'app-my-purchases'},{'name': 'NavBarComponent', 'selector': 'app-nav-bar'},{'name': 'OrdersReceivedComponent', 'selector': 'app-orders-received'},{'name': 'PriceListComponent', 'selector': 'app-price-list'},{'name': 'ProductComponent', 'selector': 'app-product'},{'name': 'ProductDetailComponent', 'selector': 'app-product-detail'},{'name': 'ProductsComponent', 'selector': 'app-products'},{'name': 'ProductsVariationsComponent', 'selector': 'app-products-variations'},{'name': 'ProductVariationComponent', 'selector': 'app-product-variation'},{'name': 'PublicLayoutComponent', 'selector': 'app-public-layout'},{'name': 'RegisterComponent', 'selector': 'app-register'},{'name': 'ResetPasswordComponent', 'selector': 'app-reset-password'},{'name': 'SideBarComponent', 'selector': 'app-side-bar'},{'name': 'SsoCallbackComponent', 'selector': 'app-sso-callback'},{'name': 'StoreCatalogComponent', 'selector': 'app-store'},{'name': 'SuperAdminComponent', 'selector': 'app-super-admin'},{'name': 'SupplierComponent', 'selector': 'app-supplier'},{'name': 'SuppliersComponent', 'selector': 'app-suppliers'},{'name': 'UserLayoutComponent', 'selector': 'app-user-layout'},{'name': 'UserRolCompanyComponent', 'selector': 'app-user-rol-company'},{'name': 'WarehousesComponent', 'selector': 'app-warehouses'}];
+    var DIRECTIVES = [{'name': 'ImagePreloadDirective', 'selector': 'img[default]'}];
+    var ACTUAL_COMPONENT = {'name': 'MenuItemsComponent'};
+</script>
+<script src="../js/tree.js"></script>
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+                   </div><div class="search-results">
+    <div class="has-results">
+        <h1 class="search-results-title"><span class='search-results-count'></span> resultados correspondentes "<span class='search-query'></span>"</h1>
+        <ul class="search-results-list"></ul>
+    </div>
+    <div class="no-results">
+        <h1 class="search-results-title">Nenhum resultado correspondente "<span class='search-query'></span>"</h1>
+    </div>
+</div>
+</div>
+               <!-- END CONTENT -->
+           </div>
+       </div>
+
+          
+<div class="compodoc-lang-switch">
+  <select id="compodoc-lang-select" aria-label="Seleccionar idioma">
+    <option value="es" >🇪🇸 Español</option>
+    <option value="en" >🇺🇸 English</option>
+    <option value="pt" selected>🇧🇷 Português</option>
+  </select>
+</div>
+
+          <label class="dark-mode-switch">
+               <input type="checkbox">
+               <span class="slider">
+                    <svg class="slider-icon" viewBox="0 0 24 24" fill="none" height="20" stroke="#000" stroke-linecap="round" stroke-linejoin="round" stroke-width="2" width="20" xmlns="http://www.w3.org/2000/svg">
+                    <path d="M21 12.79A9 9 0 1111.21 3 7 7 0 0021 12.79z"></path>
+                    </svg>
+               </span>
+          </label>
+
+       <script>
+            var COMPODOC_CURRENT_PAGE_DEPTH = 1;
+            var COMPODOC_CURRENT_PAGE_CONTEXT = 'component';
+            var COMPODOC_CURRENT_PAGE_URL = 'MenuItemsComponent.html';
+            var MAX_SEARCH_RESULTS = 15;
+       </script>
+
+       <script>
+               $darkModeToggleSwitchers = document.querySelectorAll('.dark-mode-switch input');
+               var updateDarkModeSwitchOffset = function () {
+                    var content = document.querySelector('.content');
+                    var scrollbarWidth = 0;
+
+                    if (content) {
+                         scrollbarWidth = Math.max(0, content.offsetWidth - content.clientWidth);
+                    }
+
+                    document.documentElement.style.setProperty(
+                         '--content-scrollbar-width',
+                         scrollbarWidth + 'px'
+                    );
+               };
+
+               updateDarkModeSwitchOffset();
+               requestAnimationFrame(updateDarkModeSwitchOffset);
+               window.addEventListener('resize', updateDarkModeSwitchOffset);
+
+               checkToggle(darkModeState);
+               if ($darkModeToggleSwitchers.length > 0) {
+                    for (var i = 0; i < $darkModeToggleSwitchers.length; i++) {
+                         $darkModeToggleSwitchers[i].addEventListener('change', function (event) {
+                              darkModeState = !darkModeState;
+                              toggleDarkMode(darkModeState);
+                         });
+                    }
+               }
+          </script>
+
+       <script src="../js/libs/custom-elements.min.js"></script>
+       <script src="../js/libs/lit-html.js"></script>
+
+       <script src="../js/menu-wc.js" defer></script>
+
+       <script src="../js/libs/bootstrap-native.js"></script>
+
+       <script src="../js/libs/es6-shim.min.js"></script>
+       <script src="../js/libs/EventDispatcher.js"></script>
+       <script src="../js/libs/promise.min.js"></script>
+
+       <script src="../js/compodoc.js"></script>
+
+       <script src="../js/tabs.js"></script>
+       <script src="../js/menu.js"></script>
+       <script src="../js/libs/clipboard.min.js"></script>
+       <script src="../js/libs/prism.js"></script>
+       <script src="../js/sourceCode.js"></script>
+          <script src="../js/search/search.js"></script>
+          <script src="../js/search/lunr.min.js"></script>
+          <script src="../js/search/search-lunr.js"></script>
+          <script src="../js/search/search_index.js"></script>
+       <script src="../js/lazy-load-graphs.js"></script>
+
+
+    
+<script id="compodoc-lang-script">
+(function() {
+  var CURRENT_LANG = "pt";
+  var ADDITIONAL_DOCS_MAP = {"es":["01.-introducción-y-arquitectura-general.html","02.-autenticación-y-control-de-accesos.html","03.-catálogo-público-y-exploración-de-tiendas.html","04.-carrito-de-compras-y-checkout-multitienda.html","05.-gestión-de-empresas,-roles-y-configuración.html","06.-inventario,-productos,-variaciones-y-almacenes.html","07.-gestión-de-pedidos,-compras-y-cupones.html","08.-analíticas-de-negocio,-finanzas-y-proveedores.html"],"en":["01.-introduction-and-general-architecture.html","02.-authentication-and-access-control.html","03.-public-catalog-and-store-exploration.html","04.-shopping-cart-and-multi-store-checkout.html","05.-company-management,-roles-and-configuration.html","06.-inventory,-products,-variations-and-warehouses.html","07.-orders-management,-purchases-and-coupons.html","08.-business-analytics,-finances-and-suppliers.html"],"pt":["01.-introdução-e-arquitetura-geral.html","02.-autenticação-e-controle-de-acesso.html","03.-catálogo-público-e-exploração-de-lojas.html","04.-carrinho-de-compras-e-checkout-multiloja.html","05.-gestão-de-empresas,-funções-e-configuração.html","06.-estoque,-produtos,-variações-e-armazéns.html","07.-gestão-de-pedidos,-compras-e-cupons.html","08.-análise-de-negócios,-finanças-e-fornecedores.html"]};
+
+  var select = document.getElementById('compodoc-lang-select');
+  if (!select) return;
+
+  try {
+    localStorage.setItem('compodoc_lang', CURRENT_LANG);
+  } catch (e) {}
+
+  select.addEventListener('change', function(e) {
+    var targetLang = e.target.value;
+    if (targetLang === CURRENT_LANG) return;
+
+    try {
+      localStorage.setItem('compodoc_lang', targetLang);
+    } catch (err) {}
+
+    var href = window.location.href;
+    var pathname = window.location.pathname;
+
+    // Manejo especial para páginas de additional-documentation
+    if (pathname.indexOf('/additional-documentation/') !== -1) {
+      var segments = pathname.split('/');
+      var currentFile = decodeURIComponent(segments[segments.length - 1]);
+      
+      var currentList = ADDITIONAL_DOCS_MAP[CURRENT_LANG] || [];
+      var targetList = ADDITIONAL_DOCS_MAP[targetLang] || [];
+      var foundIndex = -1;
+
+      var prefixMatch = currentFile.match(/^(\d{2}\.-)/);
+      if (prefixMatch) {
+        var prefix = prefixMatch[1];
+        for (var i = 0; i < targetList.length; i++) {
+          if (targetList[i].startsWith(prefix)) {
+            foundIndex = i;
+            break;
+          }
+        }
+      }
+      if (foundIndex === -1) {
+        for (var j = 0; j < currentList.length; j++) {
+          if (currentList[j] === currentFile) {
+            foundIndex = j;
+            break;
+          }
+        }
+      }
+
+      var targetFile = (foundIndex !== -1 && targetList[foundIndex]) 
+        ? targetList[foundIndex] 
+        : (targetList[0] || 'index.html');
+
+      var targetSubpath = '/' + targetLang + '/additional-documentation/' + targetFile;
+      var currentSubpath = '/' + CURRENT_LANG + '/additional-documentation/' + segments[segments.length - 1];
+
+      if (href.indexOf(currentSubpath) !== -1) {
+        window.location.href = href.replace(currentSubpath, targetSubpath);
+        return;
+      }
+    }
+
+    // Páginas estándar
+    var standardReplace = href.replace('/' + CURRENT_LANG + '/', '/' + targetLang + '/');
+    if (standardReplace !== href) {
+      window.location.href = standardReplace;
+    } else {
+      var depth = (typeof COMPODOC_CURRENT_PAGE_DEPTH !== 'undefined') ? COMPODOC_CURRENT_PAGE_DEPTH : 0;
+      var prefixPath = '';
+      for (var k = 0; k <= depth; k++) {
+        prefixPath += '../';
+      }
+      window.location.href = prefixPath + targetLang + '/index.html';
+    }
+  });
+})();
+</script>
+
+</body>
+</html>

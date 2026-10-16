@@ -1,0 +1,3559 @@
+<!doctype html>
+<html class="no-js" lang="">
+    <head>
+        <meta charset="utf-8">
+        <meta http-equiv="x-ua-compatible" content="ie=edge">
+        <title>ATSMarket Web App</title>
+        <meta name="description" content="">
+        <meta name="viewport" content="width=device-width, initial-scale=1">
+
+        <link rel="icon" type="image/x-icon" href="../images/favicon.ico">
+	   <link rel="stylesheet" href="../styles/style.css">
+        <link rel="stylesheet" href="../styles/dark.css">
+    
+<style id="compodoc-lang-styles">
+  .compodoc-lang-switch {
+    position: fixed;
+    top: 15px;
+    right: calc(90px + var(--content-scrollbar-width, 0px));
+    z-index: 1050;
+    display: inline-block;
+  }
+  @media (max-width: 767px) {
+    .compodoc-lang-switch {
+      top: 8px;
+      right: 60px;
+    }
+  }
+  #compodoc-lang-select {
+    height: 34px;
+    padding: 0 12px;
+    border-radius: 17px;
+    border: 1px solid #d9d9d9;
+    background-color: #ffffff;
+    color: #1f1f1f;
+    font-size: 13px;
+    font-family: inherit;
+    font-weight: 500;
+    cursor: pointer;
+    outline: none;
+    box-shadow: 0 2px 6px rgba(0, 0, 0, 0.08);
+    transition: all 0.3s cubic-bezier(0.645, 0.045, 0.355, 1);
+    -webkit-appearance: none;
+    -moz-appearance: none;
+    appearance: none;
+    padding-right: 26px;
+    background-image: url("data:image/svg+xml;charset=UTF-8,%3csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 24 24' fill='none' stroke='%23666' stroke-width='2' stroke-linecap='round' stroke-linejoin='round'%3e%3cpolyline points='6 9 12 15 18 9'%3e%3c/polyline%3e%3c/svg%3e");
+    background-repeat: no-repeat;
+    background-position: right 8px center;
+    background-size: 14px;
+  }
+  #compodoc-lang-select:hover, #compodoc-lang-select:focus {
+    border-color: #5cc0ae;
+    box-shadow: 0 2px 8px rgba(92, 192, 174, 0.25);
+  }
+  body.dark .compodoc-lang-switch #compodoc-lang-select {
+    background-color: #2c3e50;
+    color: #ecf0f1;
+    border: 1px solid #4a627a;
+    box-shadow: 0 2px 6px rgba(0, 0, 0, 0.35);
+    background-image: url("data:image/svg+xml;charset=UTF-8,%3csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 24 24' fill='none' stroke='%23ecf0f1' stroke-width='2' stroke-linecap='round' stroke-linejoin='round'%3e%3cpolyline points='6 9 12 15 18 9'%3e%3c/polyline%3e%3c/svg%3e");
+  }
+  body.dark .compodoc-lang-switch #compodoc-lang-select option {
+    background-color: #2c3e50;
+    color: #ecf0f1;
+  }
+</style>
+
+</head>
+    <body>
+          <script>
+               // Blocking script to avoid flickering dark mode
+               // Dark mode toggle button
+               var useDark = window.matchMedia('(prefers-color-scheme: dark)');
+               var darkModeState = useDark.matches;
+               var $darkModeToggleSwitchers = document.querySelectorAll('.dark-mode-switch input');
+               var $darkModeToggles = document.querySelectorAll('.dark-mode-switch');
+               var darkModeStateLocal = localStorage.getItem('compodoc_darkmode-state');
+
+               function checkToggle(check) {
+                    for (var i = 0; i < $darkModeToggleSwitchers.length; i++) {
+                         $darkModeToggleSwitchers[i].checked = check;
+                    }
+               }
+
+               function toggleDarkMode(state) {
+                    if (window.localStorage) {
+                         localStorage.setItem('compodoc_darkmode-state', state);
+                    }
+
+                    checkToggle(state);
+
+                    const hasClass = document.body.classList.contains('dark');
+
+                    if (state) {
+                         for (var i = 0; i < $darkModeToggles.length; i++) {
+                              $darkModeToggles[i].classList.add('dark');
+                         }
+                         if (!hasClass) {
+                              document.body.classList.add('dark');
+                         }
+                    } else {
+                         for (var i = 0; i < $darkModeToggles.length; i++) {
+                              $darkModeToggles[i].classList.remove('dark');
+                         }
+                         if (hasClass) {
+                              document.body.classList.remove('dark');
+                         }
+                    }
+               }
+
+               useDark.addEventListener('change', function (evt) {
+                    toggleDarkMode(evt.matches);
+               });
+               if (darkModeStateLocal) {
+                    darkModeState = darkModeStateLocal === 'true';
+               }
+               toggleDarkMode(darkModeState);
+          </script>
+          <script>
+              // --- Iframe navigation tracking for Template Playground ---
+              function sendCurrentUrlToParent() {
+                  if (window.parent && window.parent !== window) {
+                      window.parent.postMessage({
+                          type: 'compodoc-iframe-navigate',
+                          url: window.location.pathname + window.location.hash
+                      }, '*');
+                  }
+              }
+              window.addEventListener('hashchange', sendCurrentUrlToParent, false);
+              window.addEventListener('popstate', sendCurrentUrlToParent, false);
+              window.addEventListener('DOMContentLoaded', sendCurrentUrlToParent, false);
+          </script>
+
+        <div class="navbar navbar-default navbar-fixed-top d-md-none p-0">
+               <div class="d-flex">
+                    <a href="../" class="navbar-brand">ATSMarket Web App</a>
+                    <button type="button" class="btn btn-default btn-menu ion-ios-menu" id="btn-menu"></button>
+               </div>
+        </div>
+
+        <div class="xs-menu menu" id="mobile-menu">
+                <div id="book-search-input" role="search">
+    <input type="text" placeholder="Digite para pesquisar">
+    <button type="button"
+        class="search-input-clear"
+        aria-label="Clear search"
+        data-search-input-clear>&times;</button>
+</div>
+            <compodoc-menu></compodoc-menu>
+        </div>
+
+        <div class="container-fluid main">
+           <div class="row main">
+               <div class="d-none d-md-block menu">
+                   <compodoc-menu mode="normal"></compodoc-menu>
+               </div>
+               <!-- START CONTENT -->
+               <div class="content component">
+                   <div class="content-data">
+
+
+
+
+
+
+
+
+<ol class="breadcrumb">
+  <li class="breadcrumb-item">Componentes</li>
+  <li class="breadcrumb-item"
+  >
+  NavBarComponent</li>
+</ol>
+
+<div class="io-file io-file-path" data-compodoc="entity-file-path">
+    <span class="icon ion-ios-document" aria-hidden="true"></span>
+    <code>src/app/shared/components/nav-bar/nav-bar.component.ts</code>
+</div>
+
+<ul class="nav nav-tabs" role="tablist">
+        <li class="nav-item">
+            <a href="#info" class="nav-link active"
+                role="tab" id="info-tab" data-bs-toggle="tab" data-link="info">Info</a>
+        </li>
+        <li class="nav-item">
+            <a href="#api" class="nav-link"
+                role="tab" id="api-tab" data-bs-toggle="tab" data-link="api">API</a>
+        </li>
+        <li class="nav-item">
+            <a href="#source" class="nav-link"
+                role="tab" id="source-tab" data-bs-toggle="tab" data-link="source">Source</a>
+        </li>
+        <li class="nav-item">
+            <a href="#templateData" class="nav-link"
+                role="tab" id="templateData-tab" data-bs-toggle="tab" data-link="template">Template</a>
+        </li>
+        <li class="nav-item">
+            <a href="#styleData" class="nav-link"
+                role="tab" id="styleData-tab" data-bs-toggle="tab" data-link="style">Styles</a>
+        </li>
+        <li class="nav-item">
+            <a href="#tree" class="nav-link"
+                role="tab" id="tree-tab" data-bs-toggle="tab" data-link="dom-tree">DOM Tree</a>
+        </li>
+</ul>
+
+<div class="tab-content">
+    <div class="tab-pane fade active in" id="info">
+
+
+    <p class="comment">
+        <h3>Implementa</h3>
+    </p>
+    <p class="comment">
+                    <code><a href="https://angular.dev/api/core/OnInit" target="_blank" >OnInit</a></code>
+    </p>
+
+
+<section data-compodoc="block-metadata">
+    <h3>Metadata</h3>
+    <table class="table table-sm table-hover metadata">
+        <tbody>
+
+
+
+
+
+
+
+
+
+
+
+
+            <tr>
+                <td class="col-md-3">selector</td>
+                <td class="col-md-9"><code>app-nav-bar</code></td>
+            </tr>
+
+            <tr>
+                <td class="col-md-3">standalone</td>
+                <td class="col-md-9"><code>true</code></td>
+            </tr>
+
+            <tr>
+                <td class="col-md-3">imports</td>
+                <td class="col-md-9">
+                        <div>        <code><a href="https://angular.dev/api/common/CommonModule" target="_blank" >CommonModule</a></code>
+</div>
+                        <div>        <code><a href="https://angular.dev/api/common/AsyncPipe" target="_blank" >AsyncPipe</a></code>
+</div>
+                        <div>        <code><a href="https://angular.dev/api/router/RouterLink" target="_blank" >RouterLink</a></code>
+</div>
+                        <div>        <code><a href="https://angular.dev/api/forms/FormsModule" target="_blank" >FormsModule</a></code>
+</div>
+                        <div>    <code>NzDrawerModule</code>
+</div>
+                        <div>    <code>NzLayoutModule</code>
+</div>
+                        <div>    <code>NzIconModule</code>
+</div>
+                        <div>    <code>NzBadgeModule</code>
+</div>
+                        <div>    <code>NzInputModule</code>
+</div>
+                        <div>    <code>NzAvatarModule</code>
+</div>
+                        <div>    <code>NzDropDownModule</code>
+</div>
+                        <div>    <code>NzButtonModule</code>
+</div>
+                        <div>    <code>NzDividerModule</code>
+</div>
+                        <div>    <code>NzTagModule</code>
+</div>
+                        <div>    <code>NzSpinModule</code>
+</div>
+                        <div>    <code>NzEmptyModule</code>
+</div>
+                        <div>    <code>NzToolTipModule</code>
+</div>
+                </td>
+            </tr>
+
+            <tr>
+                <td class="col-md-3">styleUrls</td>
+                <td class="col-md-9"><code>./nav-bar.component.scss</code></td>
+            </tr>
+
+
+
+
+            <tr>
+                <td class="col-md-3">templateUrl</td>
+                <td class="col-md-9"><code>./nav-bar.component.html</code></td>
+            </tr>
+
+
+
+            <tr>
+                <td class="col-md-3">styleUrl</td>
+                <td class="col-md-9"><code>./nav-bar.component.scss</code></td>
+            </tr>
+
+
+
+
+
+        </tbody>
+    </table>
+</section>
+
+        <section data-compodoc="block-relationships">
+            <h3>Relationships</h3>
+
+            <div class="row pt-3">
+                <div class="col-sm-6">
+                    <h4>Used by</h4>
+                        <ul class="list-unstyled relationships-list">
+                                <li>
+                                            <code><a href="../components/PublicLayoutComponent.html" target="_self" >PublicLayoutComponent</a></code>
+                                </li>
+                                <li>
+                                            <code><a href="../components/UserLayoutComponent.html" target="_self" >UserLayoutComponent</a></code>
+                                </li>
+                        </ul>
+                </div>
+
+                <div class="col-sm-6">
+                    <h4>Depends on</h4>
+                        <ul class="list-unstyled relationships-list">
+                                <li>
+                                            <code><a href="https://angular.dev/api/common/CommonModule" target="_blank" >CommonModule</a></code>
+                                </li>
+                                <li>
+                                            <code><a href="https://angular.dev/api/common/AsyncPipe" target="_blank" >AsyncPipe</a></code>
+                                </li>
+                                <li>
+                                            <code><a href="https://angular.dev/api/router/RouterLink" target="_blank" >RouterLink</a></code>
+                                </li>
+                                <li>
+                                            <code><a href="https://angular.dev/api/forms/FormsModule" target="_blank" >FormsModule</a></code>
+                                </li>
+                                <li>
+                                        <code>NzDrawerModule</code>
+                                </li>
+                                <li>
+                                        <code>NzLayoutModule</code>
+                                </li>
+                                <li>
+                                        <code>NzIconModule</code>
+                                </li>
+                                <li>
+                                        <code>NzBadgeModule</code>
+                                </li>
+                                <li>
+                                        <code>NzInputModule</code>
+                                </li>
+                                <li>
+                                        <code>NzAvatarModule</code>
+                                </li>
+                                <li>
+                                        <code>NzDropDownModule</code>
+                                </li>
+                                <li>
+                                        <code>NzButtonModule</code>
+                                </li>
+                                <li>
+                                        <code>NzDividerModule</code>
+                                </li>
+                                <li>
+                                        <code>NzTagModule</code>
+                                </li>
+                                <li>
+                                        <code>NzSpinModule</code>
+                                </li>
+                                <li>
+                                        <code>NzEmptyModule</code>
+                                </li>
+                                <li>
+                                        <code>NzToolTipModule</code>
+                                </li>
+                                <li>
+                                            <code><a href="https://angular.dev/api/core/OnInit" target="_blank" >OnInit</a></code>
+                                </li>
+                        </ul>
+                </div>
+            </div>
+        </section>
+</div>
+
+    <div class="tab-pane fade " id="api">    <section data-compodoc="block-index">
+    <h3 id="index">Index</h3>
+        <table class="table table-sm table-bordered index-table">
+            <tbody>
+                <tr>
+                    <td class="col-md-3">
+                        <h6><b>Propriedades</b></h6>
+                    </td>
+                    <td class="col-md-9">
+                        <ul class="index-list">
+                            <li>
+                                <span class="reference-badge reference-badge--property" aria-hidden="true">P</span>
+                                    <span class="modifier">Public</span>
+                                <a href="#activeStore" >activeStore</a>
+                            </li>
+                            <li>
+                                <span class="reference-badge reference-badge--property" aria-hidden="true">P</span>
+                                    <span class="modifier">Public</span>
+                                <a href="#animateBell" >animateBell</a>
+                            </li>
+                            <li>
+                                <span class="reference-badge reference-badge--property" aria-hidden="true">P</span>
+                                    <span class="modifier">Public</span>
+                                <a href="#cartItemCount" >cartItemCount</a>
+                            </li>
+                            <li>
+                                <span class="reference-badge reference-badge--property" aria-hidden="true">P</span>
+                                    <span class="modifier">Public</span>
+                                <a href="#cartItems$" >cartItems$</a>
+                            </li>
+                            <li>
+                                <span class="reference-badge reference-badge--property" aria-hidden="true">P</span>
+                                    <span class="modifier">Public</span>
+                                <a href="#drawerVisible" >drawerVisible</a>
+                            </li>
+                            <li>
+                                <span class="reference-badge reference-badge--property" aria-hidden="true">P</span>
+                                    <span class="modifier">Public</span>
+                                <a href="#favoriteItemsDetails" >favoriteItemsDetails</a>
+                            </li>
+                            <li>
+                                <span class="reference-badge reference-badge--property" aria-hidden="true">P</span>
+                                    <span class="modifier">Public</span>
+                                <a href="#favoritesCount$" >favoritesCount$</a>
+                            </li>
+                            <li>
+                                <span class="reference-badge reference-badge--property" aria-hidden="true">P</span>
+                                    <span class="modifier">Public</span>
+                                <a href="#isFavoritesDrawerVisible" >isFavoritesDrawerVisible</a>
+                            </li>
+                            <li>
+                                <span class="reference-badge reference-badge--property" aria-hidden="true">P</span>
+                                    <span class="modifier">Public</span>
+                                <a href="#isLightHeader" >isLightHeader</a>
+                            </li>
+                            <li>
+                                <span class="reference-badge reference-badge--property" aria-hidden="true">P</span>
+                                    <span class="modifier">Public</span>
+                                <a href="#isLoadingFavorites" >isLoadingFavorites</a>
+                            </li>
+                            <li>
+                                <span class="reference-badge reference-badge--property" aria-hidden="true">P</span>
+                                    <span class="modifier">Public</span>
+                                <a href="#navbarColor" >navbarColor</a>
+                            </li>
+                            <li>
+                                <span class="reference-badge reference-badge--property" aria-hidden="true">P</span>
+                                    <span class="modifier">Public</span>
+                                <a href="#notifications$" >notifications$</a>
+                            </li>
+                            <li>
+                                <span class="reference-badge reference-badge--property" aria-hidden="true">P</span>
+                                    <span class="modifier">Public</span>
+                                <a href="#notificationService" >notificationService</a>
+                            </li>
+                            <li>
+                                <span class="reference-badge reference-badge--property" aria-hidden="true">P</span>
+                                    <span class="modifier">Public</span>
+                                <a href="#searchQuery" >searchQuery</a>
+                            </li>
+                            <li>
+                                <span class="reference-badge reference-badge--property" aria-hidden="true">P</span>
+                                    <span class="modifier">Public</span>
+                                <a href="#storeLogoUrl" >storeLogoUrl</a>
+                            </li>
+                            <li>
+                                <span class="reference-badge reference-badge--property" aria-hidden="true">P</span>
+                                    <span class="modifier">Public</span>
+                                <a href="#storeName" >storeName</a>
+                            </li>
+                            <li>
+                                <span class="reference-badge reference-badge--property" aria-hidden="true">P</span>
+                                    <span class="modifier">Public</span>
+                                <a href="#unreadCount$" >unreadCount$</a>
+                            </li>
+                            <li>
+                                <span class="reference-badge reference-badge--property" aria-hidden="true">P</span>
+                                    <span class="modifier">Public</span>
+                                <a href="#userIdentity" >userIdentity</a>
+                            </li>
+                        </ul>
+                    </td>
+                </tr>
+            </tbody>
+        </table>
+
+        <table class="table table-sm table-bordered index-table">
+            <tbody>
+                <tr>
+                    <td class="col-md-3">
+                        <h6><b>Métodos</b></h6>
+                    </td>
+                    <td class="col-md-9">
+                        <ul class="index-list">
+                            <li>
+                                <span class="reference-badge reference-badge--method" aria-hidden="true">M</span>
+                                    <span class="modifier">Public</span>
+                                <a href="#addToCartFromFavorites" >addToCartFromFavorites</a>
+                            </li>
+                            <li>
+                                <span class="reference-badge reference-badge--method" aria-hidden="true">M</span>
+                                    <span class="modifier">Public</span>
+                                <a href="#closeDrawer" >closeDrawer</a>
+                            </li>
+                            <li>
+                                <span class="reference-badge reference-badge--method" aria-hidden="true">M</span>
+                                    <span class="modifier">Public</span>
+                                <a href="#closeFavoritesDrawer" >closeFavoritesDrawer</a>
+                            </li>
+                            <li>
+                                <span class="reference-badge reference-badge--method" aria-hidden="true">M</span>
+                                    <span class="modifier">Private</span>
+                                <a href="#getContrastYIQ" >getContrastYIQ</a>
+                            </li>
+                            <li>
+                                <span class="reference-badge reference-badge--method" aria-hidden="true">M</span>
+                                    <span class="modifier">Public</span>
+                                <a href="#goToMyFavoritesPage" >goToMyFavoritesPage</a>
+                            </li>
+                            <li>
+                                <span class="reference-badge reference-badge--method" aria-hidden="true">M</span>
+                                    <span class="modifier">Public</span>
+                                <a href="#goToProductDetail" >goToProductDetail</a>
+                            </li>
+                            <li>
+                                <span class="reference-badge reference-badge--method" aria-hidden="true">M</span>
+                                    <span class="modifier">Public</span>
+                                <a href="#loadFavoritesDetails" >loadFavoritesDetails</a>
+                            </li>
+                            <li>
+                                <span class="reference-badge reference-badge--method" aria-hidden="true">M</span>
+                                    <span class="modifier">Public</span>
+                                <a href="#logout" >logout</a>
+                            </li>
+                            <li>
+                                <span class="reference-badge reference-badge--method" aria-hidden="true">M</span>
+                                    <span class="modifier">Public</span>
+                                <a href="#markAllAsRead" >markAllAsRead</a>
+                            </li>
+                            <li>
+                                <span class="reference-badge reference-badge--method" aria-hidden="true">M</span>
+                                    <span class="modifier">Public</span>
+                                <a href="#navegarNotificacion" >navegarNotificacion</a>
+                            </li>
+                            <li>
+                                <span class="reference-badge reference-badge--method" aria-hidden="true">M</span>
+                                <a href="#ngOnInit" >ngOnInit</a>
+                            </li>
+                            <li>
+                                <span class="reference-badge reference-badge--method" aria-hidden="true">M</span>
+                                    <span class="modifier">Public</span>
+                                <a href="#onSearch" >onSearch</a>
+                            </li>
+                            <li>
+                                <span class="reference-badge reference-badge--method" aria-hidden="true">M</span>
+                                    <span class="modifier">Public</span>
+                                <a href="#openDrawer" >openDrawer</a>
+                            </li>
+                            <li>
+                                <span class="reference-badge reference-badge--method" aria-hidden="true">M</span>
+                                    <span class="modifier">Public</span>
+                                <a href="#openFavoritesDrawer" >openFavoritesDrawer</a>
+                            </li>
+                            <li>
+                                <span class="reference-badge reference-badge--method" aria-hidden="true">M</span>
+                                    <span class="modifier">Public</span>
+                                <a href="#removeFavoriteFromDrawer" >removeFavoriteFromDrawer</a>
+                            </li>
+                            <li>
+                                <span class="reference-badge reference-badge--method" aria-hidden="true">M</span>
+                                    <span class="modifier">Private</span>
+                                <a href="#updateLogo" >updateLogo</a>
+                            </li>
+                            <li>
+                                <span class="reference-badge reference-badge--method" aria-hidden="true">M</span>
+                                    <span class="modifier">Private</span>
+                                <a href="#updateNavbarColor" >updateNavbarColor</a>
+                            </li>
+                        </ul>
+                    </td>
+                </tr>
+            </tbody>
+        </table>
+
+
+
+
+
+        <table class="table table-sm table-bordered index-table">
+            <tbody>
+                <tr>
+                    <td class="col-md-3">
+                        <h6><b>Acessores</b></h6>
+                    </td>
+                    <td class="col-md-9">
+                        <ul class="index-list">
+                            <li>
+                                <span class="reference-badge reference-badge--accessor" aria-hidden="true">A</span>
+                                <a href="#favoritesDrawerWidth" >favoritesDrawerWidth</a>
+                            </li>
+                        </ul>
+                    </td>
+                </tr>
+            </tbody>
+        </table>
+</section>
+
+    <section data-compodoc="block-constructor">
+    <h3 id="constructor">Construtor</h3>
+        <table class="table table-sm table-bordered">
+            <tbody>
+                <tr>
+                    <td class="col-md-4">
+<code>constructor(cartService: <a href="../injectables/CartService.html" target="_self">CartService</a>, _favoritesService: <a href="../injectables/FavoritesService.html" target="_self">FavoritesService</a>, _sessionService: <a href="../injectables/SessionService.html" target="_self">SessionService</a>, _router: <a href="https://angular.dev/api/router/Router" target="_blank">Router</a>, _storeContext: <a href="../injectables/StoreContextService.html" target="_self">StoreContextService</a>, notificationService: <a href="../injectables/WebSocketNotificationService.html" target="_self">WebSocketNotificationService</a>)</code>
+                    </td>
+                </tr>
+                        <tr>
+                            <td class="col-md-4">
+                                <div class="io-line">Definido em <a href="" data-line="85" class="link-to-prism">src/app/shared/components/nav-bar/nav-bar.component.ts:85</a></div>
+                            </td>
+                        </tr>
+
+                <tr>
+                    <td class="col-md-4">
+                            <div>
+                                    <b>Parâmetros :</b>
+                                    <table class="params">
+                                        <thead>
+                                            <tr>
+                                                <td>Nome</td>
+                                                    <td>Tipo</td>
+                                                <td>Opcional</td>
+                                            </tr>
+                                        </thead>
+                                        <tbody>
+                                                <tr>
+                                                        <td>cartService</td>
+                                                  
+                                                        <td>
+                                                                        <code><a href="../injectables/CartService.html" target="_self" >CartService</a></code>
+                                                        </td>
+                                                  
+                                                    <td>
+                                                            Não
+                                                    </td>
+                                                    
+                                                </tr>
+                                                <tr>
+                                                        <td>_favoritesService</td>
+                                                  
+                                                        <td>
+                                                                        <code><a href="../injectables/FavoritesService.html" target="_self" >FavoritesService</a></code>
+                                                        </td>
+                                                  
+                                                    <td>
+                                                            Não
+                                                    </td>
+                                                    
+                                                </tr>
+                                                <tr>
+                                                        <td>_sessionService</td>
+                                                  
+                                                        <td>
+                                                                        <code><a href="../injectables/SessionService.html" target="_self" >SessionService</a></code>
+                                                        </td>
+                                                  
+                                                    <td>
+                                                            Não
+                                                    </td>
+                                                    
+                                                </tr>
+                                                <tr>
+                                                        <td>_router</td>
+                                                  
+                                                        <td>
+                                                                        <code><a href="https://angular.dev/api/router/Router" target="_blank" >Router</a></code>
+                                                        </td>
+                                                  
+                                                    <td>
+                                                            Não
+                                                    </td>
+                                                    
+                                                </tr>
+                                                <tr>
+                                                        <td>_storeContext</td>
+                                                  
+                                                        <td>
+                                                                        <code><a href="../injectables/StoreContextService.html" target="_self" >StoreContextService</a></code>
+                                                        </td>
+                                                  
+                                                    <td>
+                                                            Não
+                                                    </td>
+                                                    
+                                                </tr>
+                                                <tr>
+                                                        <td>notificationService</td>
+                                                  
+                                                        <td>
+                                                                        <code><a href="../injectables/WebSocketNotificationService.html" target="_self" >WebSocketNotificationService</a></code>
+                                                        </td>
+                                                  
+                                                    <td>
+                                                            Não
+                                                    </td>
+                                                    
+                                                </tr>
+                                        </tbody>
+                                    </table>
+                            </div>
+                    </td>
+                </tr>
+            </tbody>
+        </table>
+</section>
+
+
+
+
+
+    <section data-compodoc="block-methods">
+    
+    <h3 id="methods">
+        Métodos
+    </h3>
+    <table class="table table-sm table-bordered">
+        <tbody>
+            <tr>
+                <td class="col-md-4">
+                    <a name="addToCartFromFavorites"></a>
+                    <span class="name">
+                            <span class="modifier">Public</span>
+                        <span ><b>addToCartFromFavorites</b></span>
+                        <a href="#addToCartFromFavorites"><span class="icon ion-ios-link"></span></a>
+                    </span>
+                </td>
+            </tr>
+            <tr>
+                <td class="col-md-4">
+                        <span class="modifier-icon icon ion-ios-reset"></span>
+                    <code>addToCartFromFavorites(item: <a href="https://www.typescriptlang.org/docs/handbook/basic-types.html" target="_blank">any</a>)</code>
+                </td>
+            </tr>
+
+
+                    <tr>
+                        <td class="col-md-4">
+                            <div class="io-line">Definido em <a href="" data-line="176"
+                                    class="link-to-prism">src/app/shared/components/nav-bar/nav-bar.component.ts:176</a></div>
+                        </td>
+                    </tr>
+
+
+            <tr>
+                <td class="col-md-4">
+
+                            <div class="io-description">
+                                <b>Parâmetros :</b>
+                                
+                                <table class="params">
+                                    <thead>
+                                        <tr>
+                                            <td>Nome</td>
+                                                <td>Tipo</td>
+                                            <td>Opcional</td>
+                                        </tr>
+                                    </thead>
+                                    <tbody>
+                                        <tr>
+                                                <td>item</td>
+                                            <td>
+                                                            <code><a href="https://www.typescriptlang.org/docs/handbook/basic-types.html" target="_blank" >any</a></code>
+                                            </td>
+
+                                            <td>
+                                                    Não
+                                            </td>
+
+
+                                        </tr>
+                                    </tbody>
+                                </table>
+                            </div>
+                        <div class="io-description">
+                            <b>Retorna : </b>        <code><a href="https://www.typescriptlang.org/docs/handbook/basic-types.html" target="_blank" >void</a></code>
+
+                        </div>
+                            <div class="io-description">
+                                
+                            </div>
+                </td>
+            </tr>
+        </tbody>
+    </table>
+    <table class="table table-sm table-bordered">
+        <tbody>
+            <tr>
+                <td class="col-md-4">
+                    <a name="closeDrawer"></a>
+                    <span class="name">
+                            <span class="modifier">Public</span>
+                        <span ><b>closeDrawer</b></span>
+                        <a href="#closeDrawer"><span class="icon ion-ios-link"></span></a>
+                    </span>
+                </td>
+            </tr>
+            <tr>
+                <td class="col-md-4">
+                        <span class="modifier-icon icon ion-ios-reset"></span>
+                    <code>closeDrawer()</code>
+                </td>
+            </tr>
+
+
+                    <tr>
+                        <td class="col-md-4">
+                            <div class="io-line">Definido em <a href="" data-line="250"
+                                    class="link-to-prism">src/app/shared/components/nav-bar/nav-bar.component.ts:250</a></div>
+                        </td>
+                    </tr>
+
+
+            <tr>
+                <td class="col-md-4">
+
+                        <div class="io-description">
+                            <b>Retorna : </b>        <code><a href="https://www.typescriptlang.org/docs/handbook/basic-types.html" target="_blank" >void</a></code>
+
+                        </div>
+                </td>
+            </tr>
+        </tbody>
+    </table>
+    <table class="table table-sm table-bordered">
+        <tbody>
+            <tr>
+                <td class="col-md-4">
+                    <a name="closeFavoritesDrawer"></a>
+                    <span class="name">
+                            <span class="modifier">Public</span>
+                        <span ><b>closeFavoritesDrawer</b></span>
+                        <a href="#closeFavoritesDrawer"><span class="icon ion-ios-link"></span></a>
+                    </span>
+                </td>
+            </tr>
+            <tr>
+                <td class="col-md-4">
+                        <span class="modifier-icon icon ion-ios-reset"></span>
+                    <code>closeFavoritesDrawer()</code>
+                </td>
+            </tr>
+
+
+                    <tr>
+                        <td class="col-md-4">
+                            <div class="io-line">Definido em <a href="" data-line="150"
+                                    class="link-to-prism">src/app/shared/components/nav-bar/nav-bar.component.ts:150</a></div>
+                        </td>
+                    </tr>
+
+
+            <tr>
+                <td class="col-md-4">
+
+                        <div class="io-description">
+                            <b>Retorna : </b>        <code><a href="https://www.typescriptlang.org/docs/handbook/basic-types.html" target="_blank" >void</a></code>
+
+                        </div>
+                </td>
+            </tr>
+        </tbody>
+    </table>
+    <table class="table table-sm table-bordered">
+        <tbody>
+            <tr>
+                <td class="col-md-4">
+                    <a name="getContrastYIQ"></a>
+                    <span class="name">
+                            <span class="modifier">Private</span>
+                        <span ><b>getContrastYIQ</b></span>
+                        <a href="#getContrastYIQ"><span class="icon ion-ios-link"></span></a>
+                    </span>
+                </td>
+            </tr>
+            <tr>
+                <td class="col-md-4">
+                        <span class="modifier-icon icon ion-ios-reset"></span>
+                    <code>getContrastYIQ(hexcolor: <a href="https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/string" target="_blank">string</a>)</code>
+                </td>
+            </tr>
+
+
+                    <tr>
+                        <td class="col-md-4">
+                            <div class="io-line">Definido em <a href="" data-line="215"
+                                    class="link-to-prism">src/app/shared/components/nav-bar/nav-bar.component.ts:215</a></div>
+                        </td>
+                    </tr>
+
+
+            <tr>
+                <td class="col-md-4">
+
+                            <div class="io-description">
+                                <b>Parâmetros :</b>
+                                
+                                <table class="params">
+                                    <thead>
+                                        <tr>
+                                            <td>Nome</td>
+                                                <td>Tipo</td>
+                                            <td>Opcional</td>
+                                        </tr>
+                                    </thead>
+                                    <tbody>
+                                        <tr>
+                                                <td>hexcolor</td>
+                                            <td>
+                                                            <code><a href="https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/string" target="_blank" >string</a></code>
+                                            </td>
+
+                                            <td>
+                                                    Não
+                                            </td>
+
+
+                                        </tr>
+                                    </tbody>
+                                </table>
+                            </div>
+                        <div class="io-description">
+                            <b>Retorna : </b>    <code>&quot;dark&quot; | &quot;light&quot;</code>
+
+                        </div>
+                            <div class="io-description">
+                                
+                            </div>
+                </td>
+            </tr>
+        </tbody>
+    </table>
+    <table class="table table-sm table-bordered">
+        <tbody>
+            <tr>
+                <td class="col-md-4">
+                    <a name="goToMyFavoritesPage"></a>
+                    <span class="name">
+                            <span class="modifier">Public</span>
+                        <span ><b>goToMyFavoritesPage</b></span>
+                        <a href="#goToMyFavoritesPage"><span class="icon ion-ios-link"></span></a>
+                    </span>
+                </td>
+            </tr>
+            <tr>
+                <td class="col-md-4">
+                        <span class="modifier-icon icon ion-ios-reset"></span>
+                    <code>goToMyFavoritesPage()</code>
+                </td>
+            </tr>
+
+
+                    <tr>
+                        <td class="col-md-4">
+                            <div class="io-line">Definido em <a href="" data-line="198"
+                                    class="link-to-prism">src/app/shared/components/nav-bar/nav-bar.component.ts:198</a></div>
+                        </td>
+                    </tr>
+
+
+            <tr>
+                <td class="col-md-4">
+
+                        <div class="io-description">
+                            <b>Retorna : </b>        <code><a href="https://www.typescriptlang.org/docs/handbook/basic-types.html" target="_blank" >void</a></code>
+
+                        </div>
+                </td>
+            </tr>
+        </tbody>
+    </table>
+    <table class="table table-sm table-bordered">
+        <tbody>
+            <tr>
+                <td class="col-md-4">
+                    <a name="goToProductDetail"></a>
+                    <span class="name">
+                            <span class="modifier">Public</span>
+                        <span ><b>goToProductDetail</b></span>
+                        <a href="#goToProductDetail"><span class="icon ion-ios-link"></span></a>
+                    </span>
+                </td>
+            </tr>
+            <tr>
+                <td class="col-md-4">
+                        <span class="modifier-icon icon ion-ios-reset"></span>
+                    <code>goToProductDetail(item: <a href="https://www.typescriptlang.org/docs/handbook/basic-types.html" target="_blank">any</a>)</code>
+                </td>
+            </tr>
+
+
+                    <tr>
+                        <td class="col-md-4">
+                            <div class="io-line">Definido em <a href="" data-line="191"
+                                    class="link-to-prism">src/app/shared/components/nav-bar/nav-bar.component.ts:191</a></div>
+                        </td>
+                    </tr>
+
+
+            <tr>
+                <td class="col-md-4">
+
+                            <div class="io-description">
+                                <b>Parâmetros :</b>
+                                
+                                <table class="params">
+                                    <thead>
+                                        <tr>
+                                            <td>Nome</td>
+                                                <td>Tipo</td>
+                                            <td>Opcional</td>
+                                        </tr>
+                                    </thead>
+                                    <tbody>
+                                        <tr>
+                                                <td>item</td>
+                                            <td>
+                                                            <code><a href="https://www.typescriptlang.org/docs/handbook/basic-types.html" target="_blank" >any</a></code>
+                                            </td>
+
+                                            <td>
+                                                    Não
+                                            </td>
+
+
+                                        </tr>
+                                    </tbody>
+                                </table>
+                            </div>
+                        <div class="io-description">
+                            <b>Retorna : </b>        <code><a href="https://www.typescriptlang.org/docs/handbook/basic-types.html" target="_blank" >void</a></code>
+
+                        </div>
+                            <div class="io-description">
+                                
+                            </div>
+                </td>
+            </tr>
+        </tbody>
+    </table>
+    <table class="table table-sm table-bordered">
+        <tbody>
+            <tr>
+                <td class="col-md-4">
+                    <a name="loadFavoritesDetails"></a>
+                    <span class="name">
+                            <span class="modifier">Public</span>
+                        <span ><b>loadFavoritesDetails</b></span>
+                        <a href="#loadFavoritesDetails"><span class="icon ion-ios-link"></span></a>
+                    </span>
+                </td>
+            </tr>
+            <tr>
+                <td class="col-md-4">
+                        <span class="modifier-icon icon ion-ios-reset"></span>
+                    <code>loadFavoritesDetails()</code>
+                </td>
+            </tr>
+
+
+                    <tr>
+                        <td class="col-md-4">
+                            <div class="io-line">Definido em <a href="" data-line="154"
+                                    class="link-to-prism">src/app/shared/components/nav-bar/nav-bar.component.ts:154</a></div>
+                        </td>
+                    </tr>
+
+
+            <tr>
+                <td class="col-md-4">
+
+                        <div class="io-description">
+                            <b>Retorna : </b>        <code><a href="https://www.typescriptlang.org/docs/handbook/basic-types.html" target="_blank" >void</a></code>
+
+                        </div>
+                </td>
+            </tr>
+        </tbody>
+    </table>
+    <table class="table table-sm table-bordered">
+        <tbody>
+            <tr>
+                <td class="col-md-4">
+                    <a name="logout"></a>
+                    <span class="name">
+                            <span class="modifier">Public</span>
+                        <span ><b>logout</b></span>
+                        <a href="#logout"><span class="icon ion-ios-link"></span></a>
+                    </span>
+                </td>
+            </tr>
+            <tr>
+                <td class="col-md-4">
+                        <span class="modifier-icon icon ion-ios-reset"></span>
+                    <code>logout()</code>
+                </td>
+            </tr>
+
+
+                    <tr>
+                        <td class="col-md-4">
+                            <div class="io-line">Definido em <a href="" data-line="254"
+                                    class="link-to-prism">src/app/shared/components/nav-bar/nav-bar.component.ts:254</a></div>
+                        </td>
+                    </tr>
+
+
+            <tr>
+                <td class="col-md-4">
+
+                        <div class="io-description">
+                            <b>Retorna : </b>        <code><a href="https://www.typescriptlang.org/docs/handbook/basic-types.html" target="_blank" >void</a></code>
+
+                        </div>
+                </td>
+            </tr>
+        </tbody>
+    </table>
+    <table class="table table-sm table-bordered">
+        <tbody>
+            <tr>
+                <td class="col-md-4">
+                    <a name="markAllAsRead"></a>
+                    <span class="name">
+                            <span class="modifier">Public</span>
+                        <span ><b>markAllAsRead</b></span>
+                        <a href="#markAllAsRead"><span class="icon ion-ios-link"></span></a>
+                    </span>
+                </td>
+            </tr>
+            <tr>
+                <td class="col-md-4">
+                        <span class="modifier-icon icon ion-ios-reset"></span>
+                    <code>markAllAsRead()</code>
+                </td>
+            </tr>
+
+
+                    <tr>
+                        <td class="col-md-4">
+                            <div class="io-line">Definido em <a href="" data-line="260"
+                                    class="link-to-prism">src/app/shared/components/nav-bar/nav-bar.component.ts:260</a></div>
+                        </td>
+                    </tr>
+
+
+            <tr>
+                <td class="col-md-4">
+
+                        <div class="io-description">
+                            <b>Retorna : </b>        <code><a href="https://www.typescriptlang.org/docs/handbook/basic-types.html" target="_blank" >void</a></code>
+
+                        </div>
+                </td>
+            </tr>
+        </tbody>
+    </table>
+    <table class="table table-sm table-bordered">
+        <tbody>
+            <tr>
+                <td class="col-md-4">
+                    <a name="navegarNotificacion"></a>
+                    <span class="name">
+                            <span class="modifier">Public</span>
+                        <span ><b>navegarNotificacion</b></span>
+                        <a href="#navegarNotificacion"><span class="icon ion-ios-link"></span></a>
+                    </span>
+                </td>
+            </tr>
+            <tr>
+                <td class="col-md-4">
+                        <span class="modifier-icon icon ion-ios-reset"></span>
+                    <code>navegarNotificacion(ntf: <a href="../interfaces/NotificationInterface.html" target="_self">NotificationInterface</a>)</code>
+                </td>
+            </tr>
+
+
+                    <tr>
+                        <td class="col-md-4">
+                            <div class="io-line">Definido em <a href="" data-line="264"
+                                    class="link-to-prism">src/app/shared/components/nav-bar/nav-bar.component.ts:264</a></div>
+                        </td>
+                    </tr>
+
+
+            <tr>
+                <td class="col-md-4">
+
+                            <div class="io-description">
+                                <b>Parâmetros :</b>
+                                
+                                <table class="params">
+                                    <thead>
+                                        <tr>
+                                            <td>Nome</td>
+                                                <td>Tipo</td>
+                                            <td>Opcional</td>
+                                        </tr>
+                                    </thead>
+                                    <tbody>
+                                        <tr>
+                                                <td>ntf</td>
+                                            <td>
+                                                            <code><a href="../interfaces/NotificationInterface.html" target="_self" >NotificationInterface</a></code>
+                                            </td>
+
+                                            <td>
+                                                    Não
+                                            </td>
+
+
+                                        </tr>
+                                    </tbody>
+                                </table>
+                            </div>
+                        <div class="io-description">
+                            <b>Retorna : </b>        <code><a href="https://www.typescriptlang.org/docs/handbook/basic-types.html" target="_blank" >void</a></code>
+
+                        </div>
+                            <div class="io-description">
+                                
+                            </div>
+                </td>
+            </tr>
+        </tbody>
+    </table>
+    <table class="table table-sm table-bordered">
+        <tbody>
+            <tr>
+                <td class="col-md-4">
+                    <a name="ngOnInit"></a>
+                    <span class="name">
+                        <span ><b>ngOnInit</b></span>
+                        <a href="#ngOnInit"><span class="icon ion-ios-link"></span></a>
+                    </span>
+                </td>
+            </tr>
+            <tr>
+                <td class="col-md-4">
+<code>ngOnInit()</code>
+                </td>
+            </tr>
+
+
+                    <tr>
+                        <td class="col-md-4">
+                            <div class="io-line">Definido em <a href="" data-line="101"
+                                    class="link-to-prism">src/app/shared/components/nav-bar/nav-bar.component.ts:101</a></div>
+                        </td>
+                    </tr>
+
+
+            <tr>
+                <td class="col-md-4">
+
+                        <div class="io-description">
+                            <b>Retorna : </b>        <code><a href="https://www.typescriptlang.org/docs/handbook/basic-types.html" target="_blank" >void</a></code>
+
+                        </div>
+                </td>
+            </tr>
+        </tbody>
+    </table>
+    <table class="table table-sm table-bordered">
+        <tbody>
+            <tr>
+                <td class="col-md-4">
+                    <a name="onSearch"></a>
+                    <span class="name">
+                            <span class="modifier">Public</span>
+                        <span ><b>onSearch</b></span>
+                        <a href="#onSearch"><span class="icon ion-ios-link"></span></a>
+                    </span>
+                </td>
+            </tr>
+            <tr>
+                <td class="col-md-4">
+                        <span class="modifier-icon icon ion-ios-reset"></span>
+                    <code>onSearch()</code>
+                </td>
+            </tr>
+
+
+                    <tr>
+                        <td class="col-md-4">
+                            <div class="io-line">Definido em <a href="" data-line="231"
+                                    class="link-to-prism">src/app/shared/components/nav-bar/nav-bar.component.ts:231</a></div>
+                        </td>
+                    </tr>
+
+
+            <tr>
+                <td class="col-md-4">
+
+                        <div class="io-description">
+                            <b>Retorna : </b>        <code><a href="https://www.typescriptlang.org/docs/handbook/basic-types.html" target="_blank" >void</a></code>
+
+                        </div>
+                </td>
+            </tr>
+        </tbody>
+    </table>
+    <table class="table table-sm table-bordered">
+        <tbody>
+            <tr>
+                <td class="col-md-4">
+                    <a name="openDrawer"></a>
+                    <span class="name">
+                            <span class="modifier">Public</span>
+                        <span ><b>openDrawer</b></span>
+                        <a href="#openDrawer"><span class="icon ion-ios-link"></span></a>
+                    </span>
+                </td>
+            </tr>
+            <tr>
+                <td class="col-md-4">
+                        <span class="modifier-icon icon ion-ios-reset"></span>
+                    <code>openDrawer()</code>
+                </td>
+            </tr>
+
+
+                    <tr>
+                        <td class="col-md-4">
+                            <div class="io-line">Definido em <a href="" data-line="246"
+                                    class="link-to-prism">src/app/shared/components/nav-bar/nav-bar.component.ts:246</a></div>
+                        </td>
+                    </tr>
+
+
+            <tr>
+                <td class="col-md-4">
+
+                        <div class="io-description">
+                            <b>Retorna : </b>        <code><a href="https://www.typescriptlang.org/docs/handbook/basic-types.html" target="_blank" >void</a></code>
+
+                        </div>
+                </td>
+            </tr>
+        </tbody>
+    </table>
+    <table class="table table-sm table-bordered">
+        <tbody>
+            <tr>
+                <td class="col-md-4">
+                    <a name="openFavoritesDrawer"></a>
+                    <span class="name">
+                            <span class="modifier">Public</span>
+                        <span ><b>openFavoritesDrawer</b></span>
+                        <a href="#openFavoritesDrawer"><span class="icon ion-ios-link"></span></a>
+                    </span>
+                </td>
+            </tr>
+            <tr>
+                <td class="col-md-4">
+                        <span class="modifier-icon icon ion-ios-reset"></span>
+                    <code>openFavoritesDrawer()</code>
+                </td>
+            </tr>
+
+
+                    <tr>
+                        <td class="col-md-4">
+                            <div class="io-line">Definido em <a href="" data-line="141"
+                                    class="link-to-prism">src/app/shared/components/nav-bar/nav-bar.component.ts:141</a></div>
+                        </td>
+                    </tr>
+
+
+            <tr>
+                <td class="col-md-4">
+
+                        <div class="io-description">
+                            <b>Retorna : </b>        <code><a href="https://www.typescriptlang.org/docs/handbook/basic-types.html" target="_blank" >void</a></code>
+
+                        </div>
+                </td>
+            </tr>
+        </tbody>
+    </table>
+    <table class="table table-sm table-bordered">
+        <tbody>
+            <tr>
+                <td class="col-md-4">
+                    <a name="removeFavoriteFromDrawer"></a>
+                    <span class="name">
+                            <span class="modifier">Public</span>
+                        <span ><b>removeFavoriteFromDrawer</b></span>
+                        <a href="#removeFavoriteFromDrawer"><span class="icon ion-ios-link"></span></a>
+                    </span>
+                </td>
+            </tr>
+            <tr>
+                <td class="col-md-4">
+                        <span class="modifier-icon icon ion-ios-reset"></span>
+                    <code>removeFavoriteFromDrawer(item: <a href="https://www.typescriptlang.org/docs/handbook/basic-types.html" target="_blank">any</a>)</code>
+                </td>
+            </tr>
+
+
+                    <tr>
+                        <td class="col-md-4">
+                            <div class="io-line">Definido em <a href="" data-line="168"
+                                    class="link-to-prism">src/app/shared/components/nav-bar/nav-bar.component.ts:168</a></div>
+                        </td>
+                    </tr>
+
+
+            <tr>
+                <td class="col-md-4">
+
+                            <div class="io-description">
+                                <b>Parâmetros :</b>
+                                
+                                <table class="params">
+                                    <thead>
+                                        <tr>
+                                            <td>Nome</td>
+                                                <td>Tipo</td>
+                                            <td>Opcional</td>
+                                        </tr>
+                                    </thead>
+                                    <tbody>
+                                        <tr>
+                                                <td>item</td>
+                                            <td>
+                                                            <code><a href="https://www.typescriptlang.org/docs/handbook/basic-types.html" target="_blank" >any</a></code>
+                                            </td>
+
+                                            <td>
+                                                    Não
+                                            </td>
+
+
+                                        </tr>
+                                    </tbody>
+                                </table>
+                            </div>
+                        <div class="io-description">
+                            <b>Retorna : </b>        <code><a href="https://www.typescriptlang.org/docs/handbook/basic-types.html" target="_blank" >void</a></code>
+
+                        </div>
+                            <div class="io-description">
+                                
+                            </div>
+                </td>
+            </tr>
+        </tbody>
+    </table>
+    <table class="table table-sm table-bordered">
+        <tbody>
+            <tr>
+                <td class="col-md-4">
+                    <a name="updateLogo"></a>
+                    <span class="name">
+                            <span class="modifier">Private</span>
+                        <span ><b>updateLogo</b></span>
+                        <a href="#updateLogo"><span class="icon ion-ios-link"></span></a>
+                    </span>
+                </td>
+            </tr>
+            <tr>
+                <td class="col-md-4">
+                        <span class="modifier-icon icon ion-ios-reset"></span>
+                    <code>updateLogo()</code>
+                </td>
+            </tr>
+
+
+                    <tr>
+                        <td class="col-md-4">
+                            <div class="io-line">Definido em <a href="" data-line="203"
+                                    class="link-to-prism">src/app/shared/components/nav-bar/nav-bar.component.ts:203</a></div>
+                        </td>
+                    </tr>
+
+
+            <tr>
+                <td class="col-md-4">
+
+                        <div class="io-description">
+                            <b>Retorna : </b>        <code><a href="https://www.typescriptlang.org/docs/handbook/basic-types.html" target="_blank" >void</a></code>
+
+                        </div>
+                </td>
+            </tr>
+        </tbody>
+    </table>
+    <table class="table table-sm table-bordered">
+        <tbody>
+            <tr>
+                <td class="col-md-4">
+                    <a name="updateNavbarColor"></a>
+                    <span class="name">
+                            <span class="modifier">Private</span>
+                        <span ><b>updateNavbarColor</b></span>
+                        <a href="#updateNavbarColor"><span class="icon ion-ios-link"></span></a>
+                    </span>
+                </td>
+            </tr>
+            <tr>
+                <td class="col-md-4">
+                        <span class="modifier-icon icon ion-ios-reset"></span>
+                    <code>updateNavbarColor()</code>
+                </td>
+            </tr>
+
+
+                    <tr>
+                        <td class="col-md-4">
+                            <div class="io-line">Definido em <a href="" data-line="209"
+                                    class="link-to-prism">src/app/shared/components/nav-bar/nav-bar.component.ts:209</a></div>
+                        </td>
+                    </tr>
+
+
+            <tr>
+                <td class="col-md-4">
+
+                        <div class="io-description">
+                            <b>Retorna : </b>        <code><a href="https://www.typescriptlang.org/docs/handbook/basic-types.html" target="_blank" >void</a></code>
+
+                        </div>
+                </td>
+            </tr>
+        </tbody>
+    </table>
+</section>
+
+    <section data-compodoc="block-properties">
+    
+    <h3 id="inputs">
+        Propriedades
+    </h3>
+    <table class="table table-sm table-bordered">
+        <tbody>
+            <tr>
+                <td class="col-md-4">
+                    <a name="activeStore"></a>
+                    <span class="name">
+                            <span class="modifier">Public</span>
+                        <span ><b>activeStore</b></span>
+                        <a href="#activeStore"><span class="icon ion-ios-link"></span></a>
+                    </span>
+                </td>
+            </tr>
+                <tr>
+                    <td class="col-md-4">
+                        <i>Tipo : </i>        <code><a href="../interfaces/CompanyInterface.html" target="_self" >CompanyInterface | null</a></code>
+
+                    </td>
+                </tr>
+                <tr>
+                    <td class="col-md-4">
+                        <i>Valor padrão : </i><code>null</code>
+                    </td>
+                </tr>
+                    <tr>
+                        <td class="col-md-4">
+                                <div class="io-line">Definido em <a href="" data-line="75" class="link-to-prism">src/app/shared/components/nav-bar/nav-bar.component.ts:75</a></div>
+                        </td>
+                    </tr>
+
+
+        </tbody>
+    </table>
+    <table class="table table-sm table-bordered">
+        <tbody>
+            <tr>
+                <td class="col-md-4">
+                    <a name="animateBell"></a>
+                    <span class="name">
+                            <span class="modifier">Public</span>
+                        <span ><b>animateBell</b></span>
+                        <a href="#animateBell"><span class="icon ion-ios-link"></span></a>
+                    </span>
+                </td>
+            </tr>
+                <tr>
+                    <td class="col-md-4">
+                        <i>Tipo : </i>        <code><a href="https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/boolean" target="_blank" >boolean</a></code>
+
+                    </td>
+                </tr>
+                <tr>
+                    <td class="col-md-4">
+                        <i>Valor padrão : </i><code>false</code>
+                    </td>
+                </tr>
+                    <tr>
+                        <td class="col-md-4">
+                                <div class="io-line">Definido em <a href="" data-line="85" class="link-to-prism">src/app/shared/components/nav-bar/nav-bar.component.ts:85</a></div>
+                        </td>
+                    </tr>
+
+
+        </tbody>
+    </table>
+    <table class="table table-sm table-bordered">
+        <tbody>
+            <tr>
+                <td class="col-md-4">
+                    <a name="cartItemCount"></a>
+                    <span class="name">
+                            <span class="modifier">Public</span>
+                        <span ><b>cartItemCount</b></span>
+                        <a href="#cartItemCount"><span class="icon ion-ios-link"></span></a>
+                    </span>
+                </td>
+            </tr>
+                <tr>
+                    <td class="col-md-4">
+                        <i>Tipo : </i>        <code><a href="https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/number" target="_blank" >number</a></code>
+
+                    </td>
+                </tr>
+                <tr>
+                    <td class="col-md-4">
+                        <i>Valor padrão : </i><code>0</code>
+                    </td>
+                </tr>
+                    <tr>
+                        <td class="col-md-4">
+                                <div class="io-line">Definido em <a href="" data-line="57" class="link-to-prism">src/app/shared/components/nav-bar/nav-bar.component.ts:57</a></div>
+                        </td>
+                    </tr>
+
+
+        </tbody>
+    </table>
+    <table class="table table-sm table-bordered">
+        <tbody>
+            <tr>
+                <td class="col-md-4">
+                    <a name="cartItems$"></a>
+                    <span class="name">
+                            <span class="modifier">Public</span>
+                        <span ><b>cartItems$</b></span>
+                        <a href="#cartItems$"><span class="icon ion-ios-link"></span></a>
+                    </span>
+                </td>
+            </tr>
+                <tr>
+                    <td class="col-md-4">
+                        <i>Tipo : </i>    <code>Observable&lt;CartItemInterface[]&gt;</code>
+
+                    </td>
+                </tr>
+                    <tr>
+                        <td class="col-md-4">
+                                <div class="io-line">Definido em <a href="" data-line="58" class="link-to-prism">src/app/shared/components/nav-bar/nav-bar.component.ts:58</a></div>
+                        </td>
+                    </tr>
+
+
+        </tbody>
+    </table>
+    <table class="table table-sm table-bordered">
+        <tbody>
+            <tr>
+                <td class="col-md-4">
+                    <a name="drawerVisible"></a>
+                    <span class="name">
+                            <span class="modifier">Public</span>
+                        <span ><b>drawerVisible</b></span>
+                        <a href="#drawerVisible"><span class="icon ion-ios-link"></span></a>
+                    </span>
+                </td>
+            </tr>
+                <tr>
+                    <td class="col-md-4">
+                        <i>Tipo : </i>        <code><a href="https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/boolean" target="_blank" >boolean</a></code>
+
+                    </td>
+                </tr>
+                <tr>
+                    <td class="col-md-4">
+                        <i>Valor padrão : </i><code>false</code>
+                    </td>
+                </tr>
+                    <tr>
+                        <td class="col-md-4">
+                                <div class="io-line">Definido em <a href="" data-line="59" class="link-to-prism">src/app/shared/components/nav-bar/nav-bar.component.ts:59</a></div>
+                        </td>
+                    </tr>
+
+
+        </tbody>
+    </table>
+    <table class="table table-sm table-bordered">
+        <tbody>
+            <tr>
+                <td class="col-md-4">
+                    <a name="favoriteItemsDetails"></a>
+                    <span class="name">
+                            <span class="modifier">Public</span>
+                        <span ><b>favoriteItemsDetails</b></span>
+                        <a href="#favoriteItemsDetails"><span class="icon ion-ios-link"></span></a>
+                    </span>
+                </td>
+            </tr>
+                <tr>
+                    <td class="col-md-4">
+                        <i>Tipo : </i>    <code>any[]</code>
+
+                    </td>
+                </tr>
+                <tr>
+                    <td class="col-md-4">
+                        <i>Valor padrão : </i><code>[]</code>
+                    </td>
+                </tr>
+                    <tr>
+                        <td class="col-md-4">
+                                <div class="io-line">Definido em <a href="" data-line="64" class="link-to-prism">src/app/shared/components/nav-bar/nav-bar.component.ts:64</a></div>
+                        </td>
+                    </tr>
+
+
+        </tbody>
+    </table>
+    <table class="table table-sm table-bordered">
+        <tbody>
+            <tr>
+                <td class="col-md-4">
+                    <a name="favoritesCount$"></a>
+                    <span class="name">
+                            <span class="modifier">Public</span>
+                        <span ><b>favoritesCount$</b></span>
+                        <a href="#favoritesCount$"><span class="icon ion-ios-link"></span></a>
+                    </span>
+                </td>
+            </tr>
+                <tr>
+                    <td class="col-md-4">
+                        <i>Tipo : </i>    <code>Observable&lt;number&gt;</code>
+
+                    </td>
+                </tr>
+                    <tr>
+                        <td class="col-md-4">
+                                <div class="io-line">Definido em <a href="" data-line="62" class="link-to-prism">src/app/shared/components/nav-bar/nav-bar.component.ts:62</a></div>
+                        </td>
+                    </tr>
+
+
+        </tbody>
+    </table>
+    <table class="table table-sm table-bordered">
+        <tbody>
+            <tr>
+                <td class="col-md-4">
+                    <a name="isFavoritesDrawerVisible"></a>
+                    <span class="name">
+                            <span class="modifier">Public</span>
+                        <span ><b>isFavoritesDrawerVisible</b></span>
+                        <a href="#isFavoritesDrawerVisible"><span class="icon ion-ios-link"></span></a>
+                    </span>
+                </td>
+            </tr>
+                <tr>
+                    <td class="col-md-4">
+                        <i>Tipo : </i>        <code><a href="https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/boolean" target="_blank" >boolean</a></code>
+
+                    </td>
+                </tr>
+                <tr>
+                    <td class="col-md-4">
+                        <i>Valor padrão : </i><code>false</code>
+                    </td>
+                </tr>
+                    <tr>
+                        <td class="col-md-4">
+                                <div class="io-line">Definido em <a href="" data-line="63" class="link-to-prism">src/app/shared/components/nav-bar/nav-bar.component.ts:63</a></div>
+                        </td>
+                    </tr>
+
+
+        </tbody>
+    </table>
+    <table class="table table-sm table-bordered">
+        <tbody>
+            <tr>
+                <td class="col-md-4">
+                    <a name="isLightHeader"></a>
+                    <span class="name">
+                            <span class="modifier">Public</span>
+                        <span ><b>isLightHeader</b></span>
+                        <a href="#isLightHeader"><span class="icon ion-ios-link"></span></a>
+                    </span>
+                </td>
+            </tr>
+                <tr>
+                    <td class="col-md-4">
+                        <i>Tipo : </i>        <code><a href="https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/boolean" target="_blank" >boolean</a></code>
+
+                    </td>
+                </tr>
+                <tr>
+                    <td class="col-md-4">
+                        <i>Valor padrão : </i><code>false</code>
+                    </td>
+                </tr>
+                    <tr>
+                        <td class="col-md-4">
+                                <div class="io-line">Definido em <a href="" data-line="79" class="link-to-prism">src/app/shared/components/nav-bar/nav-bar.component.ts:79</a></div>
+                        </td>
+                    </tr>
+
+
+        </tbody>
+    </table>
+    <table class="table table-sm table-bordered">
+        <tbody>
+            <tr>
+                <td class="col-md-4">
+                    <a name="isLoadingFavorites"></a>
+                    <span class="name">
+                            <span class="modifier">Public</span>
+                        <span ><b>isLoadingFavorites</b></span>
+                        <a href="#isLoadingFavorites"><span class="icon ion-ios-link"></span></a>
+                    </span>
+                </td>
+            </tr>
+                <tr>
+                    <td class="col-md-4">
+                        <i>Tipo : </i>        <code><a href="https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/boolean" target="_blank" >boolean</a></code>
+
+                    </td>
+                </tr>
+                <tr>
+                    <td class="col-md-4">
+                        <i>Valor padrão : </i><code>false</code>
+                    </td>
+                </tr>
+                    <tr>
+                        <td class="col-md-4">
+                                <div class="io-line">Definido em <a href="" data-line="65" class="link-to-prism">src/app/shared/components/nav-bar/nav-bar.component.ts:65</a></div>
+                        </td>
+                    </tr>
+
+
+        </tbody>
+    </table>
+    <table class="table table-sm table-bordered">
+        <tbody>
+            <tr>
+                <td class="col-md-4">
+                    <a name="navbarColor"></a>
+                    <span class="name">
+                            <span class="modifier">Public</span>
+                        <span ><b>navbarColor</b></span>
+                        <a href="#navbarColor"><span class="icon ion-ios-link"></span></a>
+                    </span>
+                </td>
+            </tr>
+                <tr>
+                    <td class="col-md-4">
+                        <i>Tipo : </i>        <code><a href="https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/string" target="_blank" >string</a></code>
+
+                    </td>
+                </tr>
+                <tr>
+                    <td class="col-md-4">
+                        <i>Valor padrão : </i><code>&#x27;#001529&#x27;</code>
+                    </td>
+                </tr>
+                    <tr>
+                        <td class="col-md-4">
+                                <div class="io-line">Definido em <a href="" data-line="78" class="link-to-prism">src/app/shared/components/nav-bar/nav-bar.component.ts:78</a></div>
+                        </td>
+                    </tr>
+
+
+        </tbody>
+    </table>
+    <table class="table table-sm table-bordered">
+        <tbody>
+            <tr>
+                <td class="col-md-4">
+                    <a name="notifications$"></a>
+                    <span class="name">
+                            <span class="modifier">Public</span>
+                        <span ><b>notifications$</b></span>
+                        <a href="#notifications$"><span class="icon ion-ios-link"></span></a>
+                    </span>
+                </td>
+            </tr>
+                <tr>
+                    <td class="col-md-4">
+                        <i>Tipo : </i>        <code><a href="../interfaces/NotificationInterface.html" target="_self" >Observable&lt;NotificationInterface[]&gt;</a></code>
+
+                    </td>
+                </tr>
+                    <tr>
+                        <td class="col-md-4">
+                                <div class="io-line">Definido em <a href="" data-line="83" class="link-to-prism">src/app/shared/components/nav-bar/nav-bar.component.ts:83</a></div>
+                        </td>
+                    </tr>
+
+
+        </tbody>
+    </table>
+    <table class="table table-sm table-bordered">
+        <tbody>
+            <tr>
+                <td class="col-md-4">
+                    <a name="notificationService"></a>
+                    <span class="name">
+                            <span class="modifier">Public</span>
+                        <span ><b>notificationService</b></span>
+                        <a href="#notificationService"><span class="icon ion-ios-link"></span></a>
+                    </span>
+                </td>
+            </tr>
+                <tr>
+                    <td class="col-md-4">
+                        <i>Tipo : </i>        <code><a href="../injectables/WebSocketNotificationService.html" target="_self" >WebSocketNotificationService</a></code>
+
+                    </td>
+                </tr>
+                    <tr>
+                        <td class="col-md-4">
+                                <div class="io-line">Definido em <a href="" data-line="93" class="link-to-prism">src/app/shared/components/nav-bar/nav-bar.component.ts:93</a></div>
+                        </td>
+                    </tr>
+
+
+        </tbody>
+    </table>
+    <table class="table table-sm table-bordered">
+        <tbody>
+            <tr>
+                <td class="col-md-4">
+                    <a name="searchQuery"></a>
+                    <span class="name">
+                            <span class="modifier">Public</span>
+                        <span ><b>searchQuery</b></span>
+                        <a href="#searchQuery"><span class="icon ion-ios-link"></span></a>
+                    </span>
+                </td>
+            </tr>
+                <tr>
+                    <td class="col-md-4">
+                        <i>Tipo : </i>        <code><a href="https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/string" target="_blank" >string</a></code>
+
+                    </td>
+                </tr>
+                <tr>
+                    <td class="col-md-4">
+                        <i>Valor padrão : </i><code>&#x27;&#x27;</code>
+                    </td>
+                </tr>
+                    <tr>
+                        <td class="col-md-4">
+                                <div class="io-line">Definido em <a href="" data-line="80" class="link-to-prism">src/app/shared/components/nav-bar/nav-bar.component.ts:80</a></div>
+                        </td>
+                    </tr>
+
+
+        </tbody>
+    </table>
+    <table class="table table-sm table-bordered">
+        <tbody>
+            <tr>
+                <td class="col-md-4">
+                    <a name="storeLogoUrl"></a>
+                    <span class="name">
+                            <span class="modifier">Public</span>
+                        <span ><b>storeLogoUrl</b></span>
+                        <a href="#storeLogoUrl"><span class="icon ion-ios-link"></span></a>
+                    </span>
+                </td>
+            </tr>
+                <tr>
+                    <td class="col-md-4">
+                        <i>Tipo : </i>        <code><a href="https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/string" target="_blank" >string</a></code>
+
+                    </td>
+                </tr>
+                <tr>
+                    <td class="col-md-4">
+                        <i>Valor padrão : </i><code>&#x27;&#x27;</code>
+                    </td>
+                </tr>
+                    <tr>
+                        <td class="col-md-4">
+                                <div class="io-line">Definido em <a href="" data-line="76" class="link-to-prism">src/app/shared/components/nav-bar/nav-bar.component.ts:76</a></div>
+                        </td>
+                    </tr>
+
+
+        </tbody>
+    </table>
+    <table class="table table-sm table-bordered">
+        <tbody>
+            <tr>
+                <td class="col-md-4">
+                    <a name="storeName"></a>
+                    <span class="name">
+                            <span class="modifier">Public</span>
+                        <span ><b>storeName</b></span>
+                        <a href="#storeName"><span class="icon ion-ios-link"></span></a>
+                    </span>
+                </td>
+            </tr>
+                <tr>
+                    <td class="col-md-4">
+                        <i>Tipo : </i>        <code><a href="https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/string" target="_blank" >string</a></code>
+
+                    </td>
+                </tr>
+                <tr>
+                    <td class="col-md-4">
+                        <i>Valor padrão : </i><code>&#x27;ATS Market&#x27;</code>
+                    </td>
+                </tr>
+                    <tr>
+                        <td class="col-md-4">
+                                <div class="io-line">Definido em <a href="" data-line="77" class="link-to-prism">src/app/shared/components/nav-bar/nav-bar.component.ts:77</a></div>
+                        </td>
+                    </tr>
+
+
+        </tbody>
+    </table>
+    <table class="table table-sm table-bordered">
+        <tbody>
+            <tr>
+                <td class="col-md-4">
+                    <a name="unreadCount$"></a>
+                    <span class="name">
+                            <span class="modifier">Public</span>
+                        <span ><b>unreadCount$</b></span>
+                        <a href="#unreadCount$"><span class="icon ion-ios-link"></span></a>
+                    </span>
+                </td>
+            </tr>
+                <tr>
+                    <td class="col-md-4">
+                        <i>Tipo : </i>    <code>Observable&lt;number&gt;</code>
+
+                    </td>
+                </tr>
+                    <tr>
+                        <td class="col-md-4">
+                                <div class="io-line">Definido em <a href="" data-line="84" class="link-to-prism">src/app/shared/components/nav-bar/nav-bar.component.ts:84</a></div>
+                        </td>
+                    </tr>
+
+
+        </tbody>
+    </table>
+    <table class="table table-sm table-bordered">
+        <tbody>
+            <tr>
+                <td class="col-md-4">
+                    <a name="userIdentity"></a>
+                    <span class="name">
+                            <span class="modifier">Public</span>
+                        <span ><b>userIdentity</b></span>
+                        <a href="#userIdentity"><span class="icon ion-ios-link"></span></a>
+                    </span>
+                </td>
+            </tr>
+                <tr>
+                    <td class="col-md-4">
+                        <i>Tipo : </i>        <code><a href="https://www.typescriptlang.org/docs/handbook/basic-types.html" target="_blank" >any</a></code>
+
+                    </td>
+                </tr>
+                <tr>
+                    <td class="col-md-4">
+                        <i>Valor padrão : </i><code>null</code>
+                    </td>
+                </tr>
+                    <tr>
+                        <td class="col-md-4">
+                                <div class="io-line">Definido em <a href="" data-line="72" class="link-to-prism">src/app/shared/components/nav-bar/nav-bar.component.ts:72</a></div>
+                        </td>
+                    </tr>
+
+
+        </tbody>
+    </table>
+</section>
+
+    <section data-compodoc="block-accessors">
+    <h3 id="accessors">
+        Acessores
+    </h3>
+        <table class="table table-sm table-bordered">
+            <tbody>
+                <tr>
+                    <td class="col-md-4">
+                        <a name="favoritesDrawerWidth"></a>
+                        <span class="name"><b>favoritesDrawerWidth</b><a href="#favoritesDrawerWidth"><span class="icon ion-ios-link"></span></a></span>
+                    </td>
+                </tr>
+
+                <tr>
+                    <td class="col-md-4">
+                        <span class="accessor"><b>get</b><code>favoritesDrawerWidth()</code></span>
+                    </td>
+                </tr>
+                            <tr>
+                                <td class="col-md-4">
+                                    <div class="io-line">Definido em <a href="" data-line="67" class="link-to-prism">src/app/shared/components/nav-bar/nav-bar.component.ts:67</a></div>
+                                </td>
+                            </tr>
+
+            </tbody>
+        </table>
+</section>
+</div>
+
+
+    <div class="tab-pane fade  tab-source-code" id="source">
+        <pre class="line-numbers compodoc-sourcecode"><code class="language-typescript">import { Component, OnInit } from &#x27;@angular/core&#x27;;
+import { CommonModule, AsyncPipe } from &#x27;@angular/common&#x27;;
+import { RouterLink, Router, NavigationEnd } from &#x27;@angular/router&#x27;;
+import { FormsModule } from &#x27;@angular/forms&#x27;;
+import { Observable, filter } from &#x27;rxjs&#x27;;
+
+// NG-ZORRO Modules
+import { NzDrawerModule } from &#x27;ng-zorro-antd/drawer&#x27;;
+import { NzLayoutModule } from &#x27;ng-zorro-antd/layout&#x27;;
+import { NzIconModule } from &#x27;ng-zorro-antd/icon&#x27;;
+import { NzBadgeModule } from &#x27;ng-zorro-antd/badge&#x27;;
+import { NzInputModule } from &#x27;ng-zorro-antd/input&#x27;;
+import { NzAvatarModule } from &#x27;ng-zorro-antd/avatar&#x27;;
+import { NzDropDownModule } from &#x27;ng-zorro-antd/dropdown&#x27;;
+import { NzButtonModule } from &#x27;ng-zorro-antd/button&#x27;;
+import { NzDividerModule } from &#x27;ng-zorro-antd/divider&#x27;;
+import { NzTagModule } from &#x27;ng-zorro-antd/tag&#x27;;
+import { NzSpinModule } from &#x27;ng-zorro-antd/spin&#x27;;
+import { NzEmptyModule } from &#x27;ng-zorro-antd/empty&#x27;;
+import { NzToolTipModule } from &#x27;ng-zorro-antd/tooltip&#x27;;
+
+import { CartItemInterface } from &#x27;@interfaces/cart-item.interface&#x27;;
+import { CartService } from &#x27;@services/cart.service&#x27;;
+import { FavoritesService } from &#x27;@services/favorites.service&#x27;;
+import { SessionService } from &#x27;@services/session.service&#x27;;
+import { StoreContextService } from &#x27;@services/store-context.service&#x27;;
+import { WebSocketNotificationService } from &#x27;@services/web-socket-notification.service&#x27;;
+import { NotificationInterface } from &#x27;@interfaces/notification/notification.interface&#x27;;
+import { CompanyInterface } from &#x27;@interfaces/company&#x27;;
+
+@Component({
+  selector: &#x27;app-nav-bar&#x27;,
+  imports: [
+    CommonModule,
+    AsyncPipe,
+    RouterLink,
+    FormsModule,
+    NzDrawerModule,
+    NzLayoutModule,
+    NzIconModule,
+    NzBadgeModule,
+    NzInputModule,
+    NzAvatarModule,
+    NzDropDownModule,
+    NzButtonModule,
+    NzDividerModule,
+    NzTagModule,
+    NzSpinModule,
+    NzEmptyModule,
+    NzToolTipModule
+  ],
+  templateUrl: &#x27;./nav-bar.component.html&#x27;,
+  styleUrl: &#x27;./nav-bar.component.scss&#x27;
+})
+export class NavBarComponent implements OnInit {
+
+  public cartItemCount: number &#x3D; 0;
+  public cartItems$: Observable&lt;CartItemInterface[]&gt;;
+  public drawerVisible: boolean &#x3D; false;
+
+  // Favoritos
+  public favoritesCount$: Observable&lt;number&gt;;
+  public isFavoritesDrawerVisible: boolean &#x3D; false;
+  public favoriteItemsDetails: any[] &#x3D; [];
+  public isLoadingFavorites: boolean &#x3D; false;
+
+  public get favoritesDrawerWidth(): string {
+    return window.innerWidth &lt;&#x3D; 480 ? &#x27;100%&#x27; : &#x27;420px&#x27;;
+  }
+
+  // Usuario
+  public userIdentity: any &#x3D; null;
+
+  // Contexto de Tienda
+  public activeStore: CompanyInterface | null &#x3D; null;
+  public storeLogoUrl: string &#x3D; &#x27;&#x27;;
+  public storeName: string &#x3D; &#x27;ATS Market&#x27;;
+  public navbarColor: string &#x3D; &#x27;#001529&#x27;; // Color por defecto (dark)
+  public isLightHeader: boolean &#x3D; false;
+  public searchQuery: string &#x3D; &#x27;&#x27;;
+
+  // Notificaciones
+  public notifications$: Observable&lt;NotificationInterface[]&gt;;
+  public unreadCount$: Observable&lt;number&gt;;
+  public animateBell: boolean &#x3D; false;
+
+  constructor(
+    private cartService: CartService,
+    private _favoritesService: FavoritesService,
+    private _sessionService: SessionService,
+    private _router: Router,
+    private _storeContext: StoreContextService,
+    public notificationService: WebSocketNotificationService
+  ) {
+    this.cartItems$ &#x3D; this.cartService.cartItems$;
+    this.favoritesCount$ &#x3D; this._favoritesService.favoritesCount$;
+    this.notifications$ &#x3D; this.notificationService.notifications$;
+    this.unreadCount$ &#x3D; this.notificationService.unreadCount$;
+  }
+
+  ngOnInit(): void {
+    this.userIdentity &#x3D; this._sessionService.getIdentity();
+
+    // Suscribirse a cambios en la tienda activa
+    this._storeContext.activeStore$.subscribe(store &#x3D;&gt; {
+      this.activeStore &#x3D; store;
+      this.storeName &#x3D; store?.cmp_name || &#x27;ATS Market&#x27;;
+      this.updateLogo();
+      this.updateNavbarColor();
+    });
+
+    this._storeContext.storeSettings$.subscribe(() &#x3D;&gt; {
+      this.updateLogo();
+      this.updateNavbarColor();
+    });
+
+    // Escuchar el conteo de no leídos para disparar la animación de campana
+    this.unreadCount$.subscribe(count &#x3D;&gt; {
+      if (count &gt; 0) {
+        this.animateBell &#x3D; true;
+        setTimeout(() &#x3D;&gt; this.animateBell &#x3D; false, 1200); // Duración de la oscilación
+      }
+    });
+
+    // Sincronizar el buscador del navbar con los queryParams de la URL
+    const initialTree &#x3D; this._router.parseUrl(this._router.url);
+    this.searchQuery &#x3D; initialTree.queryParams[&#x27;search&#x27;] || &#x27;&#x27;;
+
+    this._router.events.pipe(
+      filter(event &#x3D;&gt; event instanceof NavigationEnd)
+    ).subscribe(() &#x3D;&gt; {
+      const tree &#x3D; this._router.parseUrl(this._router.url);
+      this.searchQuery &#x3D; tree.queryParams[&#x27;search&#x27;] || &#x27;&#x27;;
+    });
+    if (this.userIdentity) {
+      this._favoritesService.loadFavorites().subscribe();
+    }
+  }
+
+  // --- MÓDULO HÍBRIDO DE FAVORITOS ---
+  public openFavoritesDrawer(): void {
+    if (!this.userIdentity) {
+      this._router.navigate([&#x27;/auth/login&#x27;]);
+      return;
+    }
+    this.isFavoritesDrawerVisible &#x3D; true;
+    this.loadFavoritesDetails();
+  }
+
+  public closeFavoritesDrawer(): void {
+    this.isFavoritesDrawerVisible &#x3D; false;
+  }
+
+  public loadFavoritesDetails(): void {
+    this.isLoadingFavorites &#x3D; true;
+    this._favoritesService.getFavoritesDetails().subscribe({
+      next: (data) &#x3D;&gt; {
+        this.favoriteItemsDetails &#x3D; data || [];
+        this.isLoadingFavorites &#x3D; false;
+      },
+      error: () &#x3D;&gt; {
+        this.favoriteItemsDetails &#x3D; [];
+        this.isLoadingFavorites &#x3D; false;
+      }
+    });
+  }
+
+  public removeFavoriteFromDrawer(item: any): void {
+    this._favoritesService.removeFavorite(item.prov_uuid, item.cmp_uuid).subscribe({
+      next: () &#x3D;&gt; {
+        this.favoriteItemsDetails &#x3D; this.favoriteItemsDetails.filter(f &#x3D;&gt; f.prov_uuid !&#x3D;&#x3D; item.prov_uuid);
+      }
+    });
+  }
+
+  public addToCartFromFavorites(item: any): void {
+    const cartProduct &#x3D; {
+      cmp_uuid: item.cmp_uuid,
+      pro_uuid: item.pro_uuid,
+      prov_uuid: item.prov_uuid,
+      prov_name: item.prov_name,
+      prov_sku: item.prov_sku,
+      prov_price: item.prov_suggestedminimumsellingprice,
+      prov_image: item.prov_image,
+      quantity: 1,
+      cmp_name: item.cmp_name
+    };
+    this.cartService.addToCart(cartProduct as any);
+  }
+
+  public goToProductDetail(item: any): void {
+    this.closeFavoritesDrawer();
+    if (item.cmp_slug) {
+      this._router.navigate([&#x27;/public/store-catalog&#x27;, item.cmp_slug, &#x27;product&#x27;, item.prov_uuid]);
+    }
+  }
+
+  public goToMyFavoritesPage(): void {
+    this.closeFavoritesDrawer();
+    this._router.navigate([&#x27;/application/my-favorites&#x27;]);
+  }
+
+  private updateLogo(): void {
+    // Prioridad: Ajuste personalizado de logo &gt; Logo de la empresa &gt; Vacío (texto)
+    const customLogo &#x3D; this._storeContext.getSetting(&#x27;STORE_LOGO_URL&#x27;);
+    this.storeLogoUrl &#x3D; customLogo || this.activeStore?.cmp_logo || &#x27;&#x27;;
+  }
+
+  private updateNavbarColor(): void {
+    const customColor &#x3D; this._storeContext.getSetting(&#x27;THEME_NAVBAR_COLOR&#x27;);
+    this.navbarColor &#x3D; customColor || this.activeStore?.cmp_primarycolor || &#x27;#001529&#x27;;
+    this.isLightHeader &#x3D; this.getContrastYIQ(this.navbarColor) &#x3D;&#x3D;&#x3D; &#x27;light&#x27;;
+  }
+
+  private getContrastYIQ(hexcolor: string): &#x27;dark&#x27; | &#x27;light&#x27; {
+    if (!hexcolor) return &#x27;dark&#x27;;
+    let hex &#x3D; hexcolor.replace(&#x27;#&#x27;, &#x27;&#x27;);
+    if (hex.length &#x3D;&#x3D;&#x3D; 3) {
+      hex &#x3D; hex.split(&#x27;&#x27;).map(c &#x3D;&gt; c + c).join(&#x27;&#x27;);
+    }
+    if (hex.length !&#x3D;&#x3D; 6) return &#x27;dark&#x27;;
+
+    const r &#x3D; parseInt(hex.substring(0, 2), 16);
+    const g &#x3D; parseInt(hex.substring(2, 4), 16);
+    const b &#x3D; parseInt(hex.substring(4, 6), 16);
+    const yiq &#x3D; ((r * 299) + (g * 587) + (b * 114)) / 1000;
+    return (yiq &gt;&#x3D; 140) ? &#x27;light&#x27; : &#x27;dark&#x27;;
+  }
+
+  // Ejecuta la búsqueda desde el navbar
+  public onSearch(): void {
+    const queryParams: any &#x3D; {};
+    if (this.searchQuery &amp;&amp; this.searchQuery.trim()) {
+      queryParams.search &#x3D; this.searchQuery.trim();
+    }
+    
+    if (this.activeStore) {
+      // Si estamos dentro de una tienda, buscamos en esa tienda
+      this._router.navigate([&#x27;/public/store-catalog&#x27;, this.activeStore.cmp_slug], { queryParams });
+    } else {
+      // Si no, buscamos en el catálogo general
+      this._router.navigate([&#x27;/public/catalog&#x27;], { queryParams });
+    }
+  }
+
+  public openDrawer(): void {
+    this.drawerVisible &#x3D; true;
+  }
+
+  public closeDrawer(): void {
+    this.drawerVisible &#x3D; false;
+  }
+
+  public logout(): void {
+    this._sessionService.logout();
+    this.userIdentity &#x3D; null;
+    this._router.navigate([&#x27;/auth/login&#x27;]);
+  }
+
+  public markAllAsRead(): void {
+    this.notificationService.markAllAsRead();
+  }
+
+  public navegarNotificacion(ntf: NotificationInterface): void {
+    // Marcar como leída de forma interna si hace clic
+    ntf.ntf_isread &#x3D; true;
+    this.notificationService.markAllAsRead(); // para esta versión rápida
+    
+    if (ntf.ntf_actionurl) {
+      this._router.navigateByUrl(ntf.ntf_actionurl);
+    }
+  }
+}
+</code></pre>
+    </div>
+
+    <div class="tab-pane fade " id="templateData">
+        <pre class="line-numbers"><code class="language-html">&lt;nz-header class&#x3D;&quot;app-header&quot; [style.backgroundColor]&#x3D;&quot;navbarColor&quot; [class.light-header]&#x3D;&quot;isLightHeader&quot;&gt;
+    &lt;!-- FILA 1: MARCA Y BUSCADOR PRINCIPAL (DOMINANTE) --&gt;
+    &lt;div class&#x3D;&quot;header-main-row&quot;&gt;
+        &lt;div class&#x3D;&quot;logo&quot;&gt;
+            &lt;a [routerLink]&#x3D;&quot;activeStore ? &#x27;/public/home-store/&#x27; + activeStore.cmp_slug : &#x27;/public/market-home&#x27;&quot;&gt;
+                &lt;img *ngIf&#x3D;&quot;storeLogoUrl&quot; [src]&#x3D;&quot;storeLogoUrl&quot; [alt]&#x3D;&quot;storeName&quot; class&#x3D;&quot;logo-image&quot; /&gt;
+                &lt;span *ngIf&#x3D;&quot;!storeLogoUrl&quot; nz-icon nzType&#x3D;&quot;shop&quot; nzTheme&#x3D;&quot;outline&quot;&gt;&lt;/span&gt;
+                &lt;span class&#x3D;&quot;site-title&quot;&gt;{{ storeName }}&lt;/span&gt;
+            &lt;/a&gt;
+        &lt;/div&gt;
+
+        &lt;div class&#x3D;&quot;search-container&quot;&gt;
+            &lt;nz-input-group [nzSuffix]&#x3D;&quot;suffixButton&quot; class&#x3D;&quot;search-input-group&quot;&gt;
+                &lt;input type&#x3D;&quot;text&quot; nz-input [placeholder]&#x3D;&quot;activeStore ? &#x27;Buscar en &#x27; + storeName + &#x27;...&#x27; : &#x27;Buscar productos, marcas, rubros...&#x27;&quot;
+                    [(ngModel)]&#x3D;&quot;searchQuery&quot; (keydown.enter)&#x3D;&quot;onSearch()&quot; /&gt;
+                &lt;ng-template #suffixButton&gt;
+                    &lt;div class&#x3D;&quot;search-btn-wrapper&quot; (click)&#x3D;&quot;onSearch()&quot;&gt;
+                        &lt;span class&#x3D;&quot;search-divider&quot;&gt;|&lt;/span&gt;
+                        &lt;span nz-icon nzType&#x3D;&quot;search&quot; class&#x3D;&quot;search-icon&quot;&gt;&lt;/span&gt;
+                    &lt;/div&gt;
+                &lt;/ng-template&gt;
+            &lt;/nz-input-group&gt;
+        &lt;/div&gt;
+
+        &lt;div class&#x3D;&quot;desktop-spacer desktop-only&quot;&gt;&lt;/div&gt;
+
+        &lt;!-- ACCIONES RÁPIDAS MÓVIL (&lt; 768px) --&gt;
+        &lt;div class&#x3D;&quot;mobile-actions&quot;&gt;
+            &lt;button nz-button nzType&#x3D;&quot;text&quot; class&#x3D;&quot;mobile-action-btn&quot; (click)&#x3D;&quot;openFavoritesDrawer()&quot;&gt;
+                &lt;nz-badge [nzCount]&#x3D;&quot;(favoritesCount$ | async) || 0&quot; [nzOverflowCount]&#x3D;&quot;99&quot; class&#x3D;&quot;fav-badge&quot;&gt;
+                    &lt;span nz-icon nzType&#x3D;&quot;heart&quot; nzTheme&#x3D;&quot;fill&quot; class&#x3D;&quot;fav-icon-heart&quot;&gt;&lt;/span&gt;
+                &lt;/nz-badge&gt;
+            &lt;/button&gt;
+
+            &lt;button nz-button nzType&#x3D;&quot;text&quot; class&#x3D;&quot;mobile-action-btn&quot; routerLink&#x3D;&quot;/user/cart&quot;&gt;
+                &lt;nz-badge [nzCount]&#x3D;&quot;(cartItems$ | async)?.length || 0&quot; [nzShowZero]&#x3D;&quot;false&quot;&gt;
+                    &lt;span nz-icon nzType&#x3D;&quot;shopping-cart&quot; class&#x3D;&quot;bell-icon&quot;&gt;&lt;/span&gt;
+                &lt;/nz-badge&gt;
+            &lt;/button&gt;
+
+            &lt;button nz-button class&#x3D;&quot;menu-toggle-button&quot; nzType&#x3D;&quot;default&quot; (click)&#x3D;&quot;openDrawer()&quot;&gt;
+                &lt;span nz-icon nzType&#x3D;&quot;menu&quot;&gt;&lt;/span&gt;
+            &lt;/button&gt;
+        &lt;/div&gt;
+    &lt;/div&gt;
+
+    &lt;!-- FILA 2: NAVEGACIÓN Y BLOQUE UNIFICADO DE CUENTA (DESKTOP &gt; 768px) --&gt;
+    &lt;div class&#x3D;&quot;header-sub-row desktop-only&quot;&gt;
+        &lt;div class&#x3D;&quot;nav-links-left&quot;&gt;
+            &lt;a routerLink&#x3D;&quot;/public/home&quot; class&#x3D;&quot;sub-nav-link&quot;&gt;&lt;span nz-icon nzType&#x3D;&quot;home&quot;&gt;&lt;/span&gt; Inicio&lt;/a&gt;
+            &lt;a routerLink&#x3D;&quot;/public/catalog&quot; class&#x3D;&quot;sub-nav-link&quot;&gt;&lt;span nz-icon nzType&#x3D;&quot;appstore&quot;&gt;&lt;/span&gt; Catálogo&lt;/a&gt;
+        &lt;/div&gt;
+
+        &lt;div class&#x3D;&quot;user-actions-right&quot;&gt;
+            &lt;!-- Favoritos --&gt;
+            &lt;button nz-button nzType&#x3D;&quot;text&quot; (click)&#x3D;&quot;openFavoritesDrawer()&quot; class&#x3D;&quot;sub-nav-action-btn&quot;&gt;
+                &lt;nz-badge [nzCount]&#x3D;&quot;(favoritesCount$ | async) || 0&quot; [nzOverflowCount]&#x3D;&quot;99&quot; class&#x3D;&quot;fav-badge&quot;&gt;
+                    &lt;span nz-icon nzType&#x3D;&quot;heart&quot; nzTheme&#x3D;&quot;fill&quot; class&#x3D;&quot;fav-icon-heart&quot;&gt;&lt;/span&gt;
+                &lt;/nz-badge&gt;
+                &lt;span class&#x3D;&quot;btn-text&quot;&gt;Favoritos&lt;/span&gt;
+            &lt;/button&gt;
+
+            &lt;!-- Carrito --&gt;
+            &lt;button nz-button nzType&#x3D;&quot;text&quot; routerLink&#x3D;&quot;/user/cart&quot; class&#x3D;&quot;sub-nav-action-btn&quot;&gt;
+                &lt;nz-badge [nzCount]&#x3D;&quot;(cartItems$ | async)?.length || 0&quot; [nzShowZero]&#x3D;&quot;false&quot;&gt;
+                    &lt;span nz-icon nzType&#x3D;&quot;shopping-cart&quot; class&#x3D;&quot;bell-icon&quot;&gt;&lt;/span&gt;
+                &lt;/nz-badge&gt;
+                &lt;span class&#x3D;&quot;btn-text&quot;&gt;Carrito&lt;/span&gt;
+            &lt;/button&gt;
+
+            &lt;span class&#x3D;&quot;nav-divider&quot; aria-hidden&#x3D;&quot;true&quot;&gt;&lt;/span&gt;
+
+            &lt;!-- Notificaciones --&gt;
+            &lt;button nz-button nzType&#x3D;&quot;text&quot; *ngIf&#x3D;&quot;userIdentity&quot; nz-dropdown [nzDropdownMenu]&#x3D;&quot;notificationsMenu&quot; nzPlacement&#x3D;&quot;bottomRight&quot; nzTrigger&#x3D;&quot;click&quot; class&#x3D;&quot;sub-nav-action-btn&quot;&gt;
+                &lt;div class&#x3D;&quot;bell-icon-wrapper&quot; [class.shake-bell]&#x3D;&quot;animateBell&quot;&gt;
+                    &lt;nz-badge [nzCount]&#x3D;&quot;(unreadCount$ | async) ?? 0&quot; [nzOverflowCount]&#x3D;&quot;9&quot; class&#x3D;&quot;notification-badge&quot;&gt;
+                        &lt;span nz-icon nzType&#x3D;&quot;bell&quot; nzTheme&#x3D;&quot;outline&quot; class&#x3D;&quot;bell-icon&quot;&gt;&lt;/span&gt;
+                    &lt;/nz-badge&gt;
+                &lt;/div&gt;
+            &lt;/button&gt;
+
+            &lt;nz-dropdown-menu #notificationsMenu&#x3D;&quot;nzDropdownMenu&quot;&gt;
+                &lt;div class&#x3D;&quot;notifications-dropdown-panel glassmorphic-panel&quot;&gt;
+                    &lt;div class&#x3D;&quot;dropdown-header&quot;&gt;
+                        &lt;h4&gt;Notificaciones&lt;/h4&gt;
+                        &lt;button nz-button nzType&#x3D;&quot;link&quot; nzSize&#x3D;&quot;small&quot; (click)&#x3D;&quot;markAllAsRead()&quot; *ngIf&#x3D;&quot;(unreadCount$ | async) &amp;&amp; (unreadCount$ | async)! &gt; 0&quot; class&#x3D;&quot;mark-read-btn&quot;&gt;
+                            Marcar leídas
+                        &lt;/button&gt;
+                    &lt;/div&gt;
+                    &lt;nz-divider class&#x3D;&quot;header-divider&quot;&gt;&lt;/nz-divider&gt;
+                    &lt;div class&#x3D;&quot;notifications-list-container&quot;&gt;
+                        &lt;ng-container *ngIf&#x3D;&quot;(notifications$ | async) &amp;&amp; (notifications$ | async)!.length &gt; 0; else emptyNotifications&quot;&gt;
+                            &lt;div class&#x3D;&quot;notification-card-item&quot; *ngFor&#x3D;&quot;let ntf of notifications$ | async&quot; [class.unread]&#x3D;&quot;!ntf.ntf_isread&quot; (click)&#x3D;&quot;navegarNotificacion(ntf)&quot;&gt;
+                                &lt;div class&#x3D;&quot;ntf-icon-box&quot; [class]&#x3D;&quot;ntf.ntf_type&quot;&gt;
+                                    &lt;span nz-icon [nzType]&#x3D;&quot;ntf.ntf_type &#x3D;&#x3D;&#x3D; &#x27;success&#x27; ? &#x27;check-circle&#x27; : ntf.ntf_type &#x3D;&#x3D;&#x3D; &#x27;warning&#x27; ? &#x27;exclamation-circle&#x27; : ntf.ntf_type &#x3D;&#x3D;&#x3D; &#x27;error&#x27; ? &#x27;close-circle&#x27; : &#x27;info-circle&#x27;&quot; nzTheme&#x3D;&quot;fill&quot;&gt;&lt;/span&gt;
+                                &lt;/div&gt;
+                                &lt;div class&#x3D;&quot;ntf-content-box&quot;&gt;
+                                    &lt;span class&#x3D;&quot;ntf-title&quot;&gt;{{ ntf.ntf_title }}&lt;/span&gt;
+                                    &lt;p class&#x3D;&quot;ntf-message&quot;&gt;{{ ntf.ntf_message }}&lt;/p&gt;
+                                    &lt;span class&#x3D;&quot;ntf-time&quot;&gt;{{ ntf.ntf_createdat | date:&#x27;shortTime&#x27; }} - {{ ntf.ntf_createdat | date:&#x27;mediumDate&#x27; }}&lt;/span&gt;
+                                &lt;/div&gt;
+                            &lt;/div&gt;
+                        &lt;/ng-container&gt;
+                        &lt;ng-template #emptyNotifications&gt;
+                            &lt;div class&#x3D;&quot;empty-notifications-state&quot;&gt;
+                                &lt;span nz-icon nzType&#x3D;&quot;bell&quot; nzTheme&#x3D;&quot;outline&quot; class&#x3D;&quot;empty-ntf-icon&quot;&gt;&lt;/span&gt;
+                                &lt;p&gt;No tenés notificaciones aún&lt;/p&gt;
+                            &lt;/div&gt;
+                        &lt;/ng-template&gt;
+                    &lt;/div&gt;
+                &lt;/div&gt;
+            &lt;/nz-dropdown-menu&gt;
+
+            &lt;!-- Usuario Dropdown --&gt;
+            &lt;a *ngIf&#x3D;&quot;!userIdentity&quot; routerLink&#x3D;&quot;/auth/login&quot; class&#x3D;&quot;sub-nav-link login-link&quot;&gt;
+                &lt;span nz-icon nzType&#x3D;&quot;user&quot;&gt;&lt;/span&gt; Ingresar
+            &lt;/a&gt;
+
+            &lt;div *ngIf&#x3D;&quot;userIdentity&quot; nz-dropdown [nzDropdownMenu]&#x3D;&quot;userMenu&quot; nzPlacement&#x3D;&quot;bottomRight&quot; class&#x3D;&quot;user-dropdown-wrapper&quot;&gt;
+                &lt;div class&#x3D;&quot;user-profile-box&quot;&gt;
+                    &lt;nz-avatar nzIcon&#x3D;&quot;user&quot; nzSize&#x3D;&quot;small&quot; nzSrc&#x3D;&quot;assets/img/user-avatar.png&quot;&gt;&lt;/nz-avatar&gt;
+                    &lt;span&gt;{{ userIdentity.usr_name || userIdentity.usr_user }}&lt;/span&gt;
+                    &lt;span nz-icon nzType&#x3D;&quot;down&quot; class&#x3D;&quot;user-chevron&quot;&gt;&lt;/span&gt;
+                &lt;/div&gt;
+            &lt;/div&gt;
+
+            &lt;nz-dropdown-menu #userMenu&#x3D;&quot;nzDropdownMenu&quot;&gt;
+                &lt;ul nz-menu class&#x3D;&quot;user-dropdown-menu&quot;&gt;
+                    &lt;li nz-menu-item routerLink&#x3D;&quot;/application/my-favorites&quot;&gt;
+                        &lt;span nz-icon nzType&#x3D;&quot;heart&quot; class&#x3D;&quot;menu-icon heart-red&quot;&gt;&lt;/span&gt; Mis Favoritos
+                    &lt;/li&gt;
+                    &lt;li nz-menu-item routerLink&#x3D;&quot;/application/my-purchases&quot;&gt;
+                        &lt;span nz-icon nzType&#x3D;&quot;shopping&quot; class&#x3D;&quot;menu-icon&quot;&gt;&lt;/span&gt; Mis Compras
+                    &lt;/li&gt;
+                    &lt;li nz-menu-item routerLink&#x3D;&quot;/application/my-companies&quot;&gt;
+                        &lt;span nz-icon nzType&#x3D;&quot;shop&quot; class&#x3D;&quot;menu-icon&quot;&gt;&lt;/span&gt; Administrar Tiendas
+                    &lt;/li&gt;
+                    &lt;li nz-menu-divider&gt;&lt;/li&gt;
+                    &lt;li nz-menu-item nzDanger (click)&#x3D;&quot;logout()&quot;&gt;
+                        &lt;span nz-icon nzType&#x3D;&quot;logout&quot; class&#x3D;&quot;menu-icon&quot;&gt;&lt;/span&gt; Cerrar sesión
+                    &lt;/li&gt;
+                &lt;/ul&gt;
+            &lt;/nz-dropdown-menu&gt;
+        &lt;/div&gt;
+    &lt;/div&gt;
+&lt;/nz-header&gt;
+
+&lt;!-- DRAWER PRINCIPAL MÓVIL --&gt;
+&lt;nz-drawer [nzVisible]&#x3D;&quot;drawerVisible&quot; nzPlacement&#x3D;&quot;right&quot; [nzTitle]&#x3D;&quot;menuTitleTemplate&quot; (nzOnClose)&#x3D;&quot;closeDrawer()&quot;&gt;
+    &lt;ng-template #menuTitleTemplate&gt;
+        &lt;div class&#x3D;&quot;drawer-title-box&quot;&gt;
+            &lt;span nz-icon nzType&#x3D;&quot;menu-fold&quot; style&#x3D;&quot;margin-right: 8px;&quot;&gt;&lt;/span&gt; Menú Principal
+        &lt;/div&gt;
+    &lt;/ng-template&gt;
+
+    &lt;ng-container *nzDrawerContent&gt;
+        &lt;div class&#x3D;&quot;mobile-drawer-body&quot;&gt;
+            &lt;!-- TARJETA DE PERFIL --&gt;
+            &lt;div class&#x3D;&quot;drawer-user-card&quot; *ngIf&#x3D;&quot;userIdentity&quot;&gt;
+                &lt;nz-avatar nzIcon&#x3D;&quot;user&quot; [nzSize]&#x3D;&quot;44&quot; nzSrc&#x3D;&quot;assets/img/user-avatar.png&quot; class&#x3D;&quot;drawer-user-avatar&quot;&gt;&lt;/nz-avatar&gt;
+                &lt;div class&#x3D;&quot;drawer-user-info&quot;&gt;
+                    &lt;span class&#x3D;&quot;drawer-user-name&quot;&gt;{{ userIdentity.usr_name || userIdentity.usr_user }}&lt;/span&gt;
+                    &lt;span class&#x3D;&quot;drawer-user-role&quot;&gt;Cuenta activa&lt;/span&gt;
+                &lt;/div&gt;
+            &lt;/div&gt;
+
+            &lt;ul nz-menu nzMode&#x3D;&quot;inline&quot; nzTheme&#x3D;&quot;dark&quot; class&#x3D;&quot;mobile-menu&quot;&gt;
+                &lt;li nz-menu-item routerLink&#x3D;&quot;/public/home&quot; (click)&#x3D;&quot;closeDrawer()&quot;&gt;
+                    &lt;nz-icon nzType&#x3D;&quot;home&quot;&gt;&lt;/nz-icon&gt; Inicio
+                &lt;/li&gt;
+                &lt;li nz-menu-item routerLink&#x3D;&quot;/public/catalog&quot; (click)&#x3D;&quot;closeDrawer()&quot;&gt;
+                    &lt;nz-icon nzType&#x3D;&quot;appstore&quot;&gt;&lt;/nz-icon&gt; Catálogo
+                &lt;/li&gt;
+                &lt;li nz-menu-item routerLink&#x3D;&quot;/user/cart&quot; (click)&#x3D;&quot;closeDrawer()&quot;&gt;
+                    &lt;nz-icon nzType&#x3D;&quot;shopping-cart&quot;&gt;&lt;/nz-icon&gt; Carrito
+                    &lt;nz-badge [nzCount]&#x3D;&quot;(cartItems$ | async)?.length || 0&quot; [nzShowZero]&#x3D;&quot;false&quot; class&#x3D;&quot;mobile-badge&quot;&gt;&lt;/nz-badge&gt;
+                &lt;/li&gt;
+                &lt;li nz-menu-item (click)&#x3D;&quot;openFavoritesDrawer(); closeDrawer()&quot;&gt;
+                    &lt;nz-icon nzType&#x3D;&quot;heart&quot; class&#x3D;&quot;heart-red&quot;&gt;&lt;/nz-icon&gt; Favoritos
+                    &lt;nz-badge [nzCount]&#x3D;&quot;(favoritesCount$ | async) || 0&quot; [nzShowZero]&#x3D;&quot;false&quot; class&#x3D;&quot;mobile-badge&quot;&gt;&lt;/nz-badge&gt;
+                &lt;/li&gt;
+
+                &lt;li nz-menu-divider&gt;&lt;/li&gt;
+
+                &lt;li nz-menu-item *ngIf&#x3D;&quot;!userIdentity&quot; routerLink&#x3D;&quot;/auth/login&quot; (click)&#x3D;&quot;closeDrawer()&quot;&gt;
+                    &lt;span nz-icon nzType&#x3D;&quot;login&quot;&gt;&lt;/span&gt; Iniciar Sesión / Regístrate
+                &lt;/li&gt;
+
+                &lt;ng-container *ngIf&#x3D;&quot;userIdentity&quot;&gt;
+                    &lt;li nz-menu-item routerLink&#x3D;&quot;/application/my-favorites&quot; (click)&#x3D;&quot;closeDrawer()&quot;&gt;
+                        &lt;span nz-icon nzType&#x3D;&quot;heart&quot; class&#x3D;&quot;menu-icon heart-red&quot;&gt;&lt;/span&gt; Mis Favoritos
+                    &lt;/li&gt;
+                    &lt;li nz-menu-item routerLink&#x3D;&quot;/application/my-purchases&quot; (click)&#x3D;&quot;closeDrawer()&quot;&gt;
+                        &lt;span nz-icon nzType&#x3D;&quot;shopping&quot; class&#x3D;&quot;menu-icon&quot;&gt;&lt;/span&gt; Mis Compras
+                    &lt;/li&gt;
+                    &lt;li nz-menu-item routerLink&#x3D;&quot;/application/my-companies&quot; (click)&#x3D;&quot;closeDrawer()&quot;&gt;
+                        &lt;span nz-icon nzType&#x3D;&quot;shop&quot; class&#x3D;&quot;menu-icon&quot;&gt;&lt;/span&gt; Administrar Tiendas
+                    &lt;/li&gt;
+                    &lt;li nz-menu-divider&gt;&lt;/li&gt;
+                    &lt;li nz-menu-item nzDanger (click)&#x3D;&quot;logout(); closeDrawer()&quot;&gt;
+                        &lt;span nz-icon nzType&#x3D;&quot;logout&quot; class&#x3D;&quot;menu-icon&quot;&gt;&lt;/span&gt; Cerrar sesión
+                    &lt;/li&gt;
+                &lt;/ng-container&gt;
+            &lt;/ul&gt;
+        &lt;/div&gt;
+    &lt;/ng-container&gt;
+&lt;/nz-drawer&gt;
+
+&lt;!-- DRAWER LATERAL DE FAVORITOS (ACCESO RÁPIDO) --&gt;
+&lt;nz-drawer [nzVisible]&#x3D;&quot;isFavoritesDrawerVisible&quot; nzPlacement&#x3D;&quot;right&quot; [nzTitle]&#x3D;&quot;favTitleTemplate&quot; [nzWidth]&#x3D;&quot;favoritesDrawerWidth&quot; (nzOnClose)&#x3D;&quot;closeFavoritesDrawer()&quot;&gt;
+    &lt;ng-template #favTitleTemplate&gt;
+        &lt;div class&#x3D;&quot;fav-drawer-header&quot;&gt;
+            &lt;span class&#x3D;&quot;fav-drawer-title&quot;&gt;
+                &lt;span nz-icon nzType&#x3D;&quot;heart&quot; nzTheme&#x3D;&quot;fill&quot; class&#x3D;&quot;fav-drawer-title-icon&quot;&gt;&lt;/span&gt;
+                Mis Favoritos ({{ favoriteItemsDetails.length }})
+            &lt;/span&gt;
+            &lt;button nz-button nzType&#x3D;&quot;link&quot; (click)&#x3D;&quot;goToMyFavoritesPage()&quot; class&#x3D;&quot;fav-drawer-see-all-btn&quot;&gt;
+                Ver Todos ➔
+            &lt;/button&gt;
+        &lt;/div&gt;
+    &lt;/ng-template&gt;
+
+    &lt;ng-container *nzDrawerContent&gt;
+        &lt;div class&#x3D;&quot;favorites-drawer-content&quot;&gt;
+            
+            &lt;div class&#x3D;&quot;loader-box&quot; *ngIf&#x3D;&quot;isLoadingFavorites&quot;&gt;
+                &lt;nz-spin Simple&gt;&lt;/nz-spin&gt;
+                &lt;p&gt;Cargando tus favoritos...&lt;/p&gt;
+            &lt;/div&gt;
+
+            &lt;!-- Lista vacía --&gt;
+            &lt;div class&#x3D;&quot;empty-fav-box&quot; *ngIf&#x3D;&quot;!isLoadingFavorites &amp;&amp; favoriteItemsDetails.length &#x3D;&#x3D;&#x3D; 0&quot;&gt;
+                &lt;nz-empty nzNotFoundImage&#x3D;&quot;simple&quot; nzNotFoundContent&#x3D;&quot;No tenés productos guardados en favoritos todavía.&quot;&gt;&lt;/nz-empty&gt;
+            &lt;/div&gt;
+
+            &lt;!-- Lista de items --&gt;
+            &lt;div class&#x3D;&quot;fav-items-scroll&quot; *ngIf&#x3D;&quot;!isLoadingFavorites &amp;&amp; favoriteItemsDetails.length &gt; 0&quot;&gt;
+                &lt;div class&#x3D;&quot;fav-item-card&quot; *ngFor&#x3D;&quot;let item of favoriteItemsDetails&quot;&gt;
+                    &lt;img [src]&#x3D;&quot;item.prov_image || &#x27;https://placehold.co/100x100?text&#x3D;Foto&#x27;&quot; [alt]&#x3D;&quot;item.prov_name&quot; (click)&#x3D;&quot;goToProductDetail(item)&quot; class&#x3D;&quot;fav-item-img&quot; /&gt;
+                    
+                    &lt;div class&#x3D;&quot;fav-item-info&quot;&gt;
+                        &lt;span *ngIf&#x3D;&quot;item.cmp_name&quot; class&#x3D;&quot;fav-item-company&quot;&gt;{{ item.cmp_name }}&lt;/span&gt;
+                        &lt;h4 (click)&#x3D;&quot;goToProductDetail(item)&quot; class&#x3D;&quot;fav-item-title&quot;&gt;
+                            {{ item.prov_name }}
+                        &lt;/h4&gt;
+                        &lt;div class&#x3D;&quot;fav-item-price-wrapper&quot;&gt;
+                            &lt;span class&#x3D;&quot;fav-item-price&quot;&gt;$ {{ item.prov_suggestedminimumsellingprice | number:&#x27;1.2-2&#x27; }}&lt;/span&gt;
+                            &lt;nz-tag [nzColor]&#x3D;&quot;item.prov_stock &gt; 0 ? &#x27;green&#x27; : &#x27;volcano&#x27;&quot; class&#x3D;&quot;fav-item-stock-tag&quot;&gt;
+                                {{ item.prov_stock &gt; 0 ? &#x27;En Stock&#x27; : &#x27;Sin Stock&#x27; }}
+                            &lt;/nz-tag&gt;
+                        &lt;/div&gt;
+                    &lt;/div&gt;
+
+                    &lt;div class&#x3D;&quot;fav-item-actions&quot;&gt;
+                        &lt;button nz-button nzType&#x3D;&quot;primary&quot; nzSize&#x3D;&quot;small&quot; nzShape&#x3D;&quot;circle&quot; (click)&#x3D;&quot;addToCartFromFavorites(item)&quot; [disabled]&#x3D;&quot;item.prov_stock &lt;&#x3D; 0&quot; nzTooltipTitle&#x3D;&quot;Añadir al carrito&quot; nz-tooltip&gt;
+                            &lt;span nz-icon nzType&#x3D;&quot;shopping-cart&quot;&gt;&lt;/span&gt;
+                        &lt;/button&gt;
+                        &lt;button nz-button nzType&#x3D;&quot;text&quot; nzDanger nzSize&#x3D;&quot;small&quot; nzShape&#x3D;&quot;circle&quot; (click)&#x3D;&quot;removeFavoriteFromDrawer(item)&quot; nzTooltipTitle&#x3D;&quot;Quitar de favoritos&quot; nz-tooltip&gt;
+                            &lt;span nz-icon nzType&#x3D;&quot;delete&quot;&gt;&lt;/span&gt;
+                        &lt;/button&gt;
+                    &lt;/div&gt;
+                &lt;/div&gt;
+            &lt;/div&gt;
+
+            &lt;!-- Footer del Drawer --&gt;
+            &lt;div class&#x3D;&quot;fav-drawer-footer&quot; *ngIf&#x3D;&quot;favoriteItemsDetails.length &gt; 0&quot;&gt;
+                &lt;button nz-button nzType&#x3D;&quot;primary&quot; nzBlock nzSize&#x3D;&quot;large&quot; (click)&#x3D;&quot;goToMyFavoritesPage()&quot; class&#x3D;&quot;fav-drawer-footer-btn&quot;&gt;
+                    Ver Mi Lista Completa de Favoritos
+                &lt;/button&gt;
+            &lt;/div&gt;
+
+        &lt;/div&gt;
+    &lt;/ng-container&gt;
+&lt;/nz-drawer&gt;</code></pre>
+    </div>
+
+    <div class="tab-pane fade " id="styleData">
+                <p class="comment">
+                    <code>./nav-bar.component.scss</code>
+                </p>
+                <pre class="line-numbers"><code class="language-scss">// &#x3D;&#x3D;&#x3D;&#x3D;&#x3D;&#x3D;&#x3D;&#x3D;&#x3D;&#x3D;&#x3D;&#x3D;&#x3D;&#x3D;&#x3D;&#x3D;&#x3D;&#x3D;&#x3D;&#x3D;&#x3D;&#x3D;&#x3D;&#x3D;&#x3D;&#x3D;&#x3D;&#x3D;&#x3D;&#x3D;&#x3D;&#x3D;&#x3D;&#x3D;&#x3D;&#x3D;&#x3D;&#x3D;&#x3D;&#x3D;&#x3D;&#x3D;&#x3D;&#x3D;&#x3D;&#x3D;&#x3D;&#x3D;&#x3D;&#x3D;&#x3D;&#x3D;&#x3D;&#x3D;&#x3D;&#x3D;&#x3D;&#x3D;&#x3D;&#x3D;&#x3D;&#x3D;&#x3D;&#x3D;&#x3D;&#x3D;&#x3D;&#x3D;&#x3D;&#x3D;&#x3D;&#x3D;&#x3D;&#x3D;
+// Design Tokens (Unificación de Sistema de Diseño - Tipo Mercado Libre)
+// &#x3D;&#x3D;&#x3D;&#x3D;&#x3D;&#x3D;&#x3D;&#x3D;&#x3D;&#x3D;&#x3D;&#x3D;&#x3D;&#x3D;&#x3D;&#x3D;&#x3D;&#x3D;&#x3D;&#x3D;&#x3D;&#x3D;&#x3D;&#x3D;&#x3D;&#x3D;&#x3D;&#x3D;&#x3D;&#x3D;&#x3D;&#x3D;&#x3D;&#x3D;&#x3D;&#x3D;&#x3D;&#x3D;&#x3D;&#x3D;&#x3D;&#x3D;&#x3D;&#x3D;&#x3D;&#x3D;&#x3D;&#x3D;&#x3D;&#x3D;&#x3D;&#x3D;&#x3D;&#x3D;&#x3D;&#x3D;&#x3D;&#x3D;&#x3D;&#x3D;&#x3D;&#x3D;&#x3D;&#x3D;&#x3D;&#x3D;&#x3D;&#x3D;&#x3D;&#x3D;&#x3D;&#x3D;&#x3D;&#x3D;
+$color-primary: #1890ff;
+$color-danger: #ff4d4f;
+$color-success: #52c41a;
+$color-warning: #fa8c16;
+$color-price: #059669;
+
+$text-dark-title: #111827;
+$text-dark-main: #1f2937;
+$text-dark-secondary: #4b5563;
+$text-muted: #9ca3af;
+
+$border-subtle: #f3f4f6;
+$border-light: #e5e7eb;
+$bg-card: #ffffff;
+
+/* --- Estilos Base del Header de 2 Filas --- */
+
+:host {
+    display: block;
+    width: 100%;
+}
+
+.app-header {
+    /* Override de restricciones globales de Ant Design (.ant-layout-header) */
+    &amp;.ant-layout-header {
+        height: auto !important;
+        line-height: normal !important;
+        padding: 0 !important;
+    }
+
+    display: flex;
+    flex-direction: column;
+    position: fixed;
+    top: 0;
+    left: 0;
+    right: 0;
+    width: 100%;
+    z-index: 1000;
+    backdrop-filter: blur(16px) saturate(180%);
+    -webkit-backdrop-filter: blur(16px) saturate(180%);
+    border-bottom: 1px solid rgba(255, 255, 255, 0.1);
+    box-shadow: 0 4px 20px rgba(0, 0, 0, 0.08);
+    transition: background-color 0.3s ease, border-color 0.3s ease, box-shadow 0.3s ease;
+
+    /* Adaptabilidad de Contraste para Temas Claros */
+    &amp;.light-header {
+        border-bottom: 1px solid rgba(0, 0, 0, 0.08);
+        box-shadow: 0 4px 16px rgba(0, 0, 0, 0.04);
+
+        .logo a {
+            color: $text-dark-main;
+        }
+
+        .sub-nav-link {
+            color: $text-dark-main;
+
+            &amp;:hover {
+                color: $color-primary;
+            }
+        }
+
+        .sub-nav-action-btn {
+            color: $text-dark-main;
+
+            .btn-text {
+                color: $text-dark-main;
+            }
+        }
+
+        .bell-icon {
+            color: $text-dark-main;
+        }
+
+        .user-profile-box {
+            color: $text-dark-main;
+        }
+
+        .header-sub-row {
+            background: transparent;
+            border-top: 1px solid rgba(0, 0, 0, 0.06);
+        }
+
+        .nav-divider {
+            background-color: rgba(0, 0, 0, 0.15);
+        }
+
+        .menu-toggle-button {
+            color: $text-dark-main;
+        }
+    }
+}
+
+/* FILA 1: MARCA Y BUSCADOR CENTRADO GEOMÉTRICAMENTE */
+.header-main-row {
+    display: grid;
+    grid-template-columns: 240px 1fr 240px;
+    align-items: center;
+    padding: 0 40px;
+    height: 56px;
+    width: 100%;
+}
+
+.logo {
+    display: flex;
+    align-items: center;
+    justify-self: start;
+    flex-shrink: 0;
+
+    a {
+        color: white;
+        font-size: 1.4em;
+        font-weight: bold;
+        text-decoration: none;
+        display: flex;
+        align-items: center;
+        transition: color 0.3s ease;
+    }
+}
+
+.logo-image {
+    max-height: 38px;
+    width: auto;
+    object-fit: contain;
+}
+
+.site-title {
+    margin-left: 8px;
+}
+
+.desktop-spacer {
+    width: 240px;
+    justify-self: end;
+}
+
+/* BUSCADOR DOMINANTE CENTRADO */
+.search-container {
+    display: flex;
+    align-items: center;
+    justify-self: center;
+    width: 100%;
+    max-width: 600px;
+    margin: 0;
+    transition: all 0.3s ease;
+
+    .search-input-group {
+        width: 100%;
+        border-radius: 4px !important;
+        background: #ffffff !important;
+        border: none !important;
+        padding: 2px 8px 2px 14px !important;
+        box-shadow: 0 1px 4px rgba(0, 0, 0, 0.15) !important;
+        transition: all 0.3s ease;
+        display: flex;
+        align-items: center;
+
+        &amp;:hover, &amp;:focus-within {
+            box-shadow: 0 2px 8px rgba(0, 0, 0, 0.25) !important;
+        }
+
+        input {
+            background: transparent !important;
+            border: none !important;
+            color: $text-dark-main !important;
+            box-shadow: none !important;
+            font-size: 14px;
+            height: 34px !important;
+            padding: 0 !important;
+
+            &amp;::placeholder {
+                color: $text-muted;
+            }
+        }
+
+        .search-btn-wrapper {
+            display: flex;
+            align-items: center;
+            gap: 10px;
+            cursor: pointer;
+            padding: 0 4px;
+        }
+
+        .search-divider {
+            color: #d1d5db;
+            font-size: 14px;
+            user-select: none;
+        }
+
+        .search-icon {
+            color: #4b5563;
+            font-size: 17px;
+            transition: color 0.2s ease;
+
+            &amp;:hover {
+                color: $color-primary;
+            }
+        }
+    }
+}
+
+/* FILA 2: NAVEGACIÓN Y USUARIO */
+.header-sub-row {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    padding: 0 40px;
+    height: 38px;
+    width: 100%;
+    background: transparent;
+    border-top: 1px solid rgba(255, 255, 255, 0.08);
+    font-size: 13.5px;
+}
+
+.nav-links-left {
+    display: flex;
+    align-items: center;
+    gap: 20px;
+}
+
+.sub-nav-link {
+    color: rgba(255, 255, 255, 0.85);
+    text-decoration: none;
+    font-weight: 500;
+    display: flex;
+    align-items: center;
+    gap: 6px;
+    transition: color 0.2s ease;
+
+    &amp;:hover {
+        color: #ffffff;
+    }
+
+    &amp;.login-link {
+        padding: 4px 10px;
+        border-radius: 4px;
+        background: rgba(255, 255, 255, 0.1);
+
+        &amp;:hover {
+            background: rgba(255, 255, 255, 0.2);
+        }
+    }
+}
+
+.user-actions-right {
+    display: flex;
+    align-items: center;
+    gap: 12px;
+}
+
+.sub-nav-action-btn {
+    display: flex;
+    align-items: center;
+    gap: 6px;
+    padding: 0 8px;
+    color: rgba(255, 255, 255, 0.85);
+    font-weight: 500;
+    background: transparent;
+    border: none;
+    height: 32px;
+    cursor: pointer;
+
+    .btn-text {
+        font-size: 13px;
+        color: rgba(255, 255, 255, 0.9);
+    }
+}
+
+.user-dropdown-wrapper {
+    cursor: pointer;
+}
+
+.user-profile-box {
+    display: flex;
+    align-items: center;
+    gap: 8px;
+    color: #ffffff;
+    font-size: 13px;
+    font-weight: 600;
+    padding: 2px 8px;
+    border-radius: 4px;
+    transition: background 0.2s ease;
+
+    &amp;:hover {
+        background: rgba(255, 255, 255, 0.1);
+    }
+
+    .user-chevron {
+        font-size: 10px;
+        opacity: 0.8;
+    }
+}
+
+.bell-icon {
+    font-size: 18px;
+    vertical-align: middle;
+    color: rgba(255, 255, 255, 0.85);
+    transition: color 0.3s ease;
+}
+
+.nav-divider {
+    width: 1px;
+    height: 16px;
+    background-color: rgba(255, 255, 255, 0.2);
+    margin: 0 4px;
+    align-self: center;
+}
+
+.fav-badge,
+.notification-badge {
+    ::ng-deep .ant-badge-count {
+        background-color: $color-danger;
+        box-shadow: 0 0 0 1px #fff;
+    }
+}
+
+.fav-icon-heart {
+    font-size: 17px;
+    vertical-align: middle;
+    color: $color-danger;
+}
+
+.user-dropdown-menu {
+    ::ng-deep .ant-menu-item {
+        color: $text-dark-main;
+    }
+}
+
+.menu-icon {
+    margin-right: 8px;
+
+    &amp;.heart-red {
+        color: $color-danger;
+    }
+}
+
+.heart-red {
+    color: $color-danger;
+}
+
+.mobile-actions {
+    display: none;
+}
+
+.menu-toggle-button {
+    display: none;
+    flex-shrink: 0;
+    color: white;
+    background: transparent;
+    border: none;
+}
+
+/* --- ESTILOS DEL DRAWER MÓVIL --- */
+.mobile-drawer-body {
+    display: flex;
+    flex-direction: column;
+    height: 100%;
+}
+
+.drawer-user-card {
+    display: flex;
+    align-items: center;
+    gap: 12px;
+    padding: 14px;
+    background: rgba(255, 255, 255, 0.06);
+    border-radius: 12px;
+    margin-bottom: 16px;
+    border: 1px solid rgba(255, 255, 255, 0.08);
+
+    .drawer-user-avatar {
+        flex-shrink: 0;
+        box-shadow: 0 2px 8px rgba(0, 0, 0, 0.15);
+    }
+
+    .drawer-user-info {
+        display: flex;
+        flex-direction: column;
+        min-width: 0;
+    }
+
+    .drawer-user-name {
+        font-size: 14px;
+        font-weight: 700;
+        color: #ffffff;
+        white-space: nowrap;
+        overflow: hidden;
+        text-overflow: ellipsis;
+    }
+
+    .drawer-user-role {
+        font-size: 11px;
+        color: $color-success;
+        font-weight: 500;
+        margin-top: 2px;
+    }
+}
+
+.mobile-menu {
+    width: 100%;
+    border-right: none;
+    padding: 0;
+
+    li {
+        list-style: none;
+        margin: 0;
+        font-size: 15px;
+        cursor: pointer;
+        padding: 12px 8px;
+
+        .anticon {
+            margin-right: 10px;
+        }
+
+        .mobile-badge {
+            margin-left: auto;
+        }
+    }
+}
+
+/* --- MEDIA QUERIES MÓVIL (&lt; 768px) --- */
+@media (max-width: 768px) {
+    .app-header {
+        padding: 0 12px;
+    }
+
+    .desktop-only {
+        display: none !important;
+    }
+
+    .header-main-row {
+        height: 56px;
+        gap: 6px;
+    }
+
+    .logo {
+        flex-shrink: 0;
+
+        a .site-title {
+            display: none;
+        }
+    }
+
+    .logo-image {
+        max-height: 32px;
+        max-width: 85px;
+    }
+
+    .search-container {
+        display: flex;
+        flex: 1;
+        min-width: 0;
+        margin: 0 4px;
+
+        .search-input-group {
+            border-radius: 4px !important;
+            padding: 2px 6px 2px 10px !important;
+
+            input {
+                font-size: 13px;
+                height: 32px !important;
+            }
+        }
+    }
+
+    .mobile-actions {
+        display: flex;
+        align-items: center;
+        gap: 2px;
+        flex-shrink: 0;
+
+        .mobile-action-btn {
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            width: 36px;
+            height: 36px;
+            padding: 0;
+            border: none;
+            background: transparent;
+            box-shadow: none;
+
+            .anticon {
+                font-size: 19px;
+            }
+        }
+    }
+
+    .menu-toggle-button {
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        width: 36px;
+        height: 36px;
+        padding: 0;
+        border-radius: 6px;
+        flex-shrink: 0;
+        font-size: 17px;
+    }
+}
+
+/* --- DRAWER LATERAL DE FAVORITOS --- */
+.fav-drawer-header {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    width: 100%;
+}
+
+.fav-drawer-title {
+    font-weight: 700;
+    font-size: 16px;
+    color: $text-dark-main;
+}
+
+.fav-drawer-title-icon {
+    color: $color-danger;
+    margin-right: 6px;
+}
+
+.fav-drawer-see-all-btn {
+    padding: 0;
+    font-size: 13px;
+    font-weight: 600;
+}
+
+.favorites-drawer-content {
+    display: flex;
+    flex-direction: column;
+    height: 100%;
+}
+
+.loader-box {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    padding: 48px 0;
+
+    p {
+        margin-top: 12px;
+        color: $text-dark-secondary;
+        font-weight: 500;
+    }
+}
+
+.empty-fav-box {
+    padding: 48px 16px;
+    text-align: center;
+}
+
+.fav-items-scroll {
+    flex: 1;
+    overflow-y: auto;
+    padding-right: 4px;
+}
+
+.fav-item-card {
+    display: flex;
+    gap: 12px;
+    padding: 12px;
+    border-bottom: 1px solid $border-subtle;
+    align-items: center;
+    background: $bg-card;
+    border-radius: 8px;
+    margin-bottom: 8px;
+    box-shadow: 0 1px 3px rgba(0, 0, 0, 0.04);
+}
+
+.fav-item-img {
+    width: 64px;
+    height: 64px;
+    object-fit: cover;
+    border-radius: 8px;
+    cursor: pointer;
+    border: 1px solid $border-light;
+}
+
+.fav-item-info {
+    flex: 1;
+    min-width: 0;
+}
+
+.fav-item-company {
+    font-size: 11px;
+    color: $text-muted;
+    font-weight: 600;
+    text-transform: uppercase;
+    display: block;
+    margin-bottom: 2px;
+}
+
+.fav-item-title {
+    font-size: 13.5px;
+    font-weight: 700;
+    color: $text-dark-title;
+    margin: 0 0 4px;
+    white-space: nowrap;
+    overflow: hidden;
+    text-overflow: ellipsis;
+    cursor: pointer;
+}
+
+.fav-item-price-wrapper {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+}
+
+.fav-item-price {
+    font-weight: 800;
+    color: $color-price;
+    font-size: 14px;
+}
+
+.fav-item-stock-tag {
+    margin: 0;
+    font-size: 11px;
+}
+
+.fav-item-actions {
+    display: flex;
+    flex-direction: column;
+    gap: 4px;
+    align-items: center;
+}
+
+.fav-drawer-footer {
+    padding-top: 16px;
+    border-top: 1px solid $border-light;
+    margin-top: auto;
+
+    .fav-drawer-footer-btn {
+        border-radius: 8px;
+    }
+}</code></pre>
+    </div>
+
+    <div class="tab-pane fade " id="tree">
+        <div id="tree-container"></div>
+        <div class="tree-legend">
+            <div class="title">
+                <b>Legend</b>
+            </div>
+            <div>
+                <div class="color htmlelement"></div><span>Elemento HTML</span>
+            </div>
+            <div>
+                <div class="color component"></div><span>Componente</span>
+            </div>
+            <div>
+                <div class="color directive"></div><span>Elemento HTML com diretiva</span>
+            </div>
+        </div>
+    </div>
+
+    
+</div>
+
+<script src="../js/libs/vis-network.min.js"></script>
+<script src="../js/libs/htmlparser.js"></script>
+<script src="../js/libs/deep-iterator.js"></script>
+<script>
+        var COMPONENT_TEMPLATE = '<div><nz-header class="app-header" [style.backgroundColor]="navbarColor" [class.light-header]="isLightHeader">    <!-- FILA 1: MARCA Y BUSCADOR PRINCIPAL (DOMINANTE) -->    <div class="header-main-row">        <div class="logo">            <a [routerLink]="activeStore ? \'/public/home-store/\' + activeStore.cmp_slug : \'/public/market-home\'">                <img *ngIf="storeLogoUrl" [src]="storeLogoUrl" [alt]="storeName" class="logo-image" />                <span *ngIf="!storeLogoUrl" nz-icon nzType="shop" nzTheme="outline"></span>                <span class="site-title">{{ storeName }}</span>            </a>        </div>        <div class="search-container">            <nz-input-group [nzSuffix]="suffixButton" class="search-input-group">                <input type="text" nz-input [placeholder]="activeStore ? \'Buscar en \' + storeName + \'...\' : \'Buscar productos, marcas, rubros...\'"                    [(ngModel)]="searchQuery" (keydown.enter)="onSearch()" />                <ng-template #suffixButton>                    <div class="search-btn-wrapper" (click)="onSearch()">                        <span class="search-divider">|</span>                        <span nz-icon nzType="search" class="search-icon"></span>                    </div>                </ng-template>            </nz-input-group>        </div>        <div class="desktop-spacer desktop-only"></div>        <!-- ACCIONES RÁPIDAS MÓVIL (< 768px) -->        <div class="mobile-actions">            <button nz-button nzType="text" class="mobile-action-btn" (click)="openFavoritesDrawer()">                <nz-badge [nzCount]="(favoritesCount$ | async) || 0" [nzOverflowCount]="99" class="fav-badge">                    <span nz-icon nzType="heart" nzTheme="fill" class="fav-icon-heart"></span>                </nz-badge>            </button>            <button nz-button nzType="text" class="mobile-action-btn" routerLink="/user/cart">                <nz-badge [nzCount]="(cartItems$ | async)?.length || 0" [nzShowZero]="false">                    <span nz-icon nzType="shopping-cart" class="bell-icon"></span>                </nz-badge>            </button>            <button nz-button class="menu-toggle-button" nzType="default" (click)="openDrawer()">                <span nz-icon nzType="menu"></span>            </button>        </div>    </div>    <!-- FILA 2: NAVEGACIÓN Y BLOQUE UNIFICADO DE CUENTA (DESKTOP > 768px) -->    <div class="header-sub-row desktop-only">        <div class="nav-links-left">            <a routerLink="/public/home" class="sub-nav-link"><span nz-icon nzType="home"></span> Inicio</a>            <a routerLink="/public/catalog" class="sub-nav-link"><span nz-icon nzType="appstore"></span> Catálogo</a>        </div>        <div class="user-actions-right">            <!-- Favoritos -->            <button nz-button nzType="text" (click)="openFavoritesDrawer()" class="sub-nav-action-btn">                <nz-badge [nzCount]="(favoritesCount$ | async) || 0" [nzOverflowCount]="99" class="fav-badge">                    <span nz-icon nzType="heart" nzTheme="fill" class="fav-icon-heart"></span>                </nz-badge>                <span class="btn-text">Favoritos</span>            </button>            <!-- Carrito -->            <button nz-button nzType="text" routerLink="/user/cart" class="sub-nav-action-btn">                <nz-badge [nzCount]="(cartItems$ | async)?.length || 0" [nzShowZero]="false">                    <span nz-icon nzType="shopping-cart" class="bell-icon"></span>                </nz-badge>                <span class="btn-text">Carrito</span>            </button>            <span class="nav-divider" aria-hidden="true"></span>            <!-- Notificaciones -->            <button nz-button nzType="text" *ngIf="userIdentity" nz-dropdown [nzDropdownMenu]="notificationsMenu" nzPlacement="bottomRight" nzTrigger="click" class="sub-nav-action-btn">                <div class="bell-icon-wrapper" [class.shake-bell]="animateBell">                    <nz-badge [nzCount]="(unreadCount$ | async) ?? 0" [nzOverflowCount]="9" class="notification-badge">                        <span nz-icon nzType="bell" nzTheme="outline" class="bell-icon"></span>                    </nz-badge>                </div>            </button>            <nz-dropdown-menu #notificationsMenu="nzDropdownMenu">                <div class="notifications-dropdown-panel glassmorphic-panel">                    <div class="dropdown-header">                        <h4>Notificaciones</h4>                        <button nz-button nzType="link" nzSize="small" (click)="markAllAsRead()" *ngIf="(unreadCount$ | async) && (unreadCount$ | async)! > 0" class="mark-read-btn">                            Marcar leídas                        </button>                    </div>                    <nz-divider class="header-divider"></nz-divider>                    <div class="notifications-list-container">                        <ng-container *ngIf="(notifications$ | async) && (notifications$ | async)!.length > 0; else emptyNotifications">                            <div class="notification-card-item" *ngFor="let ntf of notifications$ | async" [class.unread]="!ntf.ntf_isread" (click)="navegarNotificacion(ntf)">                                <div class="ntf-icon-box" [class]="ntf.ntf_type">                                    <span nz-icon [nzType]="ntf.ntf_type === \'success\' ? \'check-circle\' : ntf.ntf_type === \'warning\' ? \'exclamation-circle\' : ntf.ntf_type === \'error\' ? \'close-circle\' : \'info-circle\'" nzTheme="fill"></span>                                </div>                                <div class="ntf-content-box">                                    <span class="ntf-title">{{ ntf.ntf_title }}</span>                                    <p class="ntf-message">{{ ntf.ntf_message }}</p>                                    <span class="ntf-time">{{ ntf.ntf_createdat | date:\'shortTime\' }} - {{ ntf.ntf_createdat | date:\'mediumDate\' }}</span>                                </div>                            </div>                        </ng-container>                        <ng-template #emptyNotifications>                            <div class="empty-notifications-state">                                <span nz-icon nzType="bell" nzTheme="outline" class="empty-ntf-icon"></span>                                <p>No tenés notificaciones aún</p>                            </div>                        </ng-template>                    </div>                </div>            </nz-dropdown-menu>            <!-- Usuario Dropdown -->            <a *ngIf="!userIdentity" routerLink="/auth/login" class="sub-nav-link login-link">                <span nz-icon nzType="user"></span> Ingresar            </a>            <div *ngIf="userIdentity" nz-dropdown [nzDropdownMenu]="userMenu" nzPlacement="bottomRight" class="user-dropdown-wrapper">                <div class="user-profile-box">                    <nz-avatar nzIcon="user" nzSize="small" nzSrc="assets/img/user-avatar.png"></nz-avatar>                    <span>{{ userIdentity.usr_name || userIdentity.usr_user }}</span>                    <span nz-icon nzType="down" class="user-chevron"></span>                </div>            </div>            <nz-dropdown-menu #userMenu="nzDropdownMenu">                <ul nz-menu class="user-dropdown-menu">                    <li nz-menu-item routerLink="/application/my-favorites">                        <span nz-icon nzType="heart" class="menu-icon heart-red"></span> Mis Favoritos                    </li>                    <li nz-menu-item routerLink="/application/my-purchases">                        <span nz-icon nzType="shopping" class="menu-icon"></span> Mis Compras                    </li>                    <li nz-menu-item routerLink="/application/my-companies">                        <span nz-icon nzType="shop" class="menu-icon"></span> Administrar Tiendas                    </li>                    <li nz-menu-divider></li>                    <li nz-menu-item nzDanger (click)="logout()">                        <span nz-icon nzType="logout" class="menu-icon"></span> Cerrar sesión                    </li>                </ul>            </nz-dropdown-menu>        </div>    </div></nz-header><!-- DRAWER PRINCIPAL MÓVIL --><nz-drawer [nzVisible]="drawerVisible" nzPlacement="right" [nzTitle]="menuTitleTemplate" (nzOnClose)="closeDrawer()">    <ng-template #menuTitleTemplate>        <div class="drawer-title-box">            <span nz-icon nzType="menu-fold" style="margin-right: 8px;"></span> Menú Principal        </div>    </ng-template>    <ng-container *nzDrawerContent>        <div class="mobile-drawer-body">            <!-- TARJETA DE PERFIL -->            <div class="drawer-user-card" *ngIf="userIdentity">                <nz-avatar nzIcon="user" [nzSize]="44" nzSrc="assets/img/user-avatar.png" class="drawer-user-avatar"></nz-avatar>                <div class="drawer-user-info">                    <span class="drawer-user-name">{{ userIdentity.usr_name || userIdentity.usr_user }}</span>                    <span class="drawer-user-role">Cuenta activa</span>                </div>            </div>            <ul nz-menu nzMode="inline" nzTheme="dark" class="mobile-menu">                <li nz-menu-item routerLink="/public/home" (click)="closeDrawer()">                    <nz-icon nzType="home"></nz-icon> Inicio                </li>                <li nz-menu-item routerLink="/public/catalog" (click)="closeDrawer()">                    <nz-icon nzType="appstore"></nz-icon> Catálogo                </li>                <li nz-menu-item routerLink="/user/cart" (click)="closeDrawer()">                    <nz-icon nzType="shopping-cart"></nz-icon> Carrito                    <nz-badge [nzCount]="(cartItems$ | async)?.length || 0" [nzShowZero]="false" class="mobile-badge"></nz-badge>                </li>                <li nz-menu-item (click)="openFavoritesDrawer(); closeDrawer()">                    <nz-icon nzType="heart" class="heart-red"></nz-icon> Favoritos                    <nz-badge [nzCount]="(favoritesCount$ | async) || 0" [nzShowZero]="false" class="mobile-badge"></nz-badge>                </li>                <li nz-menu-divider></li>                <li nz-menu-item *ngIf="!userIdentity" routerLink="/auth/login" (click)="closeDrawer()">                    <span nz-icon nzType="login"></span> Iniciar Sesión / Regístrate                </li>                <ng-container *ngIf="userIdentity">                    <li nz-menu-item routerLink="/application/my-favorites" (click)="closeDrawer()">                        <span nz-icon nzType="heart" class="menu-icon heart-red"></span> Mis Favoritos                    </li>                    <li nz-menu-item routerLink="/application/my-purchases" (click)="closeDrawer()">                        <span nz-icon nzType="shopping" class="menu-icon"></span> Mis Compras                    </li>                    <li nz-menu-item routerLink="/application/my-companies" (click)="closeDrawer()">                        <span nz-icon nzType="shop" class="menu-icon"></span> Administrar Tiendas                    </li>                    <li nz-menu-divider></li>                    <li nz-menu-item nzDanger (click)="logout(); closeDrawer()">                        <span nz-icon nzType="logout" class="menu-icon"></span> Cerrar sesión                    </li>                </ng-container>            </ul>        </div>    </ng-container></nz-drawer><!-- DRAWER LATERAL DE FAVORITOS (ACCESO RÁPIDO) --><nz-drawer [nzVisible]="isFavoritesDrawerVisible" nzPlacement="right" [nzTitle]="favTitleTemplate" [nzWidth]="favoritesDrawerWidth" (nzOnClose)="closeFavoritesDrawer()">    <ng-template #favTitleTemplate>        <div class="fav-drawer-header">            <span class="fav-drawer-title">                <span nz-icon nzType="heart" nzTheme="fill" class="fav-drawer-title-icon"></span>                Mis Favoritos ({{ favoriteItemsDetails.length }})            </span>            <button nz-button nzType="link" (click)="goToMyFavoritesPage()" class="fav-drawer-see-all-btn">                Ver Todos ➔            </button>        </div>    </ng-template>    <ng-container *nzDrawerContent>        <div class="favorites-drawer-content">                        <div class="loader-box" *ngIf="isLoadingFavorites">                <nz-spin Simple></nz-spin>                <p>Cargando tus favoritos...</p>            </div>            <!-- Lista vacía -->            <div class="empty-fav-box" *ngIf="!isLoadingFavorites && favoriteItemsDetails.length === 0">                <nz-empty nzNotFoundImage="simple" nzNotFoundContent="No tenés productos guardados en favoritos todavía."></nz-empty>            </div>            <!-- Lista de items -->            <div class="fav-items-scroll" *ngIf="!isLoadingFavorites && favoriteItemsDetails.length > 0">                <div class="fav-item-card" *ngFor="let item of favoriteItemsDetails">                    <img [src]="item.prov_image || \'https://placehold.co/100x100?text=Foto\'" [alt]="item.prov_name" (click)="goToProductDetail(item)" class="fav-item-img" />                                        <div class="fav-item-info">                        <span *ngIf="item.cmp_name" class="fav-item-company">{{ item.cmp_name }}</span>                        <h4 (click)="goToProductDetail(item)" class="fav-item-title">                            {{ item.prov_name }}                        </h4>                        <div class="fav-item-price-wrapper">                            <span class="fav-item-price">$ {{ item.prov_suggestedminimumsellingprice | number:\'1.2-2\' }}</span>                            <nz-tag [nzColor]="item.prov_stock > 0 ? \'green\' : \'volcano\'" class="fav-item-stock-tag">                                {{ item.prov_stock > 0 ? \'En Stock\' : \'Sin Stock\' }}                            </nz-tag>                        </div>                    </div>                    <div class="fav-item-actions">                        <button nz-button nzType="primary" nzSize="small" nzShape="circle" (click)="addToCartFromFavorites(item)" [disabled]="item.prov_stock <= 0" nzTooltipTitle="Añadir al carrito" nz-tooltip>                            <span nz-icon nzType="shopping-cart"></span>                        </button>                        <button nz-button nzType="text" nzDanger nzSize="small" nzShape="circle" (click)="removeFavoriteFromDrawer(item)" nzTooltipTitle="Quitar de favoritos" nz-tooltip>                            <span nz-icon nzType="delete"></span>                        </button>                    </div>                </div>            </div>            <!-- Footer del Drawer -->            <div class="fav-drawer-footer" *ngIf="favoriteItemsDetails.length > 0">                <button nz-button nzType="primary" nzBlock nzSize="large" (click)="goToMyFavoritesPage()" class="fav-drawer-footer-btn">                    Ver Mi Lista Completa de Favoritos                </button>            </div>        </div>    </ng-container></nz-drawer></div>'
+    var COMPONENTS = [{'name': 'AccountConfirmedComponent', 'selector': 'app-account-confirmed'},{'name': 'AccountCreatedComponent', 'selector': 'app-account-created'},{'name': 'AddressesComponent', 'selector': 'app-addresses'},{'name': 'AnalyticsComponent', 'selector': 'app-analytics'},{'name': 'AppComponent', 'selector': 'app-root'},{'name': 'ApplicationBarComponent', 'selector': 'app-application-bar'},{'name': 'ApplicationLayoutComponent', 'selector': 'app-application-layout'},{'name': 'AuthLayoutComponent', 'selector': 'app-auth-layout'},{'name': 'BarcodeScannerComponent', 'selector': 'app-barcode-scanner'},{'name': 'CameraComponent', 'selector': 'app-camera'},{'name': 'CartComponent', 'selector': 'app-cart'},{'name': 'CatalogComponent', 'selector': 'app-catalog'},{'name': 'CategoriesComponent', 'selector': 'app-categories'},{'name': 'CategoriesListComponent', 'selector': 'app-categories-list'},{'name': 'CheckoutComponent', 'selector': 'app-checkout'},{'name': 'CompanyComponent', 'selector': 'app-company'},{'name': 'CompanySettingsComponent', 'selector': 'app-company-settings'},{'name': 'CouponsComponent', 'selector': 'app-coupons'},{'name': 'CustomersComponent', 'selector': 'app-customers'},{'name': 'DistPriceListComponent', 'selector': 'app-dist-price-list'},{'name': 'FinancesComponent', 'selector': 'app-finances'},{'name': 'ForgotPasswordComponent', 'selector': 'app-forgot-password'},{'name': 'GlobalCategoriesComponent', 'selector': 'app-global-categories'},{'name': 'GlobalCategoryComponent', 'selector': 'app-global-category'},{'name': 'GlobalItemComponent', 'selector': 'app-global-item'},{'name': 'GlobalItemsComponent', 'selector': 'app-global-items'},{'name': 'GlobalMaterialComponent', 'selector': 'app-global-material'},{'name': 'GlobalMaterialsComponent', 'selector': 'app-global-materials'},{'name': 'HomeStoreComponent', 'selector': 'app-home'},{'name': 'InventoryAuditComponent', 'selector': 'app-inventory-audit'},{'name': 'ItemsComponent', 'selector': 'app-items'},{'name': 'LoginComponent', 'selector': 'app-login'},{'name': 'MapPickerComponent', 'selector': 'app-map-picker'},{'name': 'MarketHomeComponent', 'selector': 'app-market-home'},{'name': 'MaterialComponent', 'selector': 'app-material'},{'name': 'MaterialsComponent', 'selector': 'app-materials'},{'name': 'MenuItemComponent', 'selector': 'app-menu-item'},{'name': 'MenuItemsComponent', 'selector': 'app-menu-items'},{'name': 'MpPaymentBrickComponent', 'selector': 'app-mp-payment-brick'},{'name': 'MyCompaniesComponent', 'selector': 'app-my-companies'},{'name': 'MyFavoritesComponent', 'selector': 'app-my-favorites'},{'name': 'MyPurchasesComponent', 'selector': 'app-my-purchases'},{'name': 'NavBarComponent', 'selector': 'app-nav-bar'},{'name': 'OrdersReceivedComponent', 'selector': 'app-orders-received'},{'name': 'PriceListComponent', 'selector': 'app-price-list'},{'name': 'ProductComponent', 'selector': 'app-product'},{'name': 'ProductDetailComponent', 'selector': 'app-product-detail'},{'name': 'ProductsComponent', 'selector': 'app-products'},{'name': 'ProductsVariationsComponent', 'selector': 'app-products-variations'},{'name': 'ProductVariationComponent', 'selector': 'app-product-variation'},{'name': 'PublicLayoutComponent', 'selector': 'app-public-layout'},{'name': 'RegisterComponent', 'selector': 'app-register'},{'name': 'ResetPasswordComponent', 'selector': 'app-reset-password'},{'name': 'SideBarComponent', 'selector': 'app-side-bar'},{'name': 'SsoCallbackComponent', 'selector': 'app-sso-callback'},{'name': 'StoreCatalogComponent', 'selector': 'app-store'},{'name': 'SuperAdminComponent', 'selector': 'app-super-admin'},{'name': 'SupplierComponent', 'selector': 'app-supplier'},{'name': 'SuppliersComponent', 'selector': 'app-suppliers'},{'name': 'UserLayoutComponent', 'selector': 'app-user-layout'},{'name': 'UserRolCompanyComponent', 'selector': 'app-user-rol-company'},{'name': 'WarehousesComponent', 'selector': 'app-warehouses'}];
+    var DIRECTIVES = [{'name': 'ImagePreloadDirective', 'selector': 'img[default]'}];
+    var ACTUAL_COMPONENT = {'name': 'NavBarComponent'};
+</script>
+<script src="../js/tree.js"></script>
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+                   </div><div class="search-results">
+    <div class="has-results">
+        <h1 class="search-results-title"><span class='search-results-count'></span> resultados correspondentes "<span class='search-query'></span>"</h1>
+        <ul class="search-results-list"></ul>
+    </div>
+    <div class="no-results">
+        <h1 class="search-results-title">Nenhum resultado correspondente "<span class='search-query'></span>"</h1>
+    </div>
+</div>
+</div>
+               <!-- END CONTENT -->
+           </div>
+       </div>
+
+          
+<div class="compodoc-lang-switch">
+  <select id="compodoc-lang-select" aria-label="Seleccionar idioma">
+    <option value="es" >🇪🇸 Español</option>
+    <option value="en" >🇺🇸 English</option>
+    <option value="pt" selected>🇧🇷 Português</option>
+  </select>
+</div>
+
+          <label class="dark-mode-switch">
+               <input type="checkbox">
+               <span class="slider">
+                    <svg class="slider-icon" viewBox="0 0 24 24" fill="none" height="20" stroke="#000" stroke-linecap="round" stroke-linejoin="round" stroke-width="2" width="20" xmlns="http://www.w3.org/2000/svg">
+                    <path d="M21 12.79A9 9 0 1111.21 3 7 7 0 0021 12.79z"></path>
+                    </svg>
+               </span>
+          </label>
+
+       <script>
+            var COMPODOC_CURRENT_PAGE_DEPTH = 1;
+            var COMPODOC_CURRENT_PAGE_CONTEXT = 'component';
+            var COMPODOC_CURRENT_PAGE_URL = 'NavBarComponent.html';
+            var MAX_SEARCH_RESULTS = 15;
+       </script>
+
+       <script>
+               $darkModeToggleSwitchers = document.querySelectorAll('.dark-mode-switch input');
+               var updateDarkModeSwitchOffset = function () {
+                    var content = document.querySelector('.content');
+                    var scrollbarWidth = 0;
+
+                    if (content) {
+                         scrollbarWidth = Math.max(0, content.offsetWidth - content.clientWidth);
+                    }
+
+                    document.documentElement.style.setProperty(
+                         '--content-scrollbar-width',
+                         scrollbarWidth + 'px'
+                    );
+               };
+
+               updateDarkModeSwitchOffset();
+               requestAnimationFrame(updateDarkModeSwitchOffset);
+               window.addEventListener('resize', updateDarkModeSwitchOffset);
+
+               checkToggle(darkModeState);
+               if ($darkModeToggleSwitchers.length > 0) {
+                    for (var i = 0; i < $darkModeToggleSwitchers.length; i++) {
+                         $darkModeToggleSwitchers[i].addEventListener('change', function (event) {
+                              darkModeState = !darkModeState;
+                              toggleDarkMode(darkModeState);
+                         });
+                    }
+               }
+          </script>
+
+       <script src="../js/libs/custom-elements.min.js"></script>
+       <script src="../js/libs/lit-html.js"></script>
+
+       <script src="../js/menu-wc.js" defer></script>
+
+       <script src="../js/libs/bootstrap-native.js"></script>
+
+       <script src="../js/libs/es6-shim.min.js"></script>
+       <script src="../js/libs/EventDispatcher.js"></script>
+       <script src="../js/libs/promise.min.js"></script>
+
+       <script src="../js/compodoc.js"></script>
+
+       <script src="../js/tabs.js"></script>
+       <script src="../js/menu.js"></script>
+       <script src="../js/libs/clipboard.min.js"></script>
+       <script src="../js/libs/prism.js"></script>
+       <script src="../js/sourceCode.js"></script>
+          <script src="../js/search/search.js"></script>
+          <script src="../js/search/lunr.min.js"></script>
+          <script src="../js/search/search-lunr.js"></script>
+          <script src="../js/search/search_index.js"></script>
+       <script src="../js/lazy-load-graphs.js"></script>
+
+
+    
+<script id="compodoc-lang-script">
+(function() {
+  var CURRENT_LANG = "pt";
+  var ADDITIONAL_DOCS_MAP = {"es":["01.-introducción-y-arquitectura-general.html","02.-autenticación-y-control-de-accesos.html","03.-catálogo-público-y-exploración-de-tiendas.html","04.-carrito-de-compras-y-checkout-multitienda.html","05.-gestión-de-empresas,-roles-y-configuración.html","06.-inventario,-productos,-variaciones-y-almacenes.html","07.-gestión-de-pedidos,-compras-y-cupones.html","08.-analíticas-de-negocio,-finanzas-y-proveedores.html"],"en":["01.-introduction-and-general-architecture.html","02.-authentication-and-access-control.html","03.-public-catalog-and-store-exploration.html","04.-shopping-cart-and-multi-store-checkout.html","05.-company-management,-roles-and-configuration.html","06.-inventory,-products,-variations-and-warehouses.html","07.-orders-management,-purchases-and-coupons.html","08.-business-analytics,-finances-and-suppliers.html"],"pt":["01.-introdução-e-arquitetura-geral.html","02.-autenticação-e-controle-de-acesso.html","03.-catálogo-público-e-exploração-de-lojas.html","04.-carrinho-de-compras-e-checkout-multiloja.html","05.-gestão-de-empresas,-funções-e-configuração.html","06.-estoque,-produtos,-variações-e-armazéns.html","07.-gestão-de-pedidos,-compras-e-cupons.html","08.-análise-de-negócios,-finanças-e-fornecedores.html"]};
+
+  var select = document.getElementById('compodoc-lang-select');
+  if (!select) return;
+
+  try {
+    localStorage.setItem('compodoc_lang', CURRENT_LANG);
+  } catch (e) {}
+
+  select.addEventListener('change', function(e) {
+    var targetLang = e.target.value;
+    if (targetLang === CURRENT_LANG) return;
+
+    try {
+      localStorage.setItem('compodoc_lang', targetLang);
+    } catch (err) {}
+
+    var href = window.location.href;
+    var pathname = window.location.pathname;
+
+    // Manejo especial para páginas de additional-documentation
+    if (pathname.indexOf('/additional-documentation/') !== -1) {
+      var segments = pathname.split('/');
+      var currentFile = decodeURIComponent(segments[segments.length - 1]);
+      
+      var currentList = ADDITIONAL_DOCS_MAP[CURRENT_LANG] || [];
+      var targetList = ADDITIONAL_DOCS_MAP[targetLang] || [];
+      var foundIndex = -1;
+
+      var prefixMatch = currentFile.match(/^(\d{2}\.-)/);
+      if (prefixMatch) {
+        var prefix = prefixMatch[1];
+        for (var i = 0; i < targetList.length; i++) {
+          if (targetList[i].startsWith(prefix)) {
+            foundIndex = i;
+            break;
+          }
+        }
+      }
+      if (foundIndex === -1) {
+        for (var j = 0; j < currentList.length; j++) {
+          if (currentList[j] === currentFile) {
+            foundIndex = j;
+            break;
+          }
+        }
+      }
+
+      var targetFile = (foundIndex !== -1 && targetList[foundIndex]) 
+        ? targetList[foundIndex] 
+        : (targetList[0] || 'index.html');
+
+      var targetSubpath = '/' + targetLang + '/additional-documentation/' + targetFile;
+      var currentSubpath = '/' + CURRENT_LANG + '/additional-documentation/' + segments[segments.length - 1];
+
+      if (href.indexOf(currentSubpath) !== -1) {
+        window.location.href = href.replace(currentSubpath, targetSubpath);
+        return;
+      }
+    }
+
+    // Páginas estándar
+    var standardReplace = href.replace('/' + CURRENT_LANG + '/', '/' + targetLang + '/');
+    if (standardReplace !== href) {
+      window.location.href = standardReplace;
+    } else {
+      var depth = (typeof COMPODOC_CURRENT_PAGE_DEPTH !== 'undefined') ? COMPODOC_CURRENT_PAGE_DEPTH : 0;
+      var prefixPath = '';
+      for (var k = 0; k <= depth; k++) {
+        prefixPath += '../';
+      }
+      window.location.href = prefixPath + targetLang + '/index.html';
+    }
+  });
+})();
+</script>
+
+</body>
+</html>

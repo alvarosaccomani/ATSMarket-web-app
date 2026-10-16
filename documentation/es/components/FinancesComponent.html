@@ -1,0 +1,2871 @@
+<!doctype html>
+<html class="no-js" lang="">
+    <head>
+        <meta charset="utf-8">
+        <meta http-equiv="x-ua-compatible" content="ie=edge">
+        <title>ATSMarket Web App</title>
+        <meta name="description" content="">
+        <meta name="viewport" content="width=device-width, initial-scale=1">
+
+        <link rel="icon" type="image/x-icon" href="../images/favicon.ico">
+	   <link rel="stylesheet" href="../styles/style.css">
+        <link rel="stylesheet" href="../styles/dark.css">
+    
+<style id="compodoc-lang-styles">
+  .compodoc-lang-switch {
+    position: fixed;
+    top: 15px;
+    right: calc(90px + var(--content-scrollbar-width, 0px));
+    z-index: 1050;
+    display: inline-block;
+  }
+  @media (max-width: 767px) {
+    .compodoc-lang-switch {
+      top: 8px;
+      right: 60px;
+    }
+  }
+  #compodoc-lang-select {
+    height: 34px;
+    padding: 0 12px;
+    border-radius: 17px;
+    border: 1px solid #d9d9d9;
+    background-color: #ffffff;
+    color: #1f1f1f;
+    font-size: 13px;
+    font-family: inherit;
+    font-weight: 500;
+    cursor: pointer;
+    outline: none;
+    box-shadow: 0 2px 6px rgba(0, 0, 0, 0.08);
+    transition: all 0.3s cubic-bezier(0.645, 0.045, 0.355, 1);
+    -webkit-appearance: none;
+    -moz-appearance: none;
+    appearance: none;
+    padding-right: 26px;
+    background-image: url("data:image/svg+xml;charset=UTF-8,%3csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 24 24' fill='none' stroke='%23666' stroke-width='2' stroke-linecap='round' stroke-linejoin='round'%3e%3cpolyline points='6 9 12 15 18 9'%3e%3c/polyline%3e%3c/svg%3e");
+    background-repeat: no-repeat;
+    background-position: right 8px center;
+    background-size: 14px;
+  }
+  #compodoc-lang-select:hover, #compodoc-lang-select:focus {
+    border-color: #5cc0ae;
+    box-shadow: 0 2px 8px rgba(92, 192, 174, 0.25);
+  }
+  body.dark .compodoc-lang-switch #compodoc-lang-select {
+    background-color: #2c3e50;
+    color: #ecf0f1;
+    border: 1px solid #4a627a;
+    box-shadow: 0 2px 6px rgba(0, 0, 0, 0.35);
+    background-image: url("data:image/svg+xml;charset=UTF-8,%3csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 24 24' fill='none' stroke='%23ecf0f1' stroke-width='2' stroke-linecap='round' stroke-linejoin='round'%3e%3cpolyline points='6 9 12 15 18 9'%3e%3c/polyline%3e%3c/svg%3e");
+  }
+  body.dark .compodoc-lang-switch #compodoc-lang-select option {
+    background-color: #2c3e50;
+    color: #ecf0f1;
+  }
+</style>
+
+</head>
+    <body>
+          <script>
+               // Blocking script to avoid flickering dark mode
+               // Dark mode toggle button
+               var useDark = window.matchMedia('(prefers-color-scheme: dark)');
+               var darkModeState = useDark.matches;
+               var $darkModeToggleSwitchers = document.querySelectorAll('.dark-mode-switch input');
+               var $darkModeToggles = document.querySelectorAll('.dark-mode-switch');
+               var darkModeStateLocal = localStorage.getItem('compodoc_darkmode-state');
+
+               function checkToggle(check) {
+                    for (var i = 0; i < $darkModeToggleSwitchers.length; i++) {
+                         $darkModeToggleSwitchers[i].checked = check;
+                    }
+               }
+
+               function toggleDarkMode(state) {
+                    if (window.localStorage) {
+                         localStorage.setItem('compodoc_darkmode-state', state);
+                    }
+
+                    checkToggle(state);
+
+                    const hasClass = document.body.classList.contains('dark');
+
+                    if (state) {
+                         for (var i = 0; i < $darkModeToggles.length; i++) {
+                              $darkModeToggles[i].classList.add('dark');
+                         }
+                         if (!hasClass) {
+                              document.body.classList.add('dark');
+                         }
+                    } else {
+                         for (var i = 0; i < $darkModeToggles.length; i++) {
+                              $darkModeToggles[i].classList.remove('dark');
+                         }
+                         if (hasClass) {
+                              document.body.classList.remove('dark');
+                         }
+                    }
+               }
+
+               useDark.addEventListener('change', function (evt) {
+                    toggleDarkMode(evt.matches);
+               });
+               if (darkModeStateLocal) {
+                    darkModeState = darkModeStateLocal === 'true';
+               }
+               toggleDarkMode(darkModeState);
+          </script>
+          <script>
+              // --- Iframe navigation tracking for Template Playground ---
+              function sendCurrentUrlToParent() {
+                  if (window.parent && window.parent !== window) {
+                      window.parent.postMessage({
+                          type: 'compodoc-iframe-navigate',
+                          url: window.location.pathname + window.location.hash
+                      }, '*');
+                  }
+              }
+              window.addEventListener('hashchange', sendCurrentUrlToParent, false);
+              window.addEventListener('popstate', sendCurrentUrlToParent, false);
+              window.addEventListener('DOMContentLoaded', sendCurrentUrlToParent, false);
+          </script>
+
+        <div class="navbar navbar-default navbar-fixed-top d-md-none p-0">
+               <div class="d-flex">
+                    <a href="../" class="navbar-brand">ATSMarket Web App</a>
+                    <button type="button" class="btn btn-default btn-menu ion-ios-menu" id="btn-menu"></button>
+               </div>
+        </div>
+
+        <div class="xs-menu menu" id="mobile-menu">
+                <div id="book-search-input" role="search">
+    <input type="text" placeholder="Escribe para buscar">
+    <button type="button"
+        class="search-input-clear"
+        aria-label="Clear search"
+        data-search-input-clear>&times;</button>
+</div>
+            <compodoc-menu></compodoc-menu>
+        </div>
+
+        <div class="container-fluid main">
+           <div class="row main">
+               <div class="d-none d-md-block menu">
+                   <compodoc-menu mode="normal"></compodoc-menu>
+               </div>
+               <!-- START CONTENT -->
+               <div class="content component">
+                   <div class="content-data">
+
+
+
+
+
+
+
+
+<ol class="breadcrumb">
+  <li class="breadcrumb-item">Componentes</li>
+  <li class="breadcrumb-item"
+  >
+  FinancesComponent</li>
+</ol>
+
+<div class="io-file io-file-path" data-compodoc="entity-file-path">
+    <span class="icon ion-ios-document" aria-hidden="true"></span>
+    <code>src/app/application/finances/finances.component.ts</code>
+</div>
+
+<ul class="nav nav-tabs" role="tablist">
+        <li class="nav-item">
+            <a href="#info" class="nav-link active"
+                role="tab" id="info-tab" data-bs-toggle="tab" data-link="info">Info</a>
+        </li>
+        <li class="nav-item">
+            <a href="#api" class="nav-link"
+                role="tab" id="api-tab" data-bs-toggle="tab" data-link="api">API</a>
+        </li>
+        <li class="nav-item">
+            <a href="#source" class="nav-link"
+                role="tab" id="source-tab" data-bs-toggle="tab" data-link="source">Source</a>
+        </li>
+        <li class="nav-item">
+            <a href="#templateData" class="nav-link"
+                role="tab" id="templateData-tab" data-bs-toggle="tab" data-link="template">Template</a>
+        </li>
+        <li class="nav-item">
+            <a href="#styleData" class="nav-link"
+                role="tab" id="styleData-tab" data-bs-toggle="tab" data-link="style">Styles</a>
+        </li>
+        <li class="nav-item">
+            <a href="#tree" class="nav-link"
+                role="tab" id="tree-tab" data-bs-toggle="tab" data-link="dom-tree">DOM Tree</a>
+        </li>
+</ul>
+
+<div class="tab-content">
+    <div class="tab-pane fade active in" id="info">
+    <p class="comment">
+        <h3>Descripción</h3>
+    </p>
+    <p class="comment">
+        <p>Panel de control financiero corporativo para administradores de empresa.
+Centraliza el seguimiento de ingresos brutos, conciliación de pagos digitales de Mercado Pago vs efectivo,
+solicitudes de retiro a cuentas bancarias externas y control de arqueo de caja de repartidores.</p>
+
+    </p>
+
+
+    <p class="comment">
+        <h3>Implementa</h3>
+    </p>
+    <p class="comment">
+                    <code><a href="https://angular.dev/api/core/OnInit" target="_blank" >OnInit</a></code>
+    </p>
+
+    <p class="comment">
+        <h3>Ejemplo</h3>
+    </p>
+    <div class="io-description">
+    </div>
+
+<section data-compodoc="block-metadata">
+    <h3>Meta datos</h3>
+    <table class="table table-sm table-hover metadata">
+        <tbody>
+
+
+
+
+
+
+
+
+
+
+
+
+            <tr>
+                <td class="col-md-3">selector</td>
+                <td class="col-md-9"><code>app-finances</code></td>
+            </tr>
+
+            <tr>
+                <td class="col-md-3">standalone</td>
+                <td class="col-md-9"><code>true</code></td>
+            </tr>
+
+            <tr>
+                <td class="col-md-3">imports</td>
+                <td class="col-md-9">
+                        <div>        <code><a href="https://angular.dev/api/common/CommonModule" target="_blank" >CommonModule</a></code>
+</div>
+                        <div>        <code><a href="https://angular.dev/api/forms/FormsModule" target="_blank" >FormsModule</a></code>
+</div>
+                        <div>    <code>NzCardModule</code>
+</div>
+                        <div>    <code>NzStatisticModule</code>
+</div>
+                        <div>    <code>NzGridModule</code>
+</div>
+                        <div>    <code>NzButtonModule</code>
+</div>
+                        <div>    <code>NzIconModule</code>
+</div>
+                        <div>    <code>NzTableModule</code>
+</div>
+                        <div>    <code>NzTagModule</code>
+</div>
+                        <div>    <code>NzModalModule</code>
+</div>
+                        <div>    <code>NzTabsModule</code>
+</div>
+                        <div>    <code>NzDrawerModule</code>
+</div>
+                        <div>    <code>NzSpinModule</code>
+</div>
+                        <div>    <code>NzInputModule</code>
+</div>
+                        <div>    <code>NzAvatarModule</code>
+</div>
+                        <div>    <code>NzDividerModule</code>
+</div>
+                </td>
+            </tr>
+
+            <tr>
+                <td class="col-md-3">styleUrls</td>
+                <td class="col-md-9"><code>./finances.component.scss</code></td>
+            </tr>
+
+
+
+
+            <tr>
+                <td class="col-md-3">templateUrl</td>
+                <td class="col-md-9"><code>./finances.component.html</code></td>
+            </tr>
+
+
+
+            <tr>
+                <td class="col-md-3">styleUrl</td>
+                <td class="col-md-9"><code>./finances.component.scss</code></td>
+            </tr>
+
+
+
+
+
+        </tbody>
+    </table>
+</section>
+
+        <section data-compodoc="block-relationships">
+            <h3>Relationships</h3>
+
+            <div class="row pt-3">
+                <div class="col-sm-6">
+                    <h4>Used by</h4>
+                        <p class="comment"><i>No hay resultados que coincidan.</i></p>
+                </div>
+
+                <div class="col-sm-6">
+                    <h4>Depends on</h4>
+                        <ul class="list-unstyled relationships-list">
+                                <li>
+                                            <code><a href="https://angular.dev/api/common/CommonModule" target="_blank" >CommonModule</a></code>
+                                </li>
+                                <li>
+                                            <code><a href="https://angular.dev/api/forms/FormsModule" target="_blank" >FormsModule</a></code>
+                                </li>
+                                <li>
+                                        <code>NzCardModule</code>
+                                </li>
+                                <li>
+                                        <code>NzStatisticModule</code>
+                                </li>
+                                <li>
+                                        <code>NzGridModule</code>
+                                </li>
+                                <li>
+                                        <code>NzButtonModule</code>
+                                </li>
+                                <li>
+                                        <code>NzIconModule</code>
+                                </li>
+                                <li>
+                                        <code>NzTableModule</code>
+                                </li>
+                                <li>
+                                        <code>NzTagModule</code>
+                                </li>
+                                <li>
+                                        <code>NzModalModule</code>
+                                </li>
+                                <li>
+                                        <code>NzTabsModule</code>
+                                </li>
+                                <li>
+                                        <code>NzDrawerModule</code>
+                                </li>
+                                <li>
+                                        <code>NzSpinModule</code>
+                                </li>
+                                <li>
+                                        <code>NzInputModule</code>
+                                </li>
+                                <li>
+                                        <code>NzAvatarModule</code>
+                                </li>
+                                <li>
+                                        <code>NzDividerModule</code>
+                                </li>
+                                <li>
+                                            <code><a href="https://angular.dev/api/core/OnInit" target="_blank" >OnInit</a></code>
+                                </li>
+                        </ul>
+                </div>
+            </div>
+        </section>
+</div>
+
+    <div class="tab-pane fade " id="api">    <section data-compodoc="block-index">
+    <h3 id="index">Índice</h3>
+        <table class="table table-sm table-bordered index-table">
+            <tbody>
+                <tr>
+                    <td class="col-md-3">
+                        <h6><b>Propiedades</b></h6>
+                    </td>
+                    <td class="col-md-9">
+                        <ul class="index-list">
+                            <li>
+                                <span class="reference-badge reference-badge--property" aria-hidden="true">P</span>
+                                    <span class="modifier">Public</span>
+                                <a href="#activeRiders" >activeRiders</a>
+                            </li>
+                            <li>
+                                <span class="reference-badge reference-badge--property" aria-hidden="true">P</span>
+                                    <span class="modifier">Public</span>
+                                <a href="#availableBalance" >availableBalance</a>
+                            </li>
+                            <li>
+                                <span class="reference-badge reference-badge--property" aria-hidden="true">P</span>
+                                    <span class="modifier">Public</span>
+                                <a href="#isSettlementDrawerVisible" >isSettlementDrawerVisible</a>
+                            </li>
+                            <li>
+                                <span class="reference-badge reference-badge--property" aria-hidden="true">P</span>
+                                    <span class="modifier">Public</span>
+                                <a href="#loadingRiders" >loadingRiders</a>
+                            </li>
+                            <li>
+                                <span class="reference-badge reference-badge--property" aria-hidden="true">P</span>
+                                    <span class="modifier">Public</span>
+                                <a href="#payoutHistory" >payoutHistory</a>
+                            </li>
+                            <li>
+                                <span class="reference-badge reference-badge--property" aria-hidden="true">P</span>
+                                    <span class="modifier">Public</span>
+                                <a href="#pendingSettlement" >pendingSettlement</a>
+                            </li>
+                            <li>
+                                <span class="reference-badge reference-badge--property" aria-hidden="true">P</span>
+                                    <span class="modifier">Public</span>
+                                <a href="#physicalCashReceived" >physicalCashReceived</a>
+                            </li>
+                            <li>
+                                <span class="reference-badge reference-badge--property" aria-hidden="true">P</span>
+                                    <span class="modifier">Public</span>
+                                <a href="#selectedRider" >selectedRider</a>
+                            </li>
+                            <li>
+                                <span class="reference-badge reference-badge--property" aria-hidden="true">P</span>
+                                    <span class="modifier">Public</span>
+                                <a href="#totalWithdrawn" >totalWithdrawn</a>
+                            </li>
+                        </ul>
+                    </td>
+                </tr>
+            </tbody>
+        </table>
+
+        <table class="table table-sm table-bordered index-table">
+            <tbody>
+                <tr>
+                    <td class="col-md-3">
+                        <h6><b>Métodos</b></h6>
+                    </td>
+                    <td class="col-md-9">
+                        <ul class="index-list">
+                            <li>
+                                <span class="reference-badge reference-badge--method" aria-hidden="true">M</span>
+                                    <span class="modifier">Public</span>
+                                <a href="#closeSettlementDrawer" >closeSettlementDrawer</a>
+                            </li>
+                            <li>
+                                <span class="reference-badge reference-badge--method" aria-hidden="true">M</span>
+                                    <span class="modifier">Public</span>
+                                <a href="#confirmSettlement" >confirmSettlement</a>
+                            </li>
+                            <li>
+                                <span class="reference-badge reference-badge--method" aria-hidden="true">M</span>
+                                    <span class="modifier">Private</span>
+                                <a href="#executeWithdrawalMock" >executeWithdrawalMock</a>
+                            </li>
+                            <li>
+                                <span class="reference-badge reference-badge--method" aria-hidden="true">M</span>
+                                    <span class="modifier">Private</span>
+                                <a href="#generateMockPayouts" >generateMockPayouts</a>
+                            </li>
+                            <li>
+                                <span class="reference-badge reference-badge--method" aria-hidden="true">M</span>
+                                    <span class="modifier">Public</span>
+                                <a href="#getAbsoluteDiff" >getAbsoluteDiff</a>
+                            </li>
+                            <li>
+                                <span class="reference-badge reference-badge--method" aria-hidden="true">M</span>
+                                    <span class="modifier">Public</span>
+                                <a href="#getCashDifference" >getCashDifference</a>
+                            </li>
+                            <li>
+                                <span class="reference-badge reference-badge--method" aria-hidden="true">M</span>
+                                    <span class="modifier">Public</span>
+                                <a href="#getStatusColor" >getStatusColor</a>
+                            </li>
+                            <li>
+                                <span class="reference-badge reference-badge--method" aria-hidden="true">M</span>
+                                    <span class="modifier">Public</span>
+                                <a href="#getStatusLabel" >getStatusLabel</a>
+                            </li>
+                            <li>
+                                <span class="reference-badge reference-badge--method" aria-hidden="true">M</span>
+                                    <span class="modifier">Public</span>
+                                <a href="#loadRiderCollections" >loadRiderCollections</a>
+                            </li>
+                            <li>
+                                <span class="reference-badge reference-badge--method" aria-hidden="true">M</span>
+                                <a href="#ngOnInit" >ngOnInit</a>
+                            </li>
+                            <li>
+                                <span class="reference-badge reference-badge--method" aria-hidden="true">M</span>
+                                    <span class="modifier">Public</span>
+                                <a href="#openRiderSettlement" >openRiderSettlement</a>
+                            </li>
+                            <li>
+                                <span class="reference-badge reference-badge--method" aria-hidden="true">M</span>
+                                    <span class="modifier">Public</span>
+                                <a href="#parseCustomerNotes" >parseCustomerNotes</a>
+                            </li>
+                            <li>
+                                <span class="reference-badge reference-badge--method" aria-hidden="true">M</span>
+                                    <span class="modifier">Public</span>
+                                <a href="#requestWithdrawal" >requestWithdrawal</a>
+                            </li>
+                        </ul>
+                    </td>
+                </tr>
+            </tbody>
+        </table>
+
+
+
+
+
+</section>
+
+    <section data-compodoc="block-constructor">
+    <h3 id="constructor">Constructor</h3>
+        <table class="table table-sm table-bordered">
+            <tbody>
+                <tr>
+                    <td class="col-md-4">
+<code>constructor(message: <a href="../injectables/MessageService.html" target="_self">NzMessageService</a>, modal: NzModalService, _ordersService: <a href="../injectables/OrdersService.html" target="_self">OrdersService</a>, _sessionService: <a href="../injectables/SessionService.html" target="_self">SessionService</a>)</code>
+                    </td>
+                </tr>
+                        <tr>
+                            <td class="col-md-4">
+                                <div class="io-line">Definido en <a href="" data-line="91" class="link-to-prism">src/app/application/finances/finances.component.ts:91</a></div>
+                            </td>
+                        </tr>
+
+                <tr>
+                    <td class="col-md-4">
+                            <div>
+                                    <b>Parámetros :</b>
+                                    <table class="params">
+                                        <thead>
+                                            <tr>
+                                                <td>Nombre</td>
+                                                    <td>Tipo</td>
+                                                <td>Opcional</td>
+                                            </tr>
+                                        </thead>
+                                        <tbody>
+                                                <tr>
+                                                        <td>message</td>
+                                                  
+                                                        <td>
+                                                                        <code><a href="../injectables/MessageService.html" target="_self" >NzMessageService</a></code>
+                                                        </td>
+                                                  
+                                                    <td>
+                                                            No
+                                                    </td>
+                                                    
+                                                </tr>
+                                                <tr>
+                                                        <td>modal</td>
+                                                  
+                                                        <td>
+                                                                    <code>NzModalService</code>
+                                                        </td>
+                                                  
+                                                    <td>
+                                                            No
+                                                    </td>
+                                                    
+                                                </tr>
+                                                <tr>
+                                                        <td>_ordersService</td>
+                                                  
+                                                        <td>
+                                                                        <code><a href="../injectables/OrdersService.html" target="_self" >OrdersService</a></code>
+                                                        </td>
+                                                  
+                                                    <td>
+                                                            No
+                                                    </td>
+                                                    
+                                                </tr>
+                                                <tr>
+                                                        <td>_sessionService</td>
+                                                  
+                                                        <td>
+                                                                        <code><a href="../injectables/SessionService.html" target="_self" >SessionService</a></code>
+                                                        </td>
+                                                  
+                                                    <td>
+                                                            No
+                                                    </td>
+                                                    
+                                                </tr>
+                                        </tbody>
+                                    </table>
+                            </div>
+                    </td>
+                </tr>
+            </tbody>
+        </table>
+</section>
+
+
+
+
+
+    <section data-compodoc="block-methods">
+    
+    <h3 id="methods">
+        Métodos
+    </h3>
+    <table class="table table-sm table-bordered">
+        <tbody>
+            <tr>
+                <td class="col-md-4">
+                    <a name="closeSettlementDrawer"></a>
+                    <span class="name">
+                            <span class="modifier">Public</span>
+                        <span ><b>closeSettlementDrawer</b></span>
+                        <a href="#closeSettlementDrawer"><span class="icon ion-ios-link"></span></a>
+                    </span>
+                </td>
+            </tr>
+            <tr>
+                <td class="col-md-4">
+                        <span class="modifier-icon icon ion-ios-reset"></span>
+                    <code>closeSettlementDrawer()</code>
+                </td>
+            </tr>
+
+
+                    <tr>
+                        <td class="col-md-4">
+                            <div class="io-line">Definido en <a href="" data-line="168"
+                                    class="link-to-prism">src/app/application/finances/finances.component.ts:168</a></div>
+                        </td>
+                    </tr>
+
+
+            <tr>
+                <td class="col-md-4">
+
+                        <div class="io-description">
+                            <b>Devuelve : </b>        <code><a href="https://www.typescriptlang.org/docs/handbook/basic-types.html" target="_blank" >void</a></code>
+
+                        </div>
+                </td>
+            </tr>
+        </tbody>
+    </table>
+    <table class="table table-sm table-bordered">
+        <tbody>
+            <tr>
+                <td class="col-md-4">
+                    <a name="confirmSettlement"></a>
+                    <span class="name">
+                            <span class="modifier">Public</span>
+                        <span ><b>confirmSettlement</b></span>
+                        <a href="#confirmSettlement"><span class="icon ion-ios-link"></span></a>
+                    </span>
+                </td>
+            </tr>
+            <tr>
+                <td class="col-md-4">
+                        <span class="modifier-icon icon ion-ios-reset"></span>
+                    <code>confirmSettlement()</code>
+                </td>
+            </tr>
+
+
+                    <tr>
+                        <td class="col-md-4">
+                            <div class="io-line">Definido en <a href="" data-line="185"
+                                    class="link-to-prism">src/app/application/finances/finances.component.ts:185</a></div>
+                        </td>
+                    </tr>
+
+
+            <tr>
+                <td class="col-md-4">
+
+                        <div class="io-description">
+                            <b>Devuelve : </b>        <code><a href="https://www.typescriptlang.org/docs/handbook/basic-types.html" target="_blank" >void</a></code>
+
+                        </div>
+                </td>
+            </tr>
+        </tbody>
+    </table>
+    <table class="table table-sm table-bordered">
+        <tbody>
+            <tr>
+                <td class="col-md-4">
+                    <a name="executeWithdrawalMock"></a>
+                    <span class="name">
+                            <span class="modifier">Private</span>
+                        <span ><b>executeWithdrawalMock</b></span>
+                        <a href="#executeWithdrawalMock"><span class="icon ion-ios-link"></span></a>
+                    </span>
+                </td>
+            </tr>
+            <tr>
+                <td class="col-md-4">
+                        <span class="modifier-icon icon ion-ios-reset"></span>
+                    <code>executeWithdrawalMock()</code>
+                </td>
+            </tr>
+
+
+                    <tr>
+                        <td class="col-md-4">
+                            <div class="io-line">Definido en <a href="" data-line="256"
+                                    class="link-to-prism">src/app/application/finances/finances.component.ts:256</a></div>
+                        </td>
+                    </tr>
+
+
+            <tr>
+                <td class="col-md-4">
+
+                        <div class="io-description">
+                            <b>Devuelve : </b>        <code><a href="https://www.typescriptlang.org/docs/handbook/basic-types.html" target="_blank" >void</a></code>
+
+                        </div>
+                </td>
+            </tr>
+        </tbody>
+    </table>
+    <table class="table table-sm table-bordered">
+        <tbody>
+            <tr>
+                <td class="col-md-4">
+                    <a name="generateMockPayouts"></a>
+                    <span class="name">
+                            <span class="modifier">Private</span>
+                        <span ><b>generateMockPayouts</b></span>
+                        <a href="#generateMockPayouts"><span class="icon ion-ios-link"></span></a>
+                    </span>
+                </td>
+            </tr>
+            <tr>
+                <td class="col-md-4">
+                        <span class="modifier-icon icon ion-ios-reset"></span>
+                    <code>generateMockPayouts()</code>
+                </td>
+            </tr>
+
+
+                    <tr>
+                        <td class="col-md-4">
+                            <div class="io-line">Definido en <a href="" data-line="295"
+                                    class="link-to-prism">src/app/application/finances/finances.component.ts:295</a></div>
+                        </td>
+                    </tr>
+
+
+            <tr>
+                <td class="col-md-4">
+
+                        <div class="io-description">
+                            <b>Devuelve : </b>        <code><a href="https://www.typescriptlang.org/docs/handbook/basic-types.html" target="_blank" >void</a></code>
+
+                        </div>
+                </td>
+            </tr>
+        </tbody>
+    </table>
+    <table class="table table-sm table-bordered">
+        <tbody>
+            <tr>
+                <td class="col-md-4">
+                    <a name="getAbsoluteDiff"></a>
+                    <span class="name">
+                            <span class="modifier">Public</span>
+                        <span ><b>getAbsoluteDiff</b></span>
+                        <a href="#getAbsoluteDiff"><span class="icon ion-ios-link"></span></a>
+                    </span>
+                </td>
+            </tr>
+            <tr>
+                <td class="col-md-4">
+                        <span class="modifier-icon icon ion-ios-reset"></span>
+                    <code>getAbsoluteDiff()</code>
+                </td>
+            </tr>
+
+
+                    <tr>
+                        <td class="col-md-4">
+                            <div class="io-line">Definido en <a href="" data-line="181"
+                                    class="link-to-prism">src/app/application/finances/finances.component.ts:181</a></div>
+                        </td>
+                    </tr>
+
+
+            <tr>
+                <td class="col-md-4">
+
+                        <div class="io-description">
+                            <b>Devuelve : </b>        <code><a href="https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/number" target="_blank" >number</a></code>
+
+                        </div>
+                </td>
+            </tr>
+        </tbody>
+    </table>
+    <table class="table table-sm table-bordered">
+        <tbody>
+            <tr>
+                <td class="col-md-4">
+                    <a name="getCashDifference"></a>
+                    <span class="name">
+                            <span class="modifier">Public</span>
+                        <span ><b>getCashDifference</b></span>
+                        <a href="#getCashDifference"><span class="icon ion-ios-link"></span></a>
+                    </span>
+                </td>
+            </tr>
+            <tr>
+                <td class="col-md-4">
+                        <span class="modifier-icon icon ion-ios-reset"></span>
+                    <code>getCashDifference()</code>
+                </td>
+            </tr>
+
+
+                    <tr>
+                        <td class="col-md-4">
+                            <div class="io-line">Definido en <a href="" data-line="176"
+                                    class="link-to-prism">src/app/application/finances/finances.component.ts:176</a></div>
+                        </td>
+                    </tr>
+
+
+            <tr>
+                <td class="col-md-4">
+
+                        <div class="io-description">
+                            <b>Devuelve : </b>        <code><a href="https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/number" target="_blank" >number</a></code>
+
+                        </div>
+                </td>
+            </tr>
+        </tbody>
+    </table>
+    <table class="table table-sm table-bordered">
+        <tbody>
+            <tr>
+                <td class="col-md-4">
+                    <a name="getStatusColor"></a>
+                    <span class="name">
+                            <span class="modifier">Public</span>
+                        <span ><b>getStatusColor</b></span>
+                        <a href="#getStatusColor"><span class="icon ion-ios-link"></span></a>
+                    </span>
+                </td>
+            </tr>
+            <tr>
+                <td class="col-md-4">
+                        <span class="modifier-icon icon ion-ios-reset"></span>
+                    <code>getStatusColor(status: <a href="https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/string" target="_blank">string</a>)</code>
+                </td>
+            </tr>
+
+
+                    <tr>
+                        <td class="col-md-4">
+                            <div class="io-line">Definido en <a href="" data-line="275"
+                                    class="link-to-prism">src/app/application/finances/finances.component.ts:275</a></div>
+                        </td>
+                    </tr>
+
+
+            <tr>
+                <td class="col-md-4">
+
+                            <div class="io-description">
+                                <b>Parámetros :</b>
+                                
+                                <table class="params">
+                                    <thead>
+                                        <tr>
+                                            <td>Nombre</td>
+                                                <td>Tipo</td>
+                                            <td>Opcional</td>
+                                        </tr>
+                                    </thead>
+                                    <tbody>
+                                        <tr>
+                                                <td>status</td>
+                                            <td>
+                                                            <code><a href="https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/string" target="_blank" >string</a></code>
+                                            </td>
+
+                                            <td>
+                                                    No
+                                            </td>
+
+
+                                        </tr>
+                                    </tbody>
+                                </table>
+                            </div>
+                        <div class="io-description">
+                            <b>Devuelve : </b>        <code><a href="https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/string" target="_blank" >string</a></code>
+
+                        </div>
+                            <div class="io-description">
+                                
+                            </div>
+                </td>
+            </tr>
+        </tbody>
+    </table>
+    <table class="table table-sm table-bordered">
+        <tbody>
+            <tr>
+                <td class="col-md-4">
+                    <a name="getStatusLabel"></a>
+                    <span class="name">
+                            <span class="modifier">Public</span>
+                        <span ><b>getStatusLabel</b></span>
+                        <a href="#getStatusLabel"><span class="icon ion-ios-link"></span></a>
+                    </span>
+                </td>
+            </tr>
+            <tr>
+                <td class="col-md-4">
+                        <span class="modifier-icon icon ion-ios-reset"></span>
+                    <code>getStatusLabel(status: <a href="https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/string" target="_blank">string</a>)</code>
+                </td>
+            </tr>
+
+
+                    <tr>
+                        <td class="col-md-4">
+                            <div class="io-line">Definido en <a href="" data-line="284"
+                                    class="link-to-prism">src/app/application/finances/finances.component.ts:284</a></div>
+                        </td>
+                    </tr>
+
+
+            <tr>
+                <td class="col-md-4">
+
+                            <div class="io-description">
+                                <b>Parámetros :</b>
+                                
+                                <table class="params">
+                                    <thead>
+                                        <tr>
+                                            <td>Nombre</td>
+                                                <td>Tipo</td>
+                                            <td>Opcional</td>
+                                        </tr>
+                                    </thead>
+                                    <tbody>
+                                        <tr>
+                                                <td>status</td>
+                                            <td>
+                                                            <code><a href="https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/string" target="_blank" >string</a></code>
+                                            </td>
+
+                                            <td>
+                                                    No
+                                            </td>
+
+
+                                        </tr>
+                                    </tbody>
+                                </table>
+                            </div>
+                        <div class="io-description">
+                            <b>Devuelve : </b>        <code><a href="https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/string" target="_blank" >string</a></code>
+
+                        </div>
+                            <div class="io-description">
+                                
+                            </div>
+                </td>
+            </tr>
+        </tbody>
+    </table>
+    <table class="table table-sm table-bordered">
+        <tbody>
+            <tr>
+                <td class="col-md-4">
+                    <a name="loadRiderCollections"></a>
+                    <span class="name">
+                            <span class="modifier">Public</span>
+                        <span ><b>loadRiderCollections</b></span>
+                        <a href="#loadRiderCollections"><span class="icon ion-ios-link"></span></a>
+                    </span>
+                </td>
+            </tr>
+            <tr>
+                <td class="col-md-4">
+                        <span class="modifier-icon icon ion-ios-reset"></span>
+                    <code>loadRiderCollections(companyUuid: <a href="https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/string" target="_blank">string</a>)</code>
+                </td>
+            </tr>
+
+
+                    <tr>
+                        <td class="col-md-4">
+                            <div class="io-line">Definido en <a href="" data-line="111"
+                                    class="link-to-prism">src/app/application/finances/finances.component.ts:111</a></div>
+                        </td>
+                    </tr>
+
+
+            <tr>
+                <td class="col-md-4">
+
+                            <div class="io-description">
+                                <b>Parámetros :</b>
+                                
+                                <table class="params">
+                                    <thead>
+                                        <tr>
+                                            <td>Nombre</td>
+                                                <td>Tipo</td>
+                                            <td>Opcional</td>
+                                        </tr>
+                                    </thead>
+                                    <tbody>
+                                        <tr>
+                                                <td>companyUuid</td>
+                                            <td>
+                                                            <code><a href="https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/string" target="_blank" >string</a></code>
+                                            </td>
+
+                                            <td>
+                                                    No
+                                            </td>
+
+
+                                        </tr>
+                                    </tbody>
+                                </table>
+                            </div>
+                        <div class="io-description">
+                            <b>Devuelve : </b>        <code><a href="https://www.typescriptlang.org/docs/handbook/basic-types.html" target="_blank" >void</a></code>
+
+                        </div>
+                            <div class="io-description">
+                                
+                            </div>
+                </td>
+            </tr>
+        </tbody>
+    </table>
+    <table class="table table-sm table-bordered">
+        <tbody>
+            <tr>
+                <td class="col-md-4">
+                    <a name="ngOnInit"></a>
+                    <span class="name">
+                        <span ><b>ngOnInit</b></span>
+                        <a href="#ngOnInit"><span class="icon ion-ios-link"></span></a>
+                    </span>
+                </td>
+            </tr>
+            <tr>
+                <td class="col-md-4">
+<code>ngOnInit()</code>
+                </td>
+            </tr>
+
+
+                    <tr>
+                        <td class="col-md-4">
+                            <div class="io-line">Definido en <a href="" data-line="100"
+                                    class="link-to-prism">src/app/application/finances/finances.component.ts:100</a></div>
+                        </td>
+                    </tr>
+
+
+            <tr>
+                <td class="col-md-4">
+
+                        <div class="io-description">
+                            <b>Devuelve : </b>        <code><a href="https://www.typescriptlang.org/docs/handbook/basic-types.html" target="_blank" >void</a></code>
+
+                        </div>
+                </td>
+            </tr>
+        </tbody>
+    </table>
+    <table class="table table-sm table-bordered">
+        <tbody>
+            <tr>
+                <td class="col-md-4">
+                    <a name="openRiderSettlement"></a>
+                    <span class="name">
+                            <span class="modifier">Public</span>
+                        <span ><b>openRiderSettlement</b></span>
+                        <a href="#openRiderSettlement"><span class="icon ion-ios-link"></span></a>
+                    </span>
+                </td>
+            </tr>
+            <tr>
+                <td class="col-md-4">
+                        <span class="modifier-icon icon ion-ios-reset"></span>
+                    <code>openRiderSettlement(rider: <a href="../interfaces/RiderSettlementViewModel.html" target="_self">RiderSettlementViewModel</a>)</code>
+                </td>
+            </tr>
+
+
+                    <tr>
+                        <td class="col-md-4">
+                            <div class="io-line">Definido en <a href="" data-line="162"
+                                    class="link-to-prism">src/app/application/finances/finances.component.ts:162</a></div>
+                        </td>
+                    </tr>
+
+
+            <tr>
+                <td class="col-md-4">
+
+                            <div class="io-description">
+                                <b>Parámetros :</b>
+                                
+                                <table class="params">
+                                    <thead>
+                                        <tr>
+                                            <td>Nombre</td>
+                                                <td>Tipo</td>
+                                            <td>Opcional</td>
+                                        </tr>
+                                    </thead>
+                                    <tbody>
+                                        <tr>
+                                                <td>rider</td>
+                                            <td>
+                                                            <code><a href="../interfaces/RiderSettlementViewModel.html" target="_self" >RiderSettlementViewModel</a></code>
+                                            </td>
+
+                                            <td>
+                                                    No
+                                            </td>
+
+
+                                        </tr>
+                                    </tbody>
+                                </table>
+                            </div>
+                        <div class="io-description">
+                            <b>Devuelve : </b>        <code><a href="https://www.typescriptlang.org/docs/handbook/basic-types.html" target="_blank" >void</a></code>
+
+                        </div>
+                            <div class="io-description">
+                                
+                            </div>
+                </td>
+            </tr>
+        </tbody>
+    </table>
+    <table class="table table-sm table-bordered">
+        <tbody>
+            <tr>
+                <td class="col-md-4">
+                    <a name="parseCustomerNotes"></a>
+                    <span class="name">
+                            <span class="modifier">Public</span>
+                        <span ><b>parseCustomerNotes</b></span>
+                        <a href="#parseCustomerNotes"><span class="icon ion-ios-link"></span></a>
+                    </span>
+                </td>
+            </tr>
+            <tr>
+                <td class="col-md-4">
+                        <span class="modifier-icon icon ion-ios-reset"></span>
+                    <code>parseCustomerNotes(notes: <a href="https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/string" target="_blank">string</a>)</code>
+                </td>
+            </tr>
+
+
+                    <tr>
+                        <td class="col-md-4">
+                            <div class="io-line">Definido en <a href="" data-line="229"
+                                    class="link-to-prism">src/app/application/finances/finances.component.ts:229</a></div>
+                        </td>
+                    </tr>
+
+
+            <tr>
+                <td class="col-md-4">
+
+                            <div class="io-description">
+                                <b>Parámetros :</b>
+                                
+                                <table class="params">
+                                    <thead>
+                                        <tr>
+                                            <td>Nombre</td>
+                                                <td>Tipo</td>
+                                            <td>Opcional</td>
+                                        </tr>
+                                    </thead>
+                                    <tbody>
+                                        <tr>
+                                                <td>notes</td>
+                                            <td>
+                                                            <code><a href="https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/string" target="_blank" >string</a></code>
+                                            </td>
+
+                                            <td>
+                                                    No
+                                            </td>
+
+
+                                        </tr>
+                                    </tbody>
+                                </table>
+                            </div>
+                        <div class="io-description">
+                            <b>Devuelve : </b>        <code><a href="https://www.typescriptlang.org/docs/handbook/basic-types.html" target="_blank" >any</a></code>
+
+                        </div>
+                            <div class="io-description">
+                                
+                            </div>
+                </td>
+            </tr>
+        </tbody>
+    </table>
+    <table class="table table-sm table-bordered">
+        <tbody>
+            <tr>
+                <td class="col-md-4">
+                    <a name="requestWithdrawal"></a>
+                    <span class="name">
+                            <span class="modifier">Public</span>
+                        <span ><b>requestWithdrawal</b></span>
+                        <a href="#requestWithdrawal"><span class="icon ion-ios-link"></span></a>
+                    </span>
+                </td>
+            </tr>
+            <tr>
+                <td class="col-md-4">
+                        <span class="modifier-icon icon ion-ios-reset"></span>
+                    <code>requestWithdrawal()</code>
+                </td>
+            </tr>
+
+
+                    <tr>
+                        <td class="col-md-4">
+                            <div class="io-line">Definido en <a href="" data-line="241"
+                                    class="link-to-prism">src/app/application/finances/finances.component.ts:241</a></div>
+                        </td>
+                    </tr>
+
+
+            <tr>
+                <td class="col-md-4">
+
+                        <div class="io-description">
+                            <b>Devuelve : </b>        <code><a href="https://www.typescriptlang.org/docs/handbook/basic-types.html" target="_blank" >void</a></code>
+
+                        </div>
+                </td>
+            </tr>
+        </tbody>
+    </table>
+</section>
+
+    <section data-compodoc="block-properties">
+    
+    <h3 id="inputs">
+        Propiedades
+    </h3>
+    <table class="table table-sm table-bordered">
+        <tbody>
+            <tr>
+                <td class="col-md-4">
+                    <a name="activeRiders"></a>
+                    <span class="name">
+                            <span class="modifier">Public</span>
+                        <span ><b>activeRiders</b></span>
+                        <a href="#activeRiders"><span class="icon ion-ios-link"></span></a>
+                    </span>
+                </td>
+            </tr>
+                <tr>
+                    <td class="col-md-4">
+                        <i>Tipo : </i>        <code><a href="../interfaces/RiderSettlementViewModel.html" target="_self" >RiderSettlementViewModel[]</a></code>
+
+                    </td>
+                </tr>
+                <tr>
+                    <td class="col-md-4">
+                        <i>Valor por defecto : </i><code>[]</code>
+                    </td>
+                </tr>
+                    <tr>
+                        <td class="col-md-4">
+                                <div class="io-line">Definido en <a href="" data-line="87" class="link-to-prism">src/app/application/finances/finances.component.ts:87</a></div>
+                        </td>
+                    </tr>
+
+
+        </tbody>
+    </table>
+    <table class="table table-sm table-bordered">
+        <tbody>
+            <tr>
+                <td class="col-md-4">
+                    <a name="availableBalance"></a>
+                    <span class="name">
+                            <span class="modifier">Public</span>
+                        <span ><b>availableBalance</b></span>
+                        <a href="#availableBalance"><span class="icon ion-ios-link"></span></a>
+                    </span>
+                </td>
+            </tr>
+                <tr>
+                    <td class="col-md-4">
+                        <i>Tipo : </i>        <code><a href="https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/number" target="_blank" >number</a></code>
+
+                    </td>
+                </tr>
+                <tr>
+                    <td class="col-md-4">
+                        <i>Valor por defecto : </i><code>854000</code>
+                    </td>
+                </tr>
+                    <tr>
+                        <td class="col-md-4">
+                                <div class="io-line">Definido en <a href="" data-line="79" class="link-to-prism">src/app/application/finances/finances.component.ts:79</a></div>
+                        </td>
+                    </tr>
+
+
+        </tbody>
+    </table>
+    <table class="table table-sm table-bordered">
+        <tbody>
+            <tr>
+                <td class="col-md-4">
+                    <a name="isSettlementDrawerVisible"></a>
+                    <span class="name">
+                            <span class="modifier">Public</span>
+                        <span ><b>isSettlementDrawerVisible</b></span>
+                        <a href="#isSettlementDrawerVisible"><span class="icon ion-ios-link"></span></a>
+                    </span>
+                </td>
+            </tr>
+                <tr>
+                    <td class="col-md-4">
+                        <i>Tipo : </i>        <code><a href="https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/boolean" target="_blank" >boolean</a></code>
+
+                    </td>
+                </tr>
+                <tr>
+                    <td class="col-md-4">
+                        <i>Valor por defecto : </i><code>false</code>
+                    </td>
+                </tr>
+                    <tr>
+                        <td class="col-md-4">
+                                <div class="io-line">Definido en <a href="" data-line="89" class="link-to-prism">src/app/application/finances/finances.component.ts:89</a></div>
+                        </td>
+                    </tr>
+
+
+        </tbody>
+    </table>
+    <table class="table table-sm table-bordered">
+        <tbody>
+            <tr>
+                <td class="col-md-4">
+                    <a name="loadingRiders"></a>
+                    <span class="name">
+                            <span class="modifier">Public</span>
+                        <span ><b>loadingRiders</b></span>
+                        <a href="#loadingRiders"><span class="icon ion-ios-link"></span></a>
+                    </span>
+                </td>
+            </tr>
+                <tr>
+                    <td class="col-md-4">
+                        <i>Tipo : </i>        <code><a href="https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/boolean" target="_blank" >boolean</a></code>
+
+                    </td>
+                </tr>
+                <tr>
+                    <td class="col-md-4">
+                        <i>Valor por defecto : </i><code>false</code>
+                    </td>
+                </tr>
+                    <tr>
+                        <td class="col-md-4">
+                                <div class="io-line">Definido en <a href="" data-line="91" class="link-to-prism">src/app/application/finances/finances.component.ts:91</a></div>
+                        </td>
+                    </tr>
+
+
+        </tbody>
+    </table>
+    <table class="table table-sm table-bordered">
+        <tbody>
+            <tr>
+                <td class="col-md-4">
+                    <a name="payoutHistory"></a>
+                    <span class="name">
+                            <span class="modifier">Public</span>
+                        <span ><b>payoutHistory</b></span>
+                        <a href="#payoutHistory"><span class="icon ion-ios-link"></span></a>
+                    </span>
+                </td>
+            </tr>
+                <tr>
+                    <td class="col-md-4">
+                        <i>Tipo : </i>        <code><a href="../interfaces/PayoutEvent.html" target="_self" >PayoutEvent[]</a></code>
+
+                    </td>
+                </tr>
+                <tr>
+                    <td class="col-md-4">
+                        <i>Valor por defecto : </i><code>[]</code>
+                    </td>
+                </tr>
+                    <tr>
+                        <td class="col-md-4">
+                                <div class="io-line">Definido en <a href="" data-line="84" class="link-to-prism">src/app/application/finances/finances.component.ts:84</a></div>
+                        </td>
+                    </tr>
+
+
+        </tbody>
+    </table>
+    <table class="table table-sm table-bordered">
+        <tbody>
+            <tr>
+                <td class="col-md-4">
+                    <a name="pendingSettlement"></a>
+                    <span class="name">
+                            <span class="modifier">Public</span>
+                        <span ><b>pendingSettlement</b></span>
+                        <a href="#pendingSettlement"><span class="icon ion-ios-link"></span></a>
+                    </span>
+                </td>
+            </tr>
+                <tr>
+                    <td class="col-md-4">
+                        <i>Tipo : </i>        <code><a href="https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/number" target="_blank" >number</a></code>
+
+                    </td>
+                </tr>
+                <tr>
+                    <td class="col-md-4">
+                        <i>Valor por defecto : </i><code>210500</code>
+                    </td>
+                </tr>
+                    <tr>
+                        <td class="col-md-4">
+                                <div class="io-line">Definido en <a href="" data-line="80" class="link-to-prism">src/app/application/finances/finances.component.ts:80</a></div>
+                        </td>
+                    </tr>
+
+
+        </tbody>
+    </table>
+    <table class="table table-sm table-bordered">
+        <tbody>
+            <tr>
+                <td class="col-md-4">
+                    <a name="physicalCashReceived"></a>
+                    <span class="name">
+                            <span class="modifier">Public</span>
+                        <span ><b>physicalCashReceived</b></span>
+                        <a href="#physicalCashReceived"><span class="icon ion-ios-link"></span></a>
+                    </span>
+                </td>
+            </tr>
+                <tr>
+                    <td class="col-md-4">
+                        <i>Tipo : </i>    <code>number | null</code>
+
+                    </td>
+                </tr>
+                <tr>
+                    <td class="col-md-4">
+                        <i>Valor por defecto : </i><code>null</code>
+                    </td>
+                </tr>
+                    <tr>
+                        <td class="col-md-4">
+                                <div class="io-line">Definido en <a href="" data-line="90" class="link-to-prism">src/app/application/finances/finances.component.ts:90</a></div>
+                        </td>
+                    </tr>
+
+
+        </tbody>
+    </table>
+    <table class="table table-sm table-bordered">
+        <tbody>
+            <tr>
+                <td class="col-md-4">
+                    <a name="selectedRider"></a>
+                    <span class="name">
+                            <span class="modifier">Public</span>
+                        <span ><b>selectedRider</b></span>
+                        <a href="#selectedRider"><span class="icon ion-ios-link"></span></a>
+                    </span>
+                </td>
+            </tr>
+                <tr>
+                    <td class="col-md-4">
+                        <i>Tipo : </i>        <code><a href="../interfaces/RiderSettlementViewModel.html" target="_self" >RiderSettlementViewModel | null</a></code>
+
+                    </td>
+                </tr>
+                <tr>
+                    <td class="col-md-4">
+                        <i>Valor por defecto : </i><code>null</code>
+                    </td>
+                </tr>
+                    <tr>
+                        <td class="col-md-4">
+                                <div class="io-line">Definido en <a href="" data-line="88" class="link-to-prism">src/app/application/finances/finances.component.ts:88</a></div>
+                        </td>
+                    </tr>
+
+
+        </tbody>
+    </table>
+    <table class="table table-sm table-bordered">
+        <tbody>
+            <tr>
+                <td class="col-md-4">
+                    <a name="totalWithdrawn"></a>
+                    <span class="name">
+                            <span class="modifier">Public</span>
+                        <span ><b>totalWithdrawn</b></span>
+                        <a href="#totalWithdrawn"><span class="icon ion-ios-link"></span></a>
+                    </span>
+                </td>
+            </tr>
+                <tr>
+                    <td class="col-md-4">
+                        <i>Tipo : </i>        <code><a href="https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/number" target="_blank" >number</a></code>
+
+                    </td>
+                </tr>
+                <tr>
+                    <td class="col-md-4">
+                        <i>Valor por defecto : </i><code>4250000</code>
+                    </td>
+                </tr>
+                    <tr>
+                        <td class="col-md-4">
+                                <div class="io-line">Definido en <a href="" data-line="81" class="link-to-prism">src/app/application/finances/finances.component.ts:81</a></div>
+                        </td>
+                    </tr>
+
+
+        </tbody>
+    </table>
+</section>
+
+</div>
+
+
+    <div class="tab-pane fade  tab-source-code" id="source">
+        <pre class="line-numbers compodoc-sourcecode"><code class="language-typescript">import { Component, OnInit } from &#x27;@angular/core&#x27;;
+import { CommonModule } from &#x27;@angular/common&#x27;;
+import { FormsModule } from &#x27;@angular/forms&#x27;;
+
+import { NzCardModule } from &#x27;ng-zorro-antd/card&#x27;;
+import { NzStatisticModule } from &#x27;ng-zorro-antd/statistic&#x27;;
+import { NzGridModule } from &#x27;ng-zorro-antd/grid&#x27;;
+import { NzButtonModule } from &#x27;ng-zorro-antd/button&#x27;;
+import { NzIconModule } from &#x27;ng-zorro-antd/icon&#x27;;
+import { NzTableModule } from &#x27;ng-zorro-antd/table&#x27;;
+import { NzTagModule } from &#x27;ng-zorro-antd/tag&#x27;;
+import { NzMessageService } from &#x27;ng-zorro-antd/message&#x27;;
+import { NzModalModule, NzModalService } from &#x27;ng-zorro-antd/modal&#x27;;
+import { NzTabsModule } from &#x27;ng-zorro-antd/tabs&#x27;;
+import { NzDrawerModule } from &#x27;ng-zorro-antd/drawer&#x27;;
+import { NzSpinModule } from &#x27;ng-zorro-antd/spin&#x27;;
+import { NzInputModule } from &#x27;ng-zorro-antd/input&#x27;;
+import { NzAvatarModule } from &#x27;ng-zorro-antd/avatar&#x27;;
+import { NzDividerModule } from &#x27;ng-zorro-antd/divider&#x27;;
+
+import { OrdersService } from &#x27;../../core/services/orders.service&#x27;;
+import { SessionService } from &#x27;../../core/services/session.service&#x27;;
+import { OrderInterface } from &#x27;../../core/interfaces/order/order.interface&#x27;;
+
+/**
+ * @description Evento representativo de una solicitud de extracción o transferencia bancaria de fondos generados.
+ */
+export interface PayoutEvent {
+  pay_uuid: string;
+  pay_date: Date;
+  pay_amount: number;
+  pay_destination: string;
+  pay_status: &#x27;COMPLETED&#x27; | &#x27;PENDING&#x27; | &#x27;REJECTED&#x27;;
+  pay_receipt_url?: string;
+}
+
+/**
+ * @description Modelo de vista para la rendición y liquidación diaria de dinero en efectivo recaudado por cadetes.
+ */
+export interface RiderSettlementViewModel {
+  rider_name: string;
+  order_count: number;
+  theoretical_cash: number;
+  orders: OrderInterface[];
+}
+
+/**
+ * @description Panel de control financiero corporativo para administradores de empresa.
+ * Centraliza el seguimiento de ingresos brutos, conciliación de pagos digitales de Mercado Pago vs efectivo,
+ * solicitudes de retiro a cuentas bancarias externas y control de arqueo de caja de repartidores.
+ */
+@Component({
+  selector: &#x27;app-finances&#x27;,
+  standalone: true,
+  imports: [
+    CommonModule,
+    FormsModule,
+    NzCardModule,
+    NzStatisticModule,
+    NzGridModule,
+    NzButtonModule,
+    NzIconModule,
+    NzTableModule,
+    NzTagModule,
+    NzModalModule,
+    NzTabsModule,
+    NzDrawerModule,
+    NzSpinModule,
+    NzInputModule,
+    NzAvatarModule,
+    NzDividerModule
+  ],
+  templateUrl: &#x27;./finances.component.html&#x27;,
+  styleUrl: &#x27;./finances.component.scss&#x27;
+})
+export class FinancesComponent implements OnInit {
+
+  // Saldos
+  public availableBalance: number &#x3D; 854000;
+  public pendingSettlement: number &#x3D; 210500;
+  public totalWithdrawn: number &#x3D; 4250000;
+
+  // Historial
+  public payoutHistory: PayoutEvent[] &#x3D; [];
+
+  // Módulo de Rendición de Repartidores (COD Settlements)
+  public activeRiders: RiderSettlementViewModel[] &#x3D; [];
+  public selectedRider: RiderSettlementViewModel | null &#x3D; null;
+  public isSettlementDrawerVisible: boolean &#x3D; false;
+  public physicalCashReceived: number | null &#x3D; null;
+  public loadingRiders: boolean &#x3D; false;
+
+  constructor(
+    private message: NzMessageService,
+    private modal: NzModalService,
+    private _ordersService: OrdersService,
+    private _sessionService: SessionService
+  ) { }
+
+  ngOnInit(): void {
+    this.generateMockPayouts();
+
+    const company &#x3D; this._sessionService.getCompany();
+    if (company &amp;&amp; company.cmp_uuid) {
+      this.loadRiderCollections(company.cmp_uuid);
+    }
+  }
+
+  // --- RENDICIÓN DE REPARTIDORES (LOGISTICA COD) ---
+
+  public loadRiderCollections(companyUuid: string): void {
+    this.loadingRiders &#x3D; true;
+    this._ordersService.getOrders(companyUuid).subscribe({
+      next: (res: any) &#x3D;&gt; {
+        const orders: OrderInterface[] &#x3D; res.data || [];
+        
+        // 1. Filtrar órdenes que sean locales (Motomensajería) y de tipo EFECTIVO/COD
+        // y que estén en estado DELIVERED (Entregado) o SHIPPED (En Camino)
+        // y que NO hayan sido conciliadas previamente en esta sesión de memoria
+        const codOrders &#x3D; orders.filter(o &#x3D;&gt; 
+          (o.ords_uuid &#x3D;&#x3D;&#x3D; &#x27;DELIVERED&#x27; || o.ords_uuid &#x3D;&#x3D;&#x3D; &#x27;SHIPPED&#x27;) &amp;&amp; 
+          o.ord_customernotes &amp;&amp; 
+          o.ord_customernotes.includes(&#x27;Motomensajería Local&#x27;) &amp;&amp; 
+          o.ord_customernotes.toLowerCase().includes(&#x27;efectivo&#x27;) &amp;&amp;
+          !(o as any).ord_is_reconciled
+        );
+
+        // 2. Agrupar de forma determinista en dos riders realistas
+        const ridersMap &#x3D; new Map&lt;string, OrderInterface[]&gt;();
+        ridersMap.set(&#x27;Ramiro González 🛵&#x27;, []);
+        ridersMap.set(&#x27;Mateo Pereyra 🚴&#x27;, []);
+
+        codOrders.forEach(order &#x3D;&gt; {
+          const seed &#x3D; order.ord_uuid.charCodeAt(0) % 2;
+          const riderName &#x3D; seed &#x3D;&#x3D;&#x3D; 0 ? &#x27;Ramiro González 🛵&#x27; : &#x27;Mateo Pereyra 🚴&#x27;;
+          ridersMap.get(riderName)!.push(order);
+        });
+
+        // 3. Mapear para la grilla
+        this.activeRiders &#x3D; [];
+        ridersMap.forEach((riderOrders, name) &#x3D;&gt; {
+          if (riderOrders.length &gt; 0) {
+            const sum &#x3D; riderOrders.reduce((acc, o) &#x3D;&gt; acc + (o.ord_total || 0), 0);
+            this.activeRiders.push({
+              rider_name: name,
+              order_count: riderOrders.length,
+              theoretical_cash: sum,
+              orders: riderOrders
+            });
+          }
+        });
+
+        this.loadingRiders &#x3D; false;
+      },
+      error: (err) &#x3D;&gt; {
+        console.error(&#x27;Error al cargar conciliaciones de repartidores:&#x27;, err);
+        this.loadingRiders &#x3D; false;
+      }
+    });
+  }
+
+  public openRiderSettlement(rider: RiderSettlementViewModel): void {
+    this.selectedRider &#x3D; rider;
+    this.physicalCashReceived &#x3D; rider.theoretical_cash; // Por defecto precompleta con el teórico
+    this.isSettlementDrawerVisible &#x3D; true;
+  }
+
+  public closeSettlementDrawer(): void {
+    this.isSettlementDrawerVisible &#x3D; false;
+    setTimeout(() &#x3D;&gt; {
+      this.selectedRider &#x3D; null;
+      this.physicalCashReceived &#x3D; null;
+    }, 300);
+  }
+
+  public getCashDifference(): number {
+    if (this.selectedRider &#x3D;&#x3D;&#x3D; null || this.physicalCashReceived &#x3D;&#x3D;&#x3D; null) return 0;
+    return this.physicalCashReceived - this.selectedRider.theoretical_cash;
+  }
+
+  public getAbsoluteDiff(): number {
+    return Math.abs(this.getCashDifference());
+  }
+
+  public confirmSettlement(): void {
+    if (!this.selectedRider || this.physicalCashReceived &#x3D;&#x3D;&#x3D; null) return;
+
+    const collected &#x3D; this.selectedRider.theoretical_cash;
+    const received &#x3D; this.physicalCashReceived;
+    const diff &#x3D; this.getCashDifference();
+
+    // 1. Inyectar fondos recaudados al Saldo Disponible (disponible para retiro)
+    this.availableBalance +&#x3D; received;
+
+    // 2. Registrar en la bitácora de la billetera como un ingreso liquidado por repartidor
+    const newTx: PayoutEvent &#x3D; {
+      pay_uuid: &#x60;rc-${new Date().getTime().toString().substring(8)}&#x60;,
+      pay_date: new Date(),
+      pay_amount: received,
+      pay_destination: &#x60;Rendición de Caja: ${this.selectedRider.rider_name}&#x60;,
+      pay_status: &#x27;COMPLETED&#x27;
+    };
+    this.payoutHistory &#x3D; [newTx, ...this.payoutHistory];
+
+    // 3. Marcar órdenes como conciliadas localmente en memoria
+    this.selectedRider.orders.forEach(o &#x3D;&gt; {
+      (o as any).ord_is_reconciled &#x3D; true;
+    });
+
+    // 4. Toast dinámico según cuadre de caja
+    if (diff &#x3D;&#x3D;&#x3D; 0) {
+      this.message.success(&#x60;Caja de ${this.selectedRider.rider_name} rendida por $${received.toLocaleString(&#x27;es-AR&#x27;)}.&#x60;);
+    } else if (diff &lt; 0) {
+      this.message.warning(&#x60;Caja rendida con faltante de $${Math.abs(diff).toLocaleString(&#x27;es-AR&#x27;)}. Se conciliaron $${received.toLocaleString(&#x27;es-AR&#x27;)}.&#x60;);
+    } else {
+      this.message.info(&#x60;Caja rendida con sobrante de $${diff.toLocaleString(&#x27;es-AR&#x27;)}. Se conciliaron $${received.toLocaleString(&#x27;es-AR&#x27;)}.&#x60;);
+    }
+
+    // 5. Limpieza de Drawer
+    this.closeSettlementDrawer();
+
+    // 6. Recargar listado de repartidores pendientes
+    const company &#x3D; this._sessionService.getCompany();
+    if (company &amp;&amp; company.cmp_uuid) {
+      this.loadRiderCollections(company.cmp_uuid);
+    }
+  }
+
+  public parseCustomerNotes(notes: string): any {
+    if (!notes) return { shipping: &#x27;&#x27;, payment: &#x27;&#x27; };
+    const shippingMatch &#x3D; notes.match(/\[Envío:\s*([^\]]+)\]/);
+    const paymentMatch &#x3D; notes.match(/Método de pago:\s*([^.]+)/);
+    return {
+      shipping: shippingMatch ? shippingMatch[1] : &#x27;Moto&#x27;,
+      payment: paymentMatch ? paymentMatch[1].trim() : &#x27;Efectivo&#x27;
+    };
+  }
+
+  // --- ACCIONES FINANCIERAS (RETIROS BANCARIOS) ---
+
+  public requestWithdrawal(): void {
+    if (this.availableBalance &lt;&#x3D; 0) {
+      this.message.warning(&#x27;No tenés saldo disponible para retirar.&#x27;);
+      return;
+    }
+
+    this.modal.confirm({
+      nzTitle: &#x27;¿Confirmar retiro de fondos?&#x27;,
+      nzContent: &#x60;Estás a punto de solicitar la transferencia de $${this.availableBalance.toLocaleString(&#x27;es-AR&#x27;)} a tu CBU principal terminado en 1234.&#x60;,
+      nzOkText: &#x27;Solicitar&#x27;,
+      nzOkType: &#x27;primary&#x27;,
+      nzOnOk: () &#x3D;&gt; this.executeWithdrawalMock()
+    });
+  }
+
+  private executeWithdrawalMock(): void {
+    const amount &#x3D; this.availableBalance;
+    this.availableBalance &#x3D; 0;
+
+    // Agregar a la tabla como pendiente
+    const newPayout: PayoutEvent &#x3D; {
+      pay_uuid: &#x60;tx-${new Date().getTime().toString().substring(9)}&#x60;,
+      pay_date: new Date(),
+      pay_amount: amount,
+      pay_destination: &#x27;CBU ***1234 (Banco Galicia)&#x27;,
+      pay_status: &#x27;PENDING&#x27;
+    };
+
+    this.payoutHistory &#x3D; [newPayout, ...this.payoutHistory];
+    this.message.success(&#x27;Retiro solicitado con éxito. El dinero llegará en las próximas 24hs hábiles.&#x27;);
+  }
+
+  // --- ETIQUETAS Y FORMATO ---
+
+  public getStatusColor(status: string): string {
+    switch (status) {
+      case &#x27;COMPLETED&#x27;: return &#x27;green&#x27;;
+      case &#x27;PENDING&#x27;: return &#x27;gold&#x27;;
+      case &#x27;REJECTED&#x27;: return &#x27;red&#x27;;
+      default: return &#x27;default&#x27;;
+    }
+  }
+
+  public getStatusLabel(status: string): string {
+    switch (status) {
+      case &#x27;COMPLETED&#x27;: return &#x27;Transferido&#x27;;
+      case &#x27;PENDING&#x27;: return &#x27;En Proceso&#x27;;
+      case &#x27;REJECTED&#x27;: return &#x27;Rechazado / Fallido&#x27;;
+      default: return &#x27;Desconocido&#x27;;
+    }
+  }
+
+  // --- MOCK DATA ---
+
+  private generateMockPayouts(): void {
+    this.payoutHistory &#x3D; [
+      {
+        pay_uuid: &#x27;tx-9921&#x27;,
+        pay_date: new Date(new Date().setDate(new Date().getDate() - 2)),
+        pay_amount: 150000,
+        pay_destination: &#x27;CVU ***8822 (MercadoPago)&#x27;,
+        pay_status: &#x27;COMPLETED&#x27;,
+        pay_receipt_url: &#x27;#&#x27;
+      },
+      {
+        pay_uuid: &#x27;tx-9810&#x27;,
+        pay_date: new Date(new Date().setDate(new Date().getDate() - 15)),
+        pay_amount: 850000,
+        pay_destination: &#x27;CBU ***1234 (Banco Galicia)&#x27;,
+        pay_status: &#x27;COMPLETED&#x27;,
+        pay_receipt_url: &#x27;#&#x27;
+      },
+      {
+        pay_uuid: &#x27;tx-9705&#x27;,
+        pay_date: new Date(new Date().setDate(new Date().getDate() - 28)),
+        pay_amount: 450000,
+        pay_destination: &#x27;CBU ***1234 (Banco Galicia)&#x27;,
+        pay_status: &#x27;COMPLETED&#x27;,
+        pay_receipt_url: &#x27;#&#x27;
+      },
+      {
+        pay_uuid: &#x27;tx-9650&#x27;,
+        pay_date: new Date(new Date().setDate(new Date().getDate() - 40)),
+        pay_amount: 220000,
+        pay_destination: &#x27;CBU ***9999 (Banco BBVA)&#x27;,
+        pay_status: &#x27;REJECTED&#x27;
+      }
+    ];
+  }
+}
+</code></pre>
+    </div>
+
+    <div class="tab-pane fade " id="templateData">
+        <pre class="line-numbers"><code class="language-html">&lt;div class&#x3D;&quot;finances-dashboard-wrapper&quot;&gt;
+    
+    &lt;div class&#x3D;&quot;dashboard-header&quot;&gt;
+        &lt;div class&#x3D;&quot;header-titles&quot;&gt;
+            &lt;h1 class&#x3D;&quot;page-title&quot;&gt;Mi Billetera&lt;/h1&gt;
+            &lt;p class&#x3D;&quot;page-subtitle&quot;&gt;Gestiona el dinero generado por tus ventas, concilia rendiciones de repartidores y liquida fondos a tu banco.&lt;/p&gt;
+        &lt;/div&gt;
+    &lt;/div&gt;
+
+    &lt;!-- SECCIÓN DE KPIs GLOBALES (Afectados dinámicamente al conciliar) --&gt;
+    &lt;div nz-row [nzGutter]&#x3D;&quot;[16, 16]&quot; class&#x3D;&quot;balance-row&quot;&gt;
+        
+        &lt;div nz-col nzXs&#x3D;&quot;24&quot; nzSm&#x3D;&quot;12&quot; nzLg&#x3D;&quot;8&quot;&gt;
+            &lt;nz-card class&#x3D;&quot;premium-card balance-card highlight-card&quot; [nzBordered]&#x3D;&quot;false&quot;&gt;
+                &lt;div class&#x3D;&quot;balance-icon-wrapper&quot;&gt;
+                    &lt;span nz-icon nzType&#x3D;&quot;wallet&quot; nzTheme&#x3D;&quot;outline&quot; style&#x3D;&quot;color: #52c41a;&quot;&gt;&lt;/span&gt;
+                &lt;/div&gt;
+                &lt;nz-statistic [nzValue]&#x3D;&quot;availableBalance&quot; [nzTitle]&#x3D;&quot;&#x27;Saldo Disponible (Retirable)&#x27;&quot; [nzPrefix]&#x3D;&quot;&#x27;$&#x27;&quot;
+                    [nzValueTemplate]&#x3D;&quot;availableTemplate&quot;&gt;
+                &lt;/nz-statistic&gt;
+                &lt;ng-template #availableTemplate let-value&gt;
+                    &lt;span class&#x3D;&quot;highlight-value&quot;&gt;{{ value | number:&#x27;1.2-2&#x27; }}&lt;/span&gt;
+                &lt;/ng-template&gt;
+            &lt;/nz-card&gt;
+        &lt;/div&gt;
+
+        &lt;div nz-col nzXs&#x3D;&quot;24&quot; nzSm&#x3D;&quot;12&quot; nzLg&#x3D;&quot;8&quot;&gt;
+            &lt;nz-card class&#x3D;&quot;premium-card balance-card&quot; [nzBordered]&#x3D;&quot;false&quot;&gt;
+                &lt;div class&#x3D;&quot;balance-icon-wrapper&quot;&gt;
+                    &lt;span nz-icon nzType&#x3D;&quot;hourglass&quot; nzTheme&#x3D;&quot;outline&quot; style&#x3D;&quot;color: #faad14;&quot;&gt;&lt;/span&gt;
+                &lt;/div&gt;
+                &lt;nz-statistic [nzValue]&#x3D;&quot;pendingSettlement&quot; [nzTitle]&#x3D;&quot;&#x27;En Clearing Postal (Clearing)&#x27;&quot; [nzPrefix]&#x3D;&quot;&#x27;$&#x27;&quot;
+                    [nzValueTemplate]&#x3D;&quot;pendingTemplate&quot;&gt;
+                &lt;/nz-statistic&gt;
+                &lt;ng-template #pendingTemplate let-value&gt;
+                    &lt;span style&#x3D;&quot;font-weight: 700; color: #1e293b;&quot;&gt;{{ value | number:&#x27;1.2-2&#x27; }}&lt;/span&gt;
+                &lt;/ng-template&gt;
+            &lt;/nz-card&gt;
+        &lt;/div&gt;
+
+        &lt;div nz-col nzXs&#x3D;&quot;24&quot; nzSm&#x3D;&quot;12&quot; nzLg&#x3D;&quot;8&quot;&gt;
+            &lt;nz-card class&#x3D;&quot;premium-card balance-card bg-light&quot; [nzBordered]&#x3D;&quot;false&quot;&gt;
+                &lt;div class&#x3D;&quot;balance-icon-wrapper&quot;&gt;
+                    &lt;span nz-icon nzType&#x3D;&quot;history&quot; nzTheme&#x3D;&quot;outline&quot; style&#x3D;&quot;color: #64748b;&quot;&gt;&lt;/span&gt;
+                &lt;/div&gt;
+                &lt;nz-statistic [nzValue]&#x3D;&quot;totalWithdrawn&quot; [nzTitle]&#x3D;&quot;&#x27;Retirado Históricamente&#x27;&quot; [nzPrefix]&#x3D;&quot;&#x27;$&#x27;&quot;
+                    [nzValueTemplate]&#x3D;&quot;historyTemplate&quot;&gt;
+                &lt;/nz-statistic&gt;
+                &lt;ng-template #historyTemplate let-value&gt;
+                    &lt;span style&#x3D;&quot;color: #475569; font-weight: 700;&quot;&gt;{{ value | number:&#x27;1.2-2&#x27; }}&lt;/span&gt;
+                &lt;/ng-template&gt;
+            &lt;/nz-card&gt;
+        &lt;/div&gt;
+
+    &lt;/div&gt;
+
+    &lt;!-- SECCIÓN MAESTRA DE TABS FINANCIEROS (B2B / WMS LOGISTICS) --&gt;
+    &lt;nz-tabset class&#x3D;&quot;finances-tabset&quot; nzSize&#x3D;&quot;large&quot;&gt;
+        
+        &lt;!-- SOLAPA A: RETIROS Y TRANSFERS BANCARIOS --&gt;
+        &lt;nz-tab nzTitle&#x3D;&quot;🏦 Retiros y Billetera&quot;&gt;
+            &lt;div class&#x3D;&quot;tab-content-box&quot;&gt;
+                
+                &lt;div class&#x3D;&quot;wallet-actions-bar&quot; style&#x3D;&quot;display: flex; justify-content: space-between; align-items: center; margin-bottom: 20px;&quot;&gt;
+                    &lt;h3 style&#x3D;&quot;margin: 0; font-weight: 700; color: #1e293b;&quot;&gt;Historial de Retiros y Transferencias&lt;/h3&gt;
+                    &lt;button nz-button nzType&#x3D;&quot;primary&quot; class&#x3D;&quot;withdraw-btn-pill&quot; nzSize&#x3D;&quot;large&quot; (click)&#x3D;&quot;requestWithdrawal()&quot; [disabled]&#x3D;&quot;availableBalance &lt;&#x3D; 0&quot;&gt;
+                        &lt;span nz-icon nzType&#x3D;&quot;bank&quot; nzTheme&#x3D;&quot;outline&quot;&gt;&lt;/span&gt;
+                        Retirar Fondos a CBU
+                    &lt;/button&gt;
+                &lt;/div&gt;
+
+                &lt;nz-card class&#x3D;&quot;premium-card table-card&quot; [nzBordered]&#x3D;&quot;false&quot;&gt;
+                    &lt;nz-table #payoutTable [nzData]&#x3D;&quot;payoutHistory&quot; nzSize&#x3D;&quot;middle&quot; [nzPageSize]&#x3D;&quot;8&quot; class&#x3D;&quot;premium-table&quot;&gt;
+                        &lt;thead&gt;
+                            &lt;tr&gt;
+                                &lt;th nzWidth&#x3D;&quot;20%&quot;&gt;Referencia&lt;/th&gt;
+                                &lt;th nzWidth&#x3D;&quot;20%&quot;&gt;Fecha&lt;/th&gt;
+                                &lt;th nzWidth&#x3D;&quot;20%&quot;&gt;Monto&lt;/th&gt;
+                                &lt;th nzWidth&#x3D;&quot;25%&quot;&gt;Destinatario&lt;/th&gt;
+                                &lt;th nzWidth&#x3D;&quot;15%&quot;&gt;Estado&lt;/th&gt;
+                            &lt;/tr&gt;
+                        &lt;/thead&gt;
+                        &lt;tbody&gt;
+                            &lt;tr *ngFor&#x3D;&quot;let data of payoutTable.data&quot;&gt;
+                                &lt;td&gt;&lt;span class&#x3D;&quot;tx-id&quot;&gt;{{ data.pay_uuid }}&lt;/span&gt;&lt;/td&gt;
+                                &lt;td&gt;{{ data.pay_date | date:&#x27;dd/MM/yyyy HH:mm&#x27; }}&lt;/td&gt;
+                                &lt;td&gt;&lt;span class&#x3D;&quot;tx-amount&quot; [style.color]&#x3D;&quot;data.pay_uuid.startsWith(&#x27;rc-&#x27;) ? &#x27;#16a34a&#x27; : &#x27;#1e293b&#x27;&quot;&gt;
+                                    {{ data.pay_uuid.startsWith(&#x27;rc-&#x27;) ? &#x27;+&#x27; : &#x27;-&#x27; }} ${{ data.pay_amount | number:&#x27;1.2-2&#x27; }}
+                                &lt;/span&gt;&lt;/td&gt;
+                                &lt;td&gt;&lt;span class&#x3D;&quot;tx-dest&quot;&gt;{{ data.pay_destination }}&lt;/span&gt;&lt;/td&gt;
+                                &lt;td&gt;
+                                    &lt;nz-tag [nzColor]&#x3D;&quot;getStatusColor(data.pay_status)&quot;&gt;{{ getStatusLabel(data.pay_status) }}&lt;/nz-tag&gt;
+                                &lt;/td&gt;
+                            &lt;/tr&gt;
+                        &lt;/tbody&gt;
+                    &lt;/nz-table&gt;
+                &lt;/nz-card&gt;
+            &lt;/div&gt;
+        &lt;/nz-tab&gt;
+
+        &lt;!-- SOLAPA B: RENDICIÓN DE CAJAS DE REPARTIDORES --&gt;
+        &lt;nz-tab nzTitle&#x3D;&quot;🛵 Rendición de Repartidores&quot;&gt;
+            &lt;div class&#x3D;&quot;tab-content-box&quot;&gt;
+                
+                &lt;div class&#x3D;&quot;tab-section-header&quot; style&#x3D;&quot;margin-bottom: 20px;&quot;&gt;
+                    &lt;h3 style&#x3D;&quot;margin: 0 0 4px 0; font-weight: 700; color: #1e293b;&quot;&gt;Rendición diaria de Cajas (COD)&lt;/h3&gt;
+                    &lt;p style&#x3D;&quot;margin: 0; color: #64748b; font-size: 13.5px;&quot;&gt;Concilia el efectivo en mano que recaudan tus repartidores en los despachos contra entrega.&lt;/p&gt;
+                &lt;/div&gt;
+
+                &lt;nz-spin [nzSpinning]&#x3D;&quot;loadingRiders&quot; nzTip&#x3D;&quot;Auditando repartidores en la calle...&quot;&gt;
+                    
+                    &lt;!-- Grid de Tarjetas de Repartidores --&gt;
+                    &lt;div nz-row [nzGutter]&#x3D;&quot;[20, 20]&quot; *ngIf&#x3D;&quot;activeRiders.length &gt; 0&quot; class&#x3D;&quot;riders-grid&quot;&gt;
+                        &lt;div nz-col nzXs&#x3D;&quot;24&quot; nzSm&#x3D;&quot;12&quot; nzLg&#x3D;&quot;8&quot; *ngFor&#x3D;&quot;let rider of activeRiders&quot;&gt;
+                            &lt;nz-card class&#x3D;&quot;premium-card rider-card&quot; [nzBordered]&#x3D;&quot;false&quot;&gt;
+                                &lt;div class&#x3D;&quot;rider-card-header&quot;&gt;
+                                    &lt;nz-avatar [nzSize]&#x3D;&quot;48&quot; nzIcon&#x3D;&quot;user&quot; style&#x3D;&quot;background-color: rgba(24, 144, 255, 0.08); color: #1890ff;&quot;&gt;&lt;/nz-avatar&gt;
+                                    &lt;div class&#x3D;&quot;rider-title-box&quot;&gt;
+                                        &lt;h4 class&#x3D;&quot;rider-name&quot;&gt;{{ rider.rider_name }}&lt;/h4&gt;
+                                        &lt;span class&#x3D;&quot;rider-orders-badge&quot;&gt;📍 {{ rider.order_count }} envíos completados&lt;/span&gt;
+                                    &lt;/div&gt;
+                                &lt;/div&gt;
+                                &lt;nz-divider style&#x3D;&quot;margin: 16px 0;&quot;&gt;&lt;/nz-divider&gt;
+                                &lt;div class&#x3D;&quot;rider-cash-stats&quot;&gt;
+                                    &lt;span class&#x3D;&quot;stats-label&quot;&gt;Efectivo en mano recaudado:&lt;/span&gt;
+                                    &lt;h3 class&#x3D;&quot;stats-amount&quot;&gt;${{ rider.theoretical_cash | number:&#x27;1.2-2&#x27; }}&lt;/h3&gt;
+                                &lt;/div&gt;
+                                &lt;button nz-button nzType&#x3D;&quot;primary&quot; nzBlock nzSize&#x3D;&quot;large&quot; class&#x3D;&quot;settlement-trigger-btn&quot; (click)&#x3D;&quot;openRiderSettlement(rider)&quot;&gt;
+                                    &lt;span nz-icon nzType&#x3D;&quot;dollar&quot; nzTheme&#x3D;&quot;outline&quot;&gt;&lt;/span&gt;
+                                    Rendir Caja
+                                &lt;/button&gt;
+                            &lt;/nz-card&gt;
+                        &lt;/div&gt;
+                    &lt;/div&gt;
+
+                    &lt;!-- Placeholder caso sin rendiciones pendientes --&gt;
+                    &lt;div *ngIf&#x3D;&quot;activeRiders.length &#x3D;&#x3D;&#x3D; 0&quot; class&#x3D;&quot;empty-riders-state&quot;&gt;
+                        &lt;nz-card class&#x3D;&quot;premium-card text-center&quot; style&#x3D;&quot;padding: 48px 24px;&quot; [nzBordered]&#x3D;&quot;false&quot;&gt;
+                            &lt;span nz-icon nzType&#x3D;&quot;safety-certificate&quot; nzTheme&#x3D;&quot;twotone&quot; [nzTwotoneColor]&#x3D;&quot;&#x27;#52c41a&#x27;&quot; class&#x3D;&quot;placeholder-icon&quot;&gt;&lt;/span&gt;
+                            &lt;h3&gt;¡Cajas Conciliadas!&lt;/h3&gt;
+                            &lt;p&gt;No se registran repartidores con cobros en efectivo pendientes de rendir en la sucursal activa.&lt;/p&gt;
+                        &lt;/nz-card&gt;
+                    &lt;/div&gt;
+
+                &lt;/nz-spin&gt;
+            &lt;/div&gt;
+        &lt;/nz-tab&gt;
+
+    &lt;/nz-tabset&gt;
+
+    &lt;!-- CAJÓN BOTTOM-SHEET / DRAWER DE RECONCILIACIÓN EN CALIENTE --&gt;
+    &lt;nz-drawer [nzVisible]&#x3D;&quot;isSettlementDrawerVisible&quot; nzPlacement&#x3D;&quot;right&quot; [nzWidth]&#x3D;&quot;420&quot; nzTitle&#x3D;&quot;Conciliación de Caja&quot; (nzOnClose)&#x3D;&quot;closeSettlementDrawer()&quot;&gt;
+        &lt;ng-container *nzDrawerContent&gt;
+            &lt;div class&#x3D;&quot;settlement-drawer-wrapper&quot; *ngIf&#x3D;&quot;selectedRider&quot;&gt;
+                
+                &lt;div class&#x3D;&quot;drawer-rider-header&quot;&gt;
+                    &lt;nz-avatar [nzSize]&#x3D;&quot;40&quot; nzIcon&#x3D;&quot;user&quot; style&#x3D;&quot;background-color: rgba(24, 144, 255, 0.08); color: #1890ff;&quot;&gt;&lt;/nz-avatar&gt;
+                    &lt;div&gt;
+                        &lt;h3 style&#x3D;&quot;margin: 0; font-weight: 700; color: #1e293b;&quot;&gt;{{ selectedRider.rider_name }}&lt;/h3&gt;
+                        &lt;span style&#x3D;&quot;font-size: 12px; color: #64748b;&quot;&gt;shift del día de la fecha&lt;/span&gt;
+                    &lt;/div&gt;
+                &lt;/div&gt;
+
+                &lt;nz-divider style&#x3D;&quot;margin: 16px 0;&quot;&gt;&lt;/nz-divider&gt;
+
+                &lt;!-- Planilla de Pedidos Auditados --&gt;
+                &lt;div class&#x3D;&quot;stops-audited-section&quot;&gt;
+                    &lt;h4 class&#x3D;&quot;section-title&quot;&gt;Envíos entregados en este Shift&lt;/h4&gt;
+                    &lt;div class&#x3D;&quot;audit-stops-list&quot;&gt;
+                        &lt;div class&#x3D;&quot;audit-stop-card&quot; *ngFor&#x3D;&quot;let order of selectedRider.orders&quot;&gt;
+                            &lt;div class&#x3D;&quot;stop-header&quot;&gt;
+                                &lt;span class&#x3D;&quot;stop-id&quot;&gt;#PED-{{ order.ord_ordernumber }}&lt;/span&gt;
+                                &lt;span class&#x3D;&quot;stop-cash&quot;&gt;${{ order.ord_total | number:&#x27;1.2-2&#x27; }}&lt;/span&gt;
+                            &lt;/div&gt;
+                            &lt;div class&#x3D;&quot;stop-footer&quot;&gt;
+                                &lt;span class&#x3D;&quot;stop-client&quot;&gt;{{ order.cus?.cus_fullname || &#x27;Comprador ATSMarket&#x27; }}&lt;/span&gt;
+                                &lt;span class&#x3D;&quot;stop-payment-tag&quot; *ngIf&#x3D;&quot;parseCustomerNotes(order.ord_customernotes) as parsed&quot;&gt;{{ parsed.payment }}&lt;/span&gt;
+                            &lt;/div&gt;
+                        &lt;/div&gt;
+                    &lt;/div&gt;
+                &lt;/div&gt;
+
+                &lt;!-- Bloque Matemático del Cierre --&gt;
+                &lt;div class&#x3D;&quot;cash-counting-console&quot;&gt;
+                    &lt;div class&#x3D;&quot;console-row&quot;&gt;
+                        &lt;span class&#x3D;&quot;console-label&quot;&gt;Efectivo Teórico (Sistema):&lt;/span&gt;
+                        &lt;strong class&#x3D;&quot;console-value&quot;&gt;${{ selectedRider.theoretical_cash | number:&#x27;1.2-2&#x27; }}&lt;/strong&gt;
+                    &lt;/div&gt;
+
+                    &lt;div class&#x3D;&quot;console-counting-input&quot;&gt;
+                        &lt;label for&#x3D;&quot;cashReceived&quot;&gt;Efectivo Físico Entregado:&lt;/label&gt;
+                        &lt;div class&#x3D;&quot;input-dollar-addon&quot;&gt;
+                            &lt;span class&#x3D;&quot;addon-symbol&quot;&gt;$&lt;/span&gt;
+                            &lt;input type&#x3D;&quot;number&quot; id&#x3D;&quot;cashReceived&quot; nz-input [(ngModel)]&#x3D;&quot;physicalCashReceived&quot; placeholder&#x3D;&quot;Ingresa el monto contado&quot; /&gt;
+                        &lt;/div&gt;
+                    &lt;/div&gt;
+
+                    &lt;!-- Indicador interactivo de discrepancias --&gt;
+                    &lt;div class&#x3D;&quot;discrepancy-status-wrapper&quot; style&#x3D;&quot;margin-top: 16px;&quot;&gt;
+                        &lt;span class&#x3D;&quot;console-label&quot; style&#x3D;&quot;display: block; margin-bottom: 6px;&quot;&gt;Cuadre de Rendición:&lt;/span&gt;
+                        
+                        &lt;!-- Caso A: Caja perfecta --&gt;
+                        &lt;div *ngIf&#x3D;&quot;getCashDifference() &#x3D;&#x3D;&#x3D; 0&quot; class&#x3D;&quot;discrepancy-tag perfect-match&quot;&gt;
+                            &lt;span nz-icon nzType&#x3D;&quot;check-circle&quot; nzTheme&#x3D;&quot;fill&quot;&gt;&lt;/span&gt;
+                            &lt;span&gt;Caja Cuadrada ($0.00)&lt;/span&gt;
+                        &lt;/div&gt;
+
+                        &lt;!-- Caso B: Faltante --&gt;
+                        &lt;div *ngIf&#x3D;&quot;getCashDifference() &lt; 0&quot; class&#x3D;&quot;discrepancy-tag shortage&quot;&gt;
+                            &lt;span nz-icon nzType&#x3D;&quot;close-circle&quot; nzTheme&#x3D;&quot;fill&quot;&gt;&lt;/span&gt;
+                            &lt;span&gt;Faltante de Caja (-${{ getAbsoluteDiff() | number:&#x27;1.2-2&#x27; }})&lt;/span&gt;
+                        &lt;/div&gt;
+
+                        &lt;!-- Caso C: Sobrante --&gt;
+                        &lt;div *ngIf&#x3D;&quot;getCashDifference() &gt; 0&quot; class&#x3D;&quot;discrepancy-tag surplus&quot;&gt;
+                            &lt;span nz-icon nzType&#x3D;&quot;info-circle&quot; nzTheme&#x3D;&quot;fill&quot;&gt;&lt;/span&gt;
+                            &lt;span&gt;Sobrante de Caja (+${{ getCashDifference() | number:&#x27;1.2-2&#x27; }})&lt;/span&gt;
+                        &lt;/div&gt;
+                    &lt;/div&gt;
+                &lt;/div&gt;
+
+                &lt;!-- Botones finales de conciliación --&gt;
+                &lt;div class&#x3D;&quot;drawer-actions-footer&quot;&gt;
+                    &lt;button nz-button nzType&#x3D;&quot;default&quot; nzSize&#x3D;&quot;large&quot; (click)&#x3D;&quot;closeSettlementDrawer()&quot;&gt;Cancelar&lt;/button&gt;
+                    &lt;button nz-button nzType&#x3D;&quot;primary&quot; nzSize&#x3D;&quot;large&quot; [disabled]&#x3D;&quot;physicalCashReceived &#x3D;&#x3D;&#x3D; null || physicalCashReceived &lt; 0&quot; (click)&#x3D;&quot;confirmSettlement()&quot;&gt;
+                        &lt;span nz-icon nzType&#x3D;&quot;check&quot; nzTheme&#x3D;&quot;outline&quot;&gt;&lt;/span&gt;
+                        Liquidar y Cerrar Caja
+                    &lt;/button&gt;
+                &lt;/div&gt;
+
+            &lt;/div&gt;
+        &lt;/ng-container&gt;
+    &lt;/nz-drawer&gt;
+
+&lt;/div&gt;</code></pre>
+    </div>
+
+    <div class="tab-pane fade " id="styleData">
+                <p class="comment">
+                    <code>./finances.component.scss</code>
+                </p>
+                <pre class="line-numbers"><code class="language-scss">.finances-dashboard-wrapper {
+    padding: 28px;
+    background: radial-gradient(circle at 0% 0%, #f8fafc 0%, #f1f5f9 100%);
+    min-height: calc(100vh - 64px);
+    animation: financesFadeIn 0.5s cubic-bezier(0.16, 1, 0.3, 1);
+}
+
+.dashboard-header {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    margin-bottom: 32px;
+    flex-wrap: wrap;
+    gap: 20px;
+
+    .page-title {
+        font-size: 32px;
+        font-weight: 800;
+        color: #0f172a;
+        margin-bottom: 6px;
+        letter-spacing: -0.8px;
+    }
+
+    .page-subtitle {
+        color: #64748b;
+        font-size: 15.5px;
+        margin: 0;
+        font-weight: 500;
+    }
+}
+
+// PREMIUM GLASSMORPHIC CARDS
+.premium-card {
+    background: rgba(255, 255, 255, 0.75) !important;
+    backdrop-filter: blur(20px);
+    border: 1px solid rgba(255, 255, 255, 0.5) !important;
+    border-radius: 20px !important;
+    box-shadow: 0 10px 30px rgba(15, 23, 42, 0.03), 
+                inset 0 1px 0 rgba(255, 255, 255, 0.6) !important;
+    transition: all 0.4s cubic-bezier(0.16, 1, 0.3, 1) !important;
+    
+    &amp;:hover {
+        transform: translateY(-4px);
+        box-shadow: 0 20px 40px rgba(15, 23, 42, 0.07), 
+                    inset 0 1px 0 rgba(255, 255, 255, 0.8) !important;
+        background: rgba(255, 255, 255, 0.85) !important;
+    }
+}
+
+// KPI GRID
+.balance-row {
+    margin-bottom: 28px !important;
+}
+
+.balance-card {
+    position: relative;
+    overflow: hidden;
+    padding: 12px 16px;
+
+    &amp;.highlight-card {
+        border-top: 4px solid #16a34a !important;
+    }
+
+    &amp;.bg-light {
+        background-color: rgba(241, 245, 249, 0.6);
+    }
+
+    .balance-icon-wrapper {
+        position: absolute;
+        top: 24px;
+        right: 24px;
+        font-size: 36px;
+        opacity: 0.15;
+    }
+
+    .highlight-value {
+        color: #16a34a;
+        font-weight: 800;
+        font-size: 32px;
+        letter-spacing: -0.5px;
+    }
+}
+
+.withdraw-btn-pill {
+    display: inline-flex;
+    align-items: center;
+    gap: 8px;
+    font-weight: 700;
+    border-radius: 12px;
+    box-shadow: 0 4px 12px rgba(24, 144, 255, 0.2);
+    transition: all 0.2s ease;
+
+    &amp;:hover {
+        transform: translateY(-1px);
+        box-shadow: 0 6px 16px rgba(24, 144, 255, 0.3);
+    }
+}
+
+// PREMIUM TABS
+.finances-tabset {
+    ::ng-deep {
+        .ant-tabs-nav-list {
+            gap: 12px;
+        }
+
+        .ant-tabs-tab {
+            font-size: 16px;
+            font-weight: 700;
+            color: #64748b;
+            padding: 12px 16px;
+            border-radius: 12px 12px 0 0;
+            transition: all 0.3s ease;
+            
+            &amp;:hover {
+                color: #1890ff;
+            }
+        }
+
+        .ant-tabs-tab-active {
+            .ant-tabs-tab-btn {
+                color: #1890ff !important;
+                font-weight: 800;
+            }
+        }
+        
+        .ant-tabs-ink-bar {
+            height: 3px;
+            border-radius: 3px 3px 0 0;
+            background: #1890ff;
+        }
+    }
+}
+
+.tab-content-box {
+    padding: 24px 0;
+}
+
+// COURIER CARDS GRID
+.rider-card {
+    padding: 8px;
+    
+    .rider-card-header {
+        display: flex;
+        align-items: center;
+        gap: 16px;
+    }
+
+    .rider-title-box {
+        .rider-name {
+            font-size: 16.5px;
+            font-weight: 800;
+            color: #1e293b;
+            margin: 0 0 2px 0;
+        }
+
+        .rider-orders-badge {
+            font-size: 12px;
+            font-weight: 600;
+            color: #1890ff;
+            background: rgba(24, 144, 255, 0.08);
+            padding: 2px 8px;
+            border-radius: 6px;
+        }
+    }
+
+    .rider-cash-stats {
+        margin: 20px 0 24px 0;
+
+        .stats-label {
+            font-size: 12px;
+            text-transform: uppercase;
+            font-weight: 700;
+            letter-spacing: 0.5px;
+            color: #94a3b8;
+            display: block;
+            margin-bottom: 4px;
+        }
+
+        .stats-amount {
+            font-size: 30px;
+            font-weight: 800;
+            color: #0f172a;
+            letter-spacing: -0.5px;
+            margin: 0;
+        }
+    }
+
+    .settlement-trigger-btn {
+        font-weight: 700;
+        border-radius: 12px;
+        display:flex;
+        align-items: center;
+        justify-content: center;
+        gap: 8px;
+        box-shadow: 0 4px 12px rgba(24, 144, 255, 0.15);
+    }
+}
+
+// EMPTY PLACEHOLDERS
+.empty-riders-state {
+    .placeholder-icon {
+        font-size: 56px;
+        margin-bottom: 16px;
+        display: block;
+    }
+
+    h3 {
+        font-size: 19px;
+        font-weight: 800;
+        color: #1e293b;
+        margin-bottom: 6px;
+    }
+
+    p {
+        font-size: 14.5px;
+        color: #64748b;
+        max-width: 440px;
+        margin: 0 auto;
+        line-height: 1.5;
+    }
+}
+
+// AUDITED STOPS LIST inside DRAWER
+.settlement-drawer-wrapper {
+    height: 100%;
+    display: flex;
+    flex-direction: column;
+    padding-bottom: 24px;
+}
+
+.drawer-rider-header {
+    display: flex;
+    align-items: center;
+    gap: 14px;
+}
+
+.stops-audited-section {
+    margin-bottom: 24px;
+
+    .section-title {
+        font-size: 12px;
+        text-transform: uppercase;
+        font-weight: 700;
+        letter-spacing: 0.5px;
+        color: #94a3b8;
+        margin-bottom: 12px;
+    }
+
+    .audit-stops-list {
+        display: flex;
+        flex-direction: column;
+        gap: 10px;
+        max-height: 220px;
+        overflow-y: auto;
+        padding-right: 4px;
+        
+        // Custom sleek scrollbar
+        &amp;::-webkit-scrollbar {
+            width: 4px;
+        }
+        &amp;::-webkit-scrollbar-thumb {
+            background: #cbd5e1;
+            border-radius: 4px;
+        }
+    }
+}
+
+.audit-stop-card {
+    background: #f8fafc;
+    border: 1px solid #e2e8f0;
+    border-radius: 12px;
+    padding: 10px 14px;
+    transition: all 0.2s ease;
+
+    &amp;:hover {
+        background: #fff;
+        border-color: #cbd5e1;
+        box-shadow: 0 4px 12px rgba(15, 23, 42, 0.03);
+    }
+
+    .stop-header {
+        display: flex;
+        justify-content: space-between;
+        font-weight: 700;
+        font-size: 13.5px;
+        color: #1e293b;
+        margin-bottom: 4px;
+    }
+
+    .stop-footer {
+        display: flex;
+        justify-content: space-between;
+        font-size: 12px;
+        color: #64748b;
+
+        .stop-payment-tag {
+            font-weight: 700;
+            color: #64748b;
+            background: #e2e8f0;
+            padding: 1px 6px;
+            border-radius: 4px;
+            font-size: 10.5px;
+            text-transform: uppercase;
+        }
+    }
+}
+
+// CASH COUNTING CONSOLE inside DRAWER
+.cash-counting-console {
+    background: #fafafa;
+    border: 1px solid #f0f0f0;
+    border-radius: 16px;
+    padding: 18px;
+    margin-top: auto;
+    margin-bottom: 24px;
+    box-shadow: inset 0 2px 4px rgba(0,0,0,0.02);
+
+    .console-row {
+        display: flex;
+        justify-content: space-between;
+        align-items: center;
+        margin-bottom: 16px;
+
+        .console-label {
+            font-size: 13px;
+            font-weight: 700;
+            color: #64748b;
+        }
+
+        .console-value {
+            font-size: 18px;
+            font-weight: 800;
+            color: #0f172a;
+        }
+    }
+
+    .console-counting-input {
+        display: flex;
+        flex-direction: column;
+        gap: 6px;
+
+        label {
+            font-size: 13.5px;
+            font-weight: 700;
+            color: #475569;
+        }
+    }
+
+    .input-dollar-addon {
+        position: relative;
+        display: flex;
+        align-items: center;
+
+        .addon-symbol {
+            position: absolute;
+            left: 14px;
+            font-weight: 800;
+            color: #94a3b8;
+            font-size: 15px;
+        }
+
+        input {
+            padding-left: 28px !important;
+            height: 44px;
+            border-radius: 10px;
+            font-size: 16px;
+            font-weight: 700;
+            color: #0f172a;
+            
+            &amp;:focus {
+                border-color: #1890ff;
+                box-shadow: 0 0 0 2px rgba(24, 144, 255, 0.15);
+            }
+        }
+    }
+}
+
+// DYNAMIC DISCREPANCY GLOWING TAGS
+.discrepancy-tag {
+    display: flex;
+    align-items: center;
+    gap: 8px;
+    padding: 10px 14px;
+    border-radius: 10px;
+    font-size: 13px;
+    font-weight: 700;
+    
+    &amp;.perfect-match {
+        color: #16a34a;
+        background: rgba(22, 163, 74, 0.08);
+        border: 1px dashed rgba(22, 163, 74, 0.25);
+    }
+
+    &amp;.shortage {
+        color: #dc2626;
+        background: rgba(220, 38, 38, 0.08);
+        border: 1px dashed rgba(220, 38, 38, 0.25);
+        animation: shakeInput 0.4s ease;
+    }
+
+    &amp;.surplus {
+        color: #2563eb;
+        background: rgba(37, 99, 235, 0.08);
+        border: 1px dashed rgba(37, 99, 235, 0.25);
+    }
+}
+
+// FIXED DRAWER ACTIONS FOOTER
+.drawer-actions-footer {
+    display: flex;
+    justify-content: flex-end;
+    gap: 12px;
+    border-top: 1px solid #f0f0f0;
+    padding-top: 16px;
+
+    button {
+        height: 44px;
+        border-radius: 10px;
+        font-weight: 700;
+        display: inline-flex;
+        align-items: center;
+        justify-content: center;
+        gap: 6px;
+    }
+}
+
+// PREMIUM TABLE STYLING
+.premium-table {
+    ::ng-deep {
+        .ant-table-thead &gt; tr &gt; th {
+            background: rgba(248, 250, 252, 0.6) !important;
+            color: #64748b !important;
+            font-weight: 700 !important;
+            font-size: 12.5px !important;
+            text-transform: uppercase !important;
+            letter-spacing: 0.5px !important;
+            border-bottom: 1px solid rgba(226, 232, 240, 0.8) !important;
+        }
+
+        .ant-table-tbody &gt; tr &gt; td {
+            border-bottom: 1px solid rgba(226, 232, 240, 0.5) !important;
+            padding: 14px 16px !important;
+        }
+    }
+}
+
+.tx-id {
+    font-family: monospace;
+    font-size: 12.5px;
+    color: #94a3b8;
+}
+
+.tx-amount {
+    font-weight: 800;
+    font-size: 14.5px;
+}
+
+.tx-dest {
+    font-size: 13.5px;
+    color: #475569;
+    font-weight: 600;
+}
+
+// KEYFRAME ANIMATIONS
+@keyframes financesFadeIn {
+    from {
+        opacity: 0;
+        transform: translateY(12px);
+    }
+    to {
+        opacity: 1;
+        transform: translateY(0);
+    }
+}
+
+@keyframes shakeInput {
+    0%, 100% { transform: translateX(0); }
+    20%, 60% { transform: translateX(-4px); }
+    40%, 80% { transform: translateX(4px); }
+}</code></pre>
+    </div>
+
+    <div class="tab-pane fade " id="tree">
+        <div id="tree-container"></div>
+        <div class="tree-legend">
+            <div class="title">
+                <b>Leyenda</b>
+            </div>
+            <div>
+                <div class="color htmlelement"></div><span>Elemento Html</span>
+            </div>
+            <div>
+                <div class="color component"></div><span>Componente</span>
+            </div>
+            <div>
+                <div class="color directive"></div><span>Elemento Html con directiva</span>
+            </div>
+        </div>
+    </div>
+
+    
+</div>
+
+<script src="../js/libs/vis-network.min.js"></script>
+<script src="../js/libs/htmlparser.js"></script>
+<script src="../js/libs/deep-iterator.js"></script>
+<script>
+        var COMPONENT_TEMPLATE = '<div><div class="finances-dashboard-wrapper">        <div class="dashboard-header">        <div class="header-titles">            <h1 class="page-title">Mi Billetera</h1>            <p class="page-subtitle">Gestiona el dinero generado por tus ventas, concilia rendiciones de repartidores y liquida fondos a tu banco.</p>        </div>    </div>    <!-- SECCIÓN DE KPIs GLOBALES (Afectados dinámicamente al conciliar) -->    <div nz-row [nzGutter]="[16, 16]" class="balance-row">                <div nz-col nzXs="24" nzSm="12" nzLg="8">            <nz-card class="premium-card balance-card highlight-card" [nzBordered]="false">                <div class="balance-icon-wrapper">                    <span nz-icon nzType="wallet" nzTheme="outline" style="color: #52c41a;"></span>                </div>                <nz-statistic [nzValue]="availableBalance" [nzTitle]="\'Saldo Disponible (Retirable)\'" [nzPrefix]="\'$\'"                    [nzValueTemplate]="availableTemplate">                </nz-statistic>                <ng-template #availableTemplate let-value>                    <span class="highlight-value">{{ value | number:\'1.2-2\' }}</span>                </ng-template>            </nz-card>        </div>        <div nz-col nzXs="24" nzSm="12" nzLg="8">            <nz-card class="premium-card balance-card" [nzBordered]="false">                <div class="balance-icon-wrapper">                    <span nz-icon nzType="hourglass" nzTheme="outline" style="color: #faad14;"></span>                </div>                <nz-statistic [nzValue]="pendingSettlement" [nzTitle]="\'En Clearing Postal (Clearing)\'" [nzPrefix]="\'$\'"                    [nzValueTemplate]="pendingTemplate">                </nz-statistic>                <ng-template #pendingTemplate let-value>                    <span style="font-weight: 700; color: #1e293b;">{{ value | number:\'1.2-2\' }}</span>                </ng-template>            </nz-card>        </div>        <div nz-col nzXs="24" nzSm="12" nzLg="8">            <nz-card class="premium-card balance-card bg-light" [nzBordered]="false">                <div class="balance-icon-wrapper">                    <span nz-icon nzType="history" nzTheme="outline" style="color: #64748b;"></span>                </div>                <nz-statistic [nzValue]="totalWithdrawn" [nzTitle]="\'Retirado Históricamente\'" [nzPrefix]="\'$\'"                    [nzValueTemplate]="historyTemplate">                </nz-statistic>                <ng-template #historyTemplate let-value>                    <span style="color: #475569; font-weight: 700;">{{ value | number:\'1.2-2\' }}</span>                </ng-template>            </nz-card>        </div>    </div>    <!-- SECCIÓN MAESTRA DE TABS FINANCIEROS (B2B / WMS LOGISTICS) -->    <nz-tabset class="finances-tabset" nzSize="large">                <!-- SOLAPA A: RETIROS Y TRANSFERS BANCARIOS -->        <nz-tab nzTitle="🏦 Retiros y Billetera">            <div class="tab-content-box">                                <div class="wallet-actions-bar" style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 20px;">                    <h3 style="margin: 0; font-weight: 700; color: #1e293b;">Historial de Retiros y Transferencias</h3>                    <button nz-button nzType="primary" class="withdraw-btn-pill" nzSize="large" (click)="requestWithdrawal()" [disabled]="availableBalance <= 0">                        <span nz-icon nzType="bank" nzTheme="outline"></span>                        Retirar Fondos a CBU                    </button>                </div>                <nz-card class="premium-card table-card" [nzBordered]="false">                    <nz-table #payoutTable [nzData]="payoutHistory" nzSize="middle" [nzPageSize]="8" class="premium-table">                        <thead>                            <tr>                                <th nzWidth="20%">Referencia</th>                                <th nzWidth="20%">Fecha</th>                                <th nzWidth="20%">Monto</th>                                <th nzWidth="25%">Destinatario</th>                                <th nzWidth="15%">Estado</th>                            </tr>                        </thead>                        <tbody>                            <tr *ngFor="let data of payoutTable.data">                                <td><span class="tx-id">{{ data.pay_uuid }}</span></td>                                <td>{{ data.pay_date | date:\'dd/MM/yyyy HH:mm\' }}</td>                                <td><span class="tx-amount" [style.color]="data.pay_uuid.startsWith(\'rc-\') ? \'#16a34a\' : \'#1e293b\'">                                    {{ data.pay_uuid.startsWith(\'rc-\') ? \'+\' : \'-\' }} ${{ data.pay_amount | number:\'1.2-2\' }}                                </span></td>                                <td><span class="tx-dest">{{ data.pay_destination }}</span></td>                                <td>                                    <nz-tag [nzColor]="getStatusColor(data.pay_status)">{{ getStatusLabel(data.pay_status) }}</nz-tag>                                </td>                            </tr>                        </tbody>                    </nz-table>                </nz-card>            </div>        </nz-tab>        <!-- SOLAPA B: RENDICIÓN DE CAJAS DE REPARTIDORES -->        <nz-tab nzTitle="🛵 Rendición de Repartidores">            <div class="tab-content-box">                                <div class="tab-section-header" style="margin-bottom: 20px;">                    <h3 style="margin: 0 0 4px 0; font-weight: 700; color: #1e293b;">Rendición diaria de Cajas (COD)</h3>                    <p style="margin: 0; color: #64748b; font-size: 13.5px;">Concilia el efectivo en mano que recaudan tus repartidores en los despachos contra entrega.</p>                </div>                <nz-spin [nzSpinning]="loadingRiders" nzTip="Auditando repartidores en la calle...">                                        <!-- Grid de Tarjetas de Repartidores -->                    <div nz-row [nzGutter]="[20, 20]" *ngIf="activeRiders.length > 0" class="riders-grid">                        <div nz-col nzXs="24" nzSm="12" nzLg="8" *ngFor="let rider of activeRiders">                            <nz-card class="premium-card rider-card" [nzBordered]="false">                                <div class="rider-card-header">                                    <nz-avatar [nzSize]="48" nzIcon="user" style="background-color: rgba(24, 144, 255, 0.08); color: #1890ff;"></nz-avatar>                                    <div class="rider-title-box">                                        <h4 class="rider-name">{{ rider.rider_name }}</h4>                                        <span class="rider-orders-badge">📍 {{ rider.order_count }} envíos completados</span>                                    </div>                                </div>                                <nz-divider style="margin: 16px 0;"></nz-divider>                                <div class="rider-cash-stats">                                    <span class="stats-label">Efectivo en mano recaudado:</span>                                    <h3 class="stats-amount">${{ rider.theoretical_cash | number:\'1.2-2\' }}</h3>                                </div>                                <button nz-button nzType="primary" nzBlock nzSize="large" class="settlement-trigger-btn" (click)="openRiderSettlement(rider)">                                    <span nz-icon nzType="dollar" nzTheme="outline"></span>                                    Rendir Caja                                </button>                            </nz-card>                        </div>                    </div>                    <!-- Placeholder caso sin rendiciones pendientes -->                    <div *ngIf="activeRiders.length === 0" class="empty-riders-state">                        <nz-card class="premium-card text-center" style="padding: 48px 24px;" [nzBordered]="false">                            <span nz-icon nzType="safety-certificate" nzTheme="twotone" [nzTwotoneColor]="\'#52c41a\'" class="placeholder-icon"></span>                            <h3>¡Cajas Conciliadas!</h3>                            <p>No se registran repartidores con cobros en efectivo pendientes de rendir en la sucursal activa.</p>                        </nz-card>                    </div>                </nz-spin>            </div>        </nz-tab>    </nz-tabset>    <!-- CAJÓN BOTTOM-SHEET / DRAWER DE RECONCILIACIÓN EN CALIENTE -->    <nz-drawer [nzVisible]="isSettlementDrawerVisible" nzPlacement="right" [nzWidth]="420" nzTitle="Conciliación de Caja" (nzOnClose)="closeSettlementDrawer()">        <ng-container *nzDrawerContent>            <div class="settlement-drawer-wrapper" *ngIf="selectedRider">                                <div class="drawer-rider-header">                    <nz-avatar [nzSize]="40" nzIcon="user" style="background-color: rgba(24, 144, 255, 0.08); color: #1890ff;"></nz-avatar>                    <div>                        <h3 style="margin: 0; font-weight: 700; color: #1e293b;">{{ selectedRider.rider_name }}</h3>                        <span style="font-size: 12px; color: #64748b;">shift del día de la fecha</span>                    </div>                </div>                <nz-divider style="margin: 16px 0;"></nz-divider>                <!-- Planilla de Pedidos Auditados -->                <div class="stops-audited-section">                    <h4 class="section-title">Envíos entregados en este Shift</h4>                    <div class="audit-stops-list">                        <div class="audit-stop-card" *ngFor="let order of selectedRider.orders">                            <div class="stop-header">                                <span class="stop-id">#PED-{{ order.ord_ordernumber }}</span>                                <span class="stop-cash">${{ order.ord_total | number:\'1.2-2\' }}</span>                            </div>                            <div class="stop-footer">                                <span class="stop-client">{{ order.cus?.cus_fullname || \'Comprador ATSMarket\' }}</span>                                <span class="stop-payment-tag" *ngIf="parseCustomerNotes(order.ord_customernotes) as parsed">{{ parsed.payment }}</span>                            </div>                        </div>                    </div>                </div>                <!-- Bloque Matemático del Cierre -->                <div class="cash-counting-console">                    <div class="console-row">                        <span class="console-label">Efectivo Teórico (Sistema):</span>                        <strong class="console-value">${{ selectedRider.theoretical_cash | number:\'1.2-2\' }}</strong>                    </div>                    <div class="console-counting-input">                        <label for="cashReceived">Efectivo Físico Entregado:</label>                        <div class="input-dollar-addon">                            <span class="addon-symbol">$</span>                            <input type="number" id="cashReceived" nz-input [(ngModel)]="physicalCashReceived" placeholder="Ingresa el monto contado" />                        </div>                    </div>                    <!-- Indicador interactivo de discrepancias -->                    <div class="discrepancy-status-wrapper" style="margin-top: 16px;">                        <span class="console-label" style="display: block; margin-bottom: 6px;">Cuadre de Rendición:</span>                                                <!-- Caso A: Caja perfecta -->                        <div *ngIf="getCashDifference() === 0" class="discrepancy-tag perfect-match">                            <span nz-icon nzType="check-circle" nzTheme="fill"></span>                            <span>Caja Cuadrada ($0.00)</span>                        </div>                        <!-- Caso B: Faltante -->                        <div *ngIf="getCashDifference() < 0" class="discrepancy-tag shortage">                            <span nz-icon nzType="close-circle" nzTheme="fill"></span>                            <span>Faltante de Caja (-${{ getAbsoluteDiff() | number:\'1.2-2\' }})</span>                        </div>                        <!-- Caso C: Sobrante -->                        <div *ngIf="getCashDifference() > 0" class="discrepancy-tag surplus">                            <span nz-icon nzType="info-circle" nzTheme="fill"></span>                            <span>Sobrante de Caja (+${{ getCashDifference() | number:\'1.2-2\' }})</span>                        </div>                    </div>                </div>                <!-- Botones finales de conciliación -->                <div class="drawer-actions-footer">                    <button nz-button nzType="default" nzSize="large" (click)="closeSettlementDrawer()">Cancelar</button>                    <button nz-button nzType="primary" nzSize="large" [disabled]="physicalCashReceived === null || physicalCashReceived < 0" (click)="confirmSettlement()">                        <span nz-icon nzType="check" nzTheme="outline"></span>                        Liquidar y Cerrar Caja                    </button>                </div>            </div>        </ng-container>    </nz-drawer></div></div>'
+    var COMPONENTS = [{'name': 'AccountConfirmedComponent', 'selector': 'app-account-confirmed'},{'name': 'AccountCreatedComponent', 'selector': 'app-account-created'},{'name': 'AddressesComponent', 'selector': 'app-addresses'},{'name': 'AnalyticsComponent', 'selector': 'app-analytics'},{'name': 'AppComponent', 'selector': 'app-root'},{'name': 'ApplicationBarComponent', 'selector': 'app-application-bar'},{'name': 'ApplicationLayoutComponent', 'selector': 'app-application-layout'},{'name': 'AuthLayoutComponent', 'selector': 'app-auth-layout'},{'name': 'BarcodeScannerComponent', 'selector': 'app-barcode-scanner'},{'name': 'CameraComponent', 'selector': 'app-camera'},{'name': 'CartComponent', 'selector': 'app-cart'},{'name': 'CatalogComponent', 'selector': 'app-catalog'},{'name': 'CategoriesComponent', 'selector': 'app-categories'},{'name': 'CategoriesListComponent', 'selector': 'app-categories-list'},{'name': 'CheckoutComponent', 'selector': 'app-checkout'},{'name': 'CompanyComponent', 'selector': 'app-company'},{'name': 'CompanySettingsComponent', 'selector': 'app-company-settings'},{'name': 'CouponsComponent', 'selector': 'app-coupons'},{'name': 'CustomersComponent', 'selector': 'app-customers'},{'name': 'DistPriceListComponent', 'selector': 'app-dist-price-list'},{'name': 'FinancesComponent', 'selector': 'app-finances'},{'name': 'ForgotPasswordComponent', 'selector': 'app-forgot-password'},{'name': 'GlobalCategoriesComponent', 'selector': 'app-global-categories'},{'name': 'GlobalCategoryComponent', 'selector': 'app-global-category'},{'name': 'GlobalItemComponent', 'selector': 'app-global-item'},{'name': 'GlobalItemsComponent', 'selector': 'app-global-items'},{'name': 'GlobalMaterialComponent', 'selector': 'app-global-material'},{'name': 'GlobalMaterialsComponent', 'selector': 'app-global-materials'},{'name': 'HomeStoreComponent', 'selector': 'app-home'},{'name': 'InventoryAuditComponent', 'selector': 'app-inventory-audit'},{'name': 'ItemsComponent', 'selector': 'app-items'},{'name': 'LoginComponent', 'selector': 'app-login'},{'name': 'MapPickerComponent', 'selector': 'app-map-picker'},{'name': 'MarketHomeComponent', 'selector': 'app-market-home'},{'name': 'MaterialComponent', 'selector': 'app-material'},{'name': 'MaterialsComponent', 'selector': 'app-materials'},{'name': 'MenuItemComponent', 'selector': 'app-menu-item'},{'name': 'MenuItemsComponent', 'selector': 'app-menu-items'},{'name': 'MpPaymentBrickComponent', 'selector': 'app-mp-payment-brick'},{'name': 'MyCompaniesComponent', 'selector': 'app-my-companies'},{'name': 'MyFavoritesComponent', 'selector': 'app-my-favorites'},{'name': 'MyPurchasesComponent', 'selector': 'app-my-purchases'},{'name': 'NavBarComponent', 'selector': 'app-nav-bar'},{'name': 'OrdersReceivedComponent', 'selector': 'app-orders-received'},{'name': 'PriceListComponent', 'selector': 'app-price-list'},{'name': 'ProductComponent', 'selector': 'app-product'},{'name': 'ProductDetailComponent', 'selector': 'app-product-detail'},{'name': 'ProductsComponent', 'selector': 'app-products'},{'name': 'ProductsVariationsComponent', 'selector': 'app-products-variations'},{'name': 'ProductVariationComponent', 'selector': 'app-product-variation'},{'name': 'PublicLayoutComponent', 'selector': 'app-public-layout'},{'name': 'RegisterComponent', 'selector': 'app-register'},{'name': 'ResetPasswordComponent', 'selector': 'app-reset-password'},{'name': 'SideBarComponent', 'selector': 'app-side-bar'},{'name': 'SsoCallbackComponent', 'selector': 'app-sso-callback'},{'name': 'StoreCatalogComponent', 'selector': 'app-store'},{'name': 'SuperAdminComponent', 'selector': 'app-super-admin'},{'name': 'SupplierComponent', 'selector': 'app-supplier'},{'name': 'SuppliersComponent', 'selector': 'app-suppliers'},{'name': 'UserLayoutComponent', 'selector': 'app-user-layout'},{'name': 'UserRolCompanyComponent', 'selector': 'app-user-rol-company'},{'name': 'WarehousesComponent', 'selector': 'app-warehouses'}];
+    var DIRECTIVES = [{'name': 'ImagePreloadDirective', 'selector': 'img[default]'}];
+    var ACTUAL_COMPONENT = {'name': 'FinancesComponent'};
+</script>
+<script src="../js/tree.js"></script>
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+                   </div><div class="search-results">
+    <div class="has-results">
+        <h1 class="search-results-title"><span class='search-results-count'></span> comparación de resultados "<span class='search-query'></span>"</h1>
+        <ul class="search-results-list"></ul>
+    </div>
+    <div class="no-results">
+        <h1 class="search-results-title">No hay resultados que coincidan "<span class='search-query'></span>"</h1>
+    </div>
+</div>
+</div>
+               <!-- END CONTENT -->
+           </div>
+       </div>
+
+          
+<div class="compodoc-lang-switch">
+  <select id="compodoc-lang-select" aria-label="Seleccionar idioma">
+    <option value="es" selected>🇪🇸 Español</option>
+    <option value="en" >🇺🇸 English</option>
+    <option value="pt" >🇧🇷 Português</option>
+  </select>
+</div>
+
+          <label class="dark-mode-switch">
+               <input type="checkbox">
+               <span class="slider">
+                    <svg class="slider-icon" viewBox="0 0 24 24" fill="none" height="20" stroke="#000" stroke-linecap="round" stroke-linejoin="round" stroke-width="2" width="20" xmlns="http://www.w3.org/2000/svg">
+                    <path d="M21 12.79A9 9 0 1111.21 3 7 7 0 0021 12.79z"></path>
+                    </svg>
+               </span>
+          </label>
+
+       <script>
+            var COMPODOC_CURRENT_PAGE_DEPTH = 1;
+            var COMPODOC_CURRENT_PAGE_CONTEXT = 'component';
+            var COMPODOC_CURRENT_PAGE_URL = 'FinancesComponent.html';
+            var MAX_SEARCH_RESULTS = 15;
+       </script>
+
+       <script>
+               $darkModeToggleSwitchers = document.querySelectorAll('.dark-mode-switch input');
+               var updateDarkModeSwitchOffset = function () {
+                    var content = document.querySelector('.content');
+                    var scrollbarWidth = 0;
+
+                    if (content) {
+                         scrollbarWidth = Math.max(0, content.offsetWidth - content.clientWidth);
+                    }
+
+                    document.documentElement.style.setProperty(
+                         '--content-scrollbar-width',
+                         scrollbarWidth + 'px'
+                    );
+               };
+
+               updateDarkModeSwitchOffset();
+               requestAnimationFrame(updateDarkModeSwitchOffset);
+               window.addEventListener('resize', updateDarkModeSwitchOffset);
+
+               checkToggle(darkModeState);
+               if ($darkModeToggleSwitchers.length > 0) {
+                    for (var i = 0; i < $darkModeToggleSwitchers.length; i++) {
+                         $darkModeToggleSwitchers[i].addEventListener('change', function (event) {
+                              darkModeState = !darkModeState;
+                              toggleDarkMode(darkModeState);
+                         });
+                    }
+               }
+          </script>
+
+       <script src="../js/libs/custom-elements.min.js"></script>
+       <script src="../js/libs/lit-html.js"></script>
+
+       <script src="../js/menu-wc.js" defer></script>
+
+       <script src="../js/libs/bootstrap-native.js"></script>
+
+       <script src="../js/libs/es6-shim.min.js"></script>
+       <script src="../js/libs/EventDispatcher.js"></script>
+       <script src="../js/libs/promise.min.js"></script>
+
+       <script src="../js/compodoc.js"></script>
+
+       <script src="../js/tabs.js"></script>
+       <script src="../js/menu.js"></script>
+       <script src="../js/libs/clipboard.min.js"></script>
+       <script src="../js/libs/prism.js"></script>
+       <script src="../js/sourceCode.js"></script>
+          <script src="../js/search/search.js"></script>
+          <script src="../js/search/lunr.min.js"></script>
+          <script src="../js/search/search-lunr.js"></script>
+          <script src="../js/search/search_index.js"></script>
+       <script src="../js/lazy-load-graphs.js"></script>
+
+
+    
+<script id="compodoc-lang-script">
+(function() {
+  var CURRENT_LANG = "es";
+  var ADDITIONAL_DOCS_MAP = {"es":["01.-introducción-y-arquitectura-general.html","02.-autenticación-y-control-de-accesos.html","03.-catálogo-público-y-exploración-de-tiendas.html","04.-carrito-de-compras-y-checkout-multitienda.html","05.-gestión-de-empresas,-roles-y-configuración.html","06.-inventario,-productos,-variaciones-y-almacenes.html","07.-gestión-de-pedidos,-compras-y-cupones.html","08.-analíticas-de-negocio,-finanzas-y-proveedores.html"],"en":["01.-introduction-and-general-architecture.html","02.-authentication-and-access-control.html","03.-public-catalog-and-store-exploration.html","04.-shopping-cart-and-multi-store-checkout.html","05.-company-management,-roles-and-configuration.html","06.-inventory,-products,-variations-and-warehouses.html","07.-orders-management,-purchases-and-coupons.html","08.-business-analytics,-finances-and-suppliers.html"],"pt":["01.-introdução-e-arquitetura-geral.html","02.-autenticação-e-controle-de-acesso.html","03.-catálogo-público-e-exploração-de-lojas.html","04.-carrinho-de-compras-e-checkout-multiloja.html","05.-gestão-de-empresas,-funções-e-configuração.html","06.-estoque,-produtos,-variações-e-armazéns.html","07.-gestão-de-pedidos,-compras-e-cupons.html","08.-análise-de-negócios,-finanças-e-fornecedores.html"]};
+
+  var select = document.getElementById('compodoc-lang-select');
+  if (!select) return;
+
+  try {
+    localStorage.setItem('compodoc_lang', CURRENT_LANG);
+  } catch (e) {}
+
+  select.addEventListener('change', function(e) {
+    var targetLang = e.target.value;
+    if (targetLang === CURRENT_LANG) return;
+
+    try {
+      localStorage.setItem('compodoc_lang', targetLang);
+    } catch (err) {}
+
+    var href = window.location.href;
+    var pathname = window.location.pathname;
+
+    // Manejo especial para páginas de additional-documentation
+    if (pathname.indexOf('/additional-documentation/') !== -1) {
+      var segments = pathname.split('/');
+      var currentFile = decodeURIComponent(segments[segments.length - 1]);
+      
+      var currentList = ADDITIONAL_DOCS_MAP[CURRENT_LANG] || [];
+      var targetList = ADDITIONAL_DOCS_MAP[targetLang] || [];
+      var foundIndex = -1;
+
+      var prefixMatch = currentFile.match(/^(\d{2}\.-)/);
+      if (prefixMatch) {
+        var prefix = prefixMatch[1];
+        for (var i = 0; i < targetList.length; i++) {
+          if (targetList[i].startsWith(prefix)) {
+            foundIndex = i;
+            break;
+          }
+        }
+      }
+      if (foundIndex === -1) {
+        for (var j = 0; j < currentList.length; j++) {
+          if (currentList[j] === currentFile) {
+            foundIndex = j;
+            break;
+          }
+        }
+      }
+
+      var targetFile = (foundIndex !== -1 && targetList[foundIndex]) 
+        ? targetList[foundIndex] 
+        : (targetList[0] || 'index.html');
+
+      var targetSubpath = '/' + targetLang + '/additional-documentation/' + targetFile;
+      var currentSubpath = '/' + CURRENT_LANG + '/additional-documentation/' + segments[segments.length - 1];
+
+      if (href.indexOf(currentSubpath) !== -1) {
+        window.location.href = href.replace(currentSubpath, targetSubpath);
+        return;
+      }
+    }
+
+    // Páginas estándar
+    var standardReplace = href.replace('/' + CURRENT_LANG + '/', '/' + targetLang + '/');
+    if (standardReplace !== href) {
+      window.location.href = standardReplace;
+    } else {
+      var depth = (typeof COMPODOC_CURRENT_PAGE_DEPTH !== 'undefined') ? COMPODOC_CURRENT_PAGE_DEPTH : 0;
+      var prefixPath = '';
+      for (var k = 0; k <= depth; k++) {
+        prefixPath += '../';
+      }
+      window.location.href = prefixPath + targetLang + '/index.html';
+    }
+  });
+})();
+</script>
+
+</body>
+</html>

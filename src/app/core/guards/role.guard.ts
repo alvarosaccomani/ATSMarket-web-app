@@ -4,8 +4,14 @@ import { SessionService } from '@services/session.service';
 import { NzMessageService } from 'ng-zorro-antd/message';
 
 /**
- * Guardia funcional reutilizable que controla el acceso a rutas según el rol
- * del usuario dentro del contexto de la compañía seleccionada.
+ * @description Guardia funcional reutilizable que controla el acceso a rutas según el rol
+ * asignado al usuario dentro del contexto de la compañía seleccionada (RBAC).
+ * Permite bypass total a usuarios con privilegios globales de SuperAdministrador (usr_sysadmin).
+ * Compara los roles requeridos definidos en route.data['expectedRoles'] contra los roles activos del usuario.
+ *
+ * @param route Instantánea de la ruta activa que contiene los roles requeridos en su propiedad data.
+ * @param state Estado actual de la navegación en el router.
+ * @returns {boolean} Retorna true si el usuario posee al menos uno de los roles autorizados; false con notificación de error y redirección.
  */
 export const roleGuard: CanActivateFn = (route, state) => {
   const sessionService = inject(SessionService);

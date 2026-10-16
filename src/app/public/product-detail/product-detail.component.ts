@@ -30,6 +30,12 @@ import { AnalyticsService } from '@services/analytics.service';
 import { ProductVariationReviewInterface } from '@interfaces/product-variation-review';
 import { FavoritesService } from '@services/favorites.service';
 
+/**
+ * @description Componente de presentación y gestión de la ficha técnica del producto en la tienda pública.
+ * Administra la galería de fotos, el selector de variaciones de atributos (talles, colores, materiales),
+ * el recálculo dinámico de stock disponible y precios vigentes, la incorporación reactiva al carrito
+ * y el módulo de calificaciones y opiniones de clientes.
+ */
 @Component({
   selector: 'app-product-detail',
   standalone: true,

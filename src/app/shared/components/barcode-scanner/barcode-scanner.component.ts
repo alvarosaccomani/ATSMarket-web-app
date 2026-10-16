@@ -6,6 +6,11 @@ import { NzIconModule } from 'ng-zorro-antd/icon';
 import { NzInputModule } from 'ng-zorro-antd/input';
 import { NzButtonModule } from 'ng-zorro-antd/button';
 
+/**
+ * @description Componente reutilizable para lectura óptica de códigos de barras (EAN-13, CODE-128, QR, UPC-A).
+ * Soporta escaneo mediante la API nativa BarcodeDetector con la cámara del dispositivo,
+ * así como ingreso manual y compatibilidad con pistolas lectoras láser vía teclado.
+ */
 @Component({
   selector: 'app-barcode-scanner',
   standalone: true,
@@ -21,8 +26,17 @@ import { NzButtonModule } from 'ng-zorro-antd/button';
   styleUrl: './barcode-scanner.component.scss'
 })
 export class BarcodeScannerComponent implements OnInit, AfterViewInit, OnDestroy {
+  /**
+   * @description Mensaje orientativo de ayuda visual desplegado sobre la mirilla de la cámara.
+   */
   @Input() scannerHint: string = 'Encuadre el código de barras del producto';
+  /**
+   * @description Evento emitido al decodificar un código exitosamente con su contenido en texto.
+   */
   @Output() onScan = new EventEmitter<string>();
+  /**
+   * @description Evento emitido al solicitar el cierre de la ventana modal o drawer del escáner.
+   */
   @Output() onClose = new EventEmitter<void>();
 
   @ViewChild('video') videoElement!: ElementRef<HTMLVideoElement>;

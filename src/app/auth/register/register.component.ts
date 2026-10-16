@@ -14,6 +14,11 @@ import { NzIconModule } from 'ng-zorro-antd/icon';
 
 import { AuthService } from '@services/auth.service';
 
+/**
+ * @description Componente de registro y alta de nuevos usuarios en ATSMarket.
+ * Incluye validaciones reactivas estrictas de complejidad de clave (longitud, mayúsculas, minúsculas,
+ * números, caracteres especiales), conmutador de visibilidad y medidor dinámico de seguridad.
+ */
 @Component({
   selector: 'app-register',
   standalone: true,

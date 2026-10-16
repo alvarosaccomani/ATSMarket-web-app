@@ -1,0 +1,2723 @@
+<!doctype html>
+<html class="no-js" lang="">
+    <head>
+        <meta charset="utf-8">
+        <meta http-equiv="x-ua-compatible" content="ie=edge">
+        <title>ATSMarket Web App</title>
+        <meta name="description" content="">
+        <meta name="viewport" content="width=device-width, initial-scale=1">
+
+        <link rel="icon" type="image/x-icon" href="../images/favicon.ico">
+	   <link rel="stylesheet" href="../styles/style.css">
+        <link rel="stylesheet" href="../styles/dark.css">
+    
+<style id="compodoc-lang-styles">
+  .compodoc-lang-switch {
+    position: fixed;
+    top: 15px;
+    right: calc(90px + var(--content-scrollbar-width, 0px));
+    z-index: 1050;
+    display: inline-block;
+  }
+  @media (max-width: 767px) {
+    .compodoc-lang-switch {
+      top: 8px;
+      right: 60px;
+    }
+  }
+  #compodoc-lang-select {
+    height: 34px;
+    padding: 0 12px;
+    border-radius: 17px;
+    border: 1px solid #d9d9d9;
+    background-color: #ffffff;
+    color: #1f1f1f;
+    font-size: 13px;
+    font-family: inherit;
+    font-weight: 500;
+    cursor: pointer;
+    outline: none;
+    box-shadow: 0 2px 6px rgba(0, 0, 0, 0.08);
+    transition: all 0.3s cubic-bezier(0.645, 0.045, 0.355, 1);
+    -webkit-appearance: none;
+    -moz-appearance: none;
+    appearance: none;
+    padding-right: 26px;
+    background-image: url("data:image/svg+xml;charset=UTF-8,%3csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 24 24' fill='none' stroke='%23666' stroke-width='2' stroke-linecap='round' stroke-linejoin='round'%3e%3cpolyline points='6 9 12 15 18 9'%3e%3c/polyline%3e%3c/svg%3e");
+    background-repeat: no-repeat;
+    background-position: right 8px center;
+    background-size: 14px;
+  }
+  #compodoc-lang-select:hover, #compodoc-lang-select:focus {
+    border-color: #5cc0ae;
+    box-shadow: 0 2px 8px rgba(92, 192, 174, 0.25);
+  }
+  body.dark .compodoc-lang-switch #compodoc-lang-select {
+    background-color: #2c3e50;
+    color: #ecf0f1;
+    border: 1px solid #4a627a;
+    box-shadow: 0 2px 6px rgba(0, 0, 0, 0.35);
+    background-image: url("data:image/svg+xml;charset=UTF-8,%3csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 24 24' fill='none' stroke='%23ecf0f1' stroke-width='2' stroke-linecap='round' stroke-linejoin='round'%3e%3cpolyline points='6 9 12 15 18 9'%3e%3c/polyline%3e%3c/svg%3e");
+  }
+  body.dark .compodoc-lang-switch #compodoc-lang-select option {
+    background-color: #2c3e50;
+    color: #ecf0f1;
+  }
+</style>
+
+</head>
+    <body>
+          <script>
+               // Blocking script to avoid flickering dark mode
+               // Dark mode toggle button
+               var useDark = window.matchMedia('(prefers-color-scheme: dark)');
+               var darkModeState = useDark.matches;
+               var $darkModeToggleSwitchers = document.querySelectorAll('.dark-mode-switch input');
+               var $darkModeToggles = document.querySelectorAll('.dark-mode-switch');
+               var darkModeStateLocal = localStorage.getItem('compodoc_darkmode-state');
+
+               function checkToggle(check) {
+                    for (var i = 0; i < $darkModeToggleSwitchers.length; i++) {
+                         $darkModeToggleSwitchers[i].checked = check;
+                    }
+               }
+
+               function toggleDarkMode(state) {
+                    if (window.localStorage) {
+                         localStorage.setItem('compodoc_darkmode-state', state);
+                    }
+
+                    checkToggle(state);
+
+                    const hasClass = document.body.classList.contains('dark');
+
+                    if (state) {
+                         for (var i = 0; i < $darkModeToggles.length; i++) {
+                              $darkModeToggles[i].classList.add('dark');
+                         }
+                         if (!hasClass) {
+                              document.body.classList.add('dark');
+                         }
+                    } else {
+                         for (var i = 0; i < $darkModeToggles.length; i++) {
+                              $darkModeToggles[i].classList.remove('dark');
+                         }
+                         if (hasClass) {
+                              document.body.classList.remove('dark');
+                         }
+                    }
+               }
+
+               useDark.addEventListener('change', function (evt) {
+                    toggleDarkMode(evt.matches);
+               });
+               if (darkModeStateLocal) {
+                    darkModeState = darkModeStateLocal === 'true';
+               }
+               toggleDarkMode(darkModeState);
+          </script>
+          <script>
+              // --- Iframe navigation tracking for Template Playground ---
+              function sendCurrentUrlToParent() {
+                  if (window.parent && window.parent !== window) {
+                      window.parent.postMessage({
+                          type: 'compodoc-iframe-navigate',
+                          url: window.location.pathname + window.location.hash
+                      }, '*');
+                  }
+              }
+              window.addEventListener('hashchange', sendCurrentUrlToParent, false);
+              window.addEventListener('popstate', sendCurrentUrlToParent, false);
+              window.addEventListener('DOMContentLoaded', sendCurrentUrlToParent, false);
+          </script>
+
+        <div class="navbar navbar-default navbar-fixed-top d-md-none p-0">
+               <div class="d-flex">
+                    <a href="../" class="navbar-brand">ATSMarket Web App</a>
+                    <button type="button" class="btn btn-default btn-menu ion-ios-menu" id="btn-menu"></button>
+               </div>
+        </div>
+
+        <div class="xs-menu menu" id="mobile-menu">
+                <div id="book-search-input" role="search">
+    <input type="text" placeholder="Escribe para buscar">
+    <button type="button"
+        class="search-input-clear"
+        aria-label="Clear search"
+        data-search-input-clear>&times;</button>
+</div>
+            <compodoc-menu></compodoc-menu>
+        </div>
+
+        <div class="container-fluid main">
+           <div class="row main">
+               <div class="d-none d-md-block menu">
+                   <compodoc-menu mode="normal"></compodoc-menu>
+               </div>
+               <!-- START CONTENT -->
+               <div class="content interface">
+                   <div class="content-data">
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+<ol class="breadcrumb">
+  <li class="breadcrumb-item">Interfaces</li>
+  <li class="breadcrumb-item"
+  >
+  StoreOrderGroup</li>
+</ol>
+
+<div class="io-file io-file-path" data-compodoc="entity-file-path">
+    <span class="icon ion-ios-document" aria-hidden="true"></span>
+    <code>src/app/user/checkout/checkout.component.ts</code>
+</div>
+
+<ul class="nav nav-tabs" role="tablist">
+        <li class="nav-item">
+            <a href="#info" 
+                class="nav-link"
+                class="nav-link active"
+                role="tab" id="info-tab" data-bs-toggle="tab" data-link="info">Info</a>
+        </li>
+        <li class="nav-item">
+            <a href="#api" 
+                class="nav-link"
+                
+                role="tab" id="api-tab" data-bs-toggle="tab" data-link="api">API</a>
+        </li>
+        <li class="nav-item">
+            <a href="#source" 
+                class="nav-link"
+                
+                role="tab" id="source-tab" data-bs-toggle="tab" data-link="source">Source</a>
+        </li>
+</ul>
+
+<div class="tab-content">
+    <div class="tab-pane fade active in" id="info">
+
+            <p class="comment">
+                <h3>Descripción</h3>
+            </p>
+            <p class="comment">
+                <p>Estructura que agrupa los productos del carrito por comercio vendedor para su procesamiento logístico independiente.</p>
+
+            </p>
+
+
+            </div>
+
+    <div class="tab-pane fade " id="api"><section data-compodoc="block-index">
+    <h3 id="index">Índice</h3>
+    <table class="table table-sm table-bordered index-table">
+        <tbody>
+            <tr>
+                <td class="col-md-3">
+                    <h6><b>Propiedades</b></h6>
+                </td>
+                <td class="col-md-9">
+                    <ul class="index-list">
+                        <li>
+                                    <span class="modifier">Opcional</span>
+                                <a href="#appliedCoupon" class="reference-link ">
+                                    <span class="reference-badge reference-badge--property" aria-hidden="true">P</span><span class="reference-link-label">appliedCoupon</span>
+                                </a>
+                        </li>
+                        <li>
+                                <a href="#cmp_uuid" class="reference-link ">
+                                    <span class="reference-badge reference-badge--property" aria-hidden="true">P</span><span class="reference-link-label">cmp_uuid</span>
+                                </a>
+                        </li>
+                        <li>
+                                    <span class="modifier">Opcional</span>
+                                <a href="#company" class="reference-link ">
+                                    <span class="reference-badge reference-badge--property" aria-hidden="true">P</span><span class="reference-link-label">company</span>
+                                </a>
+                        </li>
+                        <li>
+                                    <span class="modifier">Opcional</span>
+                                <a href="#couponCodeInput" class="reference-link ">
+                                    <span class="reference-badge reference-badge--property" aria-hidden="true">P</span><span class="reference-link-label">couponCodeInput</span>
+                                </a>
+                        </li>
+                        <li>
+                                    <span class="modifier">Opcional</span>
+                                <a href="#couponDiscount" class="reference-link ">
+                                    <span class="reference-badge reference-badge--property" aria-hidden="true">P</span><span class="reference-link-label">couponDiscount</span>
+                                </a>
+                        </li>
+                        <li>
+                                    <span class="modifier">Opcional</span>
+                                <a href="#couponError" class="reference-link ">
+                                    <span class="reference-badge reference-badge--property" aria-hidden="true">P</span><span class="reference-link-label">couponError</span>
+                                </a>
+                        </li>
+                        <li>
+                                    <span class="modifier">Opcional</span>
+                                <a href="#generatedOrderNumber" class="reference-link ">
+                                    <span class="reference-badge reference-badge--property" aria-hidden="true">P</span><span class="reference-link-label">generatedOrderNumber</span>
+                                </a>
+                        </li>
+                        <li>
+                                <a href="#isCalculatingShipping" class="reference-link ">
+                                    <span class="reference-badge reference-badge--property" aria-hidden="true">P</span><span class="reference-link-label">isCalculatingShipping</span>
+                                </a>
+                        </li>
+                        <li>
+                                <a href="#isLocalDeliveryAvailable" class="reference-link ">
+                                    <span class="reference-badge reference-badge--property" aria-hidden="true">P</span><span class="reference-link-label">isLocalDeliveryAvailable</span>
+                                </a>
+                        </li>
+                        <li>
+                                <a href="#items" class="reference-link ">
+                                    <span class="reference-badge reference-badge--property" aria-hidden="true">P</span><span class="reference-link-label">items</span>
+                                </a>
+                        </li>
+                        <li>
+                                    <span class="modifier">Opcional</span>
+                                <a href="#orderUuid" class="reference-link ">
+                                    <span class="reference-badge reference-badge--property" aria-hidden="true">P</span><span class="reference-link-label">orderUuid</span>
+                                </a>
+                        </li>
+                        <li>
+                                <a href="#postalOptions" class="reference-link ">
+                                    <span class="reference-badge reference-badge--property" aria-hidden="true">P</span><span class="reference-link-label">postalOptions</span>
+                                </a>
+                        </li>
+                        <li>
+                                <a href="#selectedPostalOptionId" class="reference-link ">
+                                    <span class="reference-badge reference-badge--property" aria-hidden="true">P</span><span class="reference-link-label">selectedPostalOptionId</span>
+                                </a>
+                        </li>
+                        <li>
+                                    <span class="modifier">Opcional</span>
+                                <a href="#settings" class="reference-link ">
+                                    <span class="reference-badge reference-badge--property" aria-hidden="true">P</span><span class="reference-link-label">settings</span>
+                                </a>
+                        </li>
+                        <li>
+                                <a href="#shippingCost" class="reference-link ">
+                                    <span class="reference-badge reference-badge--property" aria-hidden="true">P</span><span class="reference-link-label">shippingCost</span>
+                                </a>
+                        </li>
+                        <li>
+                                <a href="#shippingMethod" class="reference-link ">
+                                    <span class="reference-badge reference-badge--property" aria-hidden="true">P</span><span class="reference-link-label">shippingMethod</span>
+                                </a>
+                        </li>
+                        <li>
+                                <a href="#subtotal" class="reference-link ">
+                                    <span class="reference-badge reference-badge--property" aria-hidden="true">P</span><span class="reference-link-label">subtotal</span>
+                                </a>
+                        </li>
+                        <li>
+                                    <span class="modifier">Opcional</span>
+                                <a href="#trackingNumber" class="reference-link ">
+                                    <span class="reference-badge reference-badge--property" aria-hidden="true">P</span><span class="reference-link-label">trackingNumber</span>
+                                </a>
+                        </li>
+                    </ul>
+                </td>
+            </tr>
+        </tbody>
+    </table>
+</section>
+
+
+
+    <section data-compodoc="block-properties">
+        <h3 id="inputs">Propiedades</h3>
+            <table class="table table-sm table-bordered">
+                <tbody>
+                        <tr>
+                            <td class="col-md-4">
+                                <a name="appliedCoupon"></a>
+                                <span class="name "><b>appliedCoupon</b>
+                                    <a href="#appliedCoupon">
+                                        <span class="icon ion-ios-link"></span>
+                                    </a>
+                                </span>
+                            </td>
+                        </tr>
+                        <tr>
+                            <td class="col-md-4">
+                                <code>appliedCoupon:         <code><a href="https://www.typescriptlang.org/docs/handbook/basic-types.html" target="_blank" >any</a></code>
+</code>
+                            </td>
+                        </tr>
+
+
+                            <tr>
+                                <td class="col-md-4">
+                                    <i>Tipo : </i>        <code><a href="https://www.typescriptlang.org/docs/handbook/basic-types.html" target="_blank" >any</a></code>
+
+                                </td>
+                            </tr>
+
+
+                            <tr>
+                                <td class="col-md-4">
+                                    <i>Opcional</i>
+                                </td>
+                            </tr>
+
+
+
+                            <tr>
+                                <td class="col-md-4">
+                                    <div class="io-line">Definido en <a href="" data-line="49" class="link-to-prism">src/app/user/checkout/checkout.component.ts:49</a></div>
+                                </td>
+                            </tr>
+
+                </tbody>
+            </table>
+            <table class="table table-sm table-bordered">
+                <tbody>
+                        <tr>
+                            <td class="col-md-4">
+                                <a name="cmp_uuid"></a>
+                                <span class="name "><b>cmp_uuid</b>
+                                    <a href="#cmp_uuid">
+                                        <span class="icon ion-ios-link"></span>
+                                    </a>
+                                </span>
+                            </td>
+                        </tr>
+                        <tr>
+                            <td class="col-md-4">
+                                <code>cmp_uuid:         <code><a href="https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/string" target="_blank" >string</a></code>
+</code>
+                            </td>
+                        </tr>
+
+
+                            <tr>
+                                <td class="col-md-4">
+                                    <i>Tipo : </i>        <code><a href="https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/string" target="_blank" >string</a></code>
+
+                                </td>
+                            </tr>
+
+
+
+
+
+                            <tr>
+                                <td class="col-md-4">
+                                    <div class="io-line">Definido en <a href="" data-line="34" class="link-to-prism">src/app/user/checkout/checkout.component.ts:34</a></div>
+                                </td>
+                            </tr>
+
+                    <tr>
+                        <td class="col-md-4">
+                            <div class="io-description"><p>Identificador único del comercio emisor.</p>
+</div>
+                        </td>
+                    </tr>
+                </tbody>
+            </table>
+            <table class="table table-sm table-bordered">
+                <tbody>
+                        <tr>
+                            <td class="col-md-4">
+                                <a name="company"></a>
+                                <span class="name "><b>company</b>
+                                    <a href="#company">
+                                        <span class="icon ion-ios-link"></span>
+                                    </a>
+                                </span>
+                            </td>
+                        </tr>
+                        <tr>
+                            <td class="col-md-4">
+                                <code>company:         <code><a href="../interfaces/CompanyInterface.html" target="_self" >CompanyInterface</a></code>
+</code>
+                            </td>
+                        </tr>
+
+
+                            <tr>
+                                <td class="col-md-4">
+                                    <i>Tipo : </i>        <code><a href="../interfaces/CompanyInterface.html" target="_self" >CompanyInterface</a></code>
+
+                                </td>
+                            </tr>
+
+
+                            <tr>
+                                <td class="col-md-4">
+                                    <i>Opcional</i>
+                                </td>
+                            </tr>
+
+
+
+                            <tr>
+                                <td class="col-md-4">
+                                    <div class="io-line">Definido en <a href="" data-line="35" class="link-to-prism">src/app/user/checkout/checkout.component.ts:35</a></div>
+                                </td>
+                            </tr>
+
+                </tbody>
+            </table>
+            <table class="table table-sm table-bordered">
+                <tbody>
+                        <tr>
+                            <td class="col-md-4">
+                                <a name="couponCodeInput"></a>
+                                <span class="name "><b>couponCodeInput</b>
+                                    <a href="#couponCodeInput">
+                                        <span class="icon ion-ios-link"></span>
+                                    </a>
+                                </span>
+                            </td>
+                        </tr>
+                        <tr>
+                            <td class="col-md-4">
+                                <code>couponCodeInput:         <code><a href="https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/string" target="_blank" >string</a></code>
+</code>
+                            </td>
+                        </tr>
+
+
+                            <tr>
+                                <td class="col-md-4">
+                                    <i>Tipo : </i>        <code><a href="https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/string" target="_blank" >string</a></code>
+
+                                </td>
+                            </tr>
+
+
+                            <tr>
+                                <td class="col-md-4">
+                                    <i>Opcional</i>
+                                </td>
+                            </tr>
+
+
+
+                            <tr>
+                                <td class="col-md-4">
+                                    <div class="io-line">Definido en <a href="" data-line="48" class="link-to-prism">src/app/user/checkout/checkout.component.ts:48</a></div>
+                                </td>
+                            </tr>
+
+                </tbody>
+            </table>
+            <table class="table table-sm table-bordered">
+                <tbody>
+                        <tr>
+                            <td class="col-md-4">
+                                <a name="couponDiscount"></a>
+                                <span class="name "><b>couponDiscount</b>
+                                    <a href="#couponDiscount">
+                                        <span class="icon ion-ios-link"></span>
+                                    </a>
+                                </span>
+                            </td>
+                        </tr>
+                        <tr>
+                            <td class="col-md-4">
+                                <code>couponDiscount:         <code><a href="https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/number" target="_blank" >number</a></code>
+</code>
+                            </td>
+                        </tr>
+
+
+                            <tr>
+                                <td class="col-md-4">
+                                    <i>Tipo : </i>        <code><a href="https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/number" target="_blank" >number</a></code>
+
+                                </td>
+                            </tr>
+
+
+                            <tr>
+                                <td class="col-md-4">
+                                    <i>Opcional</i>
+                                </td>
+                            </tr>
+
+
+
+                            <tr>
+                                <td class="col-md-4">
+                                    <div class="io-line">Definido en <a href="" data-line="50" class="link-to-prism">src/app/user/checkout/checkout.component.ts:50</a></div>
+                                </td>
+                            </tr>
+
+                </tbody>
+            </table>
+            <table class="table table-sm table-bordered">
+                <tbody>
+                        <tr>
+                            <td class="col-md-4">
+                                <a name="couponError"></a>
+                                <span class="name "><b>couponError</b>
+                                    <a href="#couponError">
+                                        <span class="icon ion-ios-link"></span>
+                                    </a>
+                                </span>
+                            </td>
+                        </tr>
+                        <tr>
+                            <td class="col-md-4">
+                                <code>couponError:         <code><a href="https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/string" target="_blank" >string</a></code>
+</code>
+                            </td>
+                        </tr>
+
+
+                            <tr>
+                                <td class="col-md-4">
+                                    <i>Tipo : </i>        <code><a href="https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/string" target="_blank" >string</a></code>
+
+                                </td>
+                            </tr>
+
+
+                            <tr>
+                                <td class="col-md-4">
+                                    <i>Opcional</i>
+                                </td>
+                            </tr>
+
+
+
+                            <tr>
+                                <td class="col-md-4">
+                                    <div class="io-line">Definido en <a href="" data-line="51" class="link-to-prism">src/app/user/checkout/checkout.component.ts:51</a></div>
+                                </td>
+                            </tr>
+
+                </tbody>
+            </table>
+            <table class="table table-sm table-bordered">
+                <tbody>
+                        <tr>
+                            <td class="col-md-4">
+                                <a name="generatedOrderNumber"></a>
+                                <span class="name "><b>generatedOrderNumber</b>
+                                    <a href="#generatedOrderNumber">
+                                        <span class="icon ion-ios-link"></span>
+                                    </a>
+                                </span>
+                            </td>
+                        </tr>
+                        <tr>
+                            <td class="col-md-4">
+                                <code>generatedOrderNumber:         <code><a href="https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/number" target="_blank" >number</a></code>
+</code>
+                            </td>
+                        </tr>
+
+
+                            <tr>
+                                <td class="col-md-4">
+                                    <i>Tipo : </i>        <code><a href="https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/number" target="_blank" >number</a></code>
+
+                                </td>
+                            </tr>
+
+
+                            <tr>
+                                <td class="col-md-4">
+                                    <i>Opcional</i>
+                                </td>
+                            </tr>
+
+
+
+                            <tr>
+                                <td class="col-md-4">
+                                    <div class="io-line">Definido en <a href="" data-line="46" class="link-to-prism">src/app/user/checkout/checkout.component.ts:46</a></div>
+                                </td>
+                            </tr>
+
+                </tbody>
+            </table>
+            <table class="table table-sm table-bordered">
+                <tbody>
+                        <tr>
+                            <td class="col-md-4">
+                                <a name="isCalculatingShipping"></a>
+                                <span class="name "><b>isCalculatingShipping</b>
+                                    <a href="#isCalculatingShipping">
+                                        <span class="icon ion-ios-link"></span>
+                                    </a>
+                                </span>
+                            </td>
+                        </tr>
+                        <tr>
+                            <td class="col-md-4">
+                                <code>isCalculatingShipping:         <code><a href="https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/boolean" target="_blank" >boolean</a></code>
+</code>
+                            </td>
+                        </tr>
+
+
+                            <tr>
+                                <td class="col-md-4">
+                                    <i>Tipo : </i>        <code><a href="https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/boolean" target="_blank" >boolean</a></code>
+
+                                </td>
+                            </tr>
+
+
+
+
+
+                            <tr>
+                                <td class="col-md-4">
+                                    <div class="io-line">Definido en <a href="" data-line="44" class="link-to-prism">src/app/user/checkout/checkout.component.ts:44</a></div>
+                                </td>
+                            </tr>
+
+                </tbody>
+            </table>
+            <table class="table table-sm table-bordered">
+                <tbody>
+                        <tr>
+                            <td class="col-md-4">
+                                <a name="isLocalDeliveryAvailable"></a>
+                                <span class="name "><b>isLocalDeliveryAvailable</b>
+                                    <a href="#isLocalDeliveryAvailable">
+                                        <span class="icon ion-ios-link"></span>
+                                    </a>
+                                </span>
+                            </td>
+                        </tr>
+                        <tr>
+                            <td class="col-md-4">
+                                <code>isLocalDeliveryAvailable:         <code><a href="https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/boolean" target="_blank" >boolean</a></code>
+</code>
+                            </td>
+                        </tr>
+
+
+                            <tr>
+                                <td class="col-md-4">
+                                    <i>Tipo : </i>        <code><a href="https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/boolean" target="_blank" >boolean</a></code>
+
+                                </td>
+                            </tr>
+
+
+
+
+
+                            <tr>
+                                <td class="col-md-4">
+                                    <div class="io-line">Definido en <a href="" data-line="41" class="link-to-prism">src/app/user/checkout/checkout.component.ts:41</a></div>
+                                </td>
+                            </tr>
+
+                </tbody>
+            </table>
+            <table class="table table-sm table-bordered">
+                <tbody>
+                        <tr>
+                            <td class="col-md-4">
+                                <a name="items"></a>
+                                <span class="name "><b>items</b>
+                                    <a href="#items">
+                                        <span class="icon ion-ios-link"></span>
+                                    </a>
+                                </span>
+                            </td>
+                        </tr>
+                        <tr>
+                            <td class="col-md-4">
+                                <code>items:     <code>CartItemInterface[]</code>
+</code>
+                            </td>
+                        </tr>
+
+
+                            <tr>
+                                <td class="col-md-4">
+                                    <i>Tipo : </i>    <code>CartItemInterface[]</code>
+
+                                </td>
+                            </tr>
+
+
+
+
+
+                            <tr>
+                                <td class="col-md-4">
+                                    <div class="io-line">Definido en <a href="" data-line="37" class="link-to-prism">src/app/user/checkout/checkout.component.ts:37</a></div>
+                                </td>
+                            </tr>
+
+                </tbody>
+            </table>
+            <table class="table table-sm table-bordered">
+                <tbody>
+                        <tr>
+                            <td class="col-md-4">
+                                <a name="orderUuid"></a>
+                                <span class="name "><b>orderUuid</b>
+                                    <a href="#orderUuid">
+                                        <span class="icon ion-ios-link"></span>
+                                    </a>
+                                </span>
+                            </td>
+                        </tr>
+                        <tr>
+                            <td class="col-md-4">
+                                <code>orderUuid:         <code><a href="https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/string" target="_blank" >string</a></code>
+</code>
+                            </td>
+                        </tr>
+
+
+                            <tr>
+                                <td class="col-md-4">
+                                    <i>Tipo : </i>        <code><a href="https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/string" target="_blank" >string</a></code>
+
+                                </td>
+                            </tr>
+
+
+                            <tr>
+                                <td class="col-md-4">
+                                    <i>Opcional</i>
+                                </td>
+                            </tr>
+
+
+
+                            <tr>
+                                <td class="col-md-4">
+                                    <div class="io-line">Definido en <a href="" data-line="47" class="link-to-prism">src/app/user/checkout/checkout.component.ts:47</a></div>
+                                </td>
+                            </tr>
+
+                </tbody>
+            </table>
+            <table class="table table-sm table-bordered">
+                <tbody>
+                        <tr>
+                            <td class="col-md-4">
+                                <a name="postalOptions"></a>
+                                <span class="name "><b>postalOptions</b>
+                                    <a href="#postalOptions">
+                                        <span class="icon ion-ios-link"></span>
+                                    </a>
+                                </span>
+                            </td>
+                        </tr>
+                        <tr>
+                            <td class="col-md-4">
+                                <code>postalOptions:     <code>any[]</code>
+</code>
+                            </td>
+                        </tr>
+
+
+                            <tr>
+                                <td class="col-md-4">
+                                    <i>Tipo : </i>    <code>any[]</code>
+
+                                </td>
+                            </tr>
+
+
+
+
+
+                            <tr>
+                                <td class="col-md-4">
+                                    <div class="io-line">Definido en <a href="" data-line="43" class="link-to-prism">src/app/user/checkout/checkout.component.ts:43</a></div>
+                                </td>
+                            </tr>
+
+                </tbody>
+            </table>
+            <table class="table table-sm table-bordered">
+                <tbody>
+                        <tr>
+                            <td class="col-md-4">
+                                <a name="selectedPostalOptionId"></a>
+                                <span class="name "><b>selectedPostalOptionId</b>
+                                    <a href="#selectedPostalOptionId">
+                                        <span class="icon ion-ios-link"></span>
+                                    </a>
+                                </span>
+                            </td>
+                        </tr>
+                        <tr>
+                            <td class="col-md-4">
+                                <code>selectedPostalOptionId:     <code>&quot;correo_std&quot; | &quot;correo_exp&quot; | &quot;correo_priority&quot;</code>
+</code>
+                            </td>
+                        </tr>
+
+
+                            <tr>
+                                <td class="col-md-4">
+                                    <i>Tipo : </i>    <code>&quot;correo_std&quot; | &quot;correo_exp&quot; | &quot;correo_priority&quot;</code>
+
+                                </td>
+                            </tr>
+
+
+
+
+
+                            <tr>
+                                <td class="col-md-4">
+                                    <div class="io-line">Definido en <a href="" data-line="40" class="link-to-prism">src/app/user/checkout/checkout.component.ts:40</a></div>
+                                </td>
+                            </tr>
+
+                </tbody>
+            </table>
+            <table class="table table-sm table-bordered">
+                <tbody>
+                        <tr>
+                            <td class="col-md-4">
+                                <a name="settings"></a>
+                                <span class="name "><b>settings</b>
+                                    <a href="#settings">
+                                        <span class="icon ion-ios-link"></span>
+                                    </a>
+                                </span>
+                            </td>
+                        </tr>
+                        <tr>
+                            <td class="col-md-4">
+                                <code>settings:     <code>{  }</code>
+</code>
+                            </td>
+                        </tr>
+
+
+                            <tr>
+                                <td class="col-md-4">
+                                    <i>Tipo : </i>    <code>{  }</code>
+
+                                </td>
+                            </tr>
+
+
+                            <tr>
+                                <td class="col-md-4">
+                                    <i>Opcional</i>
+                                </td>
+                            </tr>
+
+
+
+                            <tr>
+                                <td class="col-md-4">
+                                    <div class="io-line">Definido en <a href="" data-line="36" class="link-to-prism">src/app/user/checkout/checkout.component.ts:36</a></div>
+                                </td>
+                            </tr>
+
+                </tbody>
+            </table>
+            <table class="table table-sm table-bordered">
+                <tbody>
+                        <tr>
+                            <td class="col-md-4">
+                                <a name="shippingCost"></a>
+                                <span class="name "><b>shippingCost</b>
+                                    <a href="#shippingCost">
+                                        <span class="icon ion-ios-link"></span>
+                                    </a>
+                                </span>
+                            </td>
+                        </tr>
+                        <tr>
+                            <td class="col-md-4">
+                                <code>shippingCost:         <code><a href="https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/number" target="_blank" >number</a></code>
+</code>
+                            </td>
+                        </tr>
+
+
+                            <tr>
+                                <td class="col-md-4">
+                                    <i>Tipo : </i>        <code><a href="https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/number" target="_blank" >number</a></code>
+
+                                </td>
+                            </tr>
+
+
+
+
+
+                            <tr>
+                                <td class="col-md-4">
+                                    <div class="io-line">Definido en <a href="" data-line="42" class="link-to-prism">src/app/user/checkout/checkout.component.ts:42</a></div>
+                                </td>
+                            </tr>
+
+                </tbody>
+            </table>
+            <table class="table table-sm table-bordered">
+                <tbody>
+                        <tr>
+                            <td class="col-md-4">
+                                <a name="shippingMethod"></a>
+                                <span class="name "><b>shippingMethod</b>
+                                    <a href="#shippingMethod">
+                                        <span class="icon ion-ios-link"></span>
+                                    </a>
+                                </span>
+                            </td>
+                        </tr>
+                        <tr>
+                            <td class="col-md-4">
+                                <code>shippingMethod:     <code>&quot;moto&quot; | &quot;correo&quot; | &quot;retiro&quot; | &quot;acordar&quot;</code>
+</code>
+                            </td>
+                        </tr>
+
+
+                            <tr>
+                                <td class="col-md-4">
+                                    <i>Tipo : </i>    <code>&quot;moto&quot; | &quot;correo&quot; | &quot;retiro&quot; | &quot;acordar&quot;</code>
+
+                                </td>
+                            </tr>
+
+
+
+
+
+                            <tr>
+                                <td class="col-md-4">
+                                    <div class="io-line">Definido en <a href="" data-line="39" class="link-to-prism">src/app/user/checkout/checkout.component.ts:39</a></div>
+                                </td>
+                            </tr>
+
+                </tbody>
+            </table>
+            <table class="table table-sm table-bordered">
+                <tbody>
+                        <tr>
+                            <td class="col-md-4">
+                                <a name="subtotal"></a>
+                                <span class="name "><b>subtotal</b>
+                                    <a href="#subtotal">
+                                        <span class="icon ion-ios-link"></span>
+                                    </a>
+                                </span>
+                            </td>
+                        </tr>
+                        <tr>
+                            <td class="col-md-4">
+                                <code>subtotal:         <code><a href="https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/number" target="_blank" >number</a></code>
+</code>
+                            </td>
+                        </tr>
+
+
+                            <tr>
+                                <td class="col-md-4">
+                                    <i>Tipo : </i>        <code><a href="https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/number" target="_blank" >number</a></code>
+
+                                </td>
+                            </tr>
+
+
+
+
+
+                            <tr>
+                                <td class="col-md-4">
+                                    <div class="io-line">Definido en <a href="" data-line="38" class="link-to-prism">src/app/user/checkout/checkout.component.ts:38</a></div>
+                                </td>
+                            </tr>
+
+                </tbody>
+            </table>
+            <table class="table table-sm table-bordered">
+                <tbody>
+                        <tr>
+                            <td class="col-md-4">
+                                <a name="trackingNumber"></a>
+                                <span class="name "><b>trackingNumber</b>
+                                    <a href="#trackingNumber">
+                                        <span class="icon ion-ios-link"></span>
+                                    </a>
+                                </span>
+                            </td>
+                        </tr>
+                        <tr>
+                            <td class="col-md-4">
+                                <code>trackingNumber:         <code><a href="https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/string" target="_blank" >string</a></code>
+</code>
+                            </td>
+                        </tr>
+
+
+                            <tr>
+                                <td class="col-md-4">
+                                    <i>Tipo : </i>        <code><a href="https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/string" target="_blank" >string</a></code>
+
+                                </td>
+                            </tr>
+
+
+                            <tr>
+                                <td class="col-md-4">
+                                    <i>Opcional</i>
+                                </td>
+                            </tr>
+
+
+
+                            <tr>
+                                <td class="col-md-4">
+                                    <div class="io-line">Definido en <a href="" data-line="45" class="link-to-prism">src/app/user/checkout/checkout.component.ts:45</a></div>
+                                </td>
+                            </tr>
+
+                </tbody>
+            </table>
+    </section>
+</div>
+
+
+    <div class="tab-pane fade  tab-source-code" id="source">
+        <pre class="line-numbers compodoc-sourcecode"><code class="language-typescript">import { Component, OnInit, OnDestroy } from &#x27;@angular/core&#x27;;
+import { FormBuilder, FormGroup, Validators, ReactiveFormsModule, FormsModule } from &#x27;@angular/forms&#x27;;
+import { RouterLink, Router } from &#x27;@angular/router&#x27;;
+import { CommonModule } from &#x27;@angular/common&#x27;;
+import { CartService } from &#x27;../../core/services/cart.service&#x27;;
+import { AddressesService } from &#x27;../../core/services/addresses.service&#x27;;
+import { AddressInterface } from &#x27;../../core/interfaces/address/address.interface&#x27;;
+import { OrderDetailInterface } from &#x27;../../core/interfaces/order-detail/order-detail.interface&#x27;;
+import { Subscription, forkJoin, of, Observable } from &#x27;rxjs&#x27;;
+import { map, catchError } from &#x27;rxjs/operators&#x27;;
+import { OrdersService } from &#x27;../../core/services/orders.service&#x27;;
+import { StoreContextService } from &#x27;../../core/services/store-context.service&#x27;;
+import { SessionService } from &#x27;../../core/services/session.service&#x27;;
+import { CustomersService } from &#x27;../../core/services/customers.service&#x27;;
+import { MessageService } from &#x27;../../core/services/message.service&#x27;;
+import { StockMovementsService } from &#x27;../../core/services/stock-movements.service&#x27;;
+import { ProductVariationsService } from &#x27;../../core/services/product-variations.service&#x27;;
+import { InventoryStocksService } from &#x27;../../core/services/inventory-stocks.service&#x27;;
+import { WebSocketNotificationService } from &#x27;../../core/services/web-socket-notification.service&#x27;;
+import { CompaniesService } from &#x27;../../core/services/companies.service&#x27;;
+import { CompaniesSettingsService } from &#x27;../../core/services/companies-settings.service&#x27;;
+import { CouponsService } from &#x27;../../core/services/coupons.service&#x27;;
+import { MercadopagoService } from &#x27;../../core/services/mercadopago.service&#x27;;
+import { CompanyInterface } from &#x27;../../core/interfaces/company/company.interface&#x27;;
+import { CartItemInterface } from &#x27;../../core/interfaces/cart-item.interface&#x27;;
+
+/**
+ * @description Estructura que agrupa los productos del carrito por comercio vendedor para su procesamiento logístico independiente.
+ */
+export interface StoreOrderGroup {
+  /**
+   * @description Identificador único del comercio emisor.
+   */
+  cmp_uuid: string;
+  company?: CompanyInterface;
+  settings?: { [key: string]: any };
+  items: CartItemInterface[];
+  subtotal: number;
+  shippingMethod: &#x27;moto&#x27; | &#x27;correo&#x27; | &#x27;retiro&#x27; | &#x27;acordar&#x27;;
+  selectedPostalOptionId: &#x27;correo_std&#x27; | &#x27;correo_exp&#x27; | &#x27;correo_priority&#x27;;
+  isLocalDeliveryAvailable: boolean;
+  shippingCost: number;
+  postalOptions: any[];
+  isCalculatingShipping: boolean;
+  trackingNumber?: string;
+  generatedOrderNumber?: number;
+  orderUuid?: string;
+  couponCodeInput?: string;
+  appliedCoupon?: any;
+  couponDiscount?: number;
+  couponError?: string;
+}
+
+import { NzFormModule } from &#x27;ng-zorro-antd/form&#x27;;
+import { NzInputModule } from &#x27;ng-zorro-antd/input&#x27;;
+import { NzButtonModule } from &#x27;ng-zorro-antd/button&#x27;;
+import { NzCardModule } from &#x27;ng-zorro-antd/card&#x27;;
+import { NzStepsModule } from &#x27;ng-zorro-antd/steps&#x27;;
+import { NzIconModule } from &#x27;ng-zorro-antd/icon&#x27;;
+import { NzRadioModule } from &#x27;ng-zorro-antd/radio&#x27;;
+import { NzDividerModule } from &#x27;ng-zorro-antd/divider&#x27;;
+import { NzMessageService } from &#x27;ng-zorro-antd/message&#x27;;
+import { NzAlertModule } from &#x27;ng-zorro-antd/alert&#x27;;
+import { NzSelectModule } from &#x27;ng-zorro-antd/select&#x27;;
+import { NzSpinModule } from &#x27;ng-zorro-antd/spin&#x27;;
+import { NzModalModule } from &#x27;ng-zorro-antd/modal&#x27;;
+
+import { MpPaymentBrickComponent } from &#x27;../../shared/components/mp-payment-brick/mp-payment-brick.component&#x27;;
+
+/**
+ * @description Asistente transaccional de checkout por etapas (nz-steps).
+ * Gestiona la selección y alta de domicilios con mapa geolocalizado, cotización individual
+ * de métodos de envío por tienda, canje de cupones de descuento y pago seguro vía Mercado Pago Brick.
+ */
+@Component({
+  selector: &#x27;app-checkout&#x27;,
+  standalone: true,
+  imports: [
+    CommonModule,
+    ReactiveFormsModule,
+    FormsModule,
+    RouterLink,
+    NzFormModule,
+    NzInputModule,
+    NzButtonModule,
+    NzCardModule,
+    NzStepsModule,
+    NzIconModule,
+    NzRadioModule,
+    NzDividerModule,
+    NzAlertModule,
+    NzSelectModule,
+    NzSpinModule,
+    NzModalModule,
+    MpPaymentBrickComponent
+  ],
+  templateUrl: &#x27;./checkout.component.html&#x27;,
+  styleUrl: &#x27;./checkout.component.scss&#x27;
+})
+export class CheckoutComponent implements OnInit, OnDestroy {
+
+  public shippingForm!: FormGroup;
+  public storesInOrder: StoreOrderGroup[] &#x3D; [];
+  public totalFinal: number &#x3D; 0;
+  public cartItemCount: number &#x3D; 0;
+  public cartItemsList: any[] &#x3D; [];
+
+  private cartSub!: Subscription;
+  private adrSub!: Subscription;
+  private storeSub!: Subscription;
+
+  public currentCompany: any &#x3D; null;
+
+  // Direcciones
+  public myAddresses: AddressInterface[] &#x3D; [];
+  public selectedAddressId: string &#x3D; &#x27;new&#x27;;
+  public showNewAddressForm: boolean &#x3D; true;
+  public hasCustomer: boolean &#x3D; false;
+
+  // Estado del Wizard
+  public currentStep &#x3D; 1; // 0 &#x3D; Carrito(router), 1 &#x3D; Envío, 2 &#x3D; Pago, 3 &#x3D; Confirmación
+
+  // Pago
+  public paymentMethod: &#x27;transfer&#x27; | &#x27;stripe&#x27; | &#x27;mercadopago&#x27; &#x3D; &#x27;transfer&#x27;;
+  public transactionId: string &#x3D; &#x27;&#x27;;
+  public isProcessingPayment &#x3D; false;
+  public generatedOrderNumber: number &#x3D; 0;
+
+  // Pasarelas Disponibles (Configuradas por el Comercio)
+  public isStripeAvailable &#x3D; false;
+  public isMercadoPagoAvailable &#x3D; true;
+  public stripePublicKey &#x3D; &#x27;&#x27;;
+  public mpPublicKey &#x3D; &#x27;TEST-30982e17-3a0c-4e32-b4b9-f9eebdfb0bbd&#x27;;
+
+  // Simulación de Flujo Mercado Pago
+  public isMpModalVisible &#x3D; false;
+  public mpStep &#x3D; 1; // 1: Login, 2: Cartera/Dinero en cuenta, 3: Aprobación
+  public mpEmail &#x3D; &#x27;&#x27;;
+  public mpCardSelected: &#x27;balance&#x27; | &#x27;visa&#x27; | &#x27;master&#x27; &#x3D; &#x27;balance&#x27;;
+  public mpProcessing &#x3D; false;
+
+  // Simulación de Tarjeta Premium
+  public cardName: string &#x3D; &#x27;&#x27;;
+  public cardNumber: string &#x3D; &#x27;&#x27;;
+  public cardExpiry: string &#x3D; &#x27;&#x27;;
+  public cardCvv: string &#x3D; &#x27;&#x27;;
+  public isCardFlipped: boolean &#x3D; false;
+  public cardBrand: &#x27;visa&#x27; | &#x27;mastercard&#x27; | &#x27;amex&#x27; | &#x27;discover&#x27; | &#x27;generic&#x27; &#x3D; &#x27;generic&#x27;;
+  public processingMessage: string &#x3D; &#x27;&#x27;;
+
+  // Logística Postal Dinámica
+  public isCalculatingShipping: boolean &#x3D; false;
+  public postalOptions: any[] &#x3D; [];
+  public selectedPostalOptionId: &#x27;correo_std&#x27; | &#x27;correo_exp&#x27; | &#x27;correo_priority&#x27; &#x3D; &#x27;correo_std&#x27;;
+
+  // --- FORMATEO Y MÁSCARAS DE TARJETA ---
+
+  public formatCardNumber(event: any): void {
+    let input &#x3D; event.target.value.replace(/\D/g, &#x27;&#x27;); // Eliminar todo excepto dígitos
+    
+    // Auto-detectar marca de tarjeta
+    if (input.startsWith(&#x27;4&#x27;)) {
+      this.cardBrand &#x3D; &#x27;visa&#x27;;
+    } else if (input.startsWith(&#x27;5&#x27;) || /^5[1-5]/.test(input)) {
+      this.cardBrand &#x3D; &#x27;mastercard&#x27;;
+    } else if (input.startsWith(&#x27;3&#x27;)) {
+      this.cardBrand &#x3D; &#x27;amex&#x27;;
+    } else if (input.startsWith(&#x27;6&#x27;)) {
+      this.cardBrand &#x3D; &#x27;discover&#x27;;
+    } else {
+      this.cardBrand &#x3D; &#x27;generic&#x27;;
+    }
+
+    // Limitar longitud según marca
+    const maxLength &#x3D; this.cardBrand &#x3D;&#x3D;&#x3D; &#x27;amex&#x27; ? 15 : 16;
+    input &#x3D; input.substring(0, maxLength);
+
+    // Formatear con espacios cada 4 dígitos (o 4-6-5 para AMEX)
+    let formatted &#x3D; &#x27;&#x27;;
+    if (this.cardBrand &#x3D;&#x3D;&#x3D; &#x27;amex&#x27;) {
+      const part1 &#x3D; input.substring(0, 4);
+      const part2 &#x3D; input.substring(4, 10);
+      const part3 &#x3D; input.substring(10, 15);
+      formatted &#x3D; [part1, part2, part3].filter(Boolean).join(&#x27; &#x27;);
+    } else {
+      const parts &#x3D; [];
+      for (let i &#x3D; 0; i &lt; input.length; i +&#x3D; 4) {
+        parts.push(input.substring(i, i + 4));
+      }
+      formatted &#x3D; parts.join(&#x27; &#x27;);
+    }
+
+    this.cardNumber &#x3D; formatted;
+    event.target.value &#x3D; formatted;
+  }
+
+  public formatExpiry(event: any): void {
+    let input &#x3D; event.target.value.replace(/\D/g, &#x27;&#x27;); // Solo números
+    input &#x3D; input.substring(0, 4);
+
+    if (input.length &gt; 2) {
+      this.cardExpiry &#x3D; input.substring(0, 2) + &#x27;/&#x27; + input.substring(2, 4);
+    } else {
+      this.cardExpiry &#x3D; input;
+    }
+    event.target.value &#x3D; this.cardExpiry;
+  }
+
+  public formatCvv(event: any): void {
+    let input &#x3D; event.target.value.replace(/\D/g, &#x27;&#x27;); // Solo números
+    const maxLength &#x3D; this.cardBrand &#x3D;&#x3D;&#x3D; &#x27;amex&#x27; ? 4 : 3;
+    this.cardCvv &#x3D; input.substring(0, maxLength);
+    event.target.value &#x3D; this.cardCvv;
+  }
+
+  public setCardFocus(isFocused: boolean): void {
+    this.isCardFlipped &#x3D; isFocused;
+  }
+
+  // Envíos y Modalidades
+  public shippingMethod: &#x27;moto&#x27; | &#x27;correo&#x27; | &#x27;retiro&#x27; | &#x27;acordar&#x27; &#x3D; &#x27;correo&#x27;;
+  public shippingCost: number &#x3D; 0;
+  public isLocalDeliveryAvailable: boolean &#x3D; false;
+  public totalSubtotal: number &#x3D; 0;
+
+  // Geolocalización y Autocompletado
+  public isDetectingLocation: boolean &#x3D; false;
+  public detectedCoords: { lat: number, lng: number } | null &#x3D; null;
+
+  constructor(
+    private fb: FormBuilder,
+    private cartService: CartService,
+    private addressesService: AddressesService,
+    private message: NzMessageService,
+    private router: Router,
+    private ordersService: OrdersService,
+    public storeContext: StoreContextService,
+    private _sessionService: SessionService,
+    private _customersService: CustomersService,
+    private _messageService: MessageService,
+    private _stockMovementsService: StockMovementsService,
+    private _productVariationsService: ProductVariationsService,
+    private _inventoryStocksService: InventoryStocksService,
+    private _notificationService: WebSocketNotificationService,
+    private companiesService: CompaniesService,
+    private companiesSettingsService: CompaniesSettingsService,
+    private couponsService: CouponsService,
+    private _mercadopagoService: MercadopagoService
+  ) { }
+
+  ngOnInit(): void {
+    // 0. Cargar Tienda Actual
+    this.storeSub &#x3D; this.storeContext.activeStore$.subscribe(company &#x3D;&gt; {
+      this.currentCompany &#x3D; company;
+      this.checkShippingEligibility();
+    });
+
+    // 0.3 Determinar si hay cliente cargado en sesión
+    const customer &#x3D; this._sessionService.getCustomer();
+    this.hasCustomer &#x3D; !!customer;
+
+    // 0.4 Cargar Direcciones Reales del Servidor
+    const cusUuid &#x3D; customer ? customer.cus_uuid : &#x27;guest-customer&#x27;;
+    this.addressesService.getAddressesByCustomer(cusUuid);
+
+    // 0.5 Suscribirse a la Libreta de Direcciones
+    this.adrSub &#x3D; this.addressesService.addresses$.subscribe((list: AddressInterface[]) &#x3D;&gt; {
+      this.myAddresses &#x3D; list;
+      if (this.myAddresses.length &gt; 0) {
+        this.selectedAddressId &#x3D; this.myAddresses[0].adr_uuid;
+        this.showNewAddressForm &#x3D; false;
+        this.checkShippingEligibility();
+      }
+    });
+
+    // 1. Setup Envío
+    this.shippingForm &#x3D; this.fb.group({
+      nombre: [&#x27;&#x27;, this.hasCustomer ? [] : [Validators.required]],
+      apellido: [&#x27;&#x27;, this.hasCustomer ? [] : [Validators.required]],
+      direccion: [&#x27;&#x27;, [Validators.required]],
+      ciudad: [&#x27;&#x27;, [Validators.required]],
+      provincia: [&#x27;&#x27;, [Validators.required]],
+      codigoPostal: [&#x27;&#x27;, [Validators.required]],
+      telefono: [customer ? customer.cus_phone : &#x27;&#x27;, [Validators.required, Validators.pattern(&#x27;^[+0-9\\s\\-()]*$&#x27;)]]
+    });
+
+    this.shippingForm.get(&#x27;ciudad&#x27;)?.valueChanges.subscribe(() &#x3D;&gt; {
+      this.checkShippingEligibility();
+    });
+
+    this.shippingForm.get(&#x27;codigoPostal&#x27;)?.valueChanges.subscribe(() &#x3D;&gt; {
+      this.checkShippingEligibility();
+      this.calculatePostalShippingRates();
+    });
+
+    // 2. Traer Datos del Carrito
+    this.cartSub &#x3D; this.cartService.cartItems$.subscribe((cartItems: any[]) &#x3D;&gt; {
+      this.cartItemsList &#x3D; cartItems;
+      this.cartItemCount &#x3D; cartItems.reduce((acc: number, item: any) &#x3D;&gt; acc + item.quantity, 0);
+      
+      this.resolveStoresData(cartItems);
+
+      if (this.cartItemCount &#x3D;&#x3D;&#x3D; 0 &amp;&amp; this.currentStep &lt; 3) {
+        this.message.warning(&#x27;Tu carrito está vacío, serás redirigido al catálogo.&#x27;);
+        this.router.navigate([&#x27;/&#x27;]);
+      }
+    });
+  }
+
+  ngOnDestroy(): void {
+    if (this.cartSub) {
+      this.cartSub.unsubscribe();
+    }
+    if (this.adrSub) {
+      this.adrSub.unsubscribe();
+    }
+    if (this.storeSub) {
+      this.storeSub.unsubscribe();
+    }
+  }
+
+  // --- MÉTODOS DE LA VISTA ---
+
+  public onAddressSelectionChange(value: string): void {
+    this.showNewAddressForm &#x3D; (value &#x3D;&#x3D;&#x3D; &#x27;new&#x27;);
+    if (value !&#x3D;&#x3D; &#x27;new&#x27;) {
+      this.detectedCoords &#x3D; null;
+    }
+    this.checkShippingEligibility();
+    this.calculatePostalShippingRates();
+  }
+
+  // --- LÓGICA DE ENVÍO LOCAL VS NACIONAL ---
+
+  private calculateDistance(lat1: number, lon1: number, lat2: number, lon2: number): number {
+    const R &#x3D; 6371; // Radio de la Tierra en km
+    const dLat &#x3D; (lat2 - lat1) * Math.PI / 180;
+    const dLon &#x3D; (lon2 - lon1) * Math.PI / 180;
+    const a &#x3D; 
+      Math.sin(dLat / 2) * Math.sin(dLat / 2) +
+      Math.cos(lat1 * Math.PI / 180) * Math.cos(lat2 * Math.PI / 180) * 
+      Math.sin(dLon / 2) * Math.sin(dLon / 2);
+    const c &#x3D; 2 * Math.atan2(Math.sqrt(a), Math.sqrt(1 - a));
+    return R * c;
+  }
+
+  public getStoreSetting(storeGroup: StoreOrderGroup, key: string, defaultValue: any &#x3D; null): any {
+    const settings &#x3D; storeGroup.settings || {};
+    const company &#x3D; storeGroup.company;
+    let value &#x3D; settings[key];
+
+    if (value &#x3D;&#x3D;&#x3D; undefined || value &#x3D;&#x3D;&#x3D; null || value &#x3D;&#x3D;&#x3D; &#x27;&#x27;) {
+      if (company) {
+        switch (key) {
+          case &#x27;STORE_LOGO_URL&#x27;:
+            value &#x3D; company.cmp_logo;
+            break;
+          case &#x27;HOME_BANNER_IMAGE&#x27;:
+            value &#x3D; company.cmp_banner;
+            break;
+          case &#x27;HOME_BANNER_TITLE&#x27;:
+            value &#x3D; company.cmp_name;
+            break;
+          case &#x27;STORE_WHATSAPP&#x27;:
+            value &#x3D; company.cmp_whatsapp || company.cmp_phone;
+            break;
+          case &#x27;STORE_INSTAGRAM&#x27;:
+            value &#x3D; company.cmp_instagram;
+            break;
+          case &#x27;STORE_FACEBOOK&#x27;:
+            value &#x3D; company.cmp_facebook;
+            break;
+          case &#x27;HOME_BANNER_DESCRIPTION&#x27;:
+          case &#x27;HOME_BANNER_SUBTITLE&#x27;:
+            value &#x3D; company.cmp_description;
+            break;
+          case &#x27;CURRENCY&#x27;:
+            value &#x3D; company.cmp_currency;
+            break;
+          case &#x27;ALLOW_BACKORDERS&#x27;:
+            value &#x3D; company.cmp_allowbackorders;
+            break;
+          case &#x27;THEME_PRIMARY_COLOR&#x27;:
+            value &#x3D; company.cmp_primarycolor;
+            break;
+        }
+      }
+    }
+
+    return (value !&#x3D;&#x3D; undefined &amp;&amp; value !&#x3D;&#x3D; null &amp;&amp; value !&#x3D;&#x3D; &#x27;&#x27;) ? value : defaultValue;
+  }
+
+  public resolveStoresData(cartItems: any[]): void {
+    const groupedItems: { [key: string]: any[] } &#x3D; {};
+    cartItems.forEach(item &#x3D;&gt; {
+      const cmpUuid &#x3D; item.cmp_uuid || (this.currentCompany ? this.currentCompany.cmp_uuid : &#x27;&#x27;);
+      if (cmpUuid) {
+        if (!groupedItems[cmpUuid]) {
+          groupedItems[cmpUuid] &#x3D; [];
+        }
+        groupedItems[cmpUuid].push(item);
+      }
+    });
+
+    const uniqueCmpUuids &#x3D; Object.keys(groupedItems);
+    if (uniqueCmpUuids.length &#x3D;&#x3D;&#x3D; 0) {
+      this.storesInOrder &#x3D; [];
+      this.recalculateGrandTotal();
+      return;
+    }
+
+    const newStoresList: StoreOrderGroup[] &#x3D; [];
+    const fetchRequests: Observable&lt;any&gt;[] &#x3D; [];
+
+    uniqueCmpUuids.forEach(cmpUuid &#x3D;&gt; {
+      const existing &#x3D; this.storesInOrder.find(s &#x3D;&gt; s.cmp_uuid &#x3D;&#x3D;&#x3D; cmpUuid);
+      const items &#x3D; groupedItems[cmpUuid];
+      const subtotal &#x3D; items.reduce((acc, item) &#x3D;&gt; acc + item.subtotal, 0);
+
+      if (existing) {
+        existing.items &#x3D; items;
+        existing.subtotal &#x3D; subtotal;
+        newStoresList.push(existing);
+      } else {
+        const newGroup: StoreOrderGroup &#x3D; {
+          cmp_uuid: cmpUuid,
+          items: items,
+          subtotal: subtotal,
+          shippingMethod: &#x27;correo&#x27;,
+          selectedPostalOptionId: &#x27;correo_std&#x27;,
+          isLocalDeliveryAvailable: false,
+          shippingCost: 0,
+          postalOptions: [],
+          isCalculatingShipping: false,
+          couponCodeInput: &#x27;&#x27;,
+          appliedCoupon: null,
+          couponDiscount: 0,
+          couponError: &#x27;&#x27;
+        };
+        newStoresList.push(newGroup);
+
+        const companyInfo$ &#x3D; this.companiesService.getCompanyById(cmpUuid).pipe(
+          map(res &#x3D;&gt; (res &amp;&amp; res.data &amp;&amp; res.data.length &gt; 0) ? res.data[0] : undefined),
+          catchError(() &#x3D;&gt; of(undefined))
+        );
+        const companySettings$ &#x3D; this.companiesSettingsService.getCompaniesSettings(cmpUuid).pipe(
+          map(res &#x3D;&gt; {
+            const settingsMap: { [key: string]: any } &#x3D; {};
+            if (res &amp;&amp; res.data) {
+              res.data.forEach((s: any) &#x3D;&gt; {
+                let val &#x3D; s.cmps_value;
+                if (val &#x3D;&#x3D;&#x3D; &#x27;true&#x27;) val &#x3D; true;
+                if (val &#x3D;&#x3D;&#x3D; &#x27;false&#x27;) val &#x3D; false;
+                if (!isNaN(val) &amp;&amp; s.cmps_datatype &#x3D;&#x3D;&#x3D; &#x27;number&#x27;) val &#x3D; Number(val);
+                settingsMap[s.cmps_key] &#x3D; val;
+              });
+            }
+            return settingsMap;
+          }),
+          catchError(() &#x3D;&gt; of({}))
+        );
+
+        fetchRequests.push(
+          forkJoin({ company: companyInfo$, settings: companySettings$ }).pipe(
+            map(res &#x3D;&gt; {
+              newGroup.company &#x3D; res.company;
+              newGroup.settings &#x3D; res.settings;
+              return newGroup;
+            })
+          )
+        );
+      }
+    });
+
+    this.storesInOrder &#x3D; newStoresList;
+
+    if (fetchRequests.length &gt; 0) {
+      forkJoin(fetchRequests).subscribe(() &#x3D;&gt; {
+        this.storesInOrder.forEach(g &#x3D;&gt; {
+          this.checkShippingEligibilityForStore(g);
+          if (g.shippingMethod &#x3D;&#x3D;&#x3D; &#x27;correo&#x27;) {
+            this.calculatePostalShippingRatesForStore(g);
+          }
+        });
+        this.recalculateGrandTotal();
+        this.checkPaymentGateways();
+      });
+    } else {
+      this.storesInOrder.forEach(g &#x3D;&gt; {
+        this.checkShippingEligibilityForStore(g);
+        if (g.shippingMethod &#x3D;&#x3D;&#x3D; &#x27;correo&#x27;) {
+          this.calculatePostalShippingRatesForStore(g);
+        }
+      });
+      this.recalculateGrandTotal();
+      this.checkPaymentGateways();
+    }
+  }
+
+  public checkShippingEligibility(): void {
+    this.storesInOrder.forEach(storeGroup &#x3D;&gt; {
+      this.checkShippingEligibilityForStore(storeGroup);
+    });
+    this.recalculateGrandTotal();
+  }
+
+  public checkShippingEligibilityForStore(storeGroup: StoreOrderGroup): void {
+    if (!storeGroup.company) return;
+
+    const localRadius &#x3D; Number(this.getStoreSetting(storeGroup, &#x27;DELIVERY_LOCAL_RADIUS&#x27;, 25));
+    const localCost &#x3D; Number(this.getStoreSetting(storeGroup, &#x27;DELIVERY_LOCAL_COST&#x27;, 350));
+    const nationalCost &#x3D; Number(this.getStoreSetting(storeGroup, &#x27;DELIVERY_NATIONAL_COST&#x27;, 800));
+
+    let isLocal &#x3D; false;
+
+    if (this.selectedAddressId !&#x3D;&#x3D; &#x27;new&#x27;) {
+      const addr &#x3D; this.myAddresses.find(a &#x3D;&gt; a.adr_uuid &#x3D;&#x3D;&#x3D; this.selectedAddressId);
+      if (addr) {
+        if (storeGroup.company.cmp_lat &amp;&amp; storeGroup.company.cmp_lng &amp;&amp; addr.adr_lat &amp;&amp; addr.adr_lng) {
+          const dist &#x3D; this.calculateDistance(
+            storeGroup.company.cmp_lat, storeGroup.company.cmp_lng,
+            addr.adr_lat, addr.adr_lng
+          );
+          isLocal &#x3D; dist &lt;&#x3D; localRadius;
+        } else {
+          const compAddress &#x3D; (storeGroup.company.cmp_address || &#x27;&#x27;).toLowerCase();
+          const addrCity &#x3D; (addr.adr_city || &#x27;&#x27;).toLowerCase().trim();
+          if (addrCity &amp;&amp; compAddress.includes(addrCity)) {
+            isLocal &#x3D; true;
+          }
+        }
+      }
+    } else {
+      if (storeGroup.company.cmp_lat &amp;&amp; storeGroup.company.cmp_lng &amp;&amp; this.detectedCoords) {
+        const dist &#x3D; this.calculateDistance(
+          storeGroup.company.cmp_lat, storeGroup.company.cmp_lng,
+          this.detectedCoords.lat, this.detectedCoords.lng
+        );
+        isLocal &#x3D; dist &lt;&#x3D; localRadius;
+      } else {
+        const formCity &#x3D; (this.shippingForm.get(&#x27;ciudad&#x27;)?.value || &#x27;&#x27;).toLowerCase().trim();
+        const compAddress &#x3D; (storeGroup.company.cmp_address || &#x27;&#x27;).toLowerCase();
+        if (formCity &amp;&amp; compAddress.includes(formCity)) {
+          isLocal &#x3D; true;
+        }
+      }
+    }
+
+    storeGroup.isLocalDeliveryAvailable &#x3D; isLocal;
+
+    const motoEnabled &#x3D; this.getStoreSetting(storeGroup, &#x27;SHIPPING_LOCAL_MOTO_ENABLE&#x27;, &#x27;true&#x27;) &#x3D;&#x3D;&#x3D; &#x27;true&#x27;;
+    const correoEnabled &#x3D; this.getStoreSetting(storeGroup, &#x27;SHIPPING_NATIONAL_CORREO_ENABLE&#x27;, &#x27;true&#x27;) &#x3D;&#x3D;&#x3D; &#x27;true&#x27;;
+    const retiroEnabled &#x3D; this.getStoreSetting(storeGroup, &#x27;SHIPPING_RETIRO_LOCAL_ENABLE&#x27;, &#x27;true&#x27;) &#x3D;&#x3D;&#x3D; &#x27;true&#x27;;
+    const acordarEnabled &#x3D; this.getStoreSetting(storeGroup, &#x27;SHIPPING_ACORDAR_VENDEDOR_ENABLE&#x27;, &#x27;true&#x27;) &#x3D;&#x3D;&#x3D; &#x27;true&#x27;;
+
+    let currentValid &#x3D; false;
+    if (storeGroup.shippingMethod &#x3D;&#x3D;&#x3D; &#x27;moto&#x27; &amp;&amp; motoEnabled &amp;&amp; storeGroup.isLocalDeliveryAvailable) currentValid &#x3D; true;
+    if (storeGroup.shippingMethod &#x3D;&#x3D;&#x3D; &#x27;correo&#x27; &amp;&amp; correoEnabled) currentValid &#x3D; true;
+    if (storeGroup.shippingMethod &#x3D;&#x3D;&#x3D; &#x27;retiro&#x27; &amp;&amp; retiroEnabled) currentValid &#x3D; true;
+    if (storeGroup.shippingMethod &#x3D;&#x3D;&#x3D; &#x27;acordar&#x27; &amp;&amp; acordarEnabled) currentValid &#x3D; true;
+
+    if (!currentValid) {
+      if (correoEnabled) {
+        storeGroup.shippingMethod &#x3D; &#x27;correo&#x27;;
+      } else if (retiroEnabled) {
+        storeGroup.shippingMethod &#x3D; &#x27;retiro&#x27;;
+      } else if (acordarEnabled) {
+        storeGroup.shippingMethod &#x3D; &#x27;acordar&#x27;;
+      } else if (motoEnabled &amp;&amp; storeGroup.isLocalDeliveryAvailable) {
+        storeGroup.shippingMethod &#x3D; &#x27;moto&#x27;;
+      } else {
+        if (motoEnabled) {
+          storeGroup.shippingMethod &#x3D; &#x27;moto&#x27;;
+        } else if (retiroEnabled) {
+          storeGroup.shippingMethod &#x3D; &#x27;retiro&#x27;;
+        } else {
+          storeGroup.shippingMethod &#x3D; &#x27;acordar&#x27;;
+        }
+      }
+    }
+
+    this.updateStoreShippingCost(storeGroup, localCost, nationalCost);
+  }
+
+  public updateShippingCost(): void {
+    this.recalculateGrandTotal();
+  }
+
+  public updateStoreShippingCost(storeGroup: StoreOrderGroup, localCost?: number, nationalCost?: number): void {
+    const lCost &#x3D; localCost !&#x3D;&#x3D; undefined ? localCost : Number(this.getStoreSetting(storeGroup, &#x27;DELIVERY_LOCAL_COST&#x27;, 350));
+    const nCost &#x3D; nationalCost !&#x3D;&#x3D; undefined ? nationalCost : Number(this.getStoreSetting(storeGroup, &#x27;DELIVERY_NATIONAL_COST&#x27;, 800));
+
+    if (storeGroup.shippingMethod &#x3D;&#x3D;&#x3D; &#x27;moto&#x27;) {
+      storeGroup.shippingCost &#x3D; lCost;
+    } else if (storeGroup.shippingMethod &#x3D;&#x3D;&#x3D; &#x27;correo&#x27;) {
+      if (storeGroup.postalOptions.length &gt; 0) {
+        const option &#x3D; storeGroup.postalOptions.find(o &#x3D;&gt; o.id &#x3D;&#x3D;&#x3D; storeGroup.selectedPostalOptionId) || storeGroup.postalOptions[0];
+        storeGroup.shippingCost &#x3D; option.cost;
+      } else {
+        storeGroup.shippingCost &#x3D; nCost;
+      }
+    } else {
+      storeGroup.shippingCost &#x3D; 0;
+    }
+    this.recalculateGrandTotal();
+  }
+
+  public setStoreShippingMethod(storeGroup: StoreOrderGroup, method: &#x27;moto&#x27; | &#x27;correo&#x27; | &#x27;retiro&#x27; | &#x27;acordar&#x27;): void {
+    storeGroup.shippingMethod &#x3D; method;
+    if (method &#x3D;&#x3D;&#x3D; &#x27;correo&#x27;) {
+      this.calculatePostalShippingRatesForStore(storeGroup);
+    } else {
+      this.updateStoreShippingCost(storeGroup);
+    }
+  }
+
+  public selectStorePostalOption(storeGroup: StoreOrderGroup, optionId: &#x27;correo_std&#x27; | &#x27;correo_exp&#x27; | &#x27;correo_priority&#x27;): void {
+    storeGroup.selectedPostalOptionId &#x3D; optionId;
+    this.updateStoreShippingCost(storeGroup);
+  }
+
+  public calculatePostalShippingRates(): void {
+    this.storesInOrder.forEach(storeGroup &#x3D;&gt; {
+      if (storeGroup.shippingMethod &#x3D;&#x3D;&#x3D; &#x27;correo&#x27;) {
+        this.calculatePostalShippingRatesForStore(storeGroup);
+      }
+    });
+  }
+
+  public calculatePostalShippingRatesForStore(storeGroup: StoreOrderGroup): void {
+    const postcode &#x3D; this.selectedAddressId !&#x3D;&#x3D; &#x27;new&#x27;
+      ? this.myAddresses.find(a &#x3D;&gt; a.adr_uuid &#x3D;&#x3D;&#x3D; this.selectedAddressId)?.adr_postalcode || &#x27;&#x27;
+      : this.shippingForm.get(&#x27;codigoPostal&#x27;)?.value || &#x27;&#x27;;
+
+    if (storeGroup.items.length &#x3D;&#x3D;&#x3D; 0 || !postcode.trim()) {
+      storeGroup.postalOptions &#x3D; [];
+      return;
+    }
+
+    storeGroup.isCalculatingShipping &#x3D; true;
+
+    const totalWeight &#x3D; storeGroup.items.reduce((sum, item) &#x3D;&gt; sum + (item.quantity * 0.45), 0);
+    const totalVolume &#x3D; storeGroup.items.reduce((sum, item) &#x3D;&gt; sum + (item.quantity * 1200), 0);
+
+    const firstDigit &#x3D; postcode.trim().replace(/\D/g, &#x27;&#x27;).substring(0, 1);
+    let zoneMultiplier &#x3D; 1.3;
+    if ([&#x27;1&#x27;, &#x27;2&#x27;].includes(firstDigit)) {
+      zoneMultiplier &#x3D; 1.0;
+    } else if ([&#x27;3&#x27;, &#x27;4&#x27;].includes(firstDigit)) {
+      zoneMultiplier &#x3D; 1.25;
+    } else if ([&#x27;5&#x27;, &#x27;6&#x27;].includes(firstDigit)) {
+      zoneMultiplier &#x3D; 1.55;
+    } else if ([&#x27;7&#x27;, &#x27;8&#x27;, &#x27;9&#x27;].includes(firstDigit)) {
+      zoneMultiplier &#x3D; 1.95;
+    }
+
+    setTimeout(() &#x3D;&gt; {
+      const costStd &#x3D; Math.round((600 + (totalWeight * 140) + (totalVolume * 0.04)) * zoneMultiplier);
+      const costExp &#x3D; Math.round((950 + (totalWeight * 200) + (totalVolume * 0.07)) * zoneMultiplier);
+      const costPriority &#x3D; Math.round((1450 + (totalWeight * 310) + (totalVolume * 0.11)) * zoneMultiplier);
+
+      storeGroup.postalOptions &#x3D; [
+        {
+          id: &#x27;correo_std&#x27;,
+          providerName: &#x27;Correo Argentino Standard&#x27;,
+          description: &#x27;Despacho ordinario y económico directo a domicilio o sucursal.&#x27;,
+          cost: costStd,
+          estimatedDays: &#x27;3 a 5 días hábiles&#x27;,
+          icon: &#x27;global&#x27;
+        },
+        {
+          id: &#x27;correo_exp&#x27;,
+          providerName: &#x27;Andreani Express&#x27;,
+          description: &#x27;Envío prioritario con seguimiento activo en tiempo real.&#x27;,
+          cost: costExp,
+          estimatedDays: &#x27;1 a 2 días hábiles&#x27;,
+          icon: &#x27;rocket&#x27;
+        },
+        {
+          id: &#x27;correo_priority&#x27;,
+          providerName: &#x27;DHL Priority (Express 24h)&#x27;,
+          description: &#x27;Entrega urgente garantizada al siguiente día hábil antes de las 14:00.&#x27;,
+          cost: costPriority,
+          estimatedDays: &#x27;24 horas hábiles&#x27;,
+          icon: &#x27;thunderbolt&#x27;
+        }
+      ];
+
+      storeGroup.isCalculatingShipping &#x3D; false;
+
+      const currentOption &#x3D; storeGroup.postalOptions.find(o &#x3D;&gt; o.id &#x3D;&#x3D;&#x3D; storeGroup.selectedPostalOptionId) || storeGroup.postalOptions[0];
+      storeGroup.selectedPostalOptionId &#x3D; currentOption.id;
+
+      this.updateStoreShippingCost(storeGroup);
+    }, 850);
+  }
+
+  public recalculateGrandTotal(): void {
+    this.totalSubtotal &#x3D; this.storesInOrder.reduce((sum, g) &#x3D;&gt; sum + g.subtotal, 0);
+    this.shippingCost &#x3D; this.storesInOrder.reduce((sum, g) &#x3D;&gt; sum + g.shippingCost, 0);
+    const totalCouponDiscount &#x3D; this.storesInOrder.reduce((sum, g) &#x3D;&gt; sum + (g.couponDiscount || 0), 0);
+    this.totalFinal &#x3D; this.totalSubtotal + this.shippingCost - totalCouponDiscount;
+  }
+
+  public applyCouponToStore(g: StoreOrderGroup): void {
+    if (!g.couponCodeInput || !g.couponCodeInput.trim()) {
+      g.couponError &#x3D; &#x27;Ingresá un código de cupón válido.&#x27;;
+      return;
+    }
+
+    const couponCode &#x3D; g.couponCodeInput.trim();
+    g.couponError &#x3D; &#x27;&#x27;;
+    this.couponsService.validateCoupon(g.cmp_uuid, couponCode, g.subtotal).subscribe({
+      next: (res: any) &#x3D;&gt; {
+        if (res &amp;&amp; res.success &amp;&amp; res.data) {
+          g.appliedCoupon &#x3D; res.data.coupon;
+          g.couponDiscount &#x3D; res.data.discount;
+          g.couponError &#x3D; &#x27;&#x27;;
+          this.message.success(&#x60;Cupón ${couponCode.toUpperCase()} aplicado con éxito.&#x60;);
+          this.recalculateGrandTotal();
+        } else {
+          g.couponError &#x3D; res.message || &#x27;El cupón no es válido.&#x27;;
+          g.appliedCoupon &#x3D; null;
+          g.couponDiscount &#x3D; 0;
+          this.recalculateGrandTotal();
+        }
+      },
+      error: (err: any) &#x3D;&gt; {
+        console.error(&#x27;Error validating coupon:&#x27;, err);
+        g.couponError &#x3D; err.error?.error || err.error?.message || &#x27;Error al validar el cupón.&#x27;;
+        g.appliedCoupon &#x3D; null;
+        g.couponDiscount &#x3D; 0;
+        this.recalculateGrandTotal();
+      }
+    });
+  }
+
+  public removeCouponFromStore(g: StoreOrderGroup): void {
+    g.appliedCoupon &#x3D; null;
+    g.couponDiscount &#x3D; 0;
+    g.couponCodeInput &#x3D; &#x27;&#x27;;
+    g.couponError &#x3D; &#x27;&#x27;;
+    this.message.info(&#x27;Cupón removido.&#x27;);
+    this.recalculateGrandTotal();
+  }
+
+  public detectCurrentLocation(): void {
+    if (!navigator.geolocation) {
+      this.message.error(&#x27;La geolocalización no está soportada por tu navegador.&#x27;);
+      return;
+    }
+
+    this.isDetectingLocation &#x3D; true;
+    navigator.geolocation.getCurrentPosition(
+      (position) &#x3D;&gt; {
+        const lat &#x3D; position.coords.latitude;
+        const lng &#x3D; position.coords.longitude;
+        this.detectedCoords &#x3D; { lat, lng };
+
+        this.reverseGeocode(lat, lng);
+      },
+      (error) &#x3D;&gt; {
+        this.isDetectingLocation &#x3D; false;
+        this.message.error(&#x27;No se pudo detectar tu ubicación. Por favor, ingresá los datos manualmente.&#x27;);
+        console.error(&#x27;Error de geolocalización:&#x27;, error);
+      },
+      { enableHighAccuracy: true, timeout: 8000 }
+    );
+  }
+
+  private reverseGeocode(lat: number, lng: number): void {
+    fetch(&#x60;https://nominatim.openstreetmap.org/reverse?format&#x3D;json&amp;lat&#x3D;${lat}&amp;lon&#x3D;${lng}&amp;zoom&#x3D;18&amp;addressdetails&#x3D;1&#x60;)
+      .then(res &#x3D;&gt; res.json())
+      .then(data &#x3D;&gt; {
+        this.isDetectingLocation &#x3D; false;
+        if (data &amp;&amp; data.address) {
+          const addr &#x3D; data.address;
+          const road &#x3D; addr.road || &#x27;&#x27;;
+          const houseNumber &#x3D; addr.house_number || &#x27;&#x27;;
+          const city &#x3D; addr.city || addr.town || addr.village || addr.suburb || &#x27;&#x27;;
+          const state &#x3D; addr.state || &#x27;&#x27;;
+          const postcode &#x3D; addr.postcode || &#x27;&#x27;;
+
+          this.shippingForm.patchValue({
+            direccion: &#x60;${road} ${houseNumber}&#x60;.trim(),
+            ciudad: city,
+            provincia: state,
+            codigoPostal: postcode
+          });
+
+          this.message.success(&#x27;📍 Ubicación detectada y autocompletada.&#x27;);
+          
+          this.checkShippingEligibility();
+        } else {
+          this.message.warning(&#x27;Ubicación detectada, pero no pudimos autocompletar la dirección. Rellénala manualmente.&#x27;);
+          this.checkShippingEligibility();
+        }
+      })
+      .catch(err &#x3D;&gt; {
+        this.isDetectingLocation &#x3D; false;
+        console.error(&#x27;Error en geocodificación reversa:&#x27;, err);
+        this.message.warning(&#x27;Ubicación detectada, pero falló el servicio de traducción. Rellena los campos manualmente.&#x27;);
+        this.checkShippingEligibility();
+      });
+  }
+
+  // --- NAVEGACIÓN ENTRE PASOS ---
+
+  public goToPaymentStep(): void {
+    if (this.selectedAddressId !&#x3D;&#x3D; &#x27;new&#x27;) {
+      // Se seleccionó una dirección guardada
+      this.currentStep &#x3D; 2;
+      return;
+    }
+
+    if (this.shippingForm.valid) {
+      const val &#x3D; this.shippingForm.value;
+      const customer &#x3D; this._sessionService.getCustomer();
+      const identity &#x3D; this._sessionService.getIdentity();
+
+      if (!customer &amp;&amp; identity) {
+        // No existe cliente en sesión pero sí un usuario logueado. Creamos el cliente antes de proceder.
+        const newCustomerPayload &#x3D; {
+          usr_uuid: identity.usr_uuid,
+          cus_uuid: &#x27;new&#x27;,
+          cus_fullname: &#x60;${val.nombre} ${val.apellido}&#x60;,
+          cus_email: identity.usr_email || &#x27;&#x27;,
+          cus_phone: val.telefono
+        };
+
+        this._customersService.saveCustomer(newCustomerPayload).subscribe({
+          next: (customerRes) &#x3D;&gt; {
+            if (customerRes &amp;&amp; customerRes.data) {
+              // Guardar el cliente retornado en el local storage / sesión
+              this._sessionService.setCustomer(customerRes.data);
+              this.hasCustomer &#x3D; true;
+
+              // Proceder a guardar la dirección vinculada al cliente recién creado
+              this.proceedWithAddAddress(val, customerRes.data, true);
+            } else {
+              this.message.error(&#x27;No se pudo procesar la creación de tu perfil de cliente.&#x27;);
+            }
+          },
+          error: (err) &#x3D;&gt; {
+            console.error(&#x27;Error al registrar cliente:&#x27;, err);
+            this.message.error(&#x27;No se pudo registrar la información de cliente. Intentá nuevamente.&#x27;);
+          }
+        });
+      } else if (customer) {
+        // El cliente ya existe
+        // Preguntar si desea guardar la dirección en su cuenta
+        this._messageService.confirm(
+          &#x27;¿Deseás guardar esta dirección?&#x27;,
+          &#x27;¿Querés registrar esta dirección en tu cuenta para futuras compras?&#x27;,
+          () &#x3D;&gt; {
+            // Dijo que SÍ: Guardar la dirección vinculada a su cuenta usando su teléfono almacenado
+            this.proceedWithAddAddress(val, customer, true);
+          },
+          () &#x3D;&gt; {
+            // Dijo que NO: Guardar de manera temporal sin vincular a su cuenta
+            this.proceedWithAddAddress(val, customer, false);
+          },
+          &#x27;Sí, guardar&#x27;,
+          &#x27;No, usar solo esta vez&#x27;
+        );
+      } else {
+        // Compra como invitado sin cliente cargado
+        this.proceedWithAddAddress(val, null, false);
+      }
+    } else {
+      const invalidFields: string[] &#x3D; [];
+      Object.keys(this.shippingForm.controls).forEach(key &#x3D;&gt; {
+        const control &#x3D; this.shippingForm.get(key);
+        if (control &amp;&amp; control.invalid) {
+          control.markAsDirty();
+          control.updateValueAndValidity({ onlySelf: true });
+          invalidFields.push(key);
+        }
+      });
+      console.warn(&#x27;Campos de envío inválidos:&#x27;, invalidFields);
+      this.message.error(&#x60;Por favor completá todos los campos obligatorios de envío. Inválidos: ${invalidFields.join(&#x27;, &#x27;)}&#x60;);
+    }
+  }
+
+  private proceedWithAddAddress(val: any, customer: any, saveToProfile: boolean &#x3D; true): void {
+    const newAddressData: Partial&lt;AddressInterface&gt; &#x3D; {
+      cus_uuid: (customer &amp;&amp; saveToProfile) ? customer.cus_uuid : null,
+      adr_alias: &#x27;Mi Domicilio&#x27;,
+      adr_recipientname: customer ? customer.cus_fullname : &#x60;${val.nombre} ${val.apellido}&#x60;,
+      adr_address: val.direccion,
+      adr_city: val.ciudad,
+      adr_province: val.provincia,
+      adr_postalcode: val.codigoPostal,
+      // Si se guarda en su perfil, tomamos el teléfono almacenado del cliente si existe, sino el del formulario
+      adr_contactphone: (customer &amp;&amp; saveToProfile &amp;&amp; customer.cus_phone) ? customer.cus_phone : val.telefono,
+      adr_country: &#x27;Argentina&#x27;,
+      adr_lat: this.detectedCoords ? this.detectedCoords.lat : undefined,
+      adr_lng: this.detectedCoords ? this.detectedCoords.lng : undefined
+    };
+
+    this.addressesService.saveAddress(newAddressData).subscribe({
+      next: (res) &#x3D;&gt; {
+        if (res &amp;&amp; res.success &amp;&amp; res.data) {
+          this.selectedAddressId &#x3D; res.data.adr_uuid;
+          
+          // Si no se guardó en el perfil, removemos de la lista local de la vista
+          if (customer &amp;&amp; !saveToProfile) {
+            this.myAddresses &#x3D; this.myAddresses.filter(a &#x3D;&gt; a.adr_uuid !&#x3D;&#x3D; res.data.adr_uuid);
+          }
+        }
+        this.currentStep &#x3D; 2; // Avanzar a método de pago
+      },
+      error: (err) &#x3D;&gt; {
+        console.error(&#x27;Error al guardar la dirección:&#x27;, err);
+        this.message.error(&#x27;No se pudo procesar la dirección. Por favor, intentá nuevamente.&#x27;);
+      }
+    });
+  }
+
+
+  public goToShippingStep(): void {
+    this.currentStep &#x3D; 1; // Volver atrás a edición de envío
+  }
+
+  // --- PROCESAMIENTO FINAL ---
+
+  public submitOrderPayment(): void {
+    if (this.paymentMethod &#x3D;&#x3D;&#x3D; &#x27;transfer&#x27; &amp;&amp; !this.transactionId.trim()) {
+      this.message.error(&#x27;Debés ingresar el N° de Comprobante de la transferencia para continuar.&#x27;);
+      return;
+    }
+
+    if (this.paymentMethod &#x3D;&#x3D;&#x3D; &#x27;stripe&#x27;) {
+      if (!this.cardNumber.trim() || this.cardNumber.replace(/\s/g, &#x27;&#x27;).length &lt; 15) {
+        this.message.error(&#x27;Debés ingresar un número de tarjeta válido.&#x27;);
+        return;
+      }
+      if (!this.cardName.trim()) {
+        this.message.error(&#x27;Debés ingresar el nombre del titular de la tarjeta.&#x27;);
+        return;
+      }
+      if (!this.cardExpiry.trim() || !/^\d{2}\/\d{2}$/.test(this.cardExpiry)) {
+        this.message.error(&#x27;Debés ingresar una fecha de vencimiento válida (MM/YY).&#x27;);
+        return;
+      }
+      if (!this.cardCvv.trim() || this.cardCvv.length &lt; 3) {
+        this.message.error(&#x27;Debés ingresar un código de seguridad (CVV) válido.&#x27;);
+        return;
+      }
+    }
+
+    if (this.storesInOrder.length &#x3D;&#x3D;&#x3D; 0) {
+      this.message.error(&#x27;Error: Tu carrito está vacío.&#x27;);
+      return;
+    }
+
+    this.isProcessingPayment &#x3D; true;
+    const identity &#x3D; this._sessionService.getIdentity();
+
+    // --- CHECK STOCK EN CALIENTE ANTES DE PAGAR (CONSIDERANDO STOCK MULTI-DEPÓSITO) ---
+    const stockChecks &#x3D; this.cartItemsList.map(item &#x3D;&gt; {
+      const cmpUuid &#x3D; item.cmp_uuid || (this.currentCompany ? this.currentCompany.cmp_uuid : &#x27;&#x27;);
+      const proUuid &#x3D; item.pro_uuid;
+      const provUuid &#x3D; item.prov_uuid;
+
+      return this._inventoryStocksService.getStocksByVariation(cmpUuid, proUuid, provUuid).pipe(
+        map((res: any) &#x3D;&gt; {
+          if (res &amp;&amp; res.success &amp;&amp; Array.isArray(res.data) &amp;&amp; res.data.length &gt; 0) {
+            const availableStock &#x3D; res.data.reduce((sum: any, stock: any) &#x3D;&gt; sum + (stock.ist_quanty - (stock.ist_quantyreserved || 0)), 0);
+            return {
+              item,
+              availableStock,
+              hasStock: availableStock &gt;&#x3D; item.quantity
+            };
+          }
+          throw new Error(&#x27;Sin stock detallado por depósito, usando fallback de variación&#x27;);
+        }),
+        catchError(() &#x3D;&gt; {
+          return this._productVariationsService.checkStock(cmpUuid, proUuid, provUuid).pipe(
+            map((res: any) &#x3D;&gt; {
+              let availableStock &#x3D; 0;
+              if (res &amp;&amp; res.success &amp;&amp; res.data !&#x3D;&#x3D; undefined) {
+                if (res.data &amp;&amp; res.data.prov_stock !&#x3D;&#x3D; undefined) {
+                  availableStock &#x3D; Number(res.data.prov_stock);
+                } else if (typeof res.data &#x3D;&#x3D;&#x3D; &#x27;number&#x27;) {
+                  availableStock &#x3D; res.data;
+                }
+              } else if (res &amp;&amp; res.prov_stock !&#x3D;&#x3D; undefined) {
+                availableStock &#x3D; Number(res.prov_stock);
+              } else if (typeof res &#x3D;&#x3D;&#x3D; &#x27;number&#x27;) {
+                availableStock &#x3D; res;
+              }
+              
+              return {
+                item,
+                availableStock,
+                hasStock: availableStock &gt;&#x3D; item.quantity
+              };
+            })
+          );
+        })
+      );
+    });
+
+    if (stockChecks.length &gt; 0) {
+      forkJoin(stockChecks).subscribe({
+        next: (results) &#x3D;&gt; {
+          const outOfStockItems &#x3D; results.filter(r &#x3D;&gt; !r.hasStock);
+          
+          if (outOfStockItems.length &gt; 0) {
+            this.isProcessingPayment &#x3D; false;
+            const names &#x3D; outOfStockItems.map(r &#x3D;&gt; 
+              &#x60;&quot;${r.item.prov_name}&quot; (Solicitado: ${r.item.quantity}, Disponible: ${r.availableStock})&#x60;
+            ).join(&#x27;, &#x27;);
+            
+            this._messageService.error(
+              &quot;Stock Insuficiente&quot;,
+              &#x60;Lo sentimos, no hay stock suficiente para completar tu pedido: ${names}. Por favor, reduce la cantidad antes de intentar pagar.&#x60;
+            );
+          } else {
+            if (this.paymentMethod &#x3D;&#x3D;&#x3D; &#x27;stripe&#x27;) {
+              this.processCardPaymentSimulation(identity);
+            } else if (this.paymentMethod &#x3D;&#x3D;&#x3D; &#x27;mercadopago&#x27;) {
+              this.isProcessingPayment &#x3D; false; // El modal maneja su propio cargador
+              this.openMercadoPagoSimulation(identity);
+            } else {
+              this.saveOrderAfterStockCheck(identity);
+            }
+          }
+        },
+        error: (err) &#x3D;&gt; {
+          console.warn(&#x27;Fallo en checkStock preventivo, procediendo con guardado ordinario (fallback):&#x27;, err);
+          if (this.paymentMethod &#x3D;&#x3D;&#x3D; &#x27;stripe&#x27;) {
+            this.processCardPaymentSimulation(identity);
+          } else if (this.paymentMethod &#x3D;&#x3D;&#x3D; &#x27;mercadopago&#x27;) {
+            this.isProcessingPayment &#x3D; false;
+            this.openMercadoPagoSimulation(identity);
+          } else {
+            this.saveOrderAfterStockCheck(identity);
+          }
+        }
+      });
+    } else {
+      if (this.paymentMethod &#x3D;&#x3D;&#x3D; &#x27;stripe&#x27;) {
+        this.processCardPaymentSimulation(identity);
+      } else if (this.paymentMethod &#x3D;&#x3D;&#x3D; &#x27;mercadopago&#x27;) {
+        this.isProcessingPayment &#x3D; false;
+        this.openMercadoPagoSimulation(identity);
+      } else {
+        this.saveOrderAfterStockCheck(identity);
+      }
+    }
+  }
+
+  private processCardPaymentSimulation(identity: any): void {
+    const rawNumber &#x3D; this.cardNumber.replace(/\s/g, &#x27;&#x27;);
+    const isDeclineCard &#x3D; rawNumber.endsWith(&#x27;4444&#x27;);
+
+    this.isProcessingPayment &#x3D; true;
+    this.processingMessage &#x3D; &#x27;🔐 Estableciendo canal seguro SSL de 256 bits...&#x27;;
+
+    setTimeout(() &#x3D;&gt; {
+      this.processingMessage &#x3D; &#x27;💳 Autorizando cargos con la entidad emisora (&#x27; + this.cardBrand.toUpperCase() + &#x27;)...&#x27;;
+      
+      setTimeout(() &#x3D;&gt; {
+        this.processingMessage &#x3D; &#x27;🛡️ Validando protocolos antifraude 3D Secure...&#x27;;
+        
+        setTimeout(() &#x3D;&gt; {
+          if (isDeclineCard) {
+            this.isProcessingPayment &#x3D; false;
+            this.processingMessage &#x3D; &#x27;&#x27;;
+            this._messageService.error(
+              &quot;Transacción Rechazada&quot;,
+              &quot;Lo sentimos, la transacción fue rechazada por la entidad bancaria emisor (Fondos Insuficientes o Tarjeta Bloqueada). Por favor, intenta con otra tarjeta.&quot;
+            );
+          } else {
+            this.processingMessage &#x3D; &#x27;🚀 Pago aprobado con éxito. Guardando orden de compra...&#x27;;
+            setTimeout(() &#x3D;&gt; {
+              this.saveOrderAfterStockCheck(identity);
+            }, 800);
+          }
+        }, 1500);
+      }, 1500);
+    }, 1500);
+  }
+
+  private saveOrderAfterStockCheck(identity: any): void {
+    const customer &#x3D; this._sessionService.getCustomer();
+    const last4 &#x3D; this.cardNumber.replace(/\s/g, &#x27;&#x27;).slice(-4);
+    const mockTxId &#x3D; &#x27;ch_stripe_&#x27; + Math.random().toString(36).substring(2, 10).toUpperCase();
+
+    const orderSaveObservables &#x3D; this.storesInOrder.map(g &#x3D;&gt; {
+      const storeOrderNumber &#x3D; Math.floor(Math.random() * 90000) + 10000;
+      g.generatedOrderNumber &#x3D; storeOrderNumber;
+
+      let methodText &#x3D; &#x27;&#x27;;
+      if (g.shippingMethod &#x3D;&#x3D;&#x3D; &#x27;moto&#x27;) {
+        methodText &#x3D; &#x27;Motomensajería Local&#x27;;
+      } else if (g.shippingMethod &#x3D;&#x3D;&#x3D; &#x27;correo&#x27;) {
+        const option &#x3D; g.postalOptions.find(o &#x3D;&gt; o.id &#x3D;&#x3D;&#x3D; g.selectedPostalOptionId);
+        methodText &#x3D; option ? &#x60;Envío Postal (${option.providerName})&#x60; : &#x27;Correo Postal Nacional&#x27;;
+      } else if (g.shippingMethod &#x3D;&#x3D;&#x3D; &#x27;retiro&#x27;) {
+        methodText &#x3D; &#x27;Retiro en el Local (Gratis)&#x27;;
+      } else {
+        methodText &#x3D; &#x27;Acordar con el Vendedor&#x27;;
+      }
+
+      let notes &#x3D; &#x27;&#x27;;
+      if (this.paymentMethod &#x3D;&#x3D;&#x3D; &#x27;transfer&#x27;) {
+        notes &#x3D; &#x60;[Sub-Pedido de Carrito Multi-Tienda] | [Envío: ${methodText} ($${g.shippingCost})] | Método de pago: Transferencia Bancaria. Comprobante: ${this.transactionId}&#x60;;
+      } else if (this.paymentMethod &#x3D;&#x3D;&#x3D; &#x27;stripe&#x27;) {
+        notes &#x3D; &#x60;[Sub-Pedido de Carrito Multi-Tienda] | [Envío: ${methodText} ($${g.shippingCost})] | Método de pago: Tarjeta de Crédito (Stripe) (**** ${last4}). Transacción: ${mockTxId}&#x60;;
+      } else {
+        const mpTx &#x3D; &#x27;mp_tx_&#x27; + Math.random().toString(36).substring(2, 10).toUpperCase();
+        const paySource &#x3D; this.mpCardSelected &#x3D;&#x3D;&#x3D; &#x27;balance&#x27; ? &#x27;Dinero en Cuenta&#x27; : this.mpCardSelected &#x3D;&#x3D;&#x3D; &#x27;visa&#x27; ? &#x27;Tarjeta Visa&#x27; : &#x27;Tarjeta Mastercard&#x27;;
+        notes &#x3D; &#x60;[Sub-Pedido de Carrito Multi-Tienda] | [Envío: ${methodText} ($${g.shippingCost})] | Método de pago: Mercado Pago (${paySource}). Transacción: ${mpTx}&#x60;;
+      }
+
+      let trackingNumber &#x3D; &#x27;&#x27;;
+      if (g.shippingMethod &#x3D;&#x3D;&#x3D; &#x27;correo&#x27;) {
+        const code &#x3D; g.selectedPostalOptionId &#x3D;&#x3D;&#x3D; &#x27;correo_std&#x27; ? &#x27;AR&#x27; : g.selectedPostalOptionId &#x3D;&#x3D;&#x3D; &#x27;correo_exp&#x27; ? &#x27;AN&#x27; : &#x27;DH&#x27;;
+        trackingNumber &#x3D; &#x60;${code}-${Math.floor(Math.random() * 900000) + 100000}-GPS&#x60;;
+      }
+
+      const orderDetails: OrderDetailInterface[] &#x3D; g.items.map(item &#x3D;&gt; ({
+        cmp_uuid: g.cmp_uuid,
+        ord_uuid: &#x27;&#x27;,
+        ordd_uuid: &#x27;&#x27;,
+        pro_uuid: item.pro_uuid,
+        prov_uuid: item.prov_uuid,
+        ordd_productname: item.prov_name || &#x27;Producto ATSMarket&#x27;,
+        ordd_code: item.prov_code || &#x27;&#x27;,
+        ordd_sku: item.prov_sku || &#x27;&#x27;,
+        ordd_quantity: item.quantity,
+        ordd_unitprice: item.prov_suggestedminimumsellingprice || 0,
+        ordd_discount: 0,
+        ordd_subtotal: item.subtotal || (item.quantity * (item.prov_suggestedminimumsellingprice || 0)),
+        ordd_taxrate: 0,
+        ordd_tax: 0,
+        ordd_basecost: item.prov_suggestedminimumsellingprice || 0
+      }));
+
+      const payload &#x3D; {
+        cmp_uuid: g.cmp_uuid,
+        usr_uuid: identity ? identity.usr_uuid : null,
+        cus_uuid: customer ? customer.cus_uuid : null,
+        adr_uuid: this.selectedAddressId,
+        ord_ordernumber: storeOrderNumber,
+        ords_uuid: this.paymentMethod &#x3D;&#x3D;&#x3D; &#x27;transfer&#x27; ? &#x27;PENDING&#x27; : &#x27;PROCESSING&#x27;,
+        ord_date: new Date(),
+        cou_uuid: g.appliedCoupon ? g.appliedCoupon.cou_uuid : null,
+        ord_couponcode: g.appliedCoupon ? g.appliedCoupon.cou_code : null,
+        ord_discountamount: g.couponDiscount || 0,
+        ord_subtotal: g.subtotal,
+        ord_shippingcost: g.shippingCost,
+        ord_tax: 0,
+        ord_total: g.subtotal + g.shippingCost - (g.couponDiscount || 0),
+        ord_customernotes: notes,
+        ord_trackingnumber: trackingNumber,
+        orderDetails: orderDetails
+      };
+
+      return this.ordersService.saveOrder(payload).pipe(
+        map((res: any) &#x3D;&gt; {
+          const orderUuid &#x3D; res?.data?.ord_uuid || &#x27;&#x27;;
+          g.orderUuid &#x3D; orderUuid;
+
+          // Disparar la notificación en tiempo real para el comercio/vendedor
+          this._notificationService.pushNotification({
+            usr_uuid: &#x27;vendor&#x27;,
+            cus_uuid: customer ? customer.cus_uuid : null,
+            cmp_uuid: g.cmp_uuid,
+            ntf_title: &#x27;🛍️ ¡Nuevo pedido recibido!&#x27;,
+            ntf_message: &#x60;Has recibido el pedido #${storeOrderNumber} por un total de $${g.subtotal + g.shippingCost}.&#x60;,
+            ntf_type: &#x27;success&#x27;,
+            ntf_actionurl: &#x27;/application/orders-received&#x27;
+          });
+
+          return { success: true, storeGroup: g, orderUuid };
+        }),
+        catchError((err) &#x3D;&gt; {
+          console.error(&#x60;Error al guardar orden para tienda ${g.cmp_uuid}:&#x60;, err);
+          return of({ success: false, storeGroup: g, orderUuid: &#x27;&#x27;, error: err });
+        })
+      );
+    });
+
+    forkJoin(orderSaveObservables).subscribe({
+      next: (saveResults) &#x3D;&gt; {
+        const failures &#x3D; saveResults.filter(r &#x3D;&gt; !r.success);
+        if (failures.length &gt; 0) {
+          this.isProcessingPayment &#x3D; false;
+          const failedStoreNames &#x3D; failures.map(f &#x3D;&gt; f.storeGroup.company?.cmp_name || f.storeGroup.cmp_uuid).join(&#x27;, &#x27;);
+          this.message.error(&#x60;Ocurrió un error al procesar las órdenes para las siguientes tiendas: ${failedStoreNames}. Por favor intente nuevamente.&#x60;);
+          return;
+        }
+
+        // Registrar movimientos de salida (OUT) por cada producto comprado en el checkout multi-tienda
+        const stockMovements: Observable&lt;any&gt;[] &#x3D; [];
+        saveResults.forEach(r &#x3D;&gt; {
+          const storeGroup &#x3D; r.storeGroup;
+          const orderUuid &#x3D; r.orderUuid;
+          const orderNum &#x3D; storeGroup.generatedOrderNumber;
+
+          storeGroup.items.forEach(item &#x3D;&gt; {
+            const movementPayload &#x3D; {
+              cmp_uuid: storeGroup.cmp_uuid,
+              pro_uuid: item.pro_uuid,
+              prov_uuid: item.prov_uuid,
+              ord_uuid: orderUuid || null,
+              usr_uuid: identity ? identity.usr_uuid : null,
+              tsmo_uuid: &#x27;OUT&#x27;,
+              smo_quantity: item.quantity,
+              smo_previousstock: 0,
+              smo_currentstock: 0,
+              smo_reason: &#x60;Venta - Pedido #PED-${orderNum}&#x60;,
+              smo_createdat: new Date()
+            };
+            stockMovements.push(this._stockMovementsService.saveStockMovement(movementPayload).pipe(
+              catchError((err) &#x3D;&gt; {
+                console.error(&#x60;Fallo al registrar movimiento stock para var ${item.prov_uuid}:&#x60;, err);
+                return of(null);
+              })
+            ));
+          });
+        });
+
+        if (stockMovements.length &gt; 0) {
+          forkJoin(stockMovements).subscribe({
+            next: () &#x3D;&gt; console.log(&#x27;Todos los movimientos de stock registrados exitosamente desde Checkout multi-tienda.&#x27;),
+            error: (err) &#x3D;&gt; console.error(&#x27;Error general al registrar movimientos de stock:&#x27;, err)
+          });
+        }
+
+        this.isProcessingPayment &#x3D; false;
+        this.currentStep &#x3D; 3; // Mostrar pantalla de éxito
+        this.cartService.clearCart();
+        this.message.success(&#x27;¡Compra multi-tienda confirmada con éxito!&#x27;);
+      },
+      error: (err) &#x3D;&gt; {
+        this.isProcessingPayment &#x3D; false;
+        this.message.error(&#x27;Fallo grave al procesar las órdenes. Por favor verifique sus datos.&#x27;);
+        console.error(&#x27;Error general en saveOrder forkJoin:&#x27;, err);
+      }
+    });
+  }
+
+  // --- INTEGRACIÓN MULTI-PASARELA DE PAGOS ---
+
+  public checkPaymentGateways(): void {
+    let stripeEnabled &#x3D; false;
+    let mpEnabled &#x3D; false;
+    let stripePk &#x3D; &#x27;&#x27;;
+    let mpPk &#x3D; &#x27;&#x27;;
+
+    this.storesInOrder.forEach(g &#x3D;&gt; {
+      const settings &#x3D; g.settings || {};
+      if (settings[&#x27;PAYMENT_STRIPE_ENABLE&#x27;] &#x3D;&#x3D;&#x3D; true || settings[&#x27;PAYMENT_STRIPE_ENABLE&#x27;] &#x3D;&#x3D;&#x3D; &#x27;true&#x27;) {
+        stripeEnabled &#x3D; true;
+        stripePk &#x3D; settings[&#x27;PAYMENT_STRIPE_PUBLIC_KEY&#x27;] || &#x27;pk_test_51P_mock_stripe_pk_12345&#x27;;
+      }
+      if (settings[&#x27;PAYMENT_MERCADO_PAGO_ENABLE&#x27;] &#x3D;&#x3D;&#x3D; true || settings[&#x27;PAYMENT_MERCADO_PAGO_ENABLE&#x27;] &#x3D;&#x3D;&#x3D; &#x27;true&#x27;) {
+        mpEnabled &#x3D; true;
+        const keyFromSettings &#x3D; settings[&#x27;PAYMENT_MERCADO_PAGO_PUBLIC_KEY&#x27;];
+        mpPk &#x3D; (keyFromSettings &amp;&amp; !keyFromSettings.includes(&#x27;mock&#x27;)) ? keyFromSettings : &#x27;TEST-30982e17-3a0c-4e32-b4b9-f9eebdfb0bbd&#x27;;
+      }
+    });
+
+    // Fallback Sandbox si la tienda tiene una clave ficticia/mock en BD
+    if (!mpPk || mpPk.includes(&#x27;mock&#x27;)) {
+      mpPk &#x3D; &#x27;TEST-30982e17-3a0c-4e32-b4b9-f9eebdfb0bbd&#x27;;
+      mpEnabled &#x3D; true;
+    }
+
+    this.isStripeAvailable &#x3D; stripeEnabled;
+    this.isMercadoPagoAvailable &#x3D; mpEnabled;
+    this.stripePublicKey &#x3D; stripePk;
+    this.mpPublicKey &#x3D; mpPk;
+
+    // Inicializar SDKs oficiales si están activos
+    if (this.isStripeAvailable &amp;&amp; this.stripePublicKey) {
+      this.initStripe(this.stripePublicKey);
+    }
+    if (this.isMercadoPagoAvailable &amp;&amp; this.mpPublicKey) {
+      this.initMercadoPago(this.mpPublicKey);
+    }
+
+    // Fallback de selección del método si el activo queda deshabilitado
+    if (this.paymentMethod &#x3D;&#x3D;&#x3D; &#x27;stripe&#x27; &amp;&amp; !this.isStripeAvailable) {
+      this.paymentMethod &#x3D; this.isMercadoPagoAvailable ? &#x27;mercadopago&#x27; : &#x27;transfer&#x27;;
+    } else if (this.paymentMethod &#x3D;&#x3D;&#x3D; &#x27;mercadopago&#x27; &amp;&amp; !this.isMercadoPagoAvailable) {
+      this.paymentMethod &#x3D; this.isStripeAvailable ? &#x27;stripe&#x27; : &#x27;transfer&#x27;;
+    }
+  }
+
+  private loadScript(src: string): Promise&lt;void&gt; {
+    return new Promise((resolve, reject) &#x3D;&gt; {
+      if (document.querySelector(&#x60;script[src&#x3D;&quot;${src}&quot;]&#x60;)) {
+        resolve();
+        return;
+      }
+      const script &#x3D; document.createElement(&#x27;script&#x27;);
+      script.src &#x3D; src;
+      script.onload &#x3D; () &#x3D;&gt; resolve();
+      script.onerror &#x3D; (err) &#x3D;&gt; reject(err);
+      document.body.appendChild(script);
+    });
+  }
+
+  private initStripe(publicKey: string): void {
+    if (publicKey &amp;&amp; !publicKey.includes(&#x27;mock&#x27;)) {
+      this.loadScript(&#x27;https://js.stripe.com/v3/&#x27;).then(() &#x3D;&gt; {
+        try {
+          const stripe &#x3D; (window as any).Stripe(publicKey);
+          console.log(&#x27;🔌 Stripe JS SDK cargado e inicializado exitosamente.&#x27;);
+        } catch (err) {
+          console.warn(&#x27;Fallo al inicializar Stripe con clave real. Usando fallback de simulación.&#x27;, err);
+        }
+      }).catch(err &#x3D;&gt; {
+        console.warn(&#x27;No se pudo inyectar el script de Stripe. Operando localmente.&#x27;, err);
+      });
+    } else {
+      console.info(&#x27;🔌 Stripe operando en Modo Sandbox local.&#x27;);
+    }
+  }
+
+  private initMercadoPago(publicKey: string): void {
+    if (publicKey &amp;&amp; !publicKey.includes(&#x27;mock&#x27;)) {
+      this.loadScript(&#x27;https://sdk.mercadopago.com/js/v2&#x27;).then(() &#x3D;&gt; {
+        try {
+          const mp &#x3D; new (window as any).MercadoPago(publicKey);
+          console.log(&#x27;🔌 Mercado Pago SDK v2 cargado e inicializado exitosamente.&#x27;);
+        } catch (err) {
+          console.warn(&#x27;Fallo al inicializar Mercado Pago con clave real. Usando fallback de simulación.&#x27;, err);
+        }
+      }).catch(err &#x3D;&gt; {
+        console.warn(&#x27;No se pudo inyectar el script de Mercado Pago. Operando localmente.&#x27;, err);
+      });
+    } else {
+      console.info(&#x27;🔌 Mercado Pago operando en Modo Sandbox local.&#x27;);
+    }
+  }
+
+  public openMercadoPagoSimulation(identity: any): void {
+    this.mpStep &#x3D; 1;
+    this.mpEmail &#x3D; &#x27;&#x27;;
+    this.mpProcessing &#x3D; false;
+    this.mpCardSelected &#x3D; &#x27;balance&#x27;;
+    this.isMpModalVisible &#x3D; true;
+  }
+
+  public closeMpModal(): void {
+    this.isMpModalVisible &#x3D; false;
+  }
+
+  public submitMpEmail(): void {
+    if (!this.mpEmail || !this.mpEmail.includes(&#x27;@&#x27;)) {
+      this.message.error(&#x27;Por favor, ingresá un correo electrónico válido.&#x27;);
+      return;
+    }
+    this.mpProcessing &#x3D; true;
+    setTimeout(() &#x3D;&gt; {
+      this.mpProcessing &#x3D; false;
+      this.mpStep &#x3D; 2;
+    }, 1000);
+  }
+
+  public submitMpPayment(): void {
+    this.mpProcessing &#x3D; true;
+    this.mpStep &#x3D; 3;
+    
+    setTimeout(() &#x3D;&gt; {
+      this.mpProcessing &#x3D; false;
+      this.isMpModalVisible &#x3D; false;
+      
+      this.isProcessingPayment &#x3D; true;
+      this.processingMessage &#x3D; &#x27;🚀 Pago aprobado vía Mercado Pago. Guardando orden de compra...&#x27;;
+      
+      const identity &#x3D; this._sessionService.getIdentity();
+      setTimeout(() &#x3D;&gt; {
+        this.saveOrderAfterStockCheck(identity);
+      }, 1000);
+    }, 2000);
+  }
+
+  public onMpPaymentBrickSubmit(event: any): void {
+    console.log(&#x27;💳 [CheckoutComponent] Recibida tokenización de Mercado Pago Brick:&#x27;, event);
+    this.isProcessingPayment &#x3D; true;
+    this.processingMessage &#x3D; &#x27;🚀 Creando orden y procesando pago seguro con Mercado Pago...&#x27;;
+
+    const identity &#x3D; this._sessionService.getIdentity();
+    const formData &#x3D; event?.formData || event;
+
+    // 1. Guardar la orden en base de datos
+    this.saveOrderAfterStockCheck(identity);
+
+    // 2. Transmitir el token de la tarjeta y datos al backend Express para ejecutar el cobro en MP
+    const firstStoreGroup &#x3D; this.storesInOrder[0];
+    const ordUuid &#x3D; firstStoreGroup?.orderUuid || &#x27;ord-&#x27; + Date.now();
+    const cmpUuid &#x3D; firstStoreGroup?.cmp_uuid || (this.currentCompany ? this.currentCompany.cmp_uuid : &#x27;&#x27;);
+
+    const paymentPayload &#x3D; {
+      token: formData.token,
+      issuer_id: formData.issuer_id,
+      payment_method_id: formData.payment_method_id,
+      transaction_amount: formData.transaction_amount || this.totalFinal,
+      installments: formData.installments || 1,
+      payer: formData.payer,
+      ord_uuid: ordUuid,
+      cmp_uuid: cmpUuid
+    };
+
+    this._mercadopagoService.processPayment(paymentPayload).subscribe({
+      next: (res: any) &#x3D;&gt; {
+        console.log(&#x27;✅ [CheckoutComponent] Cobro procesado exitosamente en Mercado Pago:&#x27;, res);
+        this.processingMessage &#x3D; &#x27;🚀 ¡Cobro registrado! Aguardando confirmación final...&#x27;;
+      },
+      error: (err: any) &#x3D;&gt; {
+        console.error(&#x27;❌ [CheckoutComponent] Error al procesar cobro en backend:&#x27;, err);
+        this.isProcessingPayment &#x3D; false;
+        this.message.error(err.error?.message || err.error?.error || &#x27;No se pudo procesar el pago con Mercado Pago.&#x27;);
+      }
+    });
+  }
+
+  public onMpPaymentBrickError(error: any): void {
+    console.error(&#x27;❌ [CheckoutComponent] Error en Mercado Pago Brick:&#x27;, error);
+    this._messageService.error(
+      &#x27;Error de Pago&#x27;,
+      &#x27;No se pudo procesar la transacción con Mercado Pago. Por favor verifique sus datos o intente con otro método.&#x27;
+    );
+  }
+}
+</code></pre>
+    </div>
+</div>
+
+
+
+
+
+
+
+
+                   </div><div class="search-results">
+    <div class="has-results">
+        <h1 class="search-results-title"><span class='search-results-count'></span> comparación de resultados "<span class='search-query'></span>"</h1>
+        <ul class="search-results-list"></ul>
+    </div>
+    <div class="no-results">
+        <h1 class="search-results-title">No hay resultados que coincidan "<span class='search-query'></span>"</h1>
+    </div>
+</div>
+</div>
+               <!-- END CONTENT -->
+           </div>
+       </div>
+
+          
+<div class="compodoc-lang-switch">
+  <select id="compodoc-lang-select" aria-label="Seleccionar idioma">
+    <option value="es" selected>🇪🇸 Español</option>
+    <option value="en" >🇺🇸 English</option>
+    <option value="pt" >🇧🇷 Português</option>
+  </select>
+</div>
+
+          <label class="dark-mode-switch">
+               <input type="checkbox">
+               <span class="slider">
+                    <svg class="slider-icon" viewBox="0 0 24 24" fill="none" height="20" stroke="#000" stroke-linecap="round" stroke-linejoin="round" stroke-width="2" width="20" xmlns="http://www.w3.org/2000/svg">
+                    <path d="M21 12.79A9 9 0 1111.21 3 7 7 0 0021 12.79z"></path>
+                    </svg>
+               </span>
+          </label>
+
+       <script>
+            var COMPODOC_CURRENT_PAGE_DEPTH = 1;
+            var COMPODOC_CURRENT_PAGE_CONTEXT = 'interface';
+            var COMPODOC_CURRENT_PAGE_URL = 'StoreOrderGroup.html';
+            var MAX_SEARCH_RESULTS = 15;
+       </script>
+
+       <script>
+               $darkModeToggleSwitchers = document.querySelectorAll('.dark-mode-switch input');
+               var updateDarkModeSwitchOffset = function () {
+                    var content = document.querySelector('.content');
+                    var scrollbarWidth = 0;
+
+                    if (content) {
+                         scrollbarWidth = Math.max(0, content.offsetWidth - content.clientWidth);
+                    }
+
+                    document.documentElement.style.setProperty(
+                         '--content-scrollbar-width',
+                         scrollbarWidth + 'px'
+                    );
+               };
+
+               updateDarkModeSwitchOffset();
+               requestAnimationFrame(updateDarkModeSwitchOffset);
+               window.addEventListener('resize', updateDarkModeSwitchOffset);
+
+               checkToggle(darkModeState);
+               if ($darkModeToggleSwitchers.length > 0) {
+                    for (var i = 0; i < $darkModeToggleSwitchers.length; i++) {
+                         $darkModeToggleSwitchers[i].addEventListener('change', function (event) {
+                              darkModeState = !darkModeState;
+                              toggleDarkMode(darkModeState);
+                         });
+                    }
+               }
+          </script>
+
+       <script src="../js/libs/custom-elements.min.js"></script>
+       <script src="../js/libs/lit-html.js"></script>
+
+       <script src="../js/menu-wc.js" defer></script>
+
+       <script src="../js/libs/bootstrap-native.js"></script>
+
+       <script src="../js/libs/es6-shim.min.js"></script>
+       <script src="../js/libs/EventDispatcher.js"></script>
+       <script src="../js/libs/promise.min.js"></script>
+
+       <script src="../js/compodoc.js"></script>
+
+       <script src="../js/tabs.js"></script>
+       <script src="../js/menu.js"></script>
+       <script src="../js/libs/clipboard.min.js"></script>
+       <script src="../js/libs/prism.js"></script>
+       <script src="../js/sourceCode.js"></script>
+          <script src="../js/search/search.js"></script>
+          <script src="../js/search/lunr.min.js"></script>
+          <script src="../js/search/search-lunr.js"></script>
+          <script src="../js/search/search_index.js"></script>
+       <script src="../js/lazy-load-graphs.js"></script>
+
+
+    
+<script id="compodoc-lang-script">
+(function() {
+  var CURRENT_LANG = "es";
+  var ADDITIONAL_DOCS_MAP = {"es":["01.-introducción-y-arquitectura-general.html","02.-autenticación-y-control-de-accesos.html","03.-catálogo-público-y-exploración-de-tiendas.html","04.-carrito-de-compras-y-checkout-multitienda.html","05.-gestión-de-empresas,-roles-y-configuración.html","06.-inventario,-productos,-variaciones-y-almacenes.html","07.-gestión-de-pedidos,-compras-y-cupones.html","08.-analíticas-de-negocio,-finanzas-y-proveedores.html"],"en":["01.-introduction-and-general-architecture.html","02.-authentication-and-access-control.html","03.-public-catalog-and-store-exploration.html","04.-shopping-cart-and-multi-store-checkout.html","05.-company-management,-roles-and-configuration.html","06.-inventory,-products,-variations-and-warehouses.html","07.-orders-management,-purchases-and-coupons.html","08.-business-analytics,-finances-and-suppliers.html"],"pt":["01.-introdução-e-arquitetura-geral.html","02.-autenticação-e-controle-de-acesso.html","03.-catálogo-público-e-exploração-de-lojas.html","04.-carrinho-de-compras-e-checkout-multiloja.html","05.-gestão-de-empresas,-funções-e-configuração.html","06.-estoque,-produtos,-variações-e-armazéns.html","07.-gestão-de-pedidos,-compras-e-cupons.html","08.-análise-de-negócios,-finanças-e-fornecedores.html"]};
+
+  var select = document.getElementById('compodoc-lang-select');
+  if (!select) return;
+
+  try {
+    localStorage.setItem('compodoc_lang', CURRENT_LANG);
+  } catch (e) {}
+
+  select.addEventListener('change', function(e) {
+    var targetLang = e.target.value;
+    if (targetLang === CURRENT_LANG) return;
+
+    try {
+      localStorage.setItem('compodoc_lang', targetLang);
+    } catch (err) {}
+
+    var href = window.location.href;
+    var pathname = window.location.pathname;
+
+    // Manejo especial para páginas de additional-documentation
+    if (pathname.indexOf('/additional-documentation/') !== -1) {
+      var segments = pathname.split('/');
+      var currentFile = decodeURIComponent(segments[segments.length - 1]);
+      
+      var currentList = ADDITIONAL_DOCS_MAP[CURRENT_LANG] || [];
+      var targetList = ADDITIONAL_DOCS_MAP[targetLang] || [];
+      var foundIndex = -1;
+
+      var prefixMatch = currentFile.match(/^(\d{2}\.-)/);
+      if (prefixMatch) {
+        var prefix = prefixMatch[1];
+        for (var i = 0; i < targetList.length; i++) {
+          if (targetList[i].startsWith(prefix)) {
+            foundIndex = i;
+            break;
+          }
+        }
+      }
+      if (foundIndex === -1) {
+        for (var j = 0; j < currentList.length; j++) {
+          if (currentList[j] === currentFile) {
+            foundIndex = j;
+            break;
+          }
+        }
+      }
+
+      var targetFile = (foundIndex !== -1 && targetList[foundIndex]) 
+        ? targetList[foundIndex] 
+        : (targetList[0] || 'index.html');
+
+      var targetSubpath = '/' + targetLang + '/additional-documentation/' + targetFile;
+      var currentSubpath = '/' + CURRENT_LANG + '/additional-documentation/' + segments[segments.length - 1];
+
+      if (href.indexOf(currentSubpath) !== -1) {
+        window.location.href = href.replace(currentSubpath, targetSubpath);
+        return;
+      }
+    }
+
+    // Páginas estándar
+    var standardReplace = href.replace('/' + CURRENT_LANG + '/', '/' + targetLang + '/');
+    if (standardReplace !== href) {
+      window.location.href = standardReplace;
+    } else {
+      var depth = (typeof COMPODOC_CURRENT_PAGE_DEPTH !== 'undefined') ? COMPODOC_CURRENT_PAGE_DEPTH : 0;
+      var prefixPath = '';
+      for (var k = 0; k <= depth; k++) {
+        prefixPath += '../';
+      }
+      window.location.href = prefixPath + targetLang + '/index.html';
+    }
+  });
+})();
+</script>
+
+</body>
+</html>

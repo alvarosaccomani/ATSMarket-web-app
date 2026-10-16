@@ -1,0 +1,2181 @@
+<!doctype html>
+<html class="no-js" lang="">
+    <head>
+        <meta charset="utf-8">
+        <meta http-equiv="x-ua-compatible" content="ie=edge">
+        <title>ATSMarket Web App</title>
+        <meta name="description" content="">
+        <meta name="viewport" content="width=device-width, initial-scale=1">
+
+        <link rel="icon" type="image/x-icon" href="../images/favicon.ico">
+	   <link rel="stylesheet" href="../styles/style.css">
+        <link rel="stylesheet" href="../styles/dark.css">
+    
+<style id="compodoc-lang-styles">
+  .compodoc-lang-switch {
+    position: fixed;
+    top: 15px;
+    right: calc(90px + var(--content-scrollbar-width, 0px));
+    z-index: 1050;
+    display: inline-block;
+  }
+  @media (max-width: 767px) {
+    .compodoc-lang-switch {
+      top: 8px;
+      right: 60px;
+    }
+  }
+  #compodoc-lang-select {
+    height: 34px;
+    padding: 0 12px;
+    border-radius: 17px;
+    border: 1px solid #d9d9d9;
+    background-color: #ffffff;
+    color: #1f1f1f;
+    font-size: 13px;
+    font-family: inherit;
+    font-weight: 500;
+    cursor: pointer;
+    outline: none;
+    box-shadow: 0 2px 6px rgba(0, 0, 0, 0.08);
+    transition: all 0.3s cubic-bezier(0.645, 0.045, 0.355, 1);
+    -webkit-appearance: none;
+    -moz-appearance: none;
+    appearance: none;
+    padding-right: 26px;
+    background-image: url("data:image/svg+xml;charset=UTF-8,%3csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 24 24' fill='none' stroke='%23666' stroke-width='2' stroke-linecap='round' stroke-linejoin='round'%3e%3cpolyline points='6 9 12 15 18 9'%3e%3c/polyline%3e%3c/svg%3e");
+    background-repeat: no-repeat;
+    background-position: right 8px center;
+    background-size: 14px;
+  }
+  #compodoc-lang-select:hover, #compodoc-lang-select:focus {
+    border-color: #5cc0ae;
+    box-shadow: 0 2px 8px rgba(92, 192, 174, 0.25);
+  }
+  body.dark .compodoc-lang-switch #compodoc-lang-select {
+    background-color: #2c3e50;
+    color: #ecf0f1;
+    border: 1px solid #4a627a;
+    box-shadow: 0 2px 6px rgba(0, 0, 0, 0.35);
+    background-image: url("data:image/svg+xml;charset=UTF-8,%3csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 24 24' fill='none' stroke='%23ecf0f1' stroke-width='2' stroke-linecap='round' stroke-linejoin='round'%3e%3cpolyline points='6 9 12 15 18 9'%3e%3c/polyline%3e%3c/svg%3e");
+  }
+  body.dark .compodoc-lang-switch #compodoc-lang-select option {
+    background-color: #2c3e50;
+    color: #ecf0f1;
+  }
+</style>
+
+</head>
+    <body>
+          <script>
+               // Blocking script to avoid flickering dark mode
+               // Dark mode toggle button
+               var useDark = window.matchMedia('(prefers-color-scheme: dark)');
+               var darkModeState = useDark.matches;
+               var $darkModeToggleSwitchers = document.querySelectorAll('.dark-mode-switch input');
+               var $darkModeToggles = document.querySelectorAll('.dark-mode-switch');
+               var darkModeStateLocal = localStorage.getItem('compodoc_darkmode-state');
+
+               function checkToggle(check) {
+                    for (var i = 0; i < $darkModeToggleSwitchers.length; i++) {
+                         $darkModeToggleSwitchers[i].checked = check;
+                    }
+               }
+
+               function toggleDarkMode(state) {
+                    if (window.localStorage) {
+                         localStorage.setItem('compodoc_darkmode-state', state);
+                    }
+
+                    checkToggle(state);
+
+                    const hasClass = document.body.classList.contains('dark');
+
+                    if (state) {
+                         for (var i = 0; i < $darkModeToggles.length; i++) {
+                              $darkModeToggles[i].classList.add('dark');
+                         }
+                         if (!hasClass) {
+                              document.body.classList.add('dark');
+                         }
+                    } else {
+                         for (var i = 0; i < $darkModeToggles.length; i++) {
+                              $darkModeToggles[i].classList.remove('dark');
+                         }
+                         if (hasClass) {
+                              document.body.classList.remove('dark');
+                         }
+                    }
+               }
+
+               useDark.addEventListener('change', function (evt) {
+                    toggleDarkMode(evt.matches);
+               });
+               if (darkModeStateLocal) {
+                    darkModeState = darkModeStateLocal === 'true';
+               }
+               toggleDarkMode(darkModeState);
+          </script>
+          <script>
+              // --- Iframe navigation tracking for Template Playground ---
+              function sendCurrentUrlToParent() {
+                  if (window.parent && window.parent !== window) {
+                      window.parent.postMessage({
+                          type: 'compodoc-iframe-navigate',
+                          url: window.location.pathname + window.location.hash
+                      }, '*');
+                  }
+              }
+              window.addEventListener('hashchange', sendCurrentUrlToParent, false);
+              window.addEventListener('popstate', sendCurrentUrlToParent, false);
+              window.addEventListener('DOMContentLoaded', sendCurrentUrlToParent, false);
+          </script>
+
+        <div class="navbar navbar-default navbar-fixed-top d-md-none p-0">
+               <div class="d-flex">
+                    <a href="../" class="navbar-brand">ATSMarket Web App</a>
+                    <button type="button" class="btn btn-default btn-menu ion-ios-menu" id="btn-menu"></button>
+               </div>
+        </div>
+
+        <div class="xs-menu menu" id="mobile-menu">
+                <div id="book-search-input" role="search">
+    <input type="text" placeholder="Escribe para buscar">
+    <button type="button"
+        class="search-input-clear"
+        aria-label="Clear search"
+        data-search-input-clear>&times;</button>
+</div>
+            <compodoc-menu></compodoc-menu>
+        </div>
+
+        <div class="container-fluid main">
+           <div class="row main">
+               <div class="d-none d-md-block menu">
+                   <compodoc-menu mode="normal"></compodoc-menu>
+               </div>
+               <!-- START CONTENT -->
+               <div class="content component">
+                   <div class="content-data">
+
+
+
+
+
+
+
+
+<ol class="breadcrumb">
+  <li class="breadcrumb-item">Componentes</li>
+  <li class="breadcrumb-item"
+  >
+  CompanyComponent</li>
+</ol>
+
+<div class="io-file io-file-path" data-compodoc="entity-file-path">
+    <span class="icon ion-ios-document" aria-hidden="true"></span>
+    <code>src/app/application/company/company.component.ts</code>
+</div>
+
+<ul class="nav nav-tabs" role="tablist">
+        <li class="nav-item">
+            <a href="#info" class="nav-link active"
+                role="tab" id="info-tab" data-bs-toggle="tab" data-link="info">Info</a>
+        </li>
+        <li class="nav-item">
+            <a href="#api" class="nav-link"
+                role="tab" id="api-tab" data-bs-toggle="tab" data-link="api">API</a>
+        </li>
+        <li class="nav-item">
+            <a href="#source" class="nav-link"
+                role="tab" id="source-tab" data-bs-toggle="tab" data-link="source">Source</a>
+        </li>
+        <li class="nav-item">
+            <a href="#templateData" class="nav-link"
+                role="tab" id="templateData-tab" data-bs-toggle="tab" data-link="template">Template</a>
+        </li>
+        <li class="nav-item">
+            <a href="#styleData" class="nav-link"
+                role="tab" id="styleData-tab" data-bs-toggle="tab" data-link="style">Styles</a>
+        </li>
+        <li class="nav-item">
+            <a href="#tree" class="nav-link"
+                role="tab" id="tree-tab" data-bs-toggle="tab" data-link="dom-tree">DOM Tree</a>
+        </li>
+</ul>
+
+<div class="tab-content">
+    <div class="tab-pane fade active in" id="info">
+
+
+    <p class="comment">
+        <h3>Implementa</h3>
+    </p>
+    <p class="comment">
+                    <code><a href="https://angular.dev/api/core/OnInit" target="_blank" >OnInit</a></code>
+    </p>
+
+
+<section data-compodoc="block-metadata">
+    <h3>Meta datos</h3>
+    <table class="table table-sm table-hover metadata">
+        <tbody>
+
+
+
+
+
+
+
+
+
+
+
+
+            <tr>
+                <td class="col-md-3">selector</td>
+                <td class="col-md-9"><code>app-company</code></td>
+            </tr>
+
+            <tr>
+                <td class="col-md-3">standalone</td>
+                <td class="col-md-9"><code>true</code></td>
+            </tr>
+
+            <tr>
+                <td class="col-md-3">imports</td>
+                <td class="col-md-9">
+                        <div>        <code><a href="https://angular.dev/api/common/CommonModule" target="_blank" >CommonModule</a></code>
+</div>
+                        <div>        <code><a href="https://angular.dev/api/forms/ReactiveFormsModule" target="_blank" >ReactiveFormsModule</a></code>
+</div>
+                        <div>    <code>NzCardModule</code>
+</div>
+                        <div>    <code>NzFormModule</code>
+</div>
+                        <div>    <code>NzInputModule</code>
+</div>
+                        <div>    <code>NzSelectModule</code>
+</div>
+                        <div>    <code>NzButtonModule</code>
+</div>
+                        <div>    <code>NzSpaceModule</code>
+</div>
+                        <div>    <code>NzIconModule</code>
+</div>
+                        <div>    <code>NzUploadModule</code>
+</div>
+                        <div>    <code>NzGridModule</code>
+</div>
+                        <div>    <code>NzSwitchModule</code>
+</div>
+                        <div>        <code><a href="../components/MapPickerComponent.html" target="_self" >MapPickerComponent</a></code>
+</div>
+                </td>
+            </tr>
+
+            <tr>
+                <td class="col-md-3">styleUrls</td>
+                <td class="col-md-9"><code>./company.component.scss</code></td>
+            </tr>
+
+
+
+
+            <tr>
+                <td class="col-md-3">templateUrl</td>
+                <td class="col-md-9"><code>./company.component.html</code></td>
+            </tr>
+
+
+
+            <tr>
+                <td class="col-md-3">styleUrl</td>
+                <td class="col-md-9"><code>./company.component.scss</code></td>
+            </tr>
+
+
+
+
+
+        </tbody>
+    </table>
+</section>
+
+        <section data-compodoc="block-relationships">
+            <h3>Relationships</h3>
+
+            <div class="row pt-3">
+                <div class="col-sm-6">
+                    <h4>Used by</h4>
+                        <p class="comment"><i>No hay resultados que coincidan.</i></p>
+                </div>
+
+                <div class="col-sm-6">
+                    <h4>Depends on</h4>
+                        <ul class="list-unstyled relationships-list">
+                                <li>
+                                            <code><a href="https://angular.dev/api/common/CommonModule" target="_blank" >CommonModule</a></code>
+                                </li>
+                                <li>
+                                            <code><a href="https://angular.dev/api/forms/ReactiveFormsModule" target="_blank" >ReactiveFormsModule</a></code>
+                                </li>
+                                <li>
+                                        <code>NzCardModule</code>
+                                </li>
+                                <li>
+                                        <code>NzFormModule</code>
+                                </li>
+                                <li>
+                                        <code>NzInputModule</code>
+                                </li>
+                                <li>
+                                        <code>NzSelectModule</code>
+                                </li>
+                                <li>
+                                        <code>NzButtonModule</code>
+                                </li>
+                                <li>
+                                        <code>NzSpaceModule</code>
+                                </li>
+                                <li>
+                                        <code>NzIconModule</code>
+                                </li>
+                                <li>
+                                        <code>NzUploadModule</code>
+                                </li>
+                                <li>
+                                        <code>NzGridModule</code>
+                                </li>
+                                <li>
+                                        <code>NzSwitchModule</code>
+                                </li>
+                                <li>
+                                            <code><a href="../components/MapPickerComponent.html" target="_self" >MapPickerComponent</a></code>
+                                </li>
+                                <li>
+                                            <code><a href="https://angular.dev/api/core/OnInit" target="_blank" >OnInit</a></code>
+                                </li>
+                        </ul>
+                </div>
+            </div>
+        </section>
+</div>
+
+    <div class="tab-pane fade " id="api">    <section data-compodoc="block-index">
+    <h3 id="index">Índice</h3>
+        <table class="table table-sm table-bordered index-table">
+            <tbody>
+                <tr>
+                    <td class="col-md-3">
+                        <h6><b>Propiedades</b></h6>
+                    </td>
+                    <td class="col-md-9">
+                        <ul class="index-list">
+                            <li>
+                                <span class="reference-badge reference-badge--property" aria-hidden="true">P</span>
+                                    <span class="modifier">Public</span>
+                                <a href="#bannerFileList" >bannerFileList</a>
+                            </li>
+                            <li>
+                                <span class="reference-badge reference-badge--property" aria-hidden="true">P</span>
+                                    <span class="modifier">Public</span>
+                                <a href="#beforeUploadBanner" >beforeUploadBanner</a>
+                            </li>
+                            <li>
+                                <span class="reference-badge reference-badge--property" aria-hidden="true">P</span>
+                                    <span class="modifier">Public</span>
+                                <a href="#beforeUploadLogo" >beforeUploadLogo</a>
+                            </li>
+                            <li>
+                                <span class="reference-badge reference-badge--property" aria-hidden="true">P</span>
+                                    <span class="modifier">Public</span>
+                                <a href="#companyForm" >companyForm</a>
+                            </li>
+                            <li>
+                                <span class="reference-badge reference-badge--property" aria-hidden="true">P</span>
+                                    <span class="modifier">Public</span>
+                                <a href="#isEditing" >isEditing</a>
+                            </li>
+                            <li>
+                                <span class="reference-badge reference-badge--property" aria-hidden="true">P</span>
+                                    <span class="modifier">Public</span>
+                                <a href="#isLoading" >isLoading</a>
+                            </li>
+                            <li>
+                                <span class="reference-badge reference-badge--property" aria-hidden="true">P</span>
+                                    <span class="modifier">Public</span>
+                                <a href="#logoFileList" >logoFileList</a>
+                            </li>
+                            <li>
+                                <span class="reference-badge reference-badge--property" aria-hidden="true">P</span>
+                                    <span class="modifier">Public</span>
+                                <a href="#onRemoveBanner" >onRemoveBanner</a>
+                            </li>
+                            <li>
+                                <span class="reference-badge reference-badge--property" aria-hidden="true">P</span>
+                                    <span class="modifier">Public</span>
+                                <a href="#onRemoveLogo" >onRemoveLogo</a>
+                            </li>
+                            <li>
+                                <span class="reference-badge reference-badge--property" aria-hidden="true">P</span>
+                                    <span class="modifier">Public</span>
+                                <a href="#showMapPicker" >showMapPicker</a>
+                            </li>
+                        </ul>
+                    </td>
+                </tr>
+            </tbody>
+        </table>
+
+        <table class="table table-sm table-bordered index-table">
+            <tbody>
+                <tr>
+                    <td class="col-md-3">
+                        <h6><b>Métodos</b></h6>
+                    </td>
+                    <td class="col-md-9">
+                        <ul class="index-list">
+                            <li>
+                                <span class="reference-badge reference-badge--method" aria-hidden="true">M</span>
+                                    <span class="modifier">Private</span>
+                                <a href="#compressAndResizeImage" >compressAndResizeImage</a>
+                            </li>
+                            <li>
+                                <span class="reference-badge reference-badge--method" aria-hidden="true">M</span>
+                                    <span class="modifier">Private</span>
+                                <a href="#getCompanyById" >getCompanyById</a>
+                            </li>
+                            <li>
+                                <span class="reference-badge reference-badge--method" aria-hidden="true">M</span>
+                                    <span class="modifier">Public</span>
+                                <a href="#handleLocationSelected" >handleLocationSelected</a>
+                            </li>
+                            <li>
+                                <span class="reference-badge reference-badge--method" aria-hidden="true">M</span>
+                                <a href="#ngOnInit" >ngOnInit</a>
+                            </li>
+                            <li>
+                                <span class="reference-badge reference-badge--method" aria-hidden="true">M</span>
+                                    <span class="modifier">Public</span>
+                                <a href="#onCancel" >onCancel</a>
+                            </li>
+                            <li>
+                                <span class="reference-badge reference-badge--method" aria-hidden="true">M</span>
+                                    <span class="modifier">Public</span>
+                                <a href="#onSave" >onSave</a>
+                            </li>
+                            <li>
+                                <span class="reference-badge reference-badge--method" aria-hidden="true">M</span>
+                                    <span class="modifier">Public</span>
+                                <a href="#toggleMapPicker" >toggleMapPicker</a>
+                            </li>
+                        </ul>
+                    </td>
+                </tr>
+            </tbody>
+        </table>
+
+
+
+
+
+</section>
+
+    <section data-compodoc="block-constructor">
+    <h3 id="constructor">Constructor</h3>
+        <table class="table table-sm table-bordered">
+            <tbody>
+                <tr>
+                    <td class="col-md-4">
+<code>constructor(fb: <a href="https://angular.dev/api/forms/FormBuilder" target="_blank">FormBuilder</a>, _route: <a href="https://angular.dev/api/router/ActivatedRoute" target="_blank">ActivatedRoute</a>, _router: <a href="https://angular.dev/api/router/Router" target="_blank">Router</a>, location: <a href="https://angular.dev/api/common/Location" target="_blank">Location</a>, _messageService: <a href="../injectables/MessageService.html" target="_self">MessageService</a>, _companiesService: <a href="../injectables/CompaniesService.html" target="_self">CompaniesService</a>, _sessionService: <a href="../injectables/SessionService.html" target="_self">SessionService</a>, _userRolesCompanyService: <a href="../injectables/UserRolesCompanyService.html" target="_self">UserRolesCompanyService</a>)</code>
+                    </td>
+                </tr>
+                        <tr>
+                            <td class="col-md-4">
+                                <div class="io-line">Definido en <a href="" data-line="51" class="link-to-prism">src/app/application/company/company.component.ts:51</a></div>
+                            </td>
+                        </tr>
+
+                <tr>
+                    <td class="col-md-4">
+                            <div>
+                                    <b>Parámetros :</b>
+                                    <table class="params">
+                                        <thead>
+                                            <tr>
+                                                <td>Nombre</td>
+                                                    <td>Tipo</td>
+                                                <td>Opcional</td>
+                                            </tr>
+                                        </thead>
+                                        <tbody>
+                                                <tr>
+                                                        <td>fb</td>
+                                                  
+                                                        <td>
+                                                                        <code><a href="https://angular.dev/api/forms/FormBuilder" target="_blank" >FormBuilder</a></code>
+                                                        </td>
+                                                  
+                                                    <td>
+                                                            No
+                                                    </td>
+                                                    
+                                                </tr>
+                                                <tr>
+                                                        <td>_route</td>
+                                                  
+                                                        <td>
+                                                                        <code><a href="https://angular.dev/api/router/ActivatedRoute" target="_blank" >ActivatedRoute</a></code>
+                                                        </td>
+                                                  
+                                                    <td>
+                                                            No
+                                                    </td>
+                                                    
+                                                </tr>
+                                                <tr>
+                                                        <td>_router</td>
+                                                  
+                                                        <td>
+                                                                        <code><a href="https://angular.dev/api/router/Router" target="_blank" >Router</a></code>
+                                                        </td>
+                                                  
+                                                    <td>
+                                                            No
+                                                    </td>
+                                                    
+                                                </tr>
+                                                <tr>
+                                                        <td>location</td>
+                                                  
+                                                        <td>
+                                                                        <code><a href="https://angular.dev/api/common/Location" target="_blank" >Location</a></code>
+                                                        </td>
+                                                  
+                                                    <td>
+                                                            No
+                                                    </td>
+                                                    
+                                                </tr>
+                                                <tr>
+                                                        <td>_messageService</td>
+                                                  
+                                                        <td>
+                                                                        <code><a href="../injectables/MessageService.html" target="_self" >MessageService</a></code>
+                                                        </td>
+                                                  
+                                                    <td>
+                                                            No
+                                                    </td>
+                                                    
+                                                </tr>
+                                                <tr>
+                                                        <td>_companiesService</td>
+                                                  
+                                                        <td>
+                                                                        <code><a href="../injectables/CompaniesService.html" target="_self" >CompaniesService</a></code>
+                                                        </td>
+                                                  
+                                                    <td>
+                                                            No
+                                                    </td>
+                                                    
+                                                </tr>
+                                                <tr>
+                                                        <td>_sessionService</td>
+                                                  
+                                                        <td>
+                                                                        <code><a href="../injectables/SessionService.html" target="_self" >SessionService</a></code>
+                                                        </td>
+                                                  
+                                                    <td>
+                                                            No
+                                                    </td>
+                                                    
+                                                </tr>
+                                                <tr>
+                                                        <td>_userRolesCompanyService</td>
+                                                  
+                                                        <td>
+                                                                        <code><a href="../injectables/UserRolesCompanyService.html" target="_self" >UserRolesCompanyService</a></code>
+                                                        </td>
+                                                  
+                                                    <td>
+                                                            No
+                                                    </td>
+                                                    
+                                                </tr>
+                                        </tbody>
+                                    </table>
+                            </div>
+                    </td>
+                </tr>
+            </tbody>
+        </table>
+</section>
+
+
+
+
+
+    <section data-compodoc="block-methods">
+    
+    <h3 id="methods">
+        Métodos
+    </h3>
+    <table class="table table-sm table-bordered">
+        <tbody>
+            <tr>
+                <td class="col-md-4">
+                    <a name="compressAndResizeImage"></a>
+                    <span class="name">
+                            <span class="modifier">Private</span>
+                        <span ><b>compressAndResizeImage</b></span>
+                        <a href="#compressAndResizeImage"><span class="icon ion-ios-link"></span></a>
+                    </span>
+                </td>
+            </tr>
+            <tr>
+                <td class="col-md-4">
+                        <span class="modifier-icon icon ion-ios-reset"></span>
+                    <code>compressAndResizeImage(file: File)</code>
+                </td>
+            </tr>
+
+
+                    <tr>
+                        <td class="col-md-4">
+                            <div class="io-line">Definido en <a href="" data-line="104"
+                                    class="link-to-prism">src/app/application/company/company.component.ts:104</a></div>
+                        </td>
+                    </tr>
+
+
+            <tr>
+                <td class="col-md-4">
+
+                            <div class="io-description">
+                                <b>Parámetros :</b>
+                                
+                                <table class="params">
+                                    <thead>
+                                        <tr>
+                                            <td>Nombre</td>
+                                                <td>Tipo</td>
+                                            <td>Opcional</td>
+                                        </tr>
+                                    </thead>
+                                    <tbody>
+                                        <tr>
+                                                <td>file</td>
+                                            <td>
+                                                        <code>File</code>
+                                            </td>
+
+                                            <td>
+                                                    No
+                                            </td>
+
+
+                                        </tr>
+                                    </tbody>
+                                </table>
+                            </div>
+                        <div class="io-description">
+                            <b>Devuelve : </b>    <code>Promise&lt;string&gt;</code>
+
+                        </div>
+                            <div class="io-description">
+                                
+                            </div>
+                </td>
+            </tr>
+        </tbody>
+    </table>
+    <table class="table table-sm table-bordered">
+        <tbody>
+            <tr>
+                <td class="col-md-4">
+                    <a name="getCompanyById"></a>
+                    <span class="name">
+                            <span class="modifier">Private</span>
+                        <span ><b>getCompanyById</b></span>
+                        <a href="#getCompanyById"><span class="icon ion-ios-link"></span></a>
+                    </span>
+                </td>
+            </tr>
+            <tr>
+                <td class="col-md-4">
+                        <span class="modifier-icon icon ion-ios-reset"></span>
+                    <code>getCompanyById(cmp_uuid: <a href="https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/string" target="_blank">string</a>)</code>
+                </td>
+            </tr>
+
+
+                    <tr>
+                        <td class="col-md-4">
+                            <div class="io-line">Definido en <a href="" data-line="147"
+                                    class="link-to-prism">src/app/application/company/company.component.ts:147</a></div>
+                        </td>
+                    </tr>
+
+
+            <tr>
+                <td class="col-md-4">
+
+                            <div class="io-description">
+                                <b>Parámetros :</b>
+                                
+                                <table class="params">
+                                    <thead>
+                                        <tr>
+                                            <td>Nombre</td>
+                                                <td>Tipo</td>
+                                            <td>Opcional</td>
+                                        </tr>
+                                    </thead>
+                                    <tbody>
+                                        <tr>
+                                                <td>cmp_uuid</td>
+                                            <td>
+                                                            <code><a href="https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/string" target="_blank" >string</a></code>
+                                            </td>
+
+                                            <td>
+                                                    No
+                                            </td>
+
+
+                                        </tr>
+                                    </tbody>
+                                </table>
+                            </div>
+                        <div class="io-description">
+                            <b>Devuelve : </b>        <code><a href="https://www.typescriptlang.org/docs/handbook/basic-types.html" target="_blank" >void</a></code>
+
+                        </div>
+                            <div class="io-description">
+                                
+                            </div>
+                </td>
+            </tr>
+        </tbody>
+    </table>
+    <table class="table table-sm table-bordered">
+        <tbody>
+            <tr>
+                <td class="col-md-4">
+                    <a name="handleLocationSelected"></a>
+                    <span class="name">
+                            <span class="modifier">Public</span>
+                        <span ><b>handleLocationSelected</b></span>
+                        <a href="#handleLocationSelected"><span class="icon ion-ios-link"></span></a>
+                    </span>
+                </td>
+            </tr>
+            <tr>
+                <td class="col-md-4">
+                        <span class="modifier-icon icon ion-ios-reset"></span>
+                    <code>handleLocationSelected(location: <a href="../interfaces/SelectedLocation.html" target="_self">SelectedLocation</a>)</code>
+                </td>
+            </tr>
+
+
+                    <tr>
+                        <td class="col-md-4">
+                            <div class="io-line">Definido en <a href="" data-line="315"
+                                    class="link-to-prism">src/app/application/company/company.component.ts:315</a></div>
+                        </td>
+                    </tr>
+
+
+            <tr>
+                <td class="col-md-4">
+
+                            <div class="io-description">
+                                <b>Parámetros :</b>
+                                
+                                <table class="params">
+                                    <thead>
+                                        <tr>
+                                            <td>Nombre</td>
+                                                <td>Tipo</td>
+                                            <td>Opcional</td>
+                                        </tr>
+                                    </thead>
+                                    <tbody>
+                                        <tr>
+                                                <td>location</td>
+                                            <td>
+                                                            <code><a href="../interfaces/SelectedLocation.html" target="_self" >SelectedLocation</a></code>
+                                            </td>
+
+                                            <td>
+                                                    No
+                                            </td>
+
+
+                                        </tr>
+                                    </tbody>
+                                </table>
+                            </div>
+                        <div class="io-description">
+                            <b>Devuelve : </b>        <code><a href="https://www.typescriptlang.org/docs/handbook/basic-types.html" target="_blank" >void</a></code>
+
+                        </div>
+                            <div class="io-description">
+                                
+                            </div>
+                </td>
+            </tr>
+        </tbody>
+    </table>
+    <table class="table table-sm table-bordered">
+        <tbody>
+            <tr>
+                <td class="col-md-4">
+                    <a name="ngOnInit"></a>
+                    <span class="name">
+                        <span ><b>ngOnInit</b></span>
+                        <a href="#ngOnInit"><span class="icon ion-ios-link"></span></a>
+                    </span>
+                </td>
+            </tr>
+            <tr>
+                <td class="col-md-4">
+<code>ngOnInit()</code>
+                </td>
+            </tr>
+
+
+                    <tr>
+                        <td class="col-md-4">
+                            <div class="io-line">Definido en <a href="" data-line="64"
+                                    class="link-to-prism">src/app/application/company/company.component.ts:64</a></div>
+                        </td>
+                    </tr>
+
+
+            <tr>
+                <td class="col-md-4">
+
+                        <div class="io-description">
+                            <b>Devuelve : </b>        <code><a href="https://www.typescriptlang.org/docs/handbook/basic-types.html" target="_blank" >void</a></code>
+
+                        </div>
+                </td>
+            </tr>
+        </tbody>
+    </table>
+    <table class="table table-sm table-bordered">
+        <tbody>
+            <tr>
+                <td class="col-md-4">
+                    <a name="onCancel"></a>
+                    <span class="name">
+                            <span class="modifier">Public</span>
+                        <span ><b>onCancel</b></span>
+                        <a href="#onCancel"><span class="icon ion-ios-link"></span></a>
+                    </span>
+                </td>
+            </tr>
+            <tr>
+                <td class="col-md-4">
+                        <span class="modifier-icon icon ion-ios-reset"></span>
+                    <code>onCancel()</code>
+                </td>
+            </tr>
+
+
+                    <tr>
+                        <td class="col-md-4">
+                            <div class="io-line">Definido en <a href="" data-line="307"
+                                    class="link-to-prism">src/app/application/company/company.component.ts:307</a></div>
+                        </td>
+                    </tr>
+
+
+            <tr>
+                <td class="col-md-4">
+
+                        <div class="io-description">
+                            <b>Devuelve : </b>        <code><a href="https://www.typescriptlang.org/docs/handbook/basic-types.html" target="_blank" >void</a></code>
+
+                        </div>
+                </td>
+            </tr>
+        </tbody>
+    </table>
+    <table class="table table-sm table-bordered">
+        <tbody>
+            <tr>
+                <td class="col-md-4">
+                    <a name="onSave"></a>
+                    <span class="name">
+                            <span class="modifier">Public</span>
+                        <span ><b>onSave</b></span>
+                        <a href="#onSave"><span class="icon ion-ios-link"></span></a>
+                    </span>
+                </td>
+            </tr>
+            <tr>
+                <td class="col-md-4">
+                        <span class="modifier-icon icon ion-ios-reset"></span>
+                    <code>onSave()</code>
+                </td>
+            </tr>
+
+
+                    <tr>
+                        <td class="col-md-4">
+                            <div class="io-line">Definido en <a href="" data-line="232"
+                                    class="link-to-prism">src/app/application/company/company.component.ts:232</a></div>
+                        </td>
+                    </tr>
+
+
+            <tr>
+                <td class="col-md-4">
+
+                        <div class="io-description">
+                            <b>Devuelve : </b>        <code><a href="https://www.typescriptlang.org/docs/handbook/basic-types.html" target="_blank" >void</a></code>
+
+                        </div>
+                </td>
+            </tr>
+        </tbody>
+    </table>
+    <table class="table table-sm table-bordered">
+        <tbody>
+            <tr>
+                <td class="col-md-4">
+                    <a name="toggleMapPicker"></a>
+                    <span class="name">
+                            <span class="modifier">Public</span>
+                        <span ><b>toggleMapPicker</b></span>
+                        <a href="#toggleMapPicker"><span class="icon ion-ios-link"></span></a>
+                    </span>
+                </td>
+            </tr>
+            <tr>
+                <td class="col-md-4">
+                        <span class="modifier-icon icon ion-ios-reset"></span>
+                    <code>toggleMapPicker()</code>
+                </td>
+            </tr>
+
+
+                    <tr>
+                        <td class="col-md-4">
+                            <div class="io-line">Definido en <a href="" data-line="311"
+                                    class="link-to-prism">src/app/application/company/company.component.ts:311</a></div>
+                        </td>
+                    </tr>
+
+
+            <tr>
+                <td class="col-md-4">
+
+                        <div class="io-description">
+                            <b>Devuelve : </b>        <code><a href="https://www.typescriptlang.org/docs/handbook/basic-types.html" target="_blank" >void</a></code>
+
+                        </div>
+                </td>
+            </tr>
+        </tbody>
+    </table>
+</section>
+
+    <section data-compodoc="block-properties">
+    
+    <h3 id="inputs">
+        Propiedades
+    </h3>
+    <table class="table table-sm table-bordered">
+        <tbody>
+            <tr>
+                <td class="col-md-4">
+                    <a name="bannerFileList"></a>
+                    <span class="name">
+                            <span class="modifier">Public</span>
+                        <span ><b>bannerFileList</b></span>
+                        <a href="#bannerFileList"><span class="icon ion-ios-link"></span></a>
+                    </span>
+                </td>
+            </tr>
+                <tr>
+                    <td class="col-md-4">
+                        <i>Tipo : </i>    <code>NzUploadFile[]</code>
+
+                    </td>
+                </tr>
+                <tr>
+                    <td class="col-md-4">
+                        <i>Valor por defecto : </i><code>[]</code>
+                    </td>
+                </tr>
+                    <tr>
+                        <td class="col-md-4">
+                                <div class="io-line">Definido en <a href="" data-line="48" class="link-to-prism">src/app/application/company/company.component.ts:48</a></div>
+                        </td>
+                    </tr>
+
+
+        </tbody>
+    </table>
+    <table class="table table-sm table-bordered">
+        <tbody>
+            <tr>
+                <td class="col-md-4">
+                    <a name="beforeUploadBanner"></a>
+                    <span class="name">
+                            <span class="modifier">Public</span>
+                        <span ><b>beforeUploadBanner</b></span>
+                        <a href="#beforeUploadBanner"><span class="icon ion-ios-link"></span></a>
+                    </span>
+                </td>
+            </tr>
+                <tr>
+                    <td class="col-md-4">
+                        <i>Tipo : </i>    <code>unknown</code>
+
+                    </td>
+                </tr>
+                <tr>
+                    <td class="col-md-4">
+                        <i>Valor por defecto : </i><code>() &#x3D;&gt; {...}</code>
+                    </td>
+                </tr>
+                    <tr>
+                        <td class="col-md-4">
+                                <div class="io-line">Definido en <a href="" data-line="207" class="link-to-prism">src/app/application/company/company.component.ts:207</a></div>
+                        </td>
+                    </tr>
+
+
+        </tbody>
+    </table>
+    <table class="table table-sm table-bordered">
+        <tbody>
+            <tr>
+                <td class="col-md-4">
+                    <a name="beforeUploadLogo"></a>
+                    <span class="name">
+                            <span class="modifier">Public</span>
+                        <span ><b>beforeUploadLogo</b></span>
+                        <a href="#beforeUploadLogo"><span class="icon ion-ios-link"></span></a>
+                    </span>
+                </td>
+            </tr>
+                <tr>
+                    <td class="col-md-4">
+                        <i>Tipo : </i>    <code>unknown</code>
+
+                    </td>
+                </tr>
+                <tr>
+                    <td class="col-md-4">
+                        <i>Valor por defecto : </i><code>() &#x3D;&gt; {...}</code>
+                    </td>
+                </tr>
+                    <tr>
+                        <td class="col-md-4">
+                                <div class="io-line">Definido en <a href="" data-line="182" class="link-to-prism">src/app/application/company/company.component.ts:182</a></div>
+                        </td>
+                    </tr>
+
+
+        </tbody>
+    </table>
+    <table class="table table-sm table-bordered">
+        <tbody>
+            <tr>
+                <td class="col-md-4">
+                    <a name="companyForm"></a>
+                    <span class="name">
+                            <span class="modifier">Public</span>
+                        <span ><b>companyForm</b></span>
+                        <a href="#companyForm"><span class="icon ion-ios-link"></span></a>
+                    </span>
+                </td>
+            </tr>
+                <tr>
+                    <td class="col-md-4">
+                        <i>Tipo : </i>        <code><a href="https://angular.dev/api/forms/FormGroup" target="_blank" >FormGroup</a></code>
+
+                    </td>
+                </tr>
+                    <tr>
+                        <td class="col-md-4">
+                                <div class="io-line">Definido en <a href="" data-line="46" class="link-to-prism">src/app/application/company/company.component.ts:46</a></div>
+                        </td>
+                    </tr>
+
+
+        </tbody>
+    </table>
+    <table class="table table-sm table-bordered">
+        <tbody>
+            <tr>
+                <td class="col-md-4">
+                    <a name="isEditing"></a>
+                    <span class="name">
+                            <span class="modifier">Public</span>
+                        <span ><b>isEditing</b></span>
+                        <a href="#isEditing"><span class="icon ion-ios-link"></span></a>
+                    </span>
+                </td>
+            </tr>
+                <tr>
+                    <td class="col-md-4">
+                        <i>Tipo : </i>        <code><a href="https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/boolean" target="_blank" >boolean</a></code>
+
+                    </td>
+                </tr>
+                <tr>
+                    <td class="col-md-4">
+                        <i>Valor por defecto : </i><code>false</code>
+                    </td>
+                </tr>
+                    <tr>
+                        <td class="col-md-4">
+                                <div class="io-line">Definido en <a href="" data-line="49" class="link-to-prism">src/app/application/company/company.component.ts:49</a></div>
+                        </td>
+                    </tr>
+
+
+        </tbody>
+    </table>
+    <table class="table table-sm table-bordered">
+        <tbody>
+            <tr>
+                <td class="col-md-4">
+                    <a name="isLoading"></a>
+                    <span class="name">
+                            <span class="modifier">Public</span>
+                        <span ><b>isLoading</b></span>
+                        <a href="#isLoading"><span class="icon ion-ios-link"></span></a>
+                    </span>
+                </td>
+            </tr>
+                <tr>
+                    <td class="col-md-4">
+                        <i>Tipo : </i>        <code><a href="https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/boolean" target="_blank" >boolean</a></code>
+
+                    </td>
+                </tr>
+                <tr>
+                    <td class="col-md-4">
+                        <i>Valor por defecto : </i><code>false</code>
+                    </td>
+                </tr>
+                    <tr>
+                        <td class="col-md-4">
+                                <div class="io-line">Definido en <a href="" data-line="50" class="link-to-prism">src/app/application/company/company.component.ts:50</a></div>
+                        </td>
+                    </tr>
+
+
+        </tbody>
+    </table>
+    <table class="table table-sm table-bordered">
+        <tbody>
+            <tr>
+                <td class="col-md-4">
+                    <a name="logoFileList"></a>
+                    <span class="name">
+                            <span class="modifier">Public</span>
+                        <span ><b>logoFileList</b></span>
+                        <a href="#logoFileList"><span class="icon ion-ios-link"></span></a>
+                    </span>
+                </td>
+            </tr>
+                <tr>
+                    <td class="col-md-4">
+                        <i>Tipo : </i>    <code>NzUploadFile[]</code>
+
+                    </td>
+                </tr>
+                <tr>
+                    <td class="col-md-4">
+                        <i>Valor por defecto : </i><code>[]</code>
+                    </td>
+                </tr>
+                    <tr>
+                        <td class="col-md-4">
+                                <div class="io-line">Definido en <a href="" data-line="47" class="link-to-prism">src/app/application/company/company.component.ts:47</a></div>
+                        </td>
+                    </tr>
+
+
+        </tbody>
+    </table>
+    <table class="table table-sm table-bordered">
+        <tbody>
+            <tr>
+                <td class="col-md-4">
+                    <a name="onRemoveBanner"></a>
+                    <span class="name">
+                            <span class="modifier">Public</span>
+                        <span ><b>onRemoveBanner</b></span>
+                        <a href="#onRemoveBanner"><span class="icon ion-ios-link"></span></a>
+                    </span>
+                </td>
+            </tr>
+                <tr>
+                    <td class="col-md-4">
+                        <i>Tipo : </i>    <code>unknown</code>
+
+                    </td>
+                </tr>
+                <tr>
+                    <td class="col-md-4">
+                        <i>Valor por defecto : </i><code>() &#x3D;&gt; {...}</code>
+                    </td>
+                </tr>
+                    <tr>
+                        <td class="col-md-4">
+                                <div class="io-line">Definido en <a href="" data-line="226" class="link-to-prism">src/app/application/company/company.component.ts:226</a></div>
+                        </td>
+                    </tr>
+
+
+        </tbody>
+    </table>
+    <table class="table table-sm table-bordered">
+        <tbody>
+            <tr>
+                <td class="col-md-4">
+                    <a name="onRemoveLogo"></a>
+                    <span class="name">
+                            <span class="modifier">Public</span>
+                        <span ><b>onRemoveLogo</b></span>
+                        <a href="#onRemoveLogo"><span class="icon ion-ios-link"></span></a>
+                    </span>
+                </td>
+            </tr>
+                <tr>
+                    <td class="col-md-4">
+                        <i>Tipo : </i>    <code>unknown</code>
+
+                    </td>
+                </tr>
+                <tr>
+                    <td class="col-md-4">
+                        <i>Valor por defecto : </i><code>() &#x3D;&gt; {...}</code>
+                    </td>
+                </tr>
+                    <tr>
+                        <td class="col-md-4">
+                                <div class="io-line">Definido en <a href="" data-line="201" class="link-to-prism">src/app/application/company/company.component.ts:201</a></div>
+                        </td>
+                    </tr>
+
+
+        </tbody>
+    </table>
+    <table class="table table-sm table-bordered">
+        <tbody>
+            <tr>
+                <td class="col-md-4">
+                    <a name="showMapPicker"></a>
+                    <span class="name">
+                            <span class="modifier">Public</span>
+                        <span ><b>showMapPicker</b></span>
+                        <a href="#showMapPicker"><span class="icon ion-ios-link"></span></a>
+                    </span>
+                </td>
+            </tr>
+                <tr>
+                    <td class="col-md-4">
+                        <i>Tipo : </i>        <code><a href="https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/boolean" target="_blank" >boolean</a></code>
+
+                    </td>
+                </tr>
+                <tr>
+                    <td class="col-md-4">
+                        <i>Valor por defecto : </i><code>false</code>
+                    </td>
+                </tr>
+                    <tr>
+                        <td class="col-md-4">
+                                <div class="io-line">Definido en <a href="" data-line="51" class="link-to-prism">src/app/application/company/company.component.ts:51</a></div>
+                        </td>
+                    </tr>
+
+
+        </tbody>
+    </table>
+</section>
+
+</div>
+
+
+    <div class="tab-pane fade  tab-source-code" id="source">
+        <pre class="line-numbers compodoc-sourcecode"><code class="language-typescript">import { Component, OnInit } from &#x27;@angular/core&#x27;;
+import { CommonModule, Location } from &#x27;@angular/common&#x27;;
+import { FormBuilder, FormGroup, Validators, ReactiveFormsModule } from &#x27;@angular/forms&#x27;;
+import { ActivatedRoute, Router } from &#x27;@angular/router&#x27;;
+
+// NG-ZORRO
+import { NzCardModule } from &#x27;ng-zorro-antd/card&#x27;;
+import { NzFormModule } from &#x27;ng-zorro-antd/form&#x27;;
+import { NzInputModule } from &#x27;ng-zorro-antd/input&#x27;;
+import { NzSelectModule } from &#x27;ng-zorro-antd/select&#x27;;
+import { NzButtonModule } from &#x27;ng-zorro-antd/button&#x27;;
+import { NzSpaceModule } from &#x27;ng-zorro-antd/space&#x27;;
+import { NzIconModule } from &#x27;ng-zorro-antd/icon&#x27;;
+import { NzUploadModule, NzUploadFile } from &#x27;ng-zorro-antd/upload&#x27;;
+import { NzGridModule } from &#x27;ng-zorro-antd/grid&#x27;;
+import { NzSwitchModule } from &#x27;ng-zorro-antd/switch&#x27;;
+
+import { MessageService } from &#x27;@services/message.service&#x27;;
+import { CompaniesService } from &#x27;@services/companies.service&#x27;;
+import { SessionService } from &#x27;@services/session.service&#x27;;
+import { UserRolesCompanyService } from &#x27;@services/user-roles-company.service&#x27;;
+import { MapPickerComponent, SelectedLocation } from &#x27;../../shared/components/map-picker/map-picker.component&#x27;;
+
+@Component({
+  selector: &#x27;app-company&#x27;,
+  imports: [
+    CommonModule,
+    ReactiveFormsModule,
+    NzCardModule,
+    NzFormModule,
+    NzInputModule,
+    NzSelectModule,
+    NzButtonModule,
+    NzSpaceModule,
+    NzIconModule,
+    NzUploadModule,
+    NzGridModule,
+    NzSwitchModule,
+    MapPickerComponent
+  ],
+  templateUrl: &#x27;./company.component.html&#x27;,
+  styleUrl: &#x27;./company.component.scss&#x27;
+})
+export class CompanyComponent implements OnInit {
+
+  public companyForm!: FormGroup;
+  public logoFileList: NzUploadFile[] &#x3D; [];
+  public bannerFileList: NzUploadFile[] &#x3D; [];
+  public isEditing: boolean &#x3D; false;
+  public isLoading: boolean &#x3D; false;
+  public showMapPicker: boolean &#x3D; false;
+
+  constructor(
+    private fb: FormBuilder,
+    private _route: ActivatedRoute,
+    private _router: Router,
+    private location: Location,
+    private _messageService: MessageService,
+    private _companiesService: CompaniesService,
+    private _sessionService: SessionService,
+    private _userRolesCompanyService: UserRolesCompanyService
+  ) { }
+
+  ngOnInit(): void {
+    this.companyForm &#x3D; this.fb.group({
+      cmp_uuid: [&#x27;&#x27;],
+      cmp_name: [&#x27;&#x27;, [Validators.required, Validators.minLength(3)]],
+      cmp_slug: [&#x27;&#x27;, Validators.required],
+      cmp_address: [&#x27;&#x27;],
+      cmp_lat: [null],
+      cmp_lng: [null],
+      cmp_phone: [&#x27;&#x27;],
+      cmp_email: [&#x27;&#x27;, [Validators.email]],
+      cmp_description: [&#x27;&#x27;],
+      cmp_status: [&#x27;active&#x27;, Validators.required],
+      cmp_logo: [&#x27;&#x27;],
+      cmp_banner: [&#x27;&#x27;],
+      // Nuevos campos migrados desde settings
+      cmp_currency: [&#x27;ARS&#x27;, Validators.required],
+      cmp_whatsapp: [&#x27;&#x27;],
+      cmp_instagram: [&#x27;&#x27;],
+      cmp_facebook: [&#x27;&#x27;],
+      cmp_allowbackorders: [true],
+      cmp_primarycolor: [&#x27;#1890ff&#x27;]
+    });
+
+    this._route.params.subscribe(params &#x3D;&gt; {
+      const cmp_uuid &#x3D; params[&#x27;cmp_uuid&#x27;];
+      if (cmp_uuid &amp;&amp; cmp_uuid !&#x3D;&#x3D; &#x27;new&#x27;) {
+        this.isEditing &#x3D; true;
+        this.getCompanyById(cmp_uuid);
+      }
+    });
+
+    // Auto-generate slug from name si es nuevo
+    this.companyForm.get(&#x27;cmp_name&#x27;)?.valueChanges.subscribe(val &#x3D;&gt; {
+      if (!this.isEditing &amp;&amp; val) {
+        const slug &#x3D; val.toLowerCase().replace(/ /g, &#x27;-&#x27;).replace(/[^\w-]+/g, &#x27;&#x27;);
+        this.companyForm.patchValue({ cmp_slug: slug }, { emitEvent: false });
+      }
+    });
+  }
+
+  private compressAndResizeImage(file: File): Promise&lt;string&gt; {
+    return new Promise((resolve, reject) &#x3D;&gt; {
+      const reader &#x3D; new FileReader();
+      reader.onload &#x3D; (event: any) &#x3D;&gt; {
+        const img &#x3D; new Image();
+        img.onload &#x3D; () &#x3D;&gt; {
+          const canvas &#x3D; document.createElement(&#x27;canvas&#x27;);
+          const MAX_WIDTH &#x3D; 800;
+          const MAX_HEIGHT &#x3D; 800;
+          let width &#x3D; img.width;
+          let height &#x3D; img.height;
+
+          if (width &gt; height) {
+            if (width &gt; MAX_WIDTH) {
+              height *&#x3D; MAX_WIDTH / width;
+              width &#x3D; MAX_WIDTH;
+            }
+          } else {
+            if (height &gt; MAX_HEIGHT) {
+              width *&#x3D; MAX_HEIGHT / height;
+              height &#x3D; MAX_HEIGHT;
+            }
+          }
+
+          canvas.width &#x3D; width;
+          canvas.height &#x3D; height;
+
+          const ctx &#x3D; canvas.getContext(&#x27;2d&#x27;);
+          if (ctx) {
+            ctx.drawImage(img, 0, 0, width, height);
+            resolve(canvas.toDataURL(&#x27;image/webp&#x27;, 0.80));
+          } else {
+            reject(&#x27;No se pudo obtener contexto 2D del canvas&#x27;);
+          }
+        };
+        img.onerror &#x3D; err &#x3D;&gt; reject(err);
+        img.src &#x3D; event.target.result;
+      };
+      reader.onerror &#x3D; err &#x3D;&gt; reject(err);
+      reader.readAsDataURL(file);
+    });
+  }
+
+  private getCompanyById(cmp_uuid: string): void {
+    this.isLoading &#x3D; true;
+    this._companiesService.getCompanyById(cmp_uuid).subscribe({
+      next: (res) &#x3D;&gt; {
+        if (res.data) {
+          const company: any &#x3D; Array.isArray(res.data) ? res.data[0] : res.data;
+          this.companyForm.patchValue(company);
+
+          // Inicializar miniaturas si existen
+          if (company.cmp_logo) {
+            this.logoFileList &#x3D; [{
+              uid: &#x27;-1&#x27;,
+              name: &#x27;logo.webp&#x27;,
+              status: &#x27;done&#x27;,
+              url: company.cmp_logo
+            }];
+          }
+          if (company.cmp_banner) {
+            this.bannerFileList &#x3D; [{
+              uid: &#x27;-2&#x27;,
+              name: &#x27;banner.webp&#x27;,
+              status: &#x27;done&#x27;,
+              url: company.cmp_banner
+            }];
+          }
+        }
+        this.isLoading &#x3D; false;
+      },
+      error: (err) &#x3D;&gt; {
+        this._messageService.error(&#x27;Error&#x27;, &#x27;No se pudo cargar la información de la empresa.&#x27;);
+        this.isLoading &#x3D; false;
+      }
+    });
+  }
+
+  public beforeUploadLogo &#x3D; (file: NzUploadFile): boolean &#x3D;&gt; {
+    const rawFile &#x3D; file.originFileObj || (file as any);
+    if (rawFile) {
+      this.compressAndResizeImage(rawFile).then(base64 &#x3D;&gt; {
+        this.companyForm.patchValue({ cmp_logo: base64 });
+        this.logoFileList &#x3D; [{
+          uid: file.uid,
+          name: file.name,
+          status: &#x27;done&#x27;,
+          url: base64
+        }];
+      }).catch(err &#x3D;&gt; {
+        console.error(&#x27;Error al procesar el logo:&#x27;, err);
+        this._messageService.error(&#x27;Error&#x27;, &#x27;No se pudo procesar la imagen del logo.&#x27;);
+      });
+    }
+    return false;
+  };
+
+  public onRemoveLogo &#x3D; (): boolean &#x3D;&gt; {
+    this.companyForm.patchValue({ cmp_logo: &#x27;&#x27; });
+    this.logoFileList &#x3D; [];
+    return true;
+  };
+
+  public beforeUploadBanner &#x3D; (file: NzUploadFile): boolean &#x3D;&gt; {
+    const rawFile &#x3D; file.originFileObj || (file as any);
+    if (rawFile) {
+      this.compressAndResizeImage(rawFile).then(base64 &#x3D;&gt; {
+        this.companyForm.patchValue({ cmp_banner: base64 });
+        this.bannerFileList &#x3D; [{
+          uid: file.uid,
+          name: file.name,
+          status: &#x27;done&#x27;,
+          url: base64
+        }];
+      }).catch(err &#x3D;&gt; {
+        console.error(&#x27;Error al procesar el banner:&#x27;, err);
+        this._messageService.error(&#x27;Error&#x27;, &#x27;No se pudo procesar la imagen del banner.&#x27;);
+      });
+    }
+    return false;
+  };
+
+  public onRemoveBanner &#x3D; (): boolean &#x3D;&gt; {
+    this.companyForm.patchValue({ cmp_banner: &#x27;&#x27; });
+    this.bannerFileList &#x3D; [];
+    return true;
+  };
+
+  public onSave(): void {
+    if (this.companyForm.valid) {
+      const cmp_uuid &#x3D; this.companyForm.get(&#x27;cmp_uuid&#x27;)?.value;
+      const data &#x3D; this.companyForm.value;
+
+      this.isLoading &#x3D; true;
+
+      const request$ &#x3D; this.isEditing
+        ? this._companiesService.updateCompany(cmp_uuid, data)
+        : this._companiesService.saveCompany(data);
+
+      request$.subscribe({
+        next: (res: any) &#x3D;&gt; {
+          if (!this.isEditing) {
+            // Si es nueva, asignar rol al usuario actual
+            const identity &#x3D; this._sessionService.getIdentity();
+            const roles &#x3D; this._sessionService.getCompany()?.roles;
+            const adminRol &#x3D; roles.find((r: any) &#x3D;&gt; 
+              r.rol_name.toLowerCase() &#x3D;&#x3D;&#x3D; &#x27;admin&#x27; || 
+              r.rol_name.toLowerCase() &#x3D;&#x3D;&#x3D; &#x27;administrador&#x27; || 
+              r.rol_name.toLowerCase() &#x3D;&#x3D;&#x3D; &#x27;owner&#x27;
+            );
+
+            if (identity &amp;&amp; adminRol &amp;&amp; res.data) {
+              const userRolCompany &#x3D; {
+                cmp_uuid: res.data.cmp_uuid,
+                usr_uuid: identity.usr_uuid,
+                rol_uuid: adminRol.rol_uuid
+              };
+
+              this._userRolesCompanyService.saveUserRolCompany(userRolCompany).subscribe({
+                next: () &#x3D;&gt; {
+                  this._messageService.success(&#x27;¡Éxito!&#x27;, &#x27;Empresa creada y rol asignado correctamente.&#x27;, () &#x3D;&gt; {
+                    this._sessionService.refreshCompanies$.next();
+                    this.location.back();
+                  });
+                },
+                error: () &#x3D;&gt; {
+                  this._messageService.warning(&#x27;Advertencia&#x27;, &#x27;La empresa se creó, pero no se pudo asignar el rol automáticamente.&#x27;);
+                  this.location.back();
+                }
+              });
+            } else {
+              this._messageService.success(&#x27;¡Éxito!&#x27;, &#x27;La empresa ha sido creada exitosamente.&#x27;, () &#x3D;&gt; {
+                this._sessionService.refreshCompanies$.next();
+                this.location.back();
+              });
+            }
+          } else {
+            this._messageService.success(&#x27;¡Éxito!&#x27;, &#x27;Los datos de la empresa han sido actualizados.&#x27;, () &#x3D;&gt; {
+              this.location.back();
+            });
+          }
+          this.isLoading &#x3D; false;
+        },
+        error: (err) &#x3D;&gt; {
+          const errorMsg &#x3D; this.isEditing
+            ? &#x27;Hubo un problema al guardar los cambios.&#x27;
+            : &#x27;Hubo un problema al crear la empresa.&#x27;;
+
+          this._messageService.error(&#x27;Error&#x27;, errorMsg);
+          this.isLoading &#x3D; false;
+          console.error(err);
+        }
+      });
+    } else {
+      Object.values(this.companyForm.controls).forEach(control &#x3D;&gt; {
+        if (control.invalid) {
+          control.markAsDirty();
+          control.updateValueAndValidity({ onlySelf: true });
+        }
+      });
+    }
+  }
+
+  public onCancel(): void {
+    this.location.back();
+  }
+
+  public toggleMapPicker(): void {
+    this.showMapPicker &#x3D; !this.showMapPicker;
+  }
+
+  public handleLocationSelected(location: SelectedLocation): void {
+    this.companyForm.patchValue({
+      cmp_address: location.address,
+      cmp_lat: location.lat,
+      cmp_lng: location.lng
+    });
+  }
+}
+</code></pre>
+    </div>
+
+    <div class="tab-pane fade " id="templateData">
+        <pre class="line-numbers"><code class="language-html">&lt;form nz-form [formGroup]&#x3D;&quot;companyForm&quot; nzLayout&#x3D;&quot;vertical&quot; class&#x3D;&quot;product-form-container&quot;&gt;
+
+    &lt;div class&#x3D;&quot;form-scrollable-content&quot;&gt;
+        &lt;div class&#x3D;&quot;header-actions&quot;&gt;
+            &lt;h2&gt;{{ isEditing ? &#x27;Editar Empresa&#x27; : &#x27;Nueva Empresa&#x27; }}&lt;/h2&gt;
+            &lt;p *ngIf&#x3D;&quot;isEditing&quot;&gt;Configuración del Perfil Comercial&lt;/p&gt;
+        &lt;/div&gt;
+
+        &lt;div nz-row [nzGutter]&#x3D;&quot;24&quot;&gt;
+            &lt;!-- Columna Izquierda: Información Básica --&gt;
+            &lt;div nz-col [nzLg]&#x3D;&quot;16&quot; [nzXs]&#x3D;&quot;24&quot;&gt;
+                &lt;nz-card nzTitle&#x3D;&quot;Información de la Tienda&quot; class&#x3D;&quot;premium-card&quot; [nzBordered]&#x3D;&quot;false&quot;&gt;
+                    &lt;div nz-row [nzGutter]&#x3D;&quot;[16, 16]&quot;&gt;
+                        &lt;div nz-col [nzMd]&#x3D;&quot;12&quot; [nzXs]&#x3D;&quot;24&quot;&gt;
+                            &lt;nz-form-item&gt;
+                                &lt;nz-form-label nzRequired&gt;Nombre Comercial&lt;/nz-form-label&gt;
+                                &lt;nz-form-control nzErrorTip&#x3D;&quot;Nombre requerido (min 3 caracteres)&quot;&gt;
+                                    &lt;input nz-input formControlName&#x3D;&quot;cmp_name&quot; placeholder&#x3D;&quot;Ej: Importaciones del Sur&quot;
+                                        nzSize&#x3D;&quot;large&quot; /&gt;
+                                &lt;/nz-form-control&gt;
+                            &lt;/nz-form-item&gt;
+                        &lt;/div&gt;
+                        &lt;div nz-col [nzMd]&#x3D;&quot;12&quot; [nzXs]&#x3D;&quot;24&quot;&gt;
+                            &lt;nz-form-item&gt;
+                                &lt;nz-form-label nzRequired&gt;Slug (URL pública)&lt;/nz-form-label&gt;
+                                &lt;nz-form-control nzErrorTip&#x3D;&quot;Requerido&quot;&gt;
+                                    &lt;input nz-input formControlName&#x3D;&quot;cmp_slug&quot; placeholder&#x3D;&quot;importaciones-del-sur&quot;
+                                        nzSize&#x3D;&quot;large&quot; [readonly]&#x3D;&quot;isEditing&quot; /&gt;
+                                &lt;/nz-form-control&gt;
+                            &lt;/nz-form-item&gt;
+                        &lt;/div&gt;
+                        &lt;div nz-col [nzSpan]&#x3D;&quot;24&quot;&gt;
+                            &lt;nz-form-item&gt;
+                                &lt;nz-form-label&gt;Descripción / Quiénes Somos&lt;/nz-form-label&gt;
+                                &lt;nz-form-control&gt;
+                                    &lt;textarea nz-input formControlName&#x3D;&quot;cmp_description&quot; rows&#x3D;&quot;3&quot;
+                                        placeholder&#x3D;&quot;Información pública sobre la tienda y el negocio...&quot;&gt;&lt;/textarea&gt;
+                                &lt;/nz-form-control&gt;
+                            &lt;/nz-form-item&gt;
+                        &lt;/div&gt;
+                        &lt;div nz-col [nzMd]&#x3D;&quot;8&quot; [nzXs]&#x3D;&quot;24&quot;&gt;
+                            &lt;nz-form-item&gt;
+                                &lt;nz-form-label&gt;Teléfono de Contacto&lt;/nz-form-label&gt;
+                                &lt;nz-form-control&gt;
+                                    &lt;input nz-input formControlName&#x3D;&quot;cmp_phone&quot; placeholder&#x3D;&quot;+54 9 11 1234 5678&quot; /&gt;
+                                &lt;/nz-form-control&gt;
+                            &lt;/nz-form-item&gt;
+                        &lt;/div&gt;
+                        &lt;div nz-col [nzMd]&#x3D;&quot;8&quot; [nzXs]&#x3D;&quot;24&quot;&gt;
+                            &lt;nz-form-item&gt;
+                                &lt;nz-form-label&gt;Email Comercial&lt;/nz-form-label&gt;
+                                &lt;nz-form-control nzErrorTip&#x3D;&quot;Email de formato inválido&quot;&gt;
+                                    &lt;input nz-input formControlName&#x3D;&quot;cmp_email&quot; placeholder&#x3D;&quot;ventas@ejemplo.com&quot; /&gt;
+                                &lt;/nz-form-control&gt;
+                            &lt;/nz-form-item&gt;
+                        &lt;/div&gt;
+                        &lt;div nz-col [nzMd]&#x3D;&quot;8&quot; [nzXs]&#x3D;&quot;24&quot;&gt;
+                            &lt;nz-form-item&gt;
+                                &lt;nz-form-label nzRequired&gt;Estado de Cuenta&lt;/nz-form-label&gt;
+                                &lt;nz-form-control&gt;
+                                    &lt;nz-select formControlName&#x3D;&quot;cmp_status&quot;&gt;
+                                        &lt;nz-option nzValue&#x3D;&quot;active&quot; nzLabel&#x3D;&quot;Activo&quot;&gt;&lt;/nz-option&gt;
+                                        &lt;nz-option nzValue&#x3D;&quot;inactive&quot; nzLabel&#x3D;&quot;Inactivo / Pausado&quot;&gt;&lt;/nz-option&gt;
+                                    &lt;/nz-select&gt;
+                                &lt;/nz-form-control&gt;
+                            &lt;/nz-form-item&gt;
+                        &lt;/div&gt;
+                        &lt;div nz-col [nzSpan]&#x3D;&quot;24&quot;&gt;
+                            &lt;nz-form-item style&#x3D;&quot;margin-bottom: 0;&quot;&gt;
+                                &lt;div style&#x3D;&quot;display: flex; justify-content: space-between; align-items: center;&quot;&gt;
+                                    &lt;nz-form-label&gt;Dirección Física / Logística&lt;/nz-form-label&gt;
+                                    &lt;button nz-button nzType&#x3D;&quot;link&quot; nzSize&#x3D;&quot;small&quot; (click)&#x3D;&quot;toggleMapPicker()&quot; style&#x3D;&quot;margin: 0 0 8px 5px&quot;&gt;
+                                        &lt;span nz-icon [nzType]&#x3D;&quot;showMapPicker ? &#x27;up&#x27; : &#x27;environment&#x27;&quot;&gt;&lt;/span&gt;
+                                        {{ showMapPicker ? &#x27;Cerrar mapa&#x27; : &#x27;Seleccionar en mapa&#x27; }}
+                                    &lt;/button&gt;
+                                &lt;/div&gt;
+                                &lt;nz-form-control&gt;
+                                    &lt;input nz-input formControlName&#x3D;&quot;cmp_address&quot;
+                                        placeholder&#x3D;&quot;Ej: Av. Rivadavia 1234, Local 5, CABA&quot; /&gt;
+                                &lt;/nz-form-control&gt;
+                            &lt;/nz-form-item&gt;
+                        &lt;/div&gt;
+
+                        &lt;!-- Sección de Mapa Colapsable --&gt;
+                        &lt;div nz-col [nzSpan]&#x3D;&quot;24&quot; *ngIf&#x3D;&quot;showMapPicker&quot; class&#x3D;&quot;map-collapse-section&quot;&gt;
+                            &lt;div class&#x3D;&quot;map-container-inner&quot;&gt;
+                                &lt;app-map-picker 
+                                    [showJsonOutput]&#x3D;&quot;false&quot;
+                                    [initialLat]&#x3D;&quot;companyForm.get(&#x27;cmp_lat&#x27;)?.value&quot;
+                                    [initialLng]&#x3D;&quot;companyForm.get(&#x27;cmp_lng&#x27;)?.value&quot;
+                                    (locationSelected)&#x3D;&quot;handleLocationSelected($event)&quot;&gt;
+                                &lt;/app-map-picker&gt;
+                            &lt;/div&gt;
+                        &lt;/div&gt;
+                    &lt;/div&gt;
+                &lt;/nz-card&gt;
+
+                &lt;nz-card nzTitle&#x3D;&quot;Configuración de Negocio&quot; class&#x3D;&quot;premium-card&quot; [nzBordered]&#x3D;&quot;false&quot; style&#x3D;&quot;margin-top: 24px;&quot;&gt;
+                    &lt;div nz-row [nzGutter]&#x3D;&quot;[16, 16]&quot;&gt;
+                        &lt;div nz-col [nzMd]&#x3D;&quot;8&quot; [nzXs]&#x3D;&quot;24&quot;&gt;
+                            &lt;nz-form-item&gt;
+                                &lt;nz-form-label nzRequired&gt;Moneda&lt;/nz-form-label&gt;
+                                &lt;nz-form-control&gt;
+                                    &lt;nz-select formControlName&#x3D;&quot;cmp_currency&quot;&gt;
+                                        &lt;nz-option nzValue&#x3D;&quot;ARS&quot; nzLabel&#x3D;&quot;Peso Argentino (ARS)&quot;&gt;&lt;/nz-option&gt;
+                                        &lt;nz-option nzValue&#x3D;&quot;USD&quot; nzLabel&#x3D;&quot;Dólar Estadounidense (USD)&quot;&gt;&lt;/nz-option&gt;
+                                        &lt;nz-option nzValue&#x3D;&quot;EUR&quot; nzLabel&#x3D;&quot;Euro (EUR)&quot;&gt;&lt;/nz-option&gt;
+                                    &lt;/nz-select&gt;
+                                &lt;/nz-form-control&gt;
+                            &lt;/nz-form-item&gt;
+                        &lt;/div&gt;
+                        &lt;div nz-col [nzMd]&#x3D;&quot;8&quot; [nzXs]&#x3D;&quot;24&quot;&gt;
+                            &lt;nz-form-item&gt;
+                                &lt;nz-form-label&gt;Color Primario (Tema)&lt;/nz-form-label&gt;
+                                &lt;nz-form-control&gt;
+                                    &lt;input nz-input formControlName&#x3D;&quot;cmp_primarycolor&quot; type&#x3D;&quot;color&quot; style&#x3D;&quot;height: 40px; padding: 4px;&quot; /&gt;
+                                &lt;/nz-form-control&gt;
+                            &lt;/nz-form-item&gt;
+                        &lt;/div&gt;
+                        &lt;div nz-col [nzMd]&#x3D;&quot;8&quot; [nzXs]&#x3D;&quot;24&quot;&gt;
+                            &lt;nz-form-item&gt;
+                                &lt;nz-form-label&gt;Permitir Backorders&lt;/nz-form-label&gt;
+                                &lt;nz-form-control&gt;
+                                    &lt;nz-switch formControlName&#x3D;&quot;cmp_allowbackorders&quot;&gt;&lt;/nz-switch&gt;
+                                    &lt;span style&#x3D;&quot;margin-left: 8px; color: #666;&quot;&gt;Permite vender sin stock&lt;/span&gt;
+                                &lt;/nz-form-control&gt;
+                            &lt;/nz-form-item&gt;
+                        &lt;/div&gt;
+                    &lt;/div&gt;
+                &lt;/nz-card&gt;
+
+                &lt;nz-card nzTitle&#x3D;&quot;Redes Sociales&quot; class&#x3D;&quot;premium-card&quot; [nzBordered]&#x3D;&quot;false&quot; style&#x3D;&quot;margin-top: 24px;&quot;&gt;
+                    &lt;div nz-row [nzGutter]&#x3D;&quot;[16, 16]&quot;&gt;
+                        &lt;div nz-col [nzMd]&#x3D;&quot;8&quot; [nzXs]&#x3D;&quot;24&quot;&gt;
+                            &lt;nz-form-item&gt;
+                                &lt;nz-form-label&gt;WhatsApp (Link directo)&lt;/nz-form-label&gt;
+                                &lt;nz-form-control&gt;
+                                    &lt;input nz-input formControlName&#x3D;&quot;cmp_whatsapp&quot; placeholder&#x3D;&quot;https://wa.me/54911...&quot; /&gt;
+                                &lt;/nz-form-control&gt;
+                            &lt;/nz-form-item&gt;
+                        &lt;/div&gt;
+                        &lt;div nz-col [nzMd]&#x3D;&quot;8&quot; [nzXs]&#x3D;&quot;24&quot;&gt;
+                            &lt;nz-form-item&gt;
+                                &lt;nz-form-label&gt;Instagram (&amp;#64;user)&lt;/nz-form-label&gt;
+                                &lt;nz-form-control&gt;
+                                    &lt;input nz-input formControlName&#x3D;&quot;cmp_instagram&quot; placeholder&#x3D;&quot;&amp;#64;mitienda&quot; /&gt;
+                                &lt;/nz-form-control&gt;
+                            &lt;/nz-form-item&gt;
+                        &lt;/div&gt;
+                        &lt;div nz-col [nzMd]&#x3D;&quot;8&quot; [nzXs]&#x3D;&quot;24&quot;&gt;
+                            &lt;nz-form-item&gt;
+                                &lt;nz-form-label&gt;Facebook (Link)&lt;/nz-form-label&gt;
+                                &lt;nz-form-control&gt;
+                                    &lt;input nz-input formControlName&#x3D;&quot;cmp_facebook&quot; placeholder&#x3D;&quot;facebook.com/mitienda&quot; /&gt;
+                                &lt;/nz-form-control&gt;
+                            &lt;/nz-form-item&gt;
+                        &lt;/div&gt;
+                    &lt;/div&gt;
+                &lt;/nz-card&gt;
+            &lt;/div&gt;
+
+            &lt;!-- Columna Derecha: Multimedia --&gt;
+            &lt;div nz-col [nzLg]&#x3D;&quot;8&quot; [nzXs]&#x3D;&quot;24&quot;&gt;
+                &lt;nz-card nzTitle&#x3D;&quot;Multimedia y Marca&quot; class&#x3D;&quot;premium-card&quot; [nzBordered]&#x3D;&quot;false&quot;&gt;
+                    &lt;div style&#x3D;&quot;margin-bottom: 24px;&quot;&gt;
+                        &lt;p style&#x3D;&quot;font-weight: 500; margin-bottom: 8px;&quot;&gt;Logo de la Tienda&lt;/p&gt;
+                        &lt;nz-upload nzType&#x3D;&quot;drag&quot; [nzMultiple]&#x3D;&quot;false&quot; [(nzFileList)]&#x3D;&quot;logoFileList&quot;
+                            [nzBeforeUpload]&#x3D;&quot;beforeUploadLogo&quot; [nzRemove]&#x3D;&quot;onRemoveLogo&quot;&gt;
+                            &lt;p class&#x3D;&quot;ant-upload-drag-icon&quot;&gt;
+                                &lt;span nz-icon nzType&#x3D;&quot;picture&quot;&gt;&lt;/span&gt;
+                            &lt;/p&gt;
+                            &lt;p class&#x3D;&quot;ant-upload-text&quot;&gt;Clic o arrastra el logo aquí&lt;/p&gt;
+                            &lt;p class&#x3D;&quot;ant-upload-hint&quot;&gt;1:1 Cuadrado recomendado&lt;/p&gt;
+                        &lt;/nz-upload&gt;
+                    &lt;/div&gt;
+
+                    &lt;div&gt;
+                        &lt;p style&#x3D;&quot;font-weight: 500; margin-bottom: 8px;&quot;&gt;Banner Principal (Opcional)&lt;/p&gt;
+                        &lt;nz-upload nzType&#x3D;&quot;drag&quot; [nzMultiple]&#x3D;&quot;false&quot; [(nzFileList)]&#x3D;&quot;bannerFileList&quot;
+                            [nzBeforeUpload]&#x3D;&quot;beforeUploadBanner&quot; [nzRemove]&#x3D;&quot;onRemoveBanner&quot;&gt;
+                            &lt;p class&#x3D;&quot;ant-upload-drag-icon&quot;&gt;
+                                &lt;span nz-icon nzType&#x3D;&quot;bg-colors&quot;&gt;&lt;/span&gt;
+                            &lt;/p&gt;
+                            &lt;p class&#x3D;&quot;ant-upload-text&quot;&gt;Clic o arrastra un banner panorámico&lt;/p&gt;
+                            &lt;p class&#x3D;&quot;ant-upload-hint&quot;&gt;Ideal 1200x400px&lt;/p&gt;
+                        &lt;/nz-upload&gt;
+                    &lt;/div&gt;
+                &lt;/nz-card&gt;
+            &lt;/div&gt;
+        &lt;/div&gt;
+    &lt;/div&gt;
+
+    &lt;!-- Barra de acciones fija en la parte inferior --&gt;
+    &lt;div class&#x3D;&quot;sticky-footer&quot;&gt;
+        &lt;nz-space&gt;
+            &lt;button *nzSpaceItem nz-button nzType&#x3D;&quot;default&quot; nzSize&#x3D;&quot;large&quot; (click)&#x3D;&quot;onCancel()&quot;
+                style&#x3D;&quot;min-width: 120px;&quot;&gt;
+                Descartar
+            &lt;/button&gt;
+            &lt;button *nzSpaceItem nz-button nzType&#x3D;&quot;primary&quot; nzSize&#x3D;&quot;large&quot; (click)&#x3D;&quot;onSave()&quot; style&#x3D;&quot;min-width: 200px;&quot;&gt;
+                &lt;span nz-icon nzType&#x3D;&quot;save&quot;&gt;&lt;/span&gt; {{ isEditing ? &#x27;Guardar Cambios&#x27; : &#x27;Crear Empresa&#x27; }}
+            &lt;/button&gt;
+        &lt;/nz-space&gt;
+    &lt;/div&gt;
+&lt;/form&gt;</code></pre>
+    </div>
+
+    <div class="tab-pane fade " id="styleData">
+                <p class="comment">
+                    <code>./company.component.scss</code>
+                </p>
+                <pre class="line-numbers"><code class="language-scss">.product-form-container {
+    display: flex;
+    flex-direction: column;
+    height: calc(100vh - 133px);
+    background-color: #f0f2f5;
+
+    .form-scrollable-content {
+        flex: 1;
+        overflow-y: auto;
+        padding: 24px;
+
+        &amp;::-webkit-scrollbar {
+            width: 8px;
+        }
+
+        &amp;::-webkit-scrollbar-thumb {
+            background-color: rgba(0, 0, 0, 0.15);
+            border-radius: 4px;
+
+            &amp;:hover {
+                background-color: rgba(0, 0, 0, 0.25);
+            }
+        }
+    }
+
+    .header-actions {
+        margin-bottom: 24px;
+
+        h2 {
+            margin: 0;
+            font-size: 26px;
+            font-weight: 500;
+            color: #1f1f1f;
+        }
+
+        p {
+            margin: 4px 0 0;
+            color: #8c8c8c;
+            font-size: 14px;
+        }
+    }
+
+    .premium-card {
+        border-radius: 8px;
+        box-shadow: 0 4px 12px rgba(0, 0, 0, 0.03);
+        margin-bottom: 24px;
+
+        ::ng-deep .ant-card-head {
+            border-bottom: 1px solid #f0f0f0;
+            font-size: 16px;
+            font-weight: 500;
+            padding: 0 24px;
+        }
+
+        ::ng-deep .ant-card-body {
+            padding: 24px;
+        }
+    }
+
+    .sticky-footer {
+        padding: 16px 24px;
+        background: #fff;
+        border-top: 1px solid #e8e8e8;
+        display: flex;
+        justify-content: flex-end;
+        box-shadow: 0 -4px 12px rgba(0, 0, 0, 0.05);
+        z-index: 10;
+        margin-top: auto;
+    }
+
+    .map-collapse-section {
+        margin-top: 16px;
+        margin-bottom: 8px;
+        border: 1px solid #f0f0f0;
+        border-radius: 8px;
+        overflow: hidden;
+        background: #fff;
+        box-shadow: 0 4px 12px rgba(0, 0, 0, 0.05);
+        animation: slideDown 0.3s cubic-bezier(0.23, 1, 0.32, 1);
+
+        .map-container-inner {
+            height: 400px;
+            width: 100%;
+
+            ::ng-deep .map-picker-container {
+                height: 400px !important;
+            }
+        }
+    }
+}
+
+@keyframes slideDown {
+    from {
+        opacity: 0;
+        transform: translateY(-8px);
+    }
+    to {
+        opacity: 1;
+        transform: translateY(0);
+    }
+}</code></pre>
+    </div>
+
+    <div class="tab-pane fade " id="tree">
+        <div id="tree-container"></div>
+        <div class="tree-legend">
+            <div class="title">
+                <b>Leyenda</b>
+            </div>
+            <div>
+                <div class="color htmlelement"></div><span>Elemento Html</span>
+            </div>
+            <div>
+                <div class="color component"></div><span>Componente</span>
+            </div>
+            <div>
+                <div class="color directive"></div><span>Elemento Html con directiva</span>
+            </div>
+        </div>
+    </div>
+
+    
+</div>
+
+<script src="../js/libs/vis-network.min.js"></script>
+<script src="../js/libs/htmlparser.js"></script>
+<script src="../js/libs/deep-iterator.js"></script>
+<script>
+        var COMPONENT_TEMPLATE = '<div><form nz-form [formGroup]="companyForm" nzLayout="vertical" class="product-form-container">    <div class="form-scrollable-content">        <div class="header-actions">            <h2>{{ isEditing ? \'Editar Empresa\' : \'Nueva Empresa\' }}</h2>            <p *ngIf="isEditing">Configuración del Perfil Comercial</p>        </div>        <div nz-row [nzGutter]="24">            <!-- Columna Izquierda: Información Básica -->            <div nz-col [nzLg]="16" [nzXs]="24">                <nz-card nzTitle="Información de la Tienda" class="premium-card" [nzBordered]="false">                    <div nz-row [nzGutter]="[16, 16]">                        <div nz-col [nzMd]="12" [nzXs]="24">                            <nz-form-item>                                <nz-form-label nzRequired>Nombre Comercial</nz-form-label>                                <nz-form-control nzErrorTip="Nombre requerido (min 3 caracteres)">                                    <input nz-input formControlName="cmp_name" placeholder="Ej: Importaciones del Sur"                                        nzSize="large" />                                </nz-form-control>                            </nz-form-item>                        </div>                        <div nz-col [nzMd]="12" [nzXs]="24">                            <nz-form-item>                                <nz-form-label nzRequired>Slug (URL pública)</nz-form-label>                                <nz-form-control nzErrorTip="Requerido">                                    <input nz-input formControlName="cmp_slug" placeholder="importaciones-del-sur"                                        nzSize="large" [readonly]="isEditing" />                                </nz-form-control>                            </nz-form-item>                        </div>                        <div nz-col [nzSpan]="24">                            <nz-form-item>                                <nz-form-label>Descripción / Quiénes Somos</nz-form-label>                                <nz-form-control>                                    <textarea nz-input formControlName="cmp_description" rows="3"                                        placeholder="Información pública sobre la tienda y el negocio..."></textarea>                                </nz-form-control>                            </nz-form-item>                        </div>                        <div nz-col [nzMd]="8" [nzXs]="24">                            <nz-form-item>                                <nz-form-label>Teléfono de Contacto</nz-form-label>                                <nz-form-control>                                    <input nz-input formControlName="cmp_phone" placeholder="+54 9 11 1234 5678" />                                </nz-form-control>                            </nz-form-item>                        </div>                        <div nz-col [nzMd]="8" [nzXs]="24">                            <nz-form-item>                                <nz-form-label>Email Comercial</nz-form-label>                                <nz-form-control nzErrorTip="Email de formato inválido">                                    <input nz-input formControlName="cmp_email" placeholder="ventas@ejemplo.com" />                                </nz-form-control>                            </nz-form-item>                        </div>                        <div nz-col [nzMd]="8" [nzXs]="24">                            <nz-form-item>                                <nz-form-label nzRequired>Estado de Cuenta</nz-form-label>                                <nz-form-control>                                    <nz-select formControlName="cmp_status">                                        <nz-option nzValue="active" nzLabel="Activo"></nz-option>                                        <nz-option nzValue="inactive" nzLabel="Inactivo / Pausado"></nz-option>                                    </nz-select>                                </nz-form-control>                            </nz-form-item>                        </div>                        <div nz-col [nzSpan]="24">                            <nz-form-item style="margin-bottom: 0;">                                <div style="display: flex; justify-content: space-between; align-items: center;">                                    <nz-form-label>Dirección Física / Logística</nz-form-label>                                    <button nz-button nzType="link" nzSize="small" (click)="toggleMapPicker()" style="margin: 0 0 8px 5px">                                        <span nz-icon [nzType]="showMapPicker ? \'up\' : \'environment\'"></span>                                        {{ showMapPicker ? \'Cerrar mapa\' : \'Seleccionar en mapa\' }}                                    </button>                                </div>                                <nz-form-control>                                    <input nz-input formControlName="cmp_address"                                        placeholder="Ej: Av. Rivadavia 1234, Local 5, CABA" />                                </nz-form-control>                            </nz-form-item>                        </div>                        <!-- Sección de Mapa Colapsable -->                        <div nz-col [nzSpan]="24" *ngIf="showMapPicker" class="map-collapse-section">                            <div class="map-container-inner">                                <app-map-picker                                     [showJsonOutput]="false"                                    [initialLat]="companyForm.get(\'cmp_lat\')?.value"                                    [initialLng]="companyForm.get(\'cmp_lng\')?.value"                                    (locationSelected)="handleLocationSelected($event)">                                </app-map-picker>                            </div>                        </div>                    </div>                </nz-card>                <nz-card nzTitle="Configuración de Negocio" class="premium-card" [nzBordered]="false" style="margin-top: 24px;">                    <div nz-row [nzGutter]="[16, 16]">                        <div nz-col [nzMd]="8" [nzXs]="24">                            <nz-form-item>                                <nz-form-label nzRequired>Moneda</nz-form-label>                                <nz-form-control>                                    <nz-select formControlName="cmp_currency">                                        <nz-option nzValue="ARS" nzLabel="Peso Argentino (ARS)"></nz-option>                                        <nz-option nzValue="USD" nzLabel="Dólar Estadounidense (USD)"></nz-option>                                        <nz-option nzValue="EUR" nzLabel="Euro (EUR)"></nz-option>                                    </nz-select>                                </nz-form-control>                            </nz-form-item>                        </div>                        <div nz-col [nzMd]="8" [nzXs]="24">                            <nz-form-item>                                <nz-form-label>Color Primario (Tema)</nz-form-label>                                <nz-form-control>                                    <input nz-input formControlName="cmp_primarycolor" type="color" style="height: 40px; padding: 4px;" />                                </nz-form-control>                            </nz-form-item>                        </div>                        <div nz-col [nzMd]="8" [nzXs]="24">                            <nz-form-item>                                <nz-form-label>Permitir Backorders</nz-form-label>                                <nz-form-control>                                    <nz-switch formControlName="cmp_allowbackorders"></nz-switch>                                    <span style="margin-left: 8px; color: #666;">Permite vender sin stock</span>                                </nz-form-control>                            </nz-form-item>                        </div>                    </div>                </nz-card>                <nz-card nzTitle="Redes Sociales" class="premium-card" [nzBordered]="false" style="margin-top: 24px;">                    <div nz-row [nzGutter]="[16, 16]">                        <div nz-col [nzMd]="8" [nzXs]="24">                            <nz-form-item>                                <nz-form-label>WhatsApp (Link directo)</nz-form-label>                                <nz-form-control>                                    <input nz-input formControlName="cmp_whatsapp" placeholder="https://wa.me/54911..." />                                </nz-form-control>                            </nz-form-item>                        </div>                        <div nz-col [nzMd]="8" [nzXs]="24">                            <nz-form-item>                                <nz-form-label>Instagram (&#64;user)</nz-form-label>                                <nz-form-control>                                    <input nz-input formControlName="cmp_instagram" placeholder="&#64;mitienda" />                                </nz-form-control>                            </nz-form-item>                        </div>                        <div nz-col [nzMd]="8" [nzXs]="24">                            <nz-form-item>                                <nz-form-label>Facebook (Link)</nz-form-label>                                <nz-form-control>                                    <input nz-input formControlName="cmp_facebook" placeholder="facebook.com/mitienda" />                                </nz-form-control>                            </nz-form-item>                        </div>                    </div>                </nz-card>            </div>            <!-- Columna Derecha: Multimedia -->            <div nz-col [nzLg]="8" [nzXs]="24">                <nz-card nzTitle="Multimedia y Marca" class="premium-card" [nzBordered]="false">                    <div style="margin-bottom: 24px;">                        <p style="font-weight: 500; margin-bottom: 8px;">Logo de la Tienda</p>                        <nz-upload nzType="drag" [nzMultiple]="false" [(nzFileList)]="logoFileList"                            [nzBeforeUpload]="beforeUploadLogo" [nzRemove]="onRemoveLogo">                            <p class="ant-upload-drag-icon">                                <span nz-icon nzType="picture"></span>                            </p>                            <p class="ant-upload-text">Clic o arrastra el logo aquí</p>                            <p class="ant-upload-hint">1:1 Cuadrado recomendado</p>                        </nz-upload>                    </div>                    <div>                        <p style="font-weight: 500; margin-bottom: 8px;">Banner Principal (Opcional)</p>                        <nz-upload nzType="drag" [nzMultiple]="false" [(nzFileList)]="bannerFileList"                            [nzBeforeUpload]="beforeUploadBanner" [nzRemove]="onRemoveBanner">                            <p class="ant-upload-drag-icon">                                <span nz-icon nzType="bg-colors"></span>                            </p>                            <p class="ant-upload-text">Clic o arrastra un banner panorámico</p>                            <p class="ant-upload-hint">Ideal 1200x400px</p>                        </nz-upload>                    </div>                </nz-card>            </div>        </div>    </div>    <!-- Barra de acciones fija en la parte inferior -->    <div class="sticky-footer">        <nz-space>            <button *nzSpaceItem nz-button nzType="default" nzSize="large" (click)="onCancel()"                style="min-width: 120px;">                Descartar            </button>            <button *nzSpaceItem nz-button nzType="primary" nzSize="large" (click)="onSave()" style="min-width: 200px;">                <span nz-icon nzType="save"></span> {{ isEditing ? \'Guardar Cambios\' : \'Crear Empresa\' }}            </button>        </nz-space>    </div></form></div>'
+    var COMPONENTS = [{'name': 'AccountConfirmedComponent', 'selector': 'app-account-confirmed'},{'name': 'AccountCreatedComponent', 'selector': 'app-account-created'},{'name': 'AddressesComponent', 'selector': 'app-addresses'},{'name': 'AnalyticsComponent', 'selector': 'app-analytics'},{'name': 'AppComponent', 'selector': 'app-root'},{'name': 'ApplicationBarComponent', 'selector': 'app-application-bar'},{'name': 'ApplicationLayoutComponent', 'selector': 'app-application-layout'},{'name': 'AuthLayoutComponent', 'selector': 'app-auth-layout'},{'name': 'BarcodeScannerComponent', 'selector': 'app-barcode-scanner'},{'name': 'CameraComponent', 'selector': 'app-camera'},{'name': 'CartComponent', 'selector': 'app-cart'},{'name': 'CatalogComponent', 'selector': 'app-catalog'},{'name': 'CategoriesComponent', 'selector': 'app-categories'},{'name': 'CategoriesListComponent', 'selector': 'app-categories-list'},{'name': 'CheckoutComponent', 'selector': 'app-checkout'},{'name': 'CompanyComponent', 'selector': 'app-company'},{'name': 'CompanySettingsComponent', 'selector': 'app-company-settings'},{'name': 'CouponsComponent', 'selector': 'app-coupons'},{'name': 'CustomersComponent', 'selector': 'app-customers'},{'name': 'DistPriceListComponent', 'selector': 'app-dist-price-list'},{'name': 'FinancesComponent', 'selector': 'app-finances'},{'name': 'ForgotPasswordComponent', 'selector': 'app-forgot-password'},{'name': 'GlobalCategoriesComponent', 'selector': 'app-global-categories'},{'name': 'GlobalCategoryComponent', 'selector': 'app-global-category'},{'name': 'GlobalItemComponent', 'selector': 'app-global-item'},{'name': 'GlobalItemsComponent', 'selector': 'app-global-items'},{'name': 'GlobalMaterialComponent', 'selector': 'app-global-material'},{'name': 'GlobalMaterialsComponent', 'selector': 'app-global-materials'},{'name': 'HomeStoreComponent', 'selector': 'app-home'},{'name': 'InventoryAuditComponent', 'selector': 'app-inventory-audit'},{'name': 'ItemsComponent', 'selector': 'app-items'},{'name': 'LoginComponent', 'selector': 'app-login'},{'name': 'MapPickerComponent', 'selector': 'app-map-picker'},{'name': 'MarketHomeComponent', 'selector': 'app-market-home'},{'name': 'MaterialComponent', 'selector': 'app-material'},{'name': 'MaterialsComponent', 'selector': 'app-materials'},{'name': 'MenuItemComponent', 'selector': 'app-menu-item'},{'name': 'MenuItemsComponent', 'selector': 'app-menu-items'},{'name': 'MpPaymentBrickComponent', 'selector': 'app-mp-payment-brick'},{'name': 'MyCompaniesComponent', 'selector': 'app-my-companies'},{'name': 'MyFavoritesComponent', 'selector': 'app-my-favorites'},{'name': 'MyPurchasesComponent', 'selector': 'app-my-purchases'},{'name': 'NavBarComponent', 'selector': 'app-nav-bar'},{'name': 'OrdersReceivedComponent', 'selector': 'app-orders-received'},{'name': 'PriceListComponent', 'selector': 'app-price-list'},{'name': 'ProductComponent', 'selector': 'app-product'},{'name': 'ProductDetailComponent', 'selector': 'app-product-detail'},{'name': 'ProductsComponent', 'selector': 'app-products'},{'name': 'ProductsVariationsComponent', 'selector': 'app-products-variations'},{'name': 'ProductVariationComponent', 'selector': 'app-product-variation'},{'name': 'PublicLayoutComponent', 'selector': 'app-public-layout'},{'name': 'RegisterComponent', 'selector': 'app-register'},{'name': 'ResetPasswordComponent', 'selector': 'app-reset-password'},{'name': 'SideBarComponent', 'selector': 'app-side-bar'},{'name': 'SsoCallbackComponent', 'selector': 'app-sso-callback'},{'name': 'StoreCatalogComponent', 'selector': 'app-store'},{'name': 'SuperAdminComponent', 'selector': 'app-super-admin'},{'name': 'SupplierComponent', 'selector': 'app-supplier'},{'name': 'SuppliersComponent', 'selector': 'app-suppliers'},{'name': 'UserLayoutComponent', 'selector': 'app-user-layout'},{'name': 'UserRolCompanyComponent', 'selector': 'app-user-rol-company'},{'name': 'WarehousesComponent', 'selector': 'app-warehouses'}];
+    var DIRECTIVES = [{'name': 'ImagePreloadDirective', 'selector': 'img[default]'}];
+    var ACTUAL_COMPONENT = {'name': 'CompanyComponent'};
+</script>
+<script src="../js/tree.js"></script>
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+                   </div><div class="search-results">
+    <div class="has-results">
+        <h1 class="search-results-title"><span class='search-results-count'></span> comparación de resultados "<span class='search-query'></span>"</h1>
+        <ul class="search-results-list"></ul>
+    </div>
+    <div class="no-results">
+        <h1 class="search-results-title">No hay resultados que coincidan "<span class='search-query'></span>"</h1>
+    </div>
+</div>
+</div>
+               <!-- END CONTENT -->
+           </div>
+       </div>
+
+          
+<div class="compodoc-lang-switch">
+  <select id="compodoc-lang-select" aria-label="Seleccionar idioma">
+    <option value="es" selected>🇪🇸 Español</option>
+    <option value="en" >🇺🇸 English</option>
+    <option value="pt" >🇧🇷 Português</option>
+  </select>
+</div>
+
+          <label class="dark-mode-switch">
+               <input type="checkbox">
+               <span class="slider">
+                    <svg class="slider-icon" viewBox="0 0 24 24" fill="none" height="20" stroke="#000" stroke-linecap="round" stroke-linejoin="round" stroke-width="2" width="20" xmlns="http://www.w3.org/2000/svg">
+                    <path d="M21 12.79A9 9 0 1111.21 3 7 7 0 0021 12.79z"></path>
+                    </svg>
+               </span>
+          </label>
+
+       <script>
+            var COMPODOC_CURRENT_PAGE_DEPTH = 1;
+            var COMPODOC_CURRENT_PAGE_CONTEXT = 'component';
+            var COMPODOC_CURRENT_PAGE_URL = 'CompanyComponent.html';
+            var MAX_SEARCH_RESULTS = 15;
+       </script>
+
+       <script>
+               $darkModeToggleSwitchers = document.querySelectorAll('.dark-mode-switch input');
+               var updateDarkModeSwitchOffset = function () {
+                    var content = document.querySelector('.content');
+                    var scrollbarWidth = 0;
+
+                    if (content) {
+                         scrollbarWidth = Math.max(0, content.offsetWidth - content.clientWidth);
+                    }
+
+                    document.documentElement.style.setProperty(
+                         '--content-scrollbar-width',
+                         scrollbarWidth + 'px'
+                    );
+               };
+
+               updateDarkModeSwitchOffset();
+               requestAnimationFrame(updateDarkModeSwitchOffset);
+               window.addEventListener('resize', updateDarkModeSwitchOffset);
+
+               checkToggle(darkModeState);
+               if ($darkModeToggleSwitchers.length > 0) {
+                    for (var i = 0; i < $darkModeToggleSwitchers.length; i++) {
+                         $darkModeToggleSwitchers[i].addEventListener('change', function (event) {
+                              darkModeState = !darkModeState;
+                              toggleDarkMode(darkModeState);
+                         });
+                    }
+               }
+          </script>
+
+       <script src="../js/libs/custom-elements.min.js"></script>
+       <script src="../js/libs/lit-html.js"></script>
+
+       <script src="../js/menu-wc.js" defer></script>
+
+       <script src="../js/libs/bootstrap-native.js"></script>
+
+       <script src="../js/libs/es6-shim.min.js"></script>
+       <script src="../js/libs/EventDispatcher.js"></script>
+       <script src="../js/libs/promise.min.js"></script>
+
+       <script src="../js/compodoc.js"></script>
+
+       <script src="../js/tabs.js"></script>
+       <script src="../js/menu.js"></script>
+       <script src="../js/libs/clipboard.min.js"></script>
+       <script src="../js/libs/prism.js"></script>
+       <script src="../js/sourceCode.js"></script>
+          <script src="../js/search/search.js"></script>
+          <script src="../js/search/lunr.min.js"></script>
+          <script src="../js/search/search-lunr.js"></script>
+          <script src="../js/search/search_index.js"></script>
+       <script src="../js/lazy-load-graphs.js"></script>
+
+
+    
+<script id="compodoc-lang-script">
+(function() {
+  var CURRENT_LANG = "es";
+  var ADDITIONAL_DOCS_MAP = {"es":["01.-introducción-y-arquitectura-general.html","02.-autenticación-y-control-de-accesos.html","03.-catálogo-público-y-exploración-de-tiendas.html","04.-carrito-de-compras-y-checkout-multitienda.html","05.-gestión-de-empresas,-roles-y-configuración.html","06.-inventario,-productos,-variaciones-y-almacenes.html","07.-gestión-de-pedidos,-compras-y-cupones.html","08.-analíticas-de-negocio,-finanzas-y-proveedores.html"],"en":["01.-introduction-and-general-architecture.html","02.-authentication-and-access-control.html","03.-public-catalog-and-store-exploration.html","04.-shopping-cart-and-multi-store-checkout.html","05.-company-management,-roles-and-configuration.html","06.-inventory,-products,-variations-and-warehouses.html","07.-orders-management,-purchases-and-coupons.html","08.-business-analytics,-finances-and-suppliers.html"],"pt":["01.-introdução-e-arquitetura-geral.html","02.-autenticação-e-controle-de-acesso.html","03.-catálogo-público-e-exploração-de-lojas.html","04.-carrinho-de-compras-e-checkout-multiloja.html","05.-gestão-de-empresas,-funções-e-configuração.html","06.-estoque,-produtos,-variações-e-armazéns.html","07.-gestão-de-pedidos,-compras-e-cupons.html","08.-análise-de-negócios,-finanças-e-fornecedores.html"]};
+
+  var select = document.getElementById('compodoc-lang-select');
+  if (!select) return;
+
+  try {
+    localStorage.setItem('compodoc_lang', CURRENT_LANG);
+  } catch (e) {}
+
+  select.addEventListener('change', function(e) {
+    var targetLang = e.target.value;
+    if (targetLang === CURRENT_LANG) return;
+
+    try {
+      localStorage.setItem('compodoc_lang', targetLang);
+    } catch (err) {}
+
+    var href = window.location.href;
+    var pathname = window.location.pathname;
+
+    // Manejo especial para páginas de additional-documentation
+    if (pathname.indexOf('/additional-documentation/') !== -1) {
+      var segments = pathname.split('/');
+      var currentFile = decodeURIComponent(segments[segments.length - 1]);
+      
+      var currentList = ADDITIONAL_DOCS_MAP[CURRENT_LANG] || [];
+      var targetList = ADDITIONAL_DOCS_MAP[targetLang] || [];
+      var foundIndex = -1;
+
+      var prefixMatch = currentFile.match(/^(\d{2}\.-)/);
+      if (prefixMatch) {
+        var prefix = prefixMatch[1];
+        for (var i = 0; i < targetList.length; i++) {
+          if (targetList[i].startsWith(prefix)) {
+            foundIndex = i;
+            break;
+          }
+        }
+      }
+      if (foundIndex === -1) {
+        for (var j = 0; j < currentList.length; j++) {
+          if (currentList[j] === currentFile) {
+            foundIndex = j;
+            break;
+          }
+        }
+      }
+
+      var targetFile = (foundIndex !== -1 && targetList[foundIndex]) 
+        ? targetList[foundIndex] 
+        : (targetList[0] || 'index.html');
+
+      var targetSubpath = '/' + targetLang + '/additional-documentation/' + targetFile;
+      var currentSubpath = '/' + CURRENT_LANG + '/additional-documentation/' + segments[segments.length - 1];
+
+      if (href.indexOf(currentSubpath) !== -1) {
+        window.location.href = href.replace(currentSubpath, targetSubpath);
+        return;
+      }
+    }
+
+    // Páginas estándar
+    var standardReplace = href.replace('/' + CURRENT_LANG + '/', '/' + targetLang + '/');
+    if (standardReplace !== href) {
+      window.location.href = standardReplace;
+    } else {
+      var depth = (typeof COMPODOC_CURRENT_PAGE_DEPTH !== 'undefined') ? COMPODOC_CURRENT_PAGE_DEPTH : 0;
+      var prefixPath = '';
+      for (var k = 0; k <= depth; k++) {
+        prefixPath += '../';
+      }
+      window.location.href = prefixPath + targetLang + '/index.html';
+    }
+  });
+})();
+</script>
+
+</body>
+</html>

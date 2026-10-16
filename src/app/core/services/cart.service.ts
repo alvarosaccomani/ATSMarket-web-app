@@ -8,12 +8,26 @@ import { StoreContextService } from './store-context.service';
 import { CompaniesSettingsService } from './companies-settings.service';
 import { NzMessageService } from 'ng-zorro-antd/message';
 
+/**
+ * @description Servicio reactivo para la gestión integral del carrito de compras del usuario.
+ * Controla la persistencia en LocalStorage, la sincronización entre componentes mediante Observables,
+ * las reglas de compatibilidad multitienda (ALLOW_MULTI_STORE_CART) y el límite de unidades permitidas.
+ */
 @Injectable({
   providedIn: 'root'
 })
 export class CartService {
+  /**
+   * @description Sujeto reactivo que almacena la colección actual de ítems en el carrito.
+   */
   private cartItemsSubject: BehaviorSubject<CartItemInterface[]> = new BehaviorSubject<CartItemInterface[]>([]);
+  /**
+   * @description Observable público para la suscripción a los cambios de estado del carrito.
+   */
   public cartItems$: Observable<CartItemInterface[]> = this.cartItemsSubject.asObservable();
+  /**
+   * @description Clave identificadora en localStorage para la persistencia del carrito.
+   */
   private readonly STORAGE_KEY = 'ats_market_cart';
 
   constructor(
@@ -35,20 +49,39 @@ export class CartService {
     }
   }
 
+  /**
+   * @description Sincroniza la lista de artículos en el almacenamiento local del navegador.
+   * @param items Colección de ítems a almacenar.
+   */
   private syncToLocalStorage(items: CartItemInterface[]): void {
     if (isPlatformBrowser(this.platformId)) {
       localStorage.setItem(this.STORAGE_KEY, JSON.stringify(items));
     }
   }
 
+  /**
+   * @description Calcula el subtotal monetario de un ítem multiplicando su precio unitario por la cantidad.
+   * @param item Ítem del carrito evaluado.
+   * @returns {number} Subtotal calculado.
+   */
   private calculateSubtotal(item: CartItemInterface): number {
     return item.prov_suggestedminimumsellingprice * item.quantity;
   }
 
+  /**
+   * @description Calcula el importe total consolidado de todos los artículos presentes en el carrito.
+   * @returns {number} Sumatoria monetaria de subtotales.
+   */
   public getTotalPrice(): number {
     return this.cartItemsSubject.value.reduce((total, item) => total + item.subtotal, 0);
   }
 
+  /**
+   * @description Incorpora una variación de producto al carrito respetando topes máximos y políticas multitienda.
+   * @param product Variación de producto a añadir.
+   * @param quantity Cantidad solicitada (por defecto 1).
+   * @returns {void}
+   */
   public addToCart(product: ProductVariationInterface, quantity: number = 1): void {
     const currentItems = this.cartItemsSubject.value;
     const totalQuantity = currentItems.reduce((sum, item) => sum + item.quantity, 0);
@@ -139,6 +172,12 @@ export class CartService {
     this.message.success(`${product.prov_name} agregado al carrito.`);
   }
 
+  /**
+   * @description Actualiza la cantidad demandada de un artículo específico en el carrito.
+   * @param productId Identificador único (prov_uuid) de la variación de producto.
+   * @param quantity Nueva cantidad requerida (fuerza mínimo de 1 unidad).
+   * @returns {void}
+   */
   public updateQuantity(productId: string, quantity: number): void {
     const currentItems = this.cartItemsSubject.value;
     const itemToUpdate = currentItems.find(item => item.prov_uuid === productId);
@@ -151,12 +190,21 @@ export class CartService {
     }
   }
 
+  /**
+   * @description Remueve un producto del carrito y actualiza la persistencia local.
+   * @param productId Identificador único (prov_uuid) de la variación a remover.
+   * @returns {void}
+   */
   public removeFromCart(productId: string): void {
     const filteredItems = this.cartItemsSubject.value.filter(item => item.prov_uuid !== productId);
     this.cartItemsSubject.next(filteredItems);
     this.syncToLocalStorage(filteredItems);
   }
 
+  /**
+   * @description Vacía por completo el contenido del carrito y purga la clave en LocalStorage.
+   * @returns {void}
+   */
   public clearCart(): void {
     this.cartItemsSubject.next([]);
     if (isPlatformBrowser(this.platformId)) {

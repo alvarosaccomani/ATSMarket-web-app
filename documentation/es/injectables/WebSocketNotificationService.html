@@ -1,0 +1,2111 @@
+<!doctype html>
+<html class="no-js" lang="">
+    <head>
+        <meta charset="utf-8">
+        <meta http-equiv="x-ua-compatible" content="ie=edge">
+        <title>ATSMarket Web App</title>
+        <meta name="description" content="">
+        <meta name="viewport" content="width=device-width, initial-scale=1">
+
+        <link rel="icon" type="image/x-icon" href="../images/favicon.ico">
+	   <link rel="stylesheet" href="../styles/style.css">
+        <link rel="stylesheet" href="../styles/dark.css">
+    
+<style id="compodoc-lang-styles">
+  .compodoc-lang-switch {
+    position: fixed;
+    top: 15px;
+    right: calc(90px + var(--content-scrollbar-width, 0px));
+    z-index: 1050;
+    display: inline-block;
+  }
+  @media (max-width: 767px) {
+    .compodoc-lang-switch {
+      top: 8px;
+      right: 60px;
+    }
+  }
+  #compodoc-lang-select {
+    height: 34px;
+    padding: 0 12px;
+    border-radius: 17px;
+    border: 1px solid #d9d9d9;
+    background-color: #ffffff;
+    color: #1f1f1f;
+    font-size: 13px;
+    font-family: inherit;
+    font-weight: 500;
+    cursor: pointer;
+    outline: none;
+    box-shadow: 0 2px 6px rgba(0, 0, 0, 0.08);
+    transition: all 0.3s cubic-bezier(0.645, 0.045, 0.355, 1);
+    -webkit-appearance: none;
+    -moz-appearance: none;
+    appearance: none;
+    padding-right: 26px;
+    background-image: url("data:image/svg+xml;charset=UTF-8,%3csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 24 24' fill='none' stroke='%23666' stroke-width='2' stroke-linecap='round' stroke-linejoin='round'%3e%3cpolyline points='6 9 12 15 18 9'%3e%3c/polyline%3e%3c/svg%3e");
+    background-repeat: no-repeat;
+    background-position: right 8px center;
+    background-size: 14px;
+  }
+  #compodoc-lang-select:hover, #compodoc-lang-select:focus {
+    border-color: #5cc0ae;
+    box-shadow: 0 2px 8px rgba(92, 192, 174, 0.25);
+  }
+  body.dark .compodoc-lang-switch #compodoc-lang-select {
+    background-color: #2c3e50;
+    color: #ecf0f1;
+    border: 1px solid #4a627a;
+    box-shadow: 0 2px 6px rgba(0, 0, 0, 0.35);
+    background-image: url("data:image/svg+xml;charset=UTF-8,%3csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 24 24' fill='none' stroke='%23ecf0f1' stroke-width='2' stroke-linecap='round' stroke-linejoin='round'%3e%3cpolyline points='6 9 12 15 18 9'%3e%3c/polyline%3e%3c/svg%3e");
+  }
+  body.dark .compodoc-lang-switch #compodoc-lang-select option {
+    background-color: #2c3e50;
+    color: #ecf0f1;
+  }
+</style>
+
+</head>
+    <body>
+          <script>
+               // Blocking script to avoid flickering dark mode
+               // Dark mode toggle button
+               var useDark = window.matchMedia('(prefers-color-scheme: dark)');
+               var darkModeState = useDark.matches;
+               var $darkModeToggleSwitchers = document.querySelectorAll('.dark-mode-switch input');
+               var $darkModeToggles = document.querySelectorAll('.dark-mode-switch');
+               var darkModeStateLocal = localStorage.getItem('compodoc_darkmode-state');
+
+               function checkToggle(check) {
+                    for (var i = 0; i < $darkModeToggleSwitchers.length; i++) {
+                         $darkModeToggleSwitchers[i].checked = check;
+                    }
+               }
+
+               function toggleDarkMode(state) {
+                    if (window.localStorage) {
+                         localStorage.setItem('compodoc_darkmode-state', state);
+                    }
+
+                    checkToggle(state);
+
+                    const hasClass = document.body.classList.contains('dark');
+
+                    if (state) {
+                         for (var i = 0; i < $darkModeToggles.length; i++) {
+                              $darkModeToggles[i].classList.add('dark');
+                         }
+                         if (!hasClass) {
+                              document.body.classList.add('dark');
+                         }
+                    } else {
+                         for (var i = 0; i < $darkModeToggles.length; i++) {
+                              $darkModeToggles[i].classList.remove('dark');
+                         }
+                         if (hasClass) {
+                              document.body.classList.remove('dark');
+                         }
+                    }
+               }
+
+               useDark.addEventListener('change', function (evt) {
+                    toggleDarkMode(evt.matches);
+               });
+               if (darkModeStateLocal) {
+                    darkModeState = darkModeStateLocal === 'true';
+               }
+               toggleDarkMode(darkModeState);
+          </script>
+          <script>
+              // --- Iframe navigation tracking for Template Playground ---
+              function sendCurrentUrlToParent() {
+                  if (window.parent && window.parent !== window) {
+                      window.parent.postMessage({
+                          type: 'compodoc-iframe-navigate',
+                          url: window.location.pathname + window.location.hash
+                      }, '*');
+                  }
+              }
+              window.addEventListener('hashchange', sendCurrentUrlToParent, false);
+              window.addEventListener('popstate', sendCurrentUrlToParent, false);
+              window.addEventListener('DOMContentLoaded', sendCurrentUrlToParent, false);
+          </script>
+
+        <div class="navbar navbar-default navbar-fixed-top d-md-none p-0">
+               <div class="d-flex">
+                    <a href="../" class="navbar-brand">ATSMarket Web App</a>
+                    <button type="button" class="btn btn-default btn-menu ion-ios-menu" id="btn-menu"></button>
+               </div>
+        </div>
+
+        <div class="xs-menu menu" id="mobile-menu">
+                <div id="book-search-input" role="search">
+    <input type="text" placeholder="Escribe para buscar">
+    <button type="button"
+        class="search-input-clear"
+        aria-label="Clear search"
+        data-search-input-clear>&times;</button>
+</div>
+            <compodoc-menu></compodoc-menu>
+        </div>
+
+        <div class="container-fluid main">
+           <div class="row main">
+               <div class="d-none d-md-block menu">
+                   <compodoc-menu mode="normal"></compodoc-menu>
+               </div>
+               <!-- START CONTENT -->
+               <div class="content injectable">
+                   <div class="content-data">
+
+
+
+
+
+
+
+
+
+
+
+
+<ol class="breadcrumb">
+  <li class="breadcrumb-item">Inyectables</li>
+  <li class="breadcrumb-item" >WebSocketNotificationService</li>
+</ol>
+
+<div class="io-file io-file-path" data-compodoc="entity-file-path">
+    <span class="icon ion-ios-document" aria-hidden="true"></span>
+    <code>src/app/core/services/web-socket-notification.service.ts</code>
+</div>
+
+<ul class="nav nav-tabs" role="tablist">
+        <li class="nav-item">
+            <a href="#info" 
+                class="nav-link"
+                class="nav-link active"
+                role="tab" id="info-tab" data-bs-toggle="tab" data-link="info">Info</a>
+        </li>
+        <li class="nav-item">
+            <a href="#api" 
+                class="nav-link"
+                
+                role="tab" id="api-tab" data-bs-toggle="tab" data-link="api">API</a>
+        </li>
+        <li class="nav-item">
+            <a href="#source" 
+                class="nav-link"
+                
+                role="tab" id="source-tab" data-bs-toggle="tab" data-link="source">Source</a>
+        </li>
+</ul>
+
+<div class="tab-content">
+    <div class="tab-pane fade active in" id="info">
+
+            <p class="comment">
+                <h3>Descripción</h3>
+            </p>
+            <p class="comment">
+                <p>Servicio de comunicación en tiempo real mediante WebSockets (Socket.IO) y BroadcastChannel.
+Facilita la distribución instantánea de notificaciones push, alertas de nuevos pedidos, cambios de estado
+de órdenes y mensajería de chat entre compradores, comercios y repartidores sin necesidad de sondeo continuo.</p>
+
+            </p>
+
+
+        <section data-compodoc="block-metadata">
+            <h3>Meta datos</h3>
+            <table class="table table-sm table-hover metadata">
+                <tbody>
+                    <tr>
+                        <td class="col-md-3">providedIn</td>
+                        <td class="col-md-9"><code>root</code></td>
+                    </tr>
+                </tbody>
+            </table>
+        </section>
+
+
+            </div>
+
+    <div class="tab-pane fade " id="api">
+            <section data-compodoc="block-index">
+    <h3 id="index">Índice</h3>
+        <table class="table table-sm table-bordered index-table">
+            <tbody>
+                <tr>
+                    <td class="col-md-3">
+                        <h6><b>Propiedades</b></h6>
+                    </td>
+                    <td class="col-md-9">
+                        <ul class="index-list">
+                            <li>
+                                <span class="reference-badge reference-badge--property" aria-hidden="true">P</span>
+                                    <span class="modifier">Private</span>
+                                <a href="#channel" >channel</a>
+                            </li>
+                            <li>
+                                <span class="reference-badge reference-badge--property" aria-hidden="true">P</span>
+                                    <span class="modifier">Public</span>
+                                <a href="#chatMessages$" >chatMessages$</a>
+                            </li>
+                            <li>
+                                <span class="reference-badge reference-badge--property" aria-hidden="true">P</span>
+                                    <span class="modifier">Private</span>
+                                <a href="#chatMessagesSubject" >chatMessagesSubject</a>
+                            </li>
+                            <li>
+                                <span class="reference-badge reference-badge--property" aria-hidden="true">P</span>
+                                    <span class="modifier">Public</span>
+                                <a href="#incomingNotification$" >incomingNotification$</a>
+                            </li>
+                            <li>
+                                <span class="reference-badge reference-badge--property" aria-hidden="true">P</span>
+                                    <span class="modifier">Private</span>
+                                <a href="#incomingNotificationSubject" >incomingNotificationSubject</a>
+                            </li>
+                            <li>
+                                <span class="reference-badge reference-badge--property" aria-hidden="true">P</span>
+                                    <span class="modifier">Public</span>
+                                <a href="#notifications$" >notifications$</a>
+                            </li>
+                            <li>
+                                <span class="reference-badge reference-badge--property" aria-hidden="true">P</span>
+                                    <span class="modifier">Private</span>
+                                <a href="#notificationsSubject" >notificationsSubject</a>
+                            </li>
+                            <li>
+                                <span class="reference-badge reference-badge--property" aria-hidden="true">P</span>
+                                    <span class="modifier">Public</span>
+                                <a href="#orderUpdates$" >orderUpdates$</a>
+                            </li>
+                            <li>
+                                <span class="reference-badge reference-badge--property" aria-hidden="true">P</span>
+                                    <span class="modifier">Private</span>
+                                <a href="#orderUpdatesSubject" >orderUpdatesSubject</a>
+                            </li>
+                            <li>
+                                <span class="reference-badge reference-badge--property" aria-hidden="true">P</span>
+                                    <span class="modifier">Private</span>
+                                <a href="#socket" >socket</a>
+                            </li>
+                            <li>
+                                <span class="reference-badge reference-badge--property" aria-hidden="true">P</span>
+                                    <span class="modifier">Public</span>
+                                <a href="#unreadCount$" >unreadCount$</a>
+                            </li>
+                            <li>
+                                <span class="reference-badge reference-badge--property" aria-hidden="true">P</span>
+                                    <span class="modifier">Private</span>
+                                <a href="#unreadCountSubject" >unreadCountSubject</a>
+                            </li>
+                        </ul>
+                    </td>
+                </tr>
+            </tbody>
+        </table>
+
+        <table class="table table-sm table-bordered index-table">
+            <tbody>
+                <tr>
+                    <td class="col-md-3">
+                        <h6><b>Métodos</b></h6>
+                    </td>
+                    <td class="col-md-9">
+                        <ul class="index-list">
+                            <li>
+                                <span class="reference-badge reference-badge--method" aria-hidden="true">M</span>
+                                    <span class="modifier">Public</span>
+                                <a href="#broadcastOrderStatusUpdate" >broadcastOrderStatusUpdate</a>
+                            </li>
+                            <li>
+                                <span class="reference-badge reference-badge--method" aria-hidden="true">M</span>
+                                    <span class="modifier">Private</span>
+                                <a href="#connectWebSocket" >connectWebSocket</a>
+                            </li>
+                            <li>
+                                <span class="reference-badge reference-badge--method" aria-hidden="true">M</span>
+                                    <span class="modifier">Public</span>
+                                <a href="#disconnect" >disconnect</a>
+                            </li>
+                            <li>
+                                <span class="reference-badge reference-badge--method" aria-hidden="true">M</span>
+                                    <span class="modifier">Public</span>
+                                <a href="#emitChatMessage" >emitChatMessage</a>
+                            </li>
+                            <li>
+                                <span class="reference-badge reference-badge--method" aria-hidden="true">M</span>
+                                    <span class="modifier">Private</span>
+                                <a href="#handleNewNotificationIncoming" >handleNewNotificationIncoming</a>
+                            </li>
+                            <li>
+                                <span class="reference-badge reference-badge--method" aria-hidden="true">M</span>
+                                    <span class="modifier">Private</span>
+                                <a href="#loadFromStorage" >loadFromStorage</a>
+                            </li>
+                            <li>
+                                <span class="reference-badge reference-badge--method" aria-hidden="true">M</span>
+                                    <span class="modifier">Public</span>
+                                <a href="#markAllAsRead" >markAllAsRead</a>
+                            </li>
+                            <li>
+                                <span class="reference-badge reference-badge--method" aria-hidden="true">M</span>
+                                <a href="#ngOnDestroy" >ngOnDestroy</a>
+                            </li>
+                            <li>
+                                <span class="reference-badge reference-badge--method" aria-hidden="true">M</span>
+                                    <span class="modifier">Public</span>
+                                <a href="#playNotificationSound" >playNotificationSound</a>
+                            </li>
+                            <li>
+                                <span class="reference-badge reference-badge--method" aria-hidden="true">M</span>
+                                    <span class="modifier">Public</span>
+                                <a href="#pushNotification" >pushNotification</a>
+                            </li>
+                            <li>
+                                <span class="reference-badge reference-badge--method" aria-hidden="true">M</span>
+                                    <span class="modifier">Private</span>
+                                <a href="#saveToStorage" >saveToStorage</a>
+                            </li>
+                            <li>
+                                <span class="reference-badge reference-badge--method" aria-hidden="true">M</span>
+                                    <span class="modifier">Private</span>
+                                <a href="#setupBroadcastListener" >setupBroadcastListener</a>
+                            </li>
+                            <li>
+                                <span class="reference-badge reference-badge--method" aria-hidden="true">M</span>
+                                    <span class="modifier">Private</span>
+                                <a href="#updateUnreadCount" >updateUnreadCount</a>
+                            </li>
+                        </ul>
+                    </td>
+                </tr>
+            </tbody>
+        </table>
+
+
+
+
+
+</section>
+
+            <section data-compodoc="block-constructor">
+    <h3 id="constructor">Constructor</h3>
+        <table class="table table-sm table-bordered">
+            <tbody>
+                <tr>
+                    <td class="col-md-4">
+<code>constructor(_notificationsService: <a href="../injectables/NotificationsService.html" target="_self">NotificationsService</a>)</code>
+                    </td>
+                </tr>
+                        <tr>
+                            <td class="col-md-4">
+                                <div class="io-line">Definido en <a href="" data-line="55" class="link-to-prism">src/app/core/services/web-socket-notification.service.ts:55</a></div>
+                            </td>
+                        </tr>
+
+                <tr>
+                    <td class="col-md-4">
+                            <div>
+                                    <b>Parámetros :</b>
+                                    <table class="params">
+                                        <thead>
+                                            <tr>
+                                                <td>Nombre</td>
+                                                    <td>Tipo</td>
+                                                <td>Opcional</td>
+                                            </tr>
+                                        </thead>
+                                        <tbody>
+                                                <tr>
+                                                        <td>_notificationsService</td>
+                                                  
+                                                        <td>
+                                                                        <code><a href="../injectables/NotificationsService.html" target="_self" >NotificationsService</a></code>
+                                                        </td>
+                                                  
+                                                    <td>
+                                                            No
+                                                    </td>
+                                                    
+                                                </tr>
+                                        </tbody>
+                                    </table>
+                            </div>
+                    </td>
+                </tr>
+            </tbody>
+        </table>
+</section>
+
+            <section data-compodoc="block-methods">
+    
+    <h3 id="methods">
+        Métodos
+    </h3>
+    <table class="table table-sm table-bordered">
+        <tbody>
+            <tr>
+                <td class="col-md-4">
+                    <a name="broadcastOrderStatusUpdate"></a>
+                    <span class="name">
+                            <span class="modifier">Public</span>
+                        <span ><b>broadcastOrderStatusUpdate</b></span>
+                        <a href="#broadcastOrderStatusUpdate"><span class="icon ion-ios-link"></span></a>
+                    </span>
+                </td>
+            </tr>
+            <tr>
+                <td class="col-md-4">
+                        <span class="modifier-icon icon ion-ios-reset"></span>
+                    <code>broadcastOrderStatusUpdate(ord_uuid: <a href="https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/string" target="_blank">string</a>, status: <a href="https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/string" target="_blank">string</a>, notes?: <a href="https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/string" target="_blank">string</a>)</code>
+                </td>
+            </tr>
+
+
+                    <tr>
+                        <td class="col-md-4">
+                            <div class="io-line">Definido en <a href="" data-line="232"
+                                    class="link-to-prism">src/app/core/services/web-socket-notification.service.ts:232</a></div>
+                        </td>
+                    </tr>
+
+
+            <tr>
+                <td class="col-md-4">
+                        <div class="io-description"><p>Difunde una actualización de estado de pedido en tiempo real.</p>
+</div>
+
+                            <div class="io-description">
+                                <b>Parámetros :</b>
+                                
+                                <table class="params">
+                                    <thead>
+                                        <tr>
+                                            <td>Nombre</td>
+                                                <td>Tipo</td>
+                                            <td>Opcional</td>
+                                        </tr>
+                                    </thead>
+                                    <tbody>
+                                        <tr>
+                                                <td>ord_uuid</td>
+                                            <td>
+                                                            <code><a href="https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/string" target="_blank" >string</a></code>
+                                            </td>
+
+                                            <td>
+                                                    No
+                                            </td>
+
+
+                                        </tr>
+                                        <tr>
+                                                <td>status</td>
+                                            <td>
+                                                            <code><a href="https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/string" target="_blank" >string</a></code>
+                                            </td>
+
+                                            <td>
+                                                    No
+                                            </td>
+
+
+                                        </tr>
+                                        <tr>
+                                                <td>notes</td>
+                                            <td>
+                                                            <code><a href="https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/string" target="_blank" >string</a></code>
+                                            </td>
+
+                                            <td>
+                                                    Si
+                                            </td>
+
+
+                                        </tr>
+                                    </tbody>
+                                </table>
+                            </div>
+                        <div class="io-description">
+                            <b>Devuelve : </b>        <code><a href="https://www.typescriptlang.org/docs/handbook/basic-types.html" target="_blank" >void</a></code>
+
+                        </div>
+                            <div class="io-description">
+                                
+                            </div>
+                </td>
+            </tr>
+        </tbody>
+    </table>
+    <table class="table table-sm table-bordered">
+        <tbody>
+            <tr>
+                <td class="col-md-4">
+                    <a name="connectWebSocket"></a>
+                    <span class="name">
+                            <span class="modifier">Private</span>
+                        <span ><b>connectWebSocket</b></span>
+                        <a href="#connectWebSocket"><span class="icon ion-ios-link"></span></a>
+                    </span>
+                </td>
+            </tr>
+            <tr>
+                <td class="col-md-4">
+                        <span class="modifier-icon icon ion-ios-reset"></span>
+                    <code>connectWebSocket()</code>
+                </td>
+            </tr>
+
+
+                    <tr>
+                        <td class="col-md-4">
+                            <div class="io-line">Definido en <a href="" data-line="188"
+                                    class="link-to-prism">src/app/core/services/web-socket-notification.service.ts:188</a></div>
+                        </td>
+                    </tr>
+
+
+            <tr>
+                <td class="col-md-4">
+                        <div class="io-description"><p>Intenta conectar al servidor de WebSockets si existe en el entorno.</p>
+</div>
+
+                        <div class="io-description">
+                            <b>Devuelve : </b>        <code><a href="https://www.typescriptlang.org/docs/handbook/basic-types.html" target="_blank" >void</a></code>
+
+                        </div>
+                </td>
+            </tr>
+        </tbody>
+    </table>
+    <table class="table table-sm table-bordered">
+        <tbody>
+            <tr>
+                <td class="col-md-4">
+                    <a name="disconnect"></a>
+                    <span class="name">
+                            <span class="modifier">Public</span>
+                        <span ><b>disconnect</b></span>
+                        <a href="#disconnect"><span class="icon ion-ios-link"></span></a>
+                    </span>
+                </td>
+            </tr>
+            <tr>
+                <td class="col-md-4">
+                        <span class="modifier-icon icon ion-ios-reset"></span>
+                    <code>disconnect()</code>
+                </td>
+            </tr>
+
+
+                    <tr>
+                        <td class="col-md-4">
+                            <div class="io-line">Definido en <a href="" data-line="297"
+                                    class="link-to-prism">src/app/core/services/web-socket-notification.service.ts:297</a></div>
+                        </td>
+                    </tr>
+
+
+            <tr>
+                <td class="col-md-4">
+                        <div class="io-description"><p>Desconectar explícitamente el socket.</p>
+</div>
+
+                        <div class="io-description">
+                            <b>Devuelve : </b>        <code><a href="https://www.typescriptlang.org/docs/handbook/basic-types.html" target="_blank" >void</a></code>
+
+                        </div>
+                </td>
+            </tr>
+        </tbody>
+    </table>
+    <table class="table table-sm table-bordered">
+        <tbody>
+            <tr>
+                <td class="col-md-4">
+                    <a name="emitChatMessage"></a>
+                    <span class="name">
+                            <span class="modifier">Public</span>
+                        <span ><b>emitChatMessage</b></span>
+                        <a href="#emitChatMessage"><span class="icon ion-ios-link"></span></a>
+                    </span>
+                </td>
+            </tr>
+            <tr>
+                <td class="col-md-4">
+                        <span class="modifier-icon icon ion-ios-reset"></span>
+                    <code>emitChatMessage(message: <a href="https://www.typescriptlang.org/docs/handbook/basic-types.html" target="_blank">any</a>)</code>
+                </td>
+            </tr>
+
+
+                    <tr>
+                        <td class="col-md-4">
+                            <div class="io-line">Definido en <a href="" data-line="248"
+                                    class="link-to-prism">src/app/core/services/web-socket-notification.service.ts:248</a></div>
+                        </td>
+                    </tr>
+
+
+            <tr>
+                <td class="col-md-4">
+                        <div class="io-description"><p>Emite un mensaje de chat en tiempo real al servidor</p>
+</div>
+
+                            <div class="io-description">
+                                <b>Parámetros :</b>
+                                
+                                <table class="params">
+                                    <thead>
+                                        <tr>
+                                            <td>Nombre</td>
+                                                <td>Tipo</td>
+                                            <td>Opcional</td>
+                                        </tr>
+                                    </thead>
+                                    <tbody>
+                                        <tr>
+                                                <td>message</td>
+                                            <td>
+                                                            <code><a href="https://www.typescriptlang.org/docs/handbook/basic-types.html" target="_blank" >any</a></code>
+                                            </td>
+
+                                            <td>
+                                                    No
+                                            </td>
+
+
+                                        </tr>
+                                    </tbody>
+                                </table>
+                            </div>
+                        <div class="io-description">
+                            <b>Devuelve : </b>        <code><a href="https://www.typescriptlang.org/docs/handbook/basic-types.html" target="_blank" >void</a></code>
+
+                        </div>
+                            <div class="io-description">
+                                
+                            </div>
+                </td>
+            </tr>
+        </tbody>
+    </table>
+    <table class="table table-sm table-bordered">
+        <tbody>
+            <tr>
+                <td class="col-md-4">
+                    <a name="handleNewNotificationIncoming"></a>
+                    <span class="name">
+                            <span class="modifier">Private</span>
+                        <span ><b>handleNewNotificationIncoming</b></span>
+                        <a href="#handleNewNotificationIncoming"><span class="icon ion-ios-link"></span></a>
+                    </span>
+                </td>
+            </tr>
+            <tr>
+                <td class="col-md-4">
+                        <span class="modifier-icon icon ion-ios-reset"></span>
+                    <code>handleNewNotificationIncoming(notification: <a href="../interfaces/NotificationInterface.html" target="_self">NotificationInterface</a>)</code>
+                </td>
+            </tr>
+
+
+                    <tr>
+                        <td class="col-md-4">
+                            <div class="io-line">Definido en <a href="" data-line="128"
+                                    class="link-to-prism">src/app/core/services/web-socket-notification.service.ts:128</a></div>
+                        </td>
+                    </tr>
+
+
+            <tr>
+                <td class="col-md-4">
+                        <div class="io-description"><p>Procesa la llegada de una nueva notificación.</p>
+</div>
+
+                            <div class="io-description">
+                                <b>Parámetros :</b>
+                                
+                                <table class="params">
+                                    <thead>
+                                        <tr>
+                                            <td>Nombre</td>
+                                                <td>Tipo</td>
+                                            <td>Opcional</td>
+                                        </tr>
+                                    </thead>
+                                    <tbody>
+                                        <tr>
+                                                <td>notification</td>
+                                            <td>
+                                                            <code><a href="../interfaces/NotificationInterface.html" target="_self" >NotificationInterface</a></code>
+                                            </td>
+
+                                            <td>
+                                                    No
+                                            </td>
+
+
+                                        </tr>
+                                    </tbody>
+                                </table>
+                            </div>
+                        <div class="io-description">
+                            <b>Devuelve : </b>        <code><a href="https://www.typescriptlang.org/docs/handbook/basic-types.html" target="_blank" >void</a></code>
+
+                        </div>
+                            <div class="io-description">
+                                
+                            </div>
+                </td>
+            </tr>
+        </tbody>
+    </table>
+    <table class="table table-sm table-bordered">
+        <tbody>
+            <tr>
+                <td class="col-md-4">
+                    <a name="loadFromStorage"></a>
+                    <span class="name">
+                            <span class="modifier">Private</span>
+                        <span ><b>loadFromStorage</b></span>
+                        <a href="#loadFromStorage"><span class="icon ion-ios-link"></span></a>
+                    </span>
+                </td>
+            </tr>
+            <tr>
+                <td class="col-md-4">
+                        <span class="modifier-icon icon ion-ios-reset"></span>
+                    <code>loadFromStorage()</code>
+                </td>
+            </tr>
+
+
+                    <tr>
+                        <td class="col-md-4">
+                            <div class="io-line">Definido en <a href="" data-line="82"
+                                    class="link-to-prism">src/app/core/services/web-socket-notification.service.ts:82</a></div>
+                        </td>
+                    </tr>
+
+
+            <tr>
+                <td class="col-md-4">
+                        <div class="io-description"><p>Cargar notificaciones guardadas del almacenamiento local.</p>
+</div>
+
+                        <div class="io-description">
+                            <b>Devuelve : </b>        <code><a href="https://www.typescriptlang.org/docs/handbook/basic-types.html" target="_blank" >void</a></code>
+
+                        </div>
+                </td>
+            </tr>
+        </tbody>
+    </table>
+    <table class="table table-sm table-bordered">
+        <tbody>
+            <tr>
+                <td class="col-md-4">
+                    <a name="markAllAsRead"></a>
+                    <span class="name">
+                            <span class="modifier">Public</span>
+                        <span ><b>markAllAsRead</b></span>
+                        <a href="#markAllAsRead"><span class="icon ion-ios-link"></span></a>
+                    </span>
+                </td>
+            </tr>
+            <tr>
+                <td class="col-md-4">
+                        <span class="modifier-icon icon ion-ios-reset"></span>
+                    <code>markAllAsRead()</code>
+                </td>
+            </tr>
+
+
+                    <tr>
+                        <td class="col-md-4">
+                            <div class="io-line">Definido en <a href="" data-line="286"
+                                    class="link-to-prism">src/app/core/services/web-socket-notification.service.ts:286</a></div>
+                        </td>
+                    </tr>
+
+
+            <tr>
+                <td class="col-md-4">
+                        <div class="io-description"><p>Marca todas las notificaciones del historial del usuario como leídas.</p>
+</div>
+
+                        <div class="io-description">
+                            <b>Devuelve : </b>        <code><a href="https://www.typescriptlang.org/docs/handbook/basic-types.html" target="_blank" >void</a></code>
+
+                        </div>
+                </td>
+            </tr>
+        </tbody>
+    </table>
+    <table class="table table-sm table-bordered">
+        <tbody>
+            <tr>
+                <td class="col-md-4">
+                    <a name="ngOnDestroy"></a>
+                    <span class="name">
+                        <span ><b>ngOnDestroy</b></span>
+                        <a href="#ngOnDestroy"><span class="icon ion-ios-link"></span></a>
+                    </span>
+                </td>
+            </tr>
+            <tr>
+                <td class="col-md-4">
+<code>ngOnDestroy()</code>
+                </td>
+            </tr>
+
+
+                    <tr>
+                        <td class="col-md-4">
+                            <div class="io-line">Definido en <a href="" data-line="72"
+                                    class="link-to-prism">src/app/core/services/web-socket-notification.service.ts:72</a></div>
+                        </td>
+                    </tr>
+
+
+            <tr>
+                <td class="col-md-4">
+
+                        <div class="io-description">
+                            <b>Devuelve : </b>        <code><a href="https://www.typescriptlang.org/docs/handbook/basic-types.html" target="_blank" >void</a></code>
+
+                        </div>
+                </td>
+            </tr>
+        </tbody>
+    </table>
+    <table class="table table-sm table-bordered">
+        <tbody>
+            <tr>
+                <td class="col-md-4">
+                    <a name="playNotificationSound"></a>
+                    <span class="name">
+                            <span class="modifier">Public</span>
+                        <span ><b>playNotificationSound</b></span>
+                        <a href="#playNotificationSound"><span class="icon ion-ios-link"></span></a>
+                    </span>
+                </td>
+            </tr>
+            <tr>
+                <td class="col-md-4">
+                        <span class="modifier-icon icon ion-ios-reset"></span>
+                    <code>playNotificationSound()</code>
+                </td>
+            </tr>
+
+
+                    <tr>
+                        <td class="col-md-4">
+                            <div class="io-line">Definido en <a href="" data-line="145"
+                                    class="link-to-prism">src/app/core/services/web-socket-notification.service.ts:145</a></div>
+                        </td>
+                    </tr>
+
+
+            <tr>
+                <td class="col-md-4">
+                        <div class="io-description"><p>Reproduce un sonido armónico y agradable (chime) usando la API nativa de Audio Web del navegador.</p>
+</div>
+
+                        <div class="io-description">
+                            <b>Devuelve : </b>        <code><a href="https://www.typescriptlang.org/docs/handbook/basic-types.html" target="_blank" >void</a></code>
+
+                        </div>
+                </td>
+            </tr>
+        </tbody>
+    </table>
+    <table class="table table-sm table-bordered">
+        <tbody>
+            <tr>
+                <td class="col-md-4">
+                    <a name="pushNotification"></a>
+                    <span class="name">
+                            <span class="modifier">Public</span>
+                        <span ><b>pushNotification</b></span>
+                        <a href="#pushNotification"><span class="icon ion-ios-link"></span></a>
+                    </span>
+                </td>
+            </tr>
+            <tr>
+                <td class="col-md-4">
+                        <span class="modifier-icon icon ion-ios-reset"></span>
+                    <code>pushNotification(notificationData: <a href="../interfaces/NotificationInterface.html" target="_self">Omit&lt;NotificationInterface, &quot;ntf_uuid&quot; | &quot;ntf_createdat&quot; | &quot;ntf_isread&quot;&gt;</a>)</code>
+                </td>
+            </tr>
+
+
+                    <tr>
+                        <td class="col-md-4">
+                            <div class="io-line">Definido en <a href="" data-line="257"
+                                    class="link-to-prism">src/app/core/services/web-socket-notification.service.ts:257</a></div>
+                        </td>
+                    </tr>
+
+
+            <tr>
+                <td class="col-md-4">
+                        <div class="io-description"><p>Genera e inyecta una nueva notificación en el flujo del usuario en tiempo real.</p>
+</div>
+
+                            <div class="io-description">
+                                <b>Parámetros :</b>
+                                
+                                <table class="params">
+                                    <thead>
+                                        <tr>
+                                            <td>Nombre</td>
+                                                <td>Tipo</td>
+                                            <td>Opcional</td>
+                                        </tr>
+                                    </thead>
+                                    <tbody>
+                                        <tr>
+                                                <td>notificationData</td>
+                                            <td>
+                                                            <code><a href="../interfaces/NotificationInterface.html" target="_self" >Omit&lt;NotificationInterface, &quot;ntf_uuid&quot; | &quot;ntf_createdat&quot; | &quot;ntf_isread&quot;&gt;</a></code>
+                                            </td>
+
+                                            <td>
+                                                    No
+                                            </td>
+
+
+                                        </tr>
+                                    </tbody>
+                                </table>
+                            </div>
+                        <div class="io-description">
+                            <b>Devuelve : </b>        <code><a href="https://www.typescriptlang.org/docs/handbook/basic-types.html" target="_blank" >void</a></code>
+
+                        </div>
+                            <div class="io-description">
+                                
+                            </div>
+                </td>
+            </tr>
+        </tbody>
+    </table>
+    <table class="table table-sm table-bordered">
+        <tbody>
+            <tr>
+                <td class="col-md-4">
+                    <a name="saveToStorage"></a>
+                    <span class="name">
+                            <span class="modifier">Private</span>
+                        <span ><b>saveToStorage</b></span>
+                        <a href="#saveToStorage"><span class="icon ion-ios-link"></span></a>
+                    </span>
+                </td>
+            </tr>
+            <tr>
+                <td class="col-md-4">
+                        <span class="modifier-icon icon ion-ios-reset"></span>
+                    <code>saveToStorage(list: <a href="../interfaces/NotificationInterface.html" target="_self">NotificationInterface[]</a>)</code>
+                </td>
+            </tr>
+
+
+                    <tr>
+                        <td class="col-md-4">
+                            <div class="io-line">Definido en <a href="" data-line="98"
+                                    class="link-to-prism">src/app/core/services/web-socket-notification.service.ts:98</a></div>
+                        </td>
+                    </tr>
+
+
+            <tr>
+                <td class="col-md-4">
+                        <div class="io-description"><p>Persistir notificaciones en localStorage.</p>
+</div>
+
+                            <div class="io-description">
+                                <b>Parámetros :</b>
+                                
+                                <table class="params">
+                                    <thead>
+                                        <tr>
+                                            <td>Nombre</td>
+                                                <td>Tipo</td>
+                                            <td>Opcional</td>
+                                        </tr>
+                                    </thead>
+                                    <tbody>
+                                        <tr>
+                                                <td>list</td>
+                                            <td>
+                                                            <code><a href="../interfaces/NotificationInterface.html" target="_self" >NotificationInterface[]</a></code>
+                                            </td>
+
+                                            <td>
+                                                    No
+                                            </td>
+
+
+                                        </tr>
+                                    </tbody>
+                                </table>
+                            </div>
+                        <div class="io-description">
+                            <b>Devuelve : </b>        <code><a href="https://www.typescriptlang.org/docs/handbook/basic-types.html" target="_blank" >void</a></code>
+
+                        </div>
+                            <div class="io-description">
+                                
+                            </div>
+                </td>
+            </tr>
+        </tbody>
+    </table>
+    <table class="table table-sm table-bordered">
+        <tbody>
+            <tr>
+                <td class="col-md-4">
+                    <a name="setupBroadcastListener"></a>
+                    <span class="name">
+                            <span class="modifier">Private</span>
+                        <span ><b>setupBroadcastListener</b></span>
+                        <a href="#setupBroadcastListener"><span class="icon ion-ios-link"></span></a>
+                    </span>
+                </td>
+            </tr>
+            <tr>
+                <td class="col-md-4">
+                        <span class="modifier-icon icon ion-ios-reset"></span>
+                    <code>setupBroadcastListener()</code>
+                </td>
+            </tr>
+
+
+                    <tr>
+                        <td class="col-md-4">
+                            <div class="io-line">Definido en <a href="" data-line="113"
+                                    class="link-to-prism">src/app/core/services/web-socket-notification.service.ts:113</a></div>
+                        </td>
+                    </tr>
+
+
+            <tr>
+                <td class="col-md-4">
+                        <div class="io-description"><p>Configura el listener del BroadcastChannel para escuchar eventos cruzados de pestañas.</p>
+</div>
+
+                        <div class="io-description">
+                            <b>Devuelve : </b>        <code><a href="https://www.typescriptlang.org/docs/handbook/basic-types.html" target="_blank" >void</a></code>
+
+                        </div>
+                </td>
+            </tr>
+        </tbody>
+    </table>
+    <table class="table table-sm table-bordered">
+        <tbody>
+            <tr>
+                <td class="col-md-4">
+                    <a name="updateUnreadCount"></a>
+                    <span class="name">
+                            <span class="modifier">Private</span>
+                        <span ><b>updateUnreadCount</b></span>
+                        <a href="#updateUnreadCount"><span class="icon ion-ios-link"></span></a>
+                    </span>
+                </td>
+            </tr>
+            <tr>
+                <td class="col-md-4">
+                        <span class="modifier-icon icon ion-ios-reset"></span>
+                    <code>updateUnreadCount(list: <a href="../interfaces/NotificationInterface.html" target="_self">NotificationInterface[]</a>)</code>
+                </td>
+            </tr>
+
+
+                    <tr>
+                        <td class="col-md-4">
+                            <div class="io-line">Definido en <a href="" data-line="105"
+                                    class="link-to-prism">src/app/core/services/web-socket-notification.service.ts:105</a></div>
+                        </td>
+                    </tr>
+
+
+            <tr>
+                <td class="col-md-4">
+                        <div class="io-description"><p>Actualizar dinámicamente el contador de no leídos.</p>
+</div>
+
+                            <div class="io-description">
+                                <b>Parámetros :</b>
+                                
+                                <table class="params">
+                                    <thead>
+                                        <tr>
+                                            <td>Nombre</td>
+                                                <td>Tipo</td>
+                                            <td>Opcional</td>
+                                        </tr>
+                                    </thead>
+                                    <tbody>
+                                        <tr>
+                                                <td>list</td>
+                                            <td>
+                                                            <code><a href="../interfaces/NotificationInterface.html" target="_self" >NotificationInterface[]</a></code>
+                                            </td>
+
+                                            <td>
+                                                    No
+                                            </td>
+
+
+                                        </tr>
+                                    </tbody>
+                                </table>
+                            </div>
+                        <div class="io-description">
+                            <b>Devuelve : </b>        <code><a href="https://www.typescriptlang.org/docs/handbook/basic-types.html" target="_blank" >void</a></code>
+
+                        </div>
+                            <div class="io-description">
+                                
+                            </div>
+                </td>
+            </tr>
+        </tbody>
+    </table>
+</section>
+
+            <section data-compodoc="block-properties">
+    
+    <h3 id="inputs">
+        Propiedades
+    </h3>
+    <table class="table table-sm table-bordered">
+        <tbody>
+            <tr>
+                <td class="col-md-4">
+                    <a name="channel"></a>
+                    <span class="name">
+                            <span class="modifier">Private</span>
+                        <span ><b>channel</b></span>
+                        <a href="#channel"><span class="icon ion-ios-link"></span></a>
+                    </span>
+                </td>
+            </tr>
+                <tr>
+                    <td class="col-md-4">
+                        <i>Tipo : </i>    <code>BroadcastChannel</code>
+
+                    </td>
+                </tr>
+                    <tr>
+                        <td class="col-md-4">
+                                <div class="io-line">Definido en <a href="" data-line="19" class="link-to-prism">src/app/core/services/web-socket-notification.service.ts:19</a></div>
+                        </td>
+                    </tr>
+
+
+        </tbody>
+    </table>
+    <table class="table table-sm table-bordered">
+        <tbody>
+            <tr>
+                <td class="col-md-4">
+                    <a name="chatMessages$"></a>
+                    <span class="name">
+                            <span class="modifier">Public</span>
+                        <span ><b>chatMessages$</b></span>
+                        <a href="#chatMessages$"><span class="icon ion-ios-link"></span></a>
+                    </span>
+                </td>
+            </tr>
+                <tr>
+                    <td class="col-md-4">
+                        <i>Tipo : </i>    <code>unknown</code>
+
+                    </td>
+                </tr>
+                <tr>
+                    <td class="col-md-4">
+                        <i>Valor por defecto : </i><code>this.chatMessagesSubject.asObservable()</code>
+                    </td>
+                </tr>
+                    <tr>
+                        <td class="col-md-4">
+                                <div class="io-line">Definido en <a href="" data-line="55" class="link-to-prism">src/app/core/services/web-socket-notification.service.ts:55</a></div>
+                        </td>
+                    </tr>
+
+
+        </tbody>
+    </table>
+    <table class="table table-sm table-bordered">
+        <tbody>
+            <tr>
+                <td class="col-md-4">
+                    <a name="chatMessagesSubject"></a>
+                    <span class="name">
+                            <span class="modifier">Private</span>
+                        <span ><b>chatMessagesSubject</b></span>
+                        <a href="#chatMessagesSubject"><span class="icon ion-ios-link"></span></a>
+                    </span>
+                </td>
+            </tr>
+                <tr>
+                    <td class="col-md-4">
+                        <i>Tipo : </i>    <code>unknown</code>
+
+                    </td>
+                </tr>
+                <tr>
+                    <td class="col-md-4">
+                        <i>Valor por defecto : </i><code>new Subject&lt;any&gt;()</code>
+                    </td>
+                </tr>
+                    <tr>
+                        <td class="col-md-4">
+                                <div class="io-line">Definido en <a href="" data-line="54" class="link-to-prism">src/app/core/services/web-socket-notification.service.ts:54</a></div>
+                        </td>
+                    </tr>
+
+            <tr>
+                <td class="col-md-4">
+                    <div class="io-description"><p>Canal de eventos en tiempo real para mensajes entrantes del chat de soporte/pedido.</p>
+</div>
+                </td>
+            </tr>
+
+        </tbody>
+    </table>
+    <table class="table table-sm table-bordered">
+        <tbody>
+            <tr>
+                <td class="col-md-4">
+                    <a name="incomingNotification$"></a>
+                    <span class="name">
+                            <span class="modifier">Public</span>
+                        <span ><b>incomingNotification$</b></span>
+                        <a href="#incomingNotification$"><span class="icon ion-ios-link"></span></a>
+                    </span>
+                </td>
+            </tr>
+                <tr>
+                    <td class="col-md-4">
+                        <i>Tipo : </i>    <code>unknown</code>
+
+                    </td>
+                </tr>
+                <tr>
+                    <td class="col-md-4">
+                        <i>Valor por defecto : </i><code>this.incomingNotificationSubject.asObservable()</code>
+                    </td>
+                </tr>
+                    <tr>
+                        <td class="col-md-4">
+                                <div class="io-line">Definido en <a href="" data-line="43" class="link-to-prism">src/app/core/services/web-socket-notification.service.ts:43</a></div>
+                        </td>
+                    </tr>
+
+
+        </tbody>
+    </table>
+    <table class="table table-sm table-bordered">
+        <tbody>
+            <tr>
+                <td class="col-md-4">
+                    <a name="incomingNotificationSubject"></a>
+                    <span class="name">
+                            <span class="modifier">Private</span>
+                        <span ><b>incomingNotificationSubject</b></span>
+                        <a href="#incomingNotificationSubject"><span class="icon ion-ios-link"></span></a>
+                    </span>
+                </td>
+            </tr>
+                <tr>
+                    <td class="col-md-4">
+                        <i>Tipo : </i>    <code>unknown</code>
+
+                    </td>
+                </tr>
+                <tr>
+                    <td class="col-md-4">
+                        <i>Valor por defecto : </i><code>new Subject&lt;NotificationInterface&gt;()</code>
+                    </td>
+                </tr>
+                    <tr>
+                        <td class="col-md-4">
+                                <div class="io-line">Definido en <a href="" data-line="42" class="link-to-prism">src/app/core/services/web-socket-notification.service.ts:42</a></div>
+                        </td>
+                    </tr>
+
+            <tr>
+                <td class="col-md-4">
+                    <div class="io-description"><p>Canal emisor para notificaciones individuales entrantes en tiempo real.</p>
+</div>
+                </td>
+            </tr>
+
+        </tbody>
+    </table>
+    <table class="table table-sm table-bordered">
+        <tbody>
+            <tr>
+                <td class="col-md-4">
+                    <a name="notifications$"></a>
+                    <span class="name">
+                            <span class="modifier">Public</span>
+                        <span ><b>notifications$</b></span>
+                        <a href="#notifications$"><span class="icon ion-ios-link"></span></a>
+                    </span>
+                </td>
+            </tr>
+                <tr>
+                    <td class="col-md-4">
+                        <i>Tipo : </i>    <code>unknown</code>
+
+                    </td>
+                </tr>
+                <tr>
+                    <td class="col-md-4">
+                        <i>Valor por defecto : </i><code>this.notificationsSubject.asObservable()</code>
+                    </td>
+                </tr>
+                    <tr>
+                        <td class="col-md-4">
+                                <div class="io-line">Definido en <a href="" data-line="28" class="link-to-prism">src/app/core/services/web-socket-notification.service.ts:28</a></div>
+                        </td>
+                    </tr>
+
+            <tr>
+                <td class="col-md-4">
+                    <div class="io-description"><p>Observable de notificaciones históricas y en sesión.</p>
+</div>
+                </td>
+            </tr>
+
+        </tbody>
+    </table>
+    <table class="table table-sm table-bordered">
+        <tbody>
+            <tr>
+                <td class="col-md-4">
+                    <a name="notificationsSubject"></a>
+                    <span class="name">
+                            <span class="modifier">Private</span>
+                        <span ><b>notificationsSubject</b></span>
+                        <a href="#notificationsSubject"><span class="icon ion-ios-link"></span></a>
+                    </span>
+                </td>
+            </tr>
+                <tr>
+                    <td class="col-md-4">
+                        <i>Tipo : </i>    <code>unknown</code>
+
+                    </td>
+                </tr>
+                <tr>
+                    <td class="col-md-4">
+                        <i>Valor por defecto : </i><code>new BehaviorSubject&lt;NotificationInterface[]&gt;([])</code>
+                    </td>
+                </tr>
+                    <tr>
+                        <td class="col-md-4">
+                                <div class="io-line">Definido en <a href="" data-line="24" class="link-to-prism">src/app/core/services/web-socket-notification.service.ts:24</a></div>
+                        </td>
+                    </tr>
+
+            <tr>
+                <td class="col-md-4">
+                    <div class="io-description"><p>Sujeto reactivo con el listado completo de notificaciones recibidas.</p>
+</div>
+                </td>
+            </tr>
+
+        </tbody>
+    </table>
+    <table class="table table-sm table-bordered">
+        <tbody>
+            <tr>
+                <td class="col-md-4">
+                    <a name="orderUpdates$"></a>
+                    <span class="name">
+                            <span class="modifier">Public</span>
+                        <span ><b>orderUpdates$</b></span>
+                        <a href="#orderUpdates$"><span class="icon ion-ios-link"></span></a>
+                    </span>
+                </td>
+            </tr>
+                <tr>
+                    <td class="col-md-4">
+                        <i>Tipo : </i>    <code>unknown</code>
+
+                    </td>
+                </tr>
+                <tr>
+                    <td class="col-md-4">
+                        <i>Valor por defecto : </i><code>this.orderUpdatesSubject.asObservable()</code>
+                    </td>
+                </tr>
+                    <tr>
+                        <td class="col-md-4">
+                                <div class="io-line">Definido en <a href="" data-line="49" class="link-to-prism">src/app/core/services/web-socket-notification.service.ts:49</a></div>
+                        </td>
+                    </tr>
+
+
+        </tbody>
+    </table>
+    <table class="table table-sm table-bordered">
+        <tbody>
+            <tr>
+                <td class="col-md-4">
+                    <a name="orderUpdatesSubject"></a>
+                    <span class="name">
+                            <span class="modifier">Private</span>
+                        <span ><b>orderUpdatesSubject</b></span>
+                        <a href="#orderUpdatesSubject"><span class="icon ion-ios-link"></span></a>
+                    </span>
+                </td>
+            </tr>
+                <tr>
+                    <td class="col-md-4">
+                        <i>Tipo : </i>    <code>unknown</code>
+
+                    </td>
+                </tr>
+                <tr>
+                    <td class="col-md-4">
+                        <i>Valor por defecto : </i><code>new Subject&lt;{ ord_uuid: string, status: string, notes?: string }&gt;()</code>
+                    </td>
+                </tr>
+                    <tr>
+                        <td class="col-md-4">
+                                <div class="io-line">Definido en <a href="" data-line="48" class="link-to-prism">src/app/core/services/web-socket-notification.service.ts:48</a></div>
+                        </td>
+                    </tr>
+
+            <tr>
+                <td class="col-md-4">
+                    <div class="io-description"><p>Canal de eventos en vivo con actualizaciones de estado de órdenes logísticas.</p>
+</div>
+                </td>
+            </tr>
+
+        </tbody>
+    </table>
+    <table class="table table-sm table-bordered">
+        <tbody>
+            <tr>
+                <td class="col-md-4">
+                    <a name="socket"></a>
+                    <span class="name">
+                            <span class="modifier">Private</span>
+                        <span ><b>socket</b></span>
+                        <a href="#socket"><span class="icon ion-ios-link"></span></a>
+                    </span>
+                </td>
+            </tr>
+                <tr>
+                    <td class="col-md-4">
+                        <i>Tipo : </i>    <code>Socket | null</code>
+
+                    </td>
+                </tr>
+                <tr>
+                    <td class="col-md-4">
+                        <i>Valor por defecto : </i><code>null</code>
+                    </td>
+                </tr>
+                    <tr>
+                        <td class="col-md-4">
+                                <div class="io-line">Definido en <a href="" data-line="18" class="link-to-prism">src/app/core/services/web-socket-notification.service.ts:18</a></div>
+                        </td>
+                    </tr>
+
+
+        </tbody>
+    </table>
+    <table class="table table-sm table-bordered">
+        <tbody>
+            <tr>
+                <td class="col-md-4">
+                    <a name="unreadCount$"></a>
+                    <span class="name">
+                            <span class="modifier">Public</span>
+                        <span ><b>unreadCount$</b></span>
+                        <a href="#unreadCount$"><span class="icon ion-ios-link"></span></a>
+                    </span>
+                </td>
+            </tr>
+                <tr>
+                    <td class="col-md-4">
+                        <i>Tipo : </i>    <code>unknown</code>
+
+                    </td>
+                </tr>
+                <tr>
+                    <td class="col-md-4">
+                        <i>Valor por defecto : </i><code>this.unreadCountSubject.asObservable()</code>
+                    </td>
+                </tr>
+                    <tr>
+                        <td class="col-md-4">
+                                <div class="io-line">Definido en <a href="" data-line="37" class="link-to-prism">src/app/core/services/web-socket-notification.service.ts:37</a></div>
+                        </td>
+                    </tr>
+
+            <tr>
+                <td class="col-md-4">
+                    <div class="io-description"><p>Observable del contador de notificaciones pendientes de lectura para insignias visuales (badges).</p>
+</div>
+                </td>
+            </tr>
+
+        </tbody>
+    </table>
+    <table class="table table-sm table-bordered">
+        <tbody>
+            <tr>
+                <td class="col-md-4">
+                    <a name="unreadCountSubject"></a>
+                    <span class="name">
+                            <span class="modifier">Private</span>
+                        <span ><b>unreadCountSubject</b></span>
+                        <a href="#unreadCountSubject"><span class="icon ion-ios-link"></span></a>
+                    </span>
+                </td>
+            </tr>
+                <tr>
+                    <td class="col-md-4">
+                        <i>Tipo : </i>    <code>unknown</code>
+
+                    </td>
+                </tr>
+                <tr>
+                    <td class="col-md-4">
+                        <i>Valor por defecto : </i><code>new BehaviorSubject&lt;number&gt;(0)</code>
+                    </td>
+                </tr>
+                    <tr>
+                        <td class="col-md-4">
+                                <div class="io-line">Definido en <a href="" data-line="33" class="link-to-prism">src/app/core/services/web-socket-notification.service.ts:33</a></div>
+                        </td>
+                    </tr>
+
+            <tr>
+                <td class="col-md-4">
+                    <div class="io-description"><p>Sujeto con el conteo numérico de notificaciones no leídas.</p>
+</div>
+                </td>
+            </tr>
+
+        </tbody>
+    </table>
+</section>
+
+    </div>
+
+
+    <div class="tab-pane fade  tab-source-code" id="source">
+        <pre class="line-numbers compodoc-sourcecode"><code class="language-typescript">import { Injectable, OnDestroy } from &#x27;@angular/core&#x27;;
+import { BehaviorSubject, Observable, Subject } from &#x27;rxjs&#x27;;
+import { io, Socket } from &#x27;socket.io-client&#x27;;
+import { environment } from &#x27;../../../environments/environment&#x27;;
+import { NotificationInterface } from &#x27;@interfaces/notification/notification.interface&#x27;;
+import { NotificationsService } from &#x27;./notifications.service&#x27;;
+
+/**
+ * @description Servicio de comunicación en tiempo real mediante WebSockets (Socket.IO) y BroadcastChannel.
+ * Facilita la distribución instantánea de notificaciones push, alertas de nuevos pedidos, cambios de estado
+ * de órdenes y mensajería de chat entre compradores, comercios y repartidores sin necesidad de sondeo continuo.
+ */
+@Injectable({
+  providedIn: &#x27;root&#x27;
+})
+export class WebSocketNotificationService implements OnDestroy {
+
+  private socket: Socket | null &#x3D; null;
+  private channel: BroadcastChannel;
+  
+  /**
+   * @description Sujeto reactivo con el listado completo de notificaciones recibidas.
+   */
+  private notificationsSubject &#x3D; new BehaviorSubject&lt;NotificationInterface[]&gt;([]);
+  /**
+   * @description Observable de notificaciones históricas y en sesión.
+   */
+  public notifications$ &#x3D; this.notificationsSubject.asObservable();
+
+  /**
+   * @description Sujeto con el conteo numérico de notificaciones no leídas.
+   */
+  private unreadCountSubject &#x3D; new BehaviorSubject&lt;number&gt;(0);
+  /**
+   * @description Observable del contador de notificaciones pendientes de lectura para insignias visuales (badges).
+   */
+  public unreadCount$ &#x3D; this.unreadCountSubject.asObservable();
+
+  /**
+   * @description Canal emisor para notificaciones individuales entrantes en tiempo real.
+   */
+  private incomingNotificationSubject &#x3D; new Subject&lt;NotificationInterface&gt;();
+  public incomingNotification$ &#x3D; this.incomingNotificationSubject.asObservable();
+
+  /**
+   * @description Canal de eventos en vivo con actualizaciones de estado de órdenes logísticas.
+   */
+  private orderUpdatesSubject &#x3D; new Subject&lt;{ ord_uuid: string, status: string, notes?: string }&gt;();
+  public orderUpdates$ &#x3D; this.orderUpdatesSubject.asObservable();
+
+  /**
+   * @description Canal de eventos en tiempo real para mensajes entrantes del chat de soporte/pedido.
+   */
+  private chatMessagesSubject &#x3D; new Subject&lt;any&gt;();
+  public chatMessages$ &#x3D; this.chatMessagesSubject.asObservable();
+
+  constructor(
+    private _notificationsService: NotificationsService
+  ) {
+    // 1. Inicializar el canal de difusión entre pestañas del mismo navegador (BroadcastChannel)
+    // Esto permite comunicación en tiempo real cruzada entre la pestaña del Repartidor y la del Comprador.
+    this.channel &#x3D; new BroadcastChannel(&#x27;ats_market_realtime&#x27;);
+    this.setupBroadcastListener();
+
+    // 2. Cargar notificaciones persistidas en localStorage
+    this.loadFromStorage();
+
+    // 3. Conectar al WebSocket del backend si está configurado
+    this.connectWebSocket();
+  }
+
+  ngOnDestroy(): void {
+    this.disconnect();
+    if (this.channel) {
+      this.channel.close();
+    }
+  }
+
+  /**
+   * Cargar notificaciones guardadas del almacenamiento local.
+   */
+  private loadFromStorage(): void {
+    const stored &#x3D; localStorage.getItem(&#x27;ats_notifications&#x27;);
+    if (stored) {
+      try {
+        const list: NotificationInterface[] &#x3D; JSON.parse(stored);
+        this.notificationsSubject.next(list);
+        this.updateUnreadCount(list);
+      } catch (e) {
+        console.error(&#x27;Error al parsear notificaciones de localStorage:&#x27;, e);
+      }
+    }
+  }
+
+  /**
+   * Persistir notificaciones en localStorage.
+   */
+  private saveToStorage(list: NotificationInterface[]): void {
+    localStorage.setItem(&#x27;ats_notifications&#x27;, JSON.stringify(list));
+  }
+
+  /**
+   * Actualizar dinámicamente el contador de no leídos.
+   */
+  private updateUnreadCount(list: NotificationInterface[]): void {
+    const count &#x3D; list.filter(n &#x3D;&gt; !n.ntf_isread).length;
+    this.unreadCountSubject.next(count);
+  }
+
+  /**
+   * Configura el listener del BroadcastChannel para escuchar eventos cruzados de pestañas.
+   */
+  private setupBroadcastListener(): void {
+    this.channel.onmessage &#x3D; (event) &#x3D;&gt; {
+      const { type, payload } &#x3D; event.data;
+      
+      if (type &#x3D;&#x3D;&#x3D; &#x27;NEW_NOTIFICATION&#x27;) {
+        this.handleNewNotificationIncoming(payload);
+      } else if (type &#x3D;&#x3D;&#x3D; &#x27;ORDER_STATUS_UPDATED&#x27;) {
+        this.orderUpdatesSubject.next(payload);
+      }
+    };
+  }
+
+  /**
+   * Procesa la llegada de una nueva notificación.
+   */
+  private handleNewNotificationIncoming(notification: NotificationInterface): void {
+    const current &#x3D; this.notificationsSubject.value;
+    // Evitar duplicados por ID
+    if (current.some(n &#x3D;&gt; n.ntf_uuid &#x3D;&#x3D;&#x3D; notification.ntf_uuid)) return;
+
+    const updated &#x3D; [notification, ...current].slice(0, 30); // Limitar a las 30 más recientes
+    this.notificationsSubject.next(updated);
+    this.saveToStorage(updated);
+    this.updateUnreadCount(updated);
+
+    // Emitir la notificación individual recién llegada
+    this.incomingNotificationSubject.next(notification);
+  }
+
+  /**
+   * Reproduce un sonido armónico y agradable (chime) usando la API nativa de Audio Web del navegador.
+   */
+  public playNotificationSound(): void {
+    try {
+      const audioCtx &#x3D; new (window.AudioContext || (window as any).webkitAudioContext)();
+      
+      // Primera nota (D5 - 587.33 Hz)
+      const osc1 &#x3D; audioCtx.createOscillator();
+      const gain1 &#x3D; audioCtx.createGain();
+      osc1.connect(gain1);
+      gain1.connect(audioCtx.destination);
+      osc1.type &#x3D; &#x27;sine&#x27;;
+      osc1.frequency.setValueAtTime(587.33, audioCtx.currentTime);
+      gain1.gain.setValueAtTime(0.08, audioCtx.currentTime);
+      gain1.gain.exponentialRampToValueAtTime(0.001, audioCtx.currentTime + 0.35);
+      osc1.start(audioCtx.currentTime);
+      osc1.stop(audioCtx.currentTime + 0.35);
+      
+      // Segunda nota (A5 - 880 Hz) con ligero retraso de 100ms
+      setTimeout(() &#x3D;&gt; {
+        try {
+          if (audioCtx.state &#x3D;&#x3D;&#x3D; &#x27;closed&#x27;) return;
+          const osc2 &#x3D; audioCtx.createOscillator();
+          const gain2 &#x3D; audioCtx.createGain();
+          osc2.connect(gain2);
+          gain2.connect(audioCtx.destination);
+          osc2.type &#x3D; &#x27;sine&#x27;;
+          osc2.frequency.setValueAtTime(880, audioCtx.currentTime);
+          gain2.gain.setValueAtTime(0.08, audioCtx.currentTime);
+          gain2.gain.exponentialRampToValueAtTime(0.001, audioCtx.currentTime + 0.5);
+          osc2.start(audioCtx.currentTime);
+          osc2.stop(audioCtx.currentTime + 0.5);
+        } catch (innerErr) {
+          // Capturar errores si el contexto se cerró en el medio
+        }
+      }, 100);
+      
+    } catch (e) {
+      console.warn(&#x27;No se pudo reproducir el sonido de notificación sintético:&#x27;, e);
+    }
+  }
+
+  /**
+   * Intenta conectar al servidor de WebSockets si existe en el entorno.
+   */
+  private connectWebSocket(): void {
+    const socketUrl &#x3D; environment.apiUrlSocket || &#x27;http://localhost:3002&#x27;;
+    
+    try {
+      this.socket &#x3D; io(socketUrl, {
+        transports: [&#x27;websocket&#x27;, &#x27;polling&#x27;]
+      });
+
+      this.socket.on(&#x27;connect&#x27;, () &#x3D;&gt; {
+        console.log(&#x27;🔌 Conectado exitosamente al servidor Socket.io de ATSMarket.&#x27;);
+      });
+
+      // Escuchar eventos en tiempo real transmitidos por el backend
+      this.socket.on(&#x27;NEW_NOTIFICATION&#x27;, (payload: any) &#x3D;&gt; {
+        this.handleNewNotificationIncoming(payload);
+      });
+
+      this.socket.on(&#x27;ORDER_STATUS_UPDATED&#x27;, (payload: any) &#x3D;&gt; {
+        this.orderUpdatesSubject.next(payload);
+        // También difundir localmente a otras pestañas (BroadcastChannel)
+        this.channel.postMessage({ type: &#x27;ORDER_STATUS_UPDATED&#x27;, payload });
+      });
+
+      this.socket.on(&#x27;NEW_CHAT_MESSAGE&#x27;, (payload: any) &#x3D;&gt; {
+        this.chatMessagesSubject.next(payload);
+        // También difundir localmente a otras pestañas (BroadcastChannel)
+        this.channel.postMessage({ type: &#x27;NEW_CHAT_MESSAGE&#x27;, payload });
+      });
+
+      this.socket.on(&#x27;connect_error&#x27;, () &#x3D;&gt; {
+        // Silencioso
+      });
+
+      this.socket.on(&#x27;disconnect&#x27;, () &#x3D;&gt; {
+        console.warn(&#x27;Conexión de socket de ATSMarket perdida.&#x27;);
+      });
+    } catch (e) {
+      console.warn(&#x27;No se pudo establecer la conexión de Sockets. Operando en Modo Broadcast local.&#x27;);
+    }
+  }
+
+  /**
+   * Difunde una actualización de estado de pedido en tiempo real.
+   */
+  public broadcastOrderStatusUpdate(ord_uuid: string, status: string, notes?: string): void {
+    const payload &#x3D; { ord_uuid, status, notes };
+    
+    // 1. Difundir cruzado a nivel local (BroadcastChannel)
+    this.channel.postMessage({ type: &#x27;ORDER_STATUS_UPDATED&#x27;, payload });
+    this.orderUpdatesSubject.next(payload);
+
+    // 2. Transmitir por Socket al servidor si está activo
+    if (this.socket &amp;&amp; this.socket.connected) {
+      this.socket.emit(&#x27;ORDER_STATUS_UPDATED&#x27;, payload);
+    }
+  }
+
+  /**
+   * Emite un mensaje de chat en tiempo real al servidor
+   */
+  public emitChatMessage(message: any): void {
+    if (this.socket &amp;&amp; this.socket.connected) {
+      this.socket.emit(&#x27;NEW_CHAT_MESSAGE&#x27;, message);
+    }
+  }
+
+  /**
+   * Genera e inyecta una nueva notificación en el flujo del usuario en tiempo real.
+   */
+  public pushNotification(notificationData: Omit&lt;NotificationInterface, &#x27;ntf_uuid&#x27; | &#x27;ntf_createdat&#x27; | &#x27;ntf_isread&#x27;&gt;): void {
+    const newNtf: NotificationInterface &#x3D; {
+      ...notificationData,
+      ntf_uuid: crypto.randomUUID ? crypto.randomUUID() : Math.random().toString(36).substring(2, 11),
+      ntf_createdat: new Date().toISOString(),
+      ntf_isread: false
+    };
+
+    // 1. Guardar la notificación en el backend usando el servicio especializado
+    this._notificationsService.saveNotification(newNtf).subscribe({
+      next: (res) &#x3D;&gt; console.log(&#x27;Notificación guardada exitosamente en base de datos:&#x27;, res),
+      error: (err) &#x3D;&gt; console.error(&#x27;Error al persistir notificación en backend:&#x27;, err)
+    });
+
+    // 2. Manejarla en la pestaña actual
+    this.handleNewNotificationIncoming(newNtf);
+
+    // 3. Difundirla a todas las demás pestañas abiertas (BroadcastChannel)
+    this.channel.postMessage({ type: &#x27;NEW_NOTIFICATION&#x27;, payload: newNtf });
+
+    // 4. Enviar por Socket al servidor
+    if (this.socket &amp;&amp; this.socket.connected) {
+      this.socket.emit(&#x27;NEW_NOTIFICATION&#x27;, newNtf);
+    }
+  }
+
+  /**
+   * Marca todas las notificaciones del historial del usuario como leídas.
+   */
+  public markAllAsRead(): void {
+    const current &#x3D; this.notificationsSubject.value;
+    const updated &#x3D; current.map(n &#x3D;&gt; ({ ...n, ntf_isread: true }));
+    this.notificationsSubject.next(updated);
+    this.saveToStorage(updated);
+    this.updateUnreadCount(updated);
+  }
+
+  /**
+   * Desconectar explícitamente el socket.
+   */
+  public disconnect(): void {
+    if (this.socket) {
+      this.socket.disconnect();
+      this.socket &#x3D; null;
+    }
+  }
+}
+</code></pre>
+    </div>
+
+</div>
+
+
+
+
+
+
+
+
+
+
+
+
+
+                   </div><div class="search-results">
+    <div class="has-results">
+        <h1 class="search-results-title"><span class='search-results-count'></span> comparación de resultados "<span class='search-query'></span>"</h1>
+        <ul class="search-results-list"></ul>
+    </div>
+    <div class="no-results">
+        <h1 class="search-results-title">No hay resultados que coincidan "<span class='search-query'></span>"</h1>
+    </div>
+</div>
+</div>
+               <!-- END CONTENT -->
+           </div>
+       </div>
+
+          
+<div class="compodoc-lang-switch">
+  <select id="compodoc-lang-select" aria-label="Seleccionar idioma">
+    <option value="es" selected>🇪🇸 Español</option>
+    <option value="en" >🇺🇸 English</option>
+    <option value="pt" >🇧🇷 Português</option>
+  </select>
+</div>
+
+          <label class="dark-mode-switch">
+               <input type="checkbox">
+               <span class="slider">
+                    <svg class="slider-icon" viewBox="0 0 24 24" fill="none" height="20" stroke="#000" stroke-linecap="round" stroke-linejoin="round" stroke-width="2" width="20" xmlns="http://www.w3.org/2000/svg">
+                    <path d="M21 12.79A9 9 0 1111.21 3 7 7 0 0021 12.79z"></path>
+                    </svg>
+               </span>
+          </label>
+
+       <script>
+            var COMPODOC_CURRENT_PAGE_DEPTH = 1;
+            var COMPODOC_CURRENT_PAGE_CONTEXT = 'injectable';
+            var COMPODOC_CURRENT_PAGE_URL = 'WebSocketNotificationService.html';
+            var MAX_SEARCH_RESULTS = 15;
+       </script>
+
+       <script>
+               $darkModeToggleSwitchers = document.querySelectorAll('.dark-mode-switch input');
+               var updateDarkModeSwitchOffset = function () {
+                    var content = document.querySelector('.content');
+                    var scrollbarWidth = 0;
+
+                    if (content) {
+                         scrollbarWidth = Math.max(0, content.offsetWidth - content.clientWidth);
+                    }
+
+                    document.documentElement.style.setProperty(
+                         '--content-scrollbar-width',
+                         scrollbarWidth + 'px'
+                    );
+               };
+
+               updateDarkModeSwitchOffset();
+               requestAnimationFrame(updateDarkModeSwitchOffset);
+               window.addEventListener('resize', updateDarkModeSwitchOffset);
+
+               checkToggle(darkModeState);
+               if ($darkModeToggleSwitchers.length > 0) {
+                    for (var i = 0; i < $darkModeToggleSwitchers.length; i++) {
+                         $darkModeToggleSwitchers[i].addEventListener('change', function (event) {
+                              darkModeState = !darkModeState;
+                              toggleDarkMode(darkModeState);
+                         });
+                    }
+               }
+          </script>
+
+       <script src="../js/libs/custom-elements.min.js"></script>
+       <script src="../js/libs/lit-html.js"></script>
+
+       <script src="../js/menu-wc.js" defer></script>
+
+       <script src="../js/libs/bootstrap-native.js"></script>
+
+       <script src="../js/libs/es6-shim.min.js"></script>
+       <script src="../js/libs/EventDispatcher.js"></script>
+       <script src="../js/libs/promise.min.js"></script>
+
+       <script src="../js/compodoc.js"></script>
+
+       <script src="../js/tabs.js"></script>
+       <script src="../js/menu.js"></script>
+       <script src="../js/libs/clipboard.min.js"></script>
+       <script src="../js/libs/prism.js"></script>
+       <script src="../js/sourceCode.js"></script>
+          <script src="../js/search/search.js"></script>
+          <script src="../js/search/lunr.min.js"></script>
+          <script src="../js/search/search-lunr.js"></script>
+          <script src="../js/search/search_index.js"></script>
+       <script src="../js/lazy-load-graphs.js"></script>
+
+
+    
+<script id="compodoc-lang-script">
+(function() {
+  var CURRENT_LANG = "es";
+  var ADDITIONAL_DOCS_MAP = {"es":["01.-introducción-y-arquitectura-general.html","02.-autenticación-y-control-de-accesos.html","03.-catálogo-público-y-exploración-de-tiendas.html","04.-carrito-de-compras-y-checkout-multitienda.html","05.-gestión-de-empresas,-roles-y-configuración.html","06.-inventario,-productos,-variaciones-y-almacenes.html","07.-gestión-de-pedidos,-compras-y-cupones.html","08.-analíticas-de-negocio,-finanzas-y-proveedores.html"],"en":["01.-introduction-and-general-architecture.html","02.-authentication-and-access-control.html","03.-public-catalog-and-store-exploration.html","04.-shopping-cart-and-multi-store-checkout.html","05.-company-management,-roles-and-configuration.html","06.-inventory,-products,-variations-and-warehouses.html","07.-orders-management,-purchases-and-coupons.html","08.-business-analytics,-finances-and-suppliers.html"],"pt":["01.-introdução-e-arquitetura-geral.html","02.-autenticação-e-controle-de-acesso.html","03.-catálogo-público-e-exploração-de-lojas.html","04.-carrinho-de-compras-e-checkout-multiloja.html","05.-gestão-de-empresas,-funções-e-configuração.html","06.-estoque,-produtos,-variações-e-armazéns.html","07.-gestão-de-pedidos,-compras-e-cupons.html","08.-análise-de-negócios,-finanças-e-fornecedores.html"]};
+
+  var select = document.getElementById('compodoc-lang-select');
+  if (!select) return;
+
+  try {
+    localStorage.setItem('compodoc_lang', CURRENT_LANG);
+  } catch (e) {}
+
+  select.addEventListener('change', function(e) {
+    var targetLang = e.target.value;
+    if (targetLang === CURRENT_LANG) return;
+
+    try {
+      localStorage.setItem('compodoc_lang', targetLang);
+    } catch (err) {}
+
+    var href = window.location.href;
+    var pathname = window.location.pathname;
+
+    // Manejo especial para páginas de additional-documentation
+    if (pathname.indexOf('/additional-documentation/') !== -1) {
+      var segments = pathname.split('/');
+      var currentFile = decodeURIComponent(segments[segments.length - 1]);
+      
+      var currentList = ADDITIONAL_DOCS_MAP[CURRENT_LANG] || [];
+      var targetList = ADDITIONAL_DOCS_MAP[targetLang] || [];
+      var foundIndex = -1;
+
+      var prefixMatch = currentFile.match(/^(\d{2}\.-)/);
+      if (prefixMatch) {
+        var prefix = prefixMatch[1];
+        for (var i = 0; i < targetList.length; i++) {
+          if (targetList[i].startsWith(prefix)) {
+            foundIndex = i;
+            break;
+          }
+        }
+      }
+      if (foundIndex === -1) {
+        for (var j = 0; j < currentList.length; j++) {
+          if (currentList[j] === currentFile) {
+            foundIndex = j;
+            break;
+          }
+        }
+      }
+
+      var targetFile = (foundIndex !== -1 && targetList[foundIndex]) 
+        ? targetList[foundIndex] 
+        : (targetList[0] || 'index.html');
+
+      var targetSubpath = '/' + targetLang + '/additional-documentation/' + targetFile;
+      var currentSubpath = '/' + CURRENT_LANG + '/additional-documentation/' + segments[segments.length - 1];
+
+      if (href.indexOf(currentSubpath) !== -1) {
+        window.location.href = href.replace(currentSubpath, targetSubpath);
+        return;
+      }
+    }
+
+    // Páginas estándar
+    var standardReplace = href.replace('/' + CURRENT_LANG + '/', '/' + targetLang + '/');
+    if (standardReplace !== href) {
+      window.location.href = standardReplace;
+    } else {
+      var depth = (typeof COMPODOC_CURRENT_PAGE_DEPTH !== 'undefined') ? COMPODOC_CURRENT_PAGE_DEPTH : 0;
+      var prefixPath = '';
+      for (var k = 0; k <= depth; k++) {
+        prefixPath += '../';
+      }
+      window.location.href = prefixPath + targetLang + '/index.html';
+    }
+  });
+})();
+</script>
+
+</body>
+</html>

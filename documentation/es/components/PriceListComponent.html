@@ -1,0 +1,2078 @@
+<!doctype html>
+<html class="no-js" lang="">
+    <head>
+        <meta charset="utf-8">
+        <meta http-equiv="x-ua-compatible" content="ie=edge">
+        <title>ATSMarket Web App</title>
+        <meta name="description" content="">
+        <meta name="viewport" content="width=device-width, initial-scale=1">
+
+        <link rel="icon" type="image/x-icon" href="../images/favicon.ico">
+	   <link rel="stylesheet" href="../styles/style.css">
+        <link rel="stylesheet" href="../styles/dark.css">
+    
+<style id="compodoc-lang-styles">
+  .compodoc-lang-switch {
+    position: fixed;
+    top: 15px;
+    right: calc(90px + var(--content-scrollbar-width, 0px));
+    z-index: 1050;
+    display: inline-block;
+  }
+  @media (max-width: 767px) {
+    .compodoc-lang-switch {
+      top: 8px;
+      right: 60px;
+    }
+  }
+  #compodoc-lang-select {
+    height: 34px;
+    padding: 0 12px;
+    border-radius: 17px;
+    border: 1px solid #d9d9d9;
+    background-color: #ffffff;
+    color: #1f1f1f;
+    font-size: 13px;
+    font-family: inherit;
+    font-weight: 500;
+    cursor: pointer;
+    outline: none;
+    box-shadow: 0 2px 6px rgba(0, 0, 0, 0.08);
+    transition: all 0.3s cubic-bezier(0.645, 0.045, 0.355, 1);
+    -webkit-appearance: none;
+    -moz-appearance: none;
+    appearance: none;
+    padding-right: 26px;
+    background-image: url("data:image/svg+xml;charset=UTF-8,%3csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 24 24' fill='none' stroke='%23666' stroke-width='2' stroke-linecap='round' stroke-linejoin='round'%3e%3cpolyline points='6 9 12 15 18 9'%3e%3c/polyline%3e%3c/svg%3e");
+    background-repeat: no-repeat;
+    background-position: right 8px center;
+    background-size: 14px;
+  }
+  #compodoc-lang-select:hover, #compodoc-lang-select:focus {
+    border-color: #5cc0ae;
+    box-shadow: 0 2px 8px rgba(92, 192, 174, 0.25);
+  }
+  body.dark .compodoc-lang-switch #compodoc-lang-select {
+    background-color: #2c3e50;
+    color: #ecf0f1;
+    border: 1px solid #4a627a;
+    box-shadow: 0 2px 6px rgba(0, 0, 0, 0.35);
+    background-image: url("data:image/svg+xml;charset=UTF-8,%3csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 24 24' fill='none' stroke='%23ecf0f1' stroke-width='2' stroke-linecap='round' stroke-linejoin='round'%3e%3cpolyline points='6 9 12 15 18 9'%3e%3c/polyline%3e%3c/svg%3e");
+  }
+  body.dark .compodoc-lang-switch #compodoc-lang-select option {
+    background-color: #2c3e50;
+    color: #ecf0f1;
+  }
+</style>
+
+</head>
+    <body>
+          <script>
+               // Blocking script to avoid flickering dark mode
+               // Dark mode toggle button
+               var useDark = window.matchMedia('(prefers-color-scheme: dark)');
+               var darkModeState = useDark.matches;
+               var $darkModeToggleSwitchers = document.querySelectorAll('.dark-mode-switch input');
+               var $darkModeToggles = document.querySelectorAll('.dark-mode-switch');
+               var darkModeStateLocal = localStorage.getItem('compodoc_darkmode-state');
+
+               function checkToggle(check) {
+                    for (var i = 0; i < $darkModeToggleSwitchers.length; i++) {
+                         $darkModeToggleSwitchers[i].checked = check;
+                    }
+               }
+
+               function toggleDarkMode(state) {
+                    if (window.localStorage) {
+                         localStorage.setItem('compodoc_darkmode-state', state);
+                    }
+
+                    checkToggle(state);
+
+                    const hasClass = document.body.classList.contains('dark');
+
+                    if (state) {
+                         for (var i = 0; i < $darkModeToggles.length; i++) {
+                              $darkModeToggles[i].classList.add('dark');
+                         }
+                         if (!hasClass) {
+                              document.body.classList.add('dark');
+                         }
+                    } else {
+                         for (var i = 0; i < $darkModeToggles.length; i++) {
+                              $darkModeToggles[i].classList.remove('dark');
+                         }
+                         if (hasClass) {
+                              document.body.classList.remove('dark');
+                         }
+                    }
+               }
+
+               useDark.addEventListener('change', function (evt) {
+                    toggleDarkMode(evt.matches);
+               });
+               if (darkModeStateLocal) {
+                    darkModeState = darkModeStateLocal === 'true';
+               }
+               toggleDarkMode(darkModeState);
+          </script>
+          <script>
+              // --- Iframe navigation tracking for Template Playground ---
+              function sendCurrentUrlToParent() {
+                  if (window.parent && window.parent !== window) {
+                      window.parent.postMessage({
+                          type: 'compodoc-iframe-navigate',
+                          url: window.location.pathname + window.location.hash
+                      }, '*');
+                  }
+              }
+              window.addEventListener('hashchange', sendCurrentUrlToParent, false);
+              window.addEventListener('popstate', sendCurrentUrlToParent, false);
+              window.addEventListener('DOMContentLoaded', sendCurrentUrlToParent, false);
+          </script>
+
+        <div class="navbar navbar-default navbar-fixed-top d-md-none p-0">
+               <div class="d-flex">
+                    <a href="../" class="navbar-brand">ATSMarket Web App</a>
+                    <button type="button" class="btn btn-default btn-menu ion-ios-menu" id="btn-menu"></button>
+               </div>
+        </div>
+
+        <div class="xs-menu menu" id="mobile-menu">
+                <div id="book-search-input" role="search">
+    <input type="text" placeholder="Escribe para buscar">
+    <button type="button"
+        class="search-input-clear"
+        aria-label="Clear search"
+        data-search-input-clear>&times;</button>
+</div>
+            <compodoc-menu></compodoc-menu>
+        </div>
+
+        <div class="container-fluid main">
+           <div class="row main">
+               <div class="d-none d-md-block menu">
+                   <compodoc-menu mode="normal"></compodoc-menu>
+               </div>
+               <!-- START CONTENT -->
+               <div class="content component">
+                   <div class="content-data">
+
+
+
+
+
+
+
+
+<ol class="breadcrumb">
+  <li class="breadcrumb-item">Componentes</li>
+  <li class="breadcrumb-item"
+  >
+  PriceListComponent</li>
+</ol>
+
+<div class="io-file io-file-path" data-compodoc="entity-file-path">
+    <span class="icon ion-ios-document" aria-hidden="true"></span>
+    <code>src/app/application/price-list/price-list.component.ts</code>
+</div>
+
+<ul class="nav nav-tabs" role="tablist">
+        <li class="nav-item">
+            <a href="#info" class="nav-link active"
+                role="tab" id="info-tab" data-bs-toggle="tab" data-link="info">Info</a>
+        </li>
+        <li class="nav-item">
+            <a href="#api" class="nav-link"
+                role="tab" id="api-tab" data-bs-toggle="tab" data-link="api">API</a>
+        </li>
+        <li class="nav-item">
+            <a href="#source" class="nav-link"
+                role="tab" id="source-tab" data-bs-toggle="tab" data-link="source">Source</a>
+        </li>
+        <li class="nav-item">
+            <a href="#templateData" class="nav-link"
+                role="tab" id="templateData-tab" data-bs-toggle="tab" data-link="template">Template</a>
+        </li>
+        <li class="nav-item">
+            <a href="#styleData" class="nav-link"
+                role="tab" id="styleData-tab" data-bs-toggle="tab" data-link="style">Styles</a>
+        </li>
+        <li class="nav-item">
+            <a href="#tree" class="nav-link"
+                role="tab" id="tree-tab" data-bs-toggle="tab" data-link="dom-tree">DOM Tree</a>
+        </li>
+</ul>
+
+<div class="tab-content">
+    <div class="tab-pane fade active in" id="info">
+
+
+    <p class="comment">
+        <h3>Implementa</h3>
+    </p>
+    <p class="comment">
+                    <code><a href="https://angular.dev/api/core/OnInit" target="_blank" >OnInit</a></code>
+    </p>
+
+
+<section data-compodoc="block-metadata">
+    <h3>Meta datos</h3>
+    <table class="table table-sm table-hover metadata">
+        <tbody>
+
+
+
+
+
+
+
+
+
+
+
+
+            <tr>
+                <td class="col-md-3">selector</td>
+                <td class="col-md-9"><code>app-price-list</code></td>
+            </tr>
+
+            <tr>
+                <td class="col-md-3">standalone</td>
+                <td class="col-md-9"><code>true</code></td>
+            </tr>
+
+            <tr>
+                <td class="col-md-3">imports</td>
+                <td class="col-md-9">
+                        <div>        <code><a href="https://angular.dev/api/common/CommonModule" target="_blank" >CommonModule</a></code>
+</div>
+                        <div>        <code><a href="https://angular.dev/api/forms/FormsModule" target="_blank" >FormsModule</a></code>
+</div>
+                        <div>    <code>NzCardModule</code>
+</div>
+                        <div>    <code>NzTableModule</code>
+</div>
+                        <div>    <code>NzInputModule</code>
+</div>
+                        <div>    <code>NzIconModule</code>
+</div>
+                        <div>    <code>NzRadioModule</code>
+</div>
+                        <div>    <code>NzButtonModule</code>
+</div>
+                        <div>    <code>NzEmptyModule</code>
+</div>
+                        <div>    <code>NzTagModule</code>
+</div>
+                        <div>    <code>NzImageModule</code>
+</div>
+                        <div>    <code>NzInputNumberModule</code>
+</div>
+                        <div>    <code>NzToolTipModule</code>
+</div>
+                        <div>        <code><a href="../components/CameraComponent.html" target="_self" >CameraComponent</a></code>
+</div>
+                </td>
+            </tr>
+
+            <tr>
+                <td class="col-md-3">styleUrls</td>
+                <td class="col-md-9"><code>./price-list.component.scss</code></td>
+            </tr>
+
+
+
+
+            <tr>
+                <td class="col-md-3">templateUrl</td>
+                <td class="col-md-9"><code>./price-list.component.html</code></td>
+            </tr>
+
+
+
+            <tr>
+                <td class="col-md-3">styleUrl</td>
+                <td class="col-md-9"><code>./price-list.component.scss</code></td>
+            </tr>
+
+
+
+
+
+        </tbody>
+    </table>
+</section>
+
+        <section data-compodoc="block-relationships">
+            <h3>Relationships</h3>
+
+            <div class="row pt-3">
+                <div class="col-sm-6">
+                    <h4>Used by</h4>
+                        <p class="comment"><i>No hay resultados que coincidan.</i></p>
+                </div>
+
+                <div class="col-sm-6">
+                    <h4>Depends on</h4>
+                        <ul class="list-unstyled relationships-list">
+                                <li>
+                                            <code><a href="https://angular.dev/api/common/CommonModule" target="_blank" >CommonModule</a></code>
+                                </li>
+                                <li>
+                                            <code><a href="https://angular.dev/api/forms/FormsModule" target="_blank" >FormsModule</a></code>
+                                </li>
+                                <li>
+                                        <code>NzCardModule</code>
+                                </li>
+                                <li>
+                                        <code>NzTableModule</code>
+                                </li>
+                                <li>
+                                        <code>NzInputModule</code>
+                                </li>
+                                <li>
+                                        <code>NzIconModule</code>
+                                </li>
+                                <li>
+                                        <code>NzRadioModule</code>
+                                </li>
+                                <li>
+                                        <code>NzButtonModule</code>
+                                </li>
+                                <li>
+                                        <code>NzEmptyModule</code>
+                                </li>
+                                <li>
+                                        <code>NzTagModule</code>
+                                </li>
+                                <li>
+                                        <code>NzImageModule</code>
+                                </li>
+                                <li>
+                                        <code>NzInputNumberModule</code>
+                                </li>
+                                <li>
+                                        <code>NzToolTipModule</code>
+                                </li>
+                                <li>
+                                            <code><a href="../components/CameraComponent.html" target="_self" >CameraComponent</a></code>
+                                </li>
+                                <li>
+                                            <code><a href="https://angular.dev/api/core/OnInit" target="_blank" >OnInit</a></code>
+                                </li>
+                        </ul>
+                </div>
+            </div>
+        </section>
+</div>
+
+    <div class="tab-pane fade " id="api">    <section data-compodoc="block-index">
+    <h3 id="index">Índice</h3>
+        <table class="table table-sm table-bordered index-table">
+            <tbody>
+                <tr>
+                    <td class="col-md-3">
+                        <h6><b>Propiedades</b></h6>
+                    </td>
+                    <td class="col-md-9">
+                        <ul class="index-list">
+                            <li>
+                                <span class="reference-badge reference-badge--property" aria-hidden="true">P</span>
+                                <a href="#activeCameraRowId" >activeCameraRowId</a>
+                            </li>
+                            <li>
+                                <span class="reference-badge reference-badge--property" aria-hidden="true">P</span>
+                                <a href="#expandedRows" >expandedRows</a>
+                            </li>
+                            <li>
+                                <span class="reference-badge reference-badge--property" aria-hidden="true">P</span>
+                                <a href="#filteredProducts" >filteredProducts</a>
+                            </li>
+                            <li>
+                                <span class="reference-badge reference-badge--property" aria-hidden="true">P</span>
+                                <a href="#filterText" >filterText</a>
+                            </li>
+                            <li>
+                                <span class="reference-badge reference-badge--property" aria-hidden="true">P</span>
+                                <a href="#formatterDollar" >formatterDollar</a>
+                            </li>
+                            <li>
+                                <span class="reference-badge reference-badge--property" aria-hidden="true">P</span>
+                                <a href="#parserDollar" >parserDollar</a>
+                            </li>
+                            <li>
+                                <span class="reference-badge reference-badge--property" aria-hidden="true">P</span>
+                                <a href="#paymentMethod" >paymentMethod</a>
+                            </li>
+                            <li>
+                                <span class="reference-badge reference-badge--property" aria-hidden="true">P</span>
+                                <a href="#products" >products</a>
+                            </li>
+                            <li>
+                                <span class="reference-badge reference-badge--property" aria-hidden="true">P</span>
+                                    <span class="modifier">Private</span>
+                                    <span class="modifier">Readonly</span>
+                                <a href="#RECARGO_POSTNET" >RECARGO_POSTNET</a>
+                            </li>
+                        </ul>
+                    </td>
+                </tr>
+            </tbody>
+        </table>
+
+        <table class="table table-sm table-bordered index-table">
+            <tbody>
+                <tr>
+                    <td class="col-md-3">
+                        <h6><b>Métodos</b></h6>
+                    </td>
+                    <td class="col-md-9">
+                        <ul class="index-list">
+                            <li>
+                                <span class="reference-badge reference-badge--method" aria-hidden="true">M</span>
+                                <a href="#applyFilter" >applyFilter</a>
+                            </li>
+                            <li>
+                                <span class="reference-badge reference-badge--method" aria-hidden="true">M</span>
+                                <a href="#getFinalPrice" >getFinalPrice</a>
+                            </li>
+                            <li>
+                                <span class="reference-badge reference-badge--method" aria-hidden="true">M</span>
+                                <a href="#ngOnInit" >ngOnInit</a>
+                            </li>
+                            <li>
+                                <span class="reference-badge reference-badge--method" aria-hidden="true">M</span>
+                                    <span class="modifier">Private</span>
+                                <a href="#removeAccents" >removeAccents</a>
+                            </li>
+                            <li>
+                                <span class="reference-badge reference-badge--method" aria-hidden="true">M</span>
+                                <a href="#saveNewPhoto" >saveNewPhoto</a>
+                            </li>
+                            <li>
+                                <span class="reference-badge reference-badge--method" aria-hidden="true">M</span>
+                                <a href="#savePrice" >savePrice</a>
+                            </li>
+                            <li>
+                                <span class="reference-badge reference-badge--method" aria-hidden="true">M</span>
+                                <a href="#toggleExpand" >toggleExpand</a>
+                            </li>
+                            <li>
+                                <span class="reference-badge reference-badge--method" aria-hidden="true">M</span>
+                                    <span class="modifier">Private</span>
+                                <a href="#updateProductVariation" >updateProductVariation</a>
+                            </li>
+                        </ul>
+                    </td>
+                </tr>
+            </tbody>
+        </table>
+
+
+
+
+
+</section>
+
+    <section data-compodoc="block-constructor">
+    <h3 id="constructor">Constructor</h3>
+        <table class="table table-sm table-bordered">
+            <tbody>
+                <tr>
+                    <td class="col-md-4">
+<code>constructor(_productVariationsService: <a href="../injectables/ProductVariationsService.html" target="_self">ProductVariationsService</a>, message: <a href="../injectables/MessageService.html" target="_self">NzMessageService</a>, _messageService: <a href="../injectables/MessageService.html" target="_self">MessageService</a>)</code>
+                    </td>
+                </tr>
+                        <tr>
+                            <td class="col-md-4">
+                                <div class="io-line">Definido en <a href="" data-line="57" class="link-to-prism">src/app/application/price-list/price-list.component.ts:57</a></div>
+                            </td>
+                        </tr>
+
+                <tr>
+                    <td class="col-md-4">
+                            <div>
+                                    <b>Parámetros :</b>
+                                    <table class="params">
+                                        <thead>
+                                            <tr>
+                                                <td>Nombre</td>
+                                                    <td>Tipo</td>
+                                                <td>Opcional</td>
+                                            </tr>
+                                        </thead>
+                                        <tbody>
+                                                <tr>
+                                                        <td>_productVariationsService</td>
+                                                  
+                                                        <td>
+                                                                        <code><a href="../injectables/ProductVariationsService.html" target="_self" >ProductVariationsService</a></code>
+                                                        </td>
+                                                  
+                                                    <td>
+                                                            No
+                                                    </td>
+                                                    
+                                                </tr>
+                                                <tr>
+                                                        <td>message</td>
+                                                  
+                                                        <td>
+                                                                        <code><a href="../injectables/MessageService.html" target="_self" >NzMessageService</a></code>
+                                                        </td>
+                                                  
+                                                    <td>
+                                                            No
+                                                    </td>
+                                                    
+                                                </tr>
+                                                <tr>
+                                                        <td>_messageService</td>
+                                                  
+                                                        <td>
+                                                                        <code><a href="../injectables/MessageService.html" target="_self" >MessageService</a></code>
+                                                        </td>
+                                                  
+                                                    <td>
+                                                            No
+                                                    </td>
+                                                    
+                                                </tr>
+                                        </tbody>
+                                    </table>
+                            </div>
+                    </td>
+                </tr>
+            </tbody>
+        </table>
+</section>
+
+
+
+
+
+    <section data-compodoc="block-methods">
+    
+    <h3 id="methods">
+        Métodos
+    </h3>
+    <table class="table table-sm table-bordered">
+        <tbody>
+            <tr>
+                <td class="col-md-4">
+                    <a name="applyFilter"></a>
+                    <span class="name">
+                        <span ><b>applyFilter</b></span>
+                        <a href="#applyFilter"><span class="icon ion-ios-link"></span></a>
+                    </span>
+                </td>
+            </tr>
+            <tr>
+                <td class="col-md-4">
+<code>applyFilter()</code>
+                </td>
+            </tr>
+
+
+                    <tr>
+                        <td class="col-md-4">
+                            <div class="io-line">Definido en <a href="" data-line="129"
+                                    class="link-to-prism">src/app/application/price-list/price-list.component.ts:129</a></div>
+                        </td>
+                    </tr>
+
+
+            <tr>
+                <td class="col-md-4">
+
+                        <div class="io-description">
+                            <b>Devuelve : </b>        <code><a href="https://www.typescriptlang.org/docs/handbook/basic-types.html" target="_blank" >void</a></code>
+
+                        </div>
+                </td>
+            </tr>
+        </tbody>
+    </table>
+    <table class="table table-sm table-bordered">
+        <tbody>
+            <tr>
+                <td class="col-md-4">
+                    <a name="getFinalPrice"></a>
+                    <span class="name">
+                        <span ><b>getFinalPrice</b></span>
+                        <a href="#getFinalPrice"><span class="icon ion-ios-link"></span></a>
+                    </span>
+                </td>
+            </tr>
+            <tr>
+                <td class="col-md-4">
+<code>getFinalPrice(basePrice: <a href="https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/number" target="_blank">number</a>)</code>
+                </td>
+            </tr>
+
+
+                    <tr>
+                        <td class="col-md-4">
+                            <div class="io-line">Definido en <a href="" data-line="72"
+                                    class="link-to-prism">src/app/application/price-list/price-list.component.ts:72</a></div>
+                        </td>
+                    </tr>
+
+
+            <tr>
+                <td class="col-md-4">
+
+                            <div class="io-description">
+                                <b>Parámetros :</b>
+                                
+                                <table class="params">
+                                    <thead>
+                                        <tr>
+                                            <td>Nombre</td>
+                                                <td>Tipo</td>
+                                            <td>Opcional</td>
+                                        </tr>
+                                    </thead>
+                                    <tbody>
+                                        <tr>
+                                                <td>basePrice</td>
+                                            <td>
+                                                            <code><a href="https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/number" target="_blank" >number</a></code>
+                                            </td>
+
+                                            <td>
+                                                    No
+                                            </td>
+
+
+                                        </tr>
+                                    </tbody>
+                                </table>
+                            </div>
+                        <div class="io-description">
+                            <b>Devuelve : </b>        <code><a href="https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/number" target="_blank" >number</a></code>
+
+                        </div>
+                            <div class="io-description">
+                                
+                            </div>
+                </td>
+            </tr>
+        </tbody>
+    </table>
+    <table class="table table-sm table-bordered">
+        <tbody>
+            <tr>
+                <td class="col-md-4">
+                    <a name="ngOnInit"></a>
+                    <span class="name">
+                        <span ><b>ngOnInit</b></span>
+                        <a href="#ngOnInit"><span class="icon ion-ios-link"></span></a>
+                    </span>
+                </td>
+            </tr>
+            <tr>
+                <td class="col-md-4">
+<code>ngOnInit()</code>
+                </td>
+            </tr>
+
+
+                    <tr>
+                        <td class="col-md-4">
+                            <div class="io-line">Definido en <a href="" data-line="65"
+                                    class="link-to-prism">src/app/application/price-list/price-list.component.ts:65</a></div>
+                        </td>
+                    </tr>
+
+
+            <tr>
+                <td class="col-md-4">
+
+                        <div class="io-description">
+                            <b>Devuelve : </b>        <code><a href="https://www.typescriptlang.org/docs/handbook/basic-types.html" target="_blank" >void</a></code>
+
+                        </div>
+                </td>
+            </tr>
+        </tbody>
+    </table>
+    <table class="table table-sm table-bordered">
+        <tbody>
+            <tr>
+                <td class="col-md-4">
+                    <a name="removeAccents"></a>
+                    <span class="name">
+                            <span class="modifier">Private</span>
+                        <span ><b>removeAccents</b></span>
+                        <a href="#removeAccents"><span class="icon ion-ios-link"></span></a>
+                    </span>
+                </td>
+            </tr>
+            <tr>
+                <td class="col-md-4">
+                        <span class="modifier-icon icon ion-ios-reset"></span>
+                    <code>removeAccents(str: <a href="https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/string" target="_blank">string</a>)</code>
+                </td>
+            </tr>
+
+
+                    <tr>
+                        <td class="col-md-4">
+                            <div class="io-line">Definido en <a href="" data-line="125"
+                                    class="link-to-prism">src/app/application/price-list/price-list.component.ts:125</a></div>
+                        </td>
+                    </tr>
+
+
+            <tr>
+                <td class="col-md-4">
+
+                            <div class="io-description">
+                                <b>Parámetros :</b>
+                                
+                                <table class="params">
+                                    <thead>
+                                        <tr>
+                                            <td>Nombre</td>
+                                                <td>Tipo</td>
+                                            <td>Opcional</td>
+                                        </tr>
+                                    </thead>
+                                    <tbody>
+                                        <tr>
+                                                <td>str</td>
+                                            <td>
+                                                            <code><a href="https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/string" target="_blank" >string</a></code>
+                                            </td>
+
+                                            <td>
+                                                    No
+                                            </td>
+
+
+                                        </tr>
+                                    </tbody>
+                                </table>
+                            </div>
+                        <div class="io-description">
+                            <b>Devuelve : </b>        <code><a href="https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/string" target="_blank" >string</a></code>
+
+                        </div>
+                            <div class="io-description">
+                                
+                            </div>
+                </td>
+            </tr>
+        </tbody>
+    </table>
+    <table class="table table-sm table-bordered">
+        <tbody>
+            <tr>
+                <td class="col-md-4">
+                    <a name="saveNewPhoto"></a>
+                    <span class="name">
+                        <span ><b>saveNewPhoto</b></span>
+                        <a href="#saveNewPhoto"><span class="icon ion-ios-link"></span></a>
+                    </span>
+                </td>
+            </tr>
+            <tr>
+                <td class="col-md-4">
+<code>saveNewPhoto(product: <a href="../interfaces/ProductVariationInterface.html" target="_self">ProductVariationInterface</a>, base64Image: <a href="https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/string" target="_blank">string</a>)</code>
+                </td>
+            </tr>
+
+
+                    <tr>
+                        <td class="col-md-4">
+                            <div class="io-line">Definido en <a href="" data-line="113"
+                                    class="link-to-prism">src/app/application/price-list/price-list.component.ts:113</a></div>
+                        </td>
+                    </tr>
+
+
+            <tr>
+                <td class="col-md-4">
+
+                            <div class="io-description">
+                                <b>Parámetros :</b>
+                                
+                                <table class="params">
+                                    <thead>
+                                        <tr>
+                                            <td>Nombre</td>
+                                                <td>Tipo</td>
+                                            <td>Opcional</td>
+                                        </tr>
+                                    </thead>
+                                    <tbody>
+                                        <tr>
+                                                <td>product</td>
+                                            <td>
+                                                            <code><a href="../interfaces/ProductVariationInterface.html" target="_self" >ProductVariationInterface</a></code>
+                                            </td>
+
+                                            <td>
+                                                    No
+                                            </td>
+
+
+                                        </tr>
+                                        <tr>
+                                                <td>base64Image</td>
+                                            <td>
+                                                            <code><a href="https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/string" target="_blank" >string</a></code>
+                                            </td>
+
+                                            <td>
+                                                    No
+                                            </td>
+
+
+                                        </tr>
+                                    </tbody>
+                                </table>
+                            </div>
+                        <div class="io-description">
+                            <b>Devuelve : </b>        <code><a href="https://www.typescriptlang.org/docs/handbook/basic-types.html" target="_blank" >void</a></code>
+
+                        </div>
+                            <div class="io-description">
+                                
+                            </div>
+                </td>
+            </tr>
+        </tbody>
+    </table>
+    <table class="table table-sm table-bordered">
+        <tbody>
+            <tr>
+                <td class="col-md-4">
+                    <a name="savePrice"></a>
+                    <span class="name">
+                        <span ><b>savePrice</b></span>
+                        <a href="#savePrice"><span class="icon ion-ios-link"></span></a>
+                    </span>
+                </td>
+            </tr>
+            <tr>
+                <td class="col-md-4">
+<code>savePrice(product: <a href="../interfaces/ProductVariationInterface.html" target="_self">ProductVariationInterface</a>)</code>
+                </td>
+            </tr>
+
+
+                    <tr>
+                        <td class="col-md-4">
+                            <div class="io-line">Definido en <a href="" data-line="121"
+                                    class="link-to-prism">src/app/application/price-list/price-list.component.ts:121</a></div>
+                        </td>
+                    </tr>
+
+
+            <tr>
+                <td class="col-md-4">
+
+                            <div class="io-description">
+                                <b>Parámetros :</b>
+                                
+                                <table class="params">
+                                    <thead>
+                                        <tr>
+                                            <td>Nombre</td>
+                                                <td>Tipo</td>
+                                            <td>Opcional</td>
+                                        </tr>
+                                    </thead>
+                                    <tbody>
+                                        <tr>
+                                                <td>product</td>
+                                            <td>
+                                                            <code><a href="../interfaces/ProductVariationInterface.html" target="_self" >ProductVariationInterface</a></code>
+                                            </td>
+
+                                            <td>
+                                                    No
+                                            </td>
+
+
+                                        </tr>
+                                    </tbody>
+                                </table>
+                            </div>
+                        <div class="io-description">
+                            <b>Devuelve : </b>        <code><a href="https://www.typescriptlang.org/docs/handbook/basic-types.html" target="_blank" >void</a></code>
+
+                        </div>
+                            <div class="io-description">
+                                
+                            </div>
+                </td>
+            </tr>
+        </tbody>
+    </table>
+    <table class="table table-sm table-bordered">
+        <tbody>
+            <tr>
+                <td class="col-md-4">
+                    <a name="toggleExpand"></a>
+                    <span class="name">
+                        <span ><b>toggleExpand</b></span>
+                        <a href="#toggleExpand"><span class="icon ion-ios-link"></span></a>
+                    </span>
+                </td>
+            </tr>
+            <tr>
+                <td class="col-md-4">
+<code>toggleExpand(id: <a href="https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/string" target="_blank">string</a>)</code>
+                </td>
+            </tr>
+
+
+                    <tr>
+                        <td class="col-md-4">
+                            <div class="io-line">Definido en <a href="" data-line="79"
+                                    class="link-to-prism">src/app/application/price-list/price-list.component.ts:79</a></div>
+                        </td>
+                    </tr>
+
+
+            <tr>
+                <td class="col-md-4">
+
+                            <div class="io-description">
+                                <b>Parámetros :</b>
+                                
+                                <table class="params">
+                                    <thead>
+                                        <tr>
+                                            <td>Nombre</td>
+                                                <td>Tipo</td>
+                                            <td>Opcional</td>
+                                        </tr>
+                                    </thead>
+                                    <tbody>
+                                        <tr>
+                                                <td>id</td>
+                                            <td>
+                                                            <code><a href="https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/string" target="_blank" >string</a></code>
+                                            </td>
+
+                                            <td>
+                                                    No
+                                            </td>
+
+
+                                        </tr>
+                                    </tbody>
+                                </table>
+                            </div>
+                        <div class="io-description">
+                            <b>Devuelve : </b>        <code><a href="https://www.typescriptlang.org/docs/handbook/basic-types.html" target="_blank" >void</a></code>
+
+                        </div>
+                            <div class="io-description">
+                                
+                            </div>
+                </td>
+            </tr>
+        </tbody>
+    </table>
+    <table class="table table-sm table-bordered">
+        <tbody>
+            <tr>
+                <td class="col-md-4">
+                    <a name="updateProductVariation"></a>
+                    <span class="name">
+                            <span class="modifier">Private</span>
+                        <span ><b>updateProductVariation</b></span>
+                        <a href="#updateProductVariation"><span class="icon ion-ios-link"></span></a>
+                    </span>
+                </td>
+            </tr>
+            <tr>
+                <td class="col-md-4">
+                        <span class="modifier-icon icon ion-ios-reset"></span>
+                    <code>updateProductVariation(productVariation: <a href="https://www.typescriptlang.org/docs/handbook/basic-types.html" target="_blank">any</a>)</code>
+                </td>
+            </tr>
+
+
+                    <tr>
+                        <td class="col-md-4">
+                            <div class="io-line">Definido en <a href="" data-line="88"
+                                    class="link-to-prism">src/app/application/price-list/price-list.component.ts:88</a></div>
+                        </td>
+                    </tr>
+
+
+            <tr>
+                <td class="col-md-4">
+
+                            <div class="io-description">
+                                <b>Parámetros :</b>
+                                
+                                <table class="params">
+                                    <thead>
+                                        <tr>
+                                            <td>Nombre</td>
+                                                <td>Tipo</td>
+                                            <td>Opcional</td>
+                                        </tr>
+                                    </thead>
+                                    <tbody>
+                                        <tr>
+                                                <td>productVariation</td>
+                                            <td>
+                                                            <code><a href="https://www.typescriptlang.org/docs/handbook/basic-types.html" target="_blank" >any</a></code>
+                                            </td>
+
+                                            <td>
+                                                    No
+                                            </td>
+
+
+                                        </tr>
+                                    </tbody>
+                                </table>
+                            </div>
+                        <div class="io-description">
+                            <b>Devuelve : </b>        <code><a href="https://www.typescriptlang.org/docs/handbook/basic-types.html" target="_blank" >void</a></code>
+
+                        </div>
+                            <div class="io-description">
+                                
+                            </div>
+                </td>
+            </tr>
+        </tbody>
+    </table>
+</section>
+
+    <section data-compodoc="block-properties">
+    
+    <h3 id="inputs">
+        Propiedades
+    </h3>
+    <table class="table table-sm table-bordered">
+        <tbody>
+            <tr>
+                <td class="col-md-4">
+                    <a name="activeCameraRowId"></a>
+                    <span class="name">
+                        <span ><b>activeCameraRowId</b></span>
+                        <a href="#activeCameraRowId"><span class="icon ion-ios-link"></span></a>
+                    </span>
+                </td>
+            </tr>
+                <tr>
+                    <td class="col-md-4">
+                        <i>Tipo : </i>    <code>string | null</code>
+
+                    </td>
+                </tr>
+                <tr>
+                    <td class="col-md-4">
+                        <i>Valor por defecto : </i><code>null</code>
+                    </td>
+                </tr>
+                    <tr>
+                        <td class="col-md-4">
+                                <div class="io-line">Definido en <a href="" data-line="54" class="link-to-prism">src/app/application/price-list/price-list.component.ts:54</a></div>
+                        </td>
+                    </tr>
+
+
+        </tbody>
+    </table>
+    <table class="table table-sm table-bordered">
+        <tbody>
+            <tr>
+                <td class="col-md-4">
+                    <a name="expandedRows"></a>
+                    <span class="name">
+                        <span ><b>expandedRows</b></span>
+                        <a href="#expandedRows"><span class="icon ion-ios-link"></span></a>
+                    </span>
+                </td>
+            </tr>
+                <tr>
+                    <td class="col-md-4">
+                        <i>Tipo : </i>    <code>{  }</code>
+
+                    </td>
+                </tr>
+                <tr>
+                    <td class="col-md-4">
+                        <i>Valor por defecto : </i><code>{}</code>
+                    </td>
+                </tr>
+                    <tr>
+                        <td class="col-md-4">
+                                <div class="io-line">Definido en <a href="" data-line="53" class="link-to-prism">src/app/application/price-list/price-list.component.ts:53</a></div>
+                        </td>
+                    </tr>
+
+
+        </tbody>
+    </table>
+    <table class="table table-sm table-bordered">
+        <tbody>
+            <tr>
+                <td class="col-md-4">
+                    <a name="filteredProducts"></a>
+                    <span class="name">
+                        <span ><b>filteredProducts</b></span>
+                        <a href="#filteredProducts"><span class="icon ion-ios-link"></span></a>
+                    </span>
+                </td>
+            </tr>
+                <tr>
+                    <td class="col-md-4">
+                        <i>Tipo : </i>        <code><a href="../interfaces/ProductVariationInterface.html" target="_self" >ProductVariationInterface[]</a></code>
+
+                    </td>
+                </tr>
+                <tr>
+                    <td class="col-md-4">
+                        <i>Valor por defecto : </i><code>[]</code>
+                    </td>
+                </tr>
+                    <tr>
+                        <td class="col-md-4">
+                                <div class="io-line">Definido en <a href="" data-line="50" class="link-to-prism">src/app/application/price-list/price-list.component.ts:50</a></div>
+                        </td>
+                    </tr>
+
+
+        </tbody>
+    </table>
+    <table class="table table-sm table-bordered">
+        <tbody>
+            <tr>
+                <td class="col-md-4">
+                    <a name="filterText"></a>
+                    <span class="name">
+                        <span ><b>filterText</b></span>
+                        <a href="#filterText"><span class="icon ion-ios-link"></span></a>
+                    </span>
+                </td>
+            </tr>
+                <tr>
+                    <td class="col-md-4">
+                        <i>Tipo : </i>        <code><a href="https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/string" target="_blank" >string</a></code>
+
+                    </td>
+                </tr>
+                <tr>
+                    <td class="col-md-4">
+                        <i>Valor por defecto : </i><code>&#x27;&#x27;</code>
+                    </td>
+                </tr>
+                    <tr>
+                        <td class="col-md-4">
+                                <div class="io-line">Definido en <a href="" data-line="51" class="link-to-prism">src/app/application/price-list/price-list.component.ts:51</a></div>
+                        </td>
+                    </tr>
+
+
+        </tbody>
+    </table>
+    <table class="table table-sm table-bordered">
+        <tbody>
+            <tr>
+                <td class="col-md-4">
+                    <a name="formatterDollar"></a>
+                    <span class="name">
+                        <span ><b>formatterDollar</b></span>
+                        <a href="#formatterDollar"><span class="icon ion-ios-link"></span></a>
+                    </span>
+                </td>
+            </tr>
+                <tr>
+                    <td class="col-md-4">
+                        <i>Tipo : </i>    <code>unknown</code>
+
+                    </td>
+                </tr>
+                <tr>
+                    <td class="col-md-4">
+                        <i>Valor por defecto : </i><code>() &#x3D;&gt; {...}</code>
+                    </td>
+                </tr>
+                    <tr>
+                        <td class="col-md-4">
+                                <div class="io-line">Definido en <a href="" data-line="56" class="link-to-prism">src/app/application/price-list/price-list.component.ts:56</a></div>
+                        </td>
+                    </tr>
+
+
+        </tbody>
+    </table>
+    <table class="table table-sm table-bordered">
+        <tbody>
+            <tr>
+                <td class="col-md-4">
+                    <a name="parserDollar"></a>
+                    <span class="name">
+                        <span ><b>parserDollar</b></span>
+                        <a href="#parserDollar"><span class="icon ion-ios-link"></span></a>
+                    </span>
+                </td>
+            </tr>
+                <tr>
+                    <td class="col-md-4">
+                        <i>Tipo : </i>    <code>unknown</code>
+
+                    </td>
+                </tr>
+                <tr>
+                    <td class="col-md-4">
+                        <i>Valor por defecto : </i><code>() &#x3D;&gt; {...}</code>
+                    </td>
+                </tr>
+                    <tr>
+                        <td class="col-md-4">
+                                <div class="io-line">Definido en <a href="" data-line="57" class="link-to-prism">src/app/application/price-list/price-list.component.ts:57</a></div>
+                        </td>
+                    </tr>
+
+
+        </tbody>
+    </table>
+    <table class="table table-sm table-bordered">
+        <tbody>
+            <tr>
+                <td class="col-md-4">
+                    <a name="paymentMethod"></a>
+                    <span class="name">
+                        <span ><b>paymentMethod</b></span>
+                        <a href="#paymentMethod"><span class="icon ion-ios-link"></span></a>
+                    </span>
+                </td>
+            </tr>
+                <tr>
+                    <td class="col-md-4">
+                        <i>Tipo : </i>    <code>&quot;efectivo&quot; | &quot;postnet&quot;</code>
+
+                    </td>
+                </tr>
+                <tr>
+                    <td class="col-md-4">
+                        <i>Valor por defecto : </i><code>&#x27;efectivo&#x27;</code>
+                    </td>
+                </tr>
+                    <tr>
+                        <td class="col-md-4">
+                                <div class="io-line">Definido en <a href="" data-line="46" class="link-to-prism">src/app/application/price-list/price-list.component.ts:46</a></div>
+                        </td>
+                    </tr>
+
+
+        </tbody>
+    </table>
+    <table class="table table-sm table-bordered">
+        <tbody>
+            <tr>
+                <td class="col-md-4">
+                    <a name="products"></a>
+                    <span class="name">
+                        <span ><b>products</b></span>
+                        <a href="#products"><span class="icon ion-ios-link"></span></a>
+                    </span>
+                </td>
+            </tr>
+                <tr>
+                    <td class="col-md-4">
+                        <i>Tipo : </i>        <code><a href="../interfaces/ProductVariationInterface.html" target="_self" >ProductVariationInterface[]</a></code>
+
+                    </td>
+                </tr>
+                <tr>
+                    <td class="col-md-4">
+                        <i>Valor por defecto : </i><code>[]</code>
+                    </td>
+                </tr>
+                    <tr>
+                        <td class="col-md-4">
+                                <div class="io-line">Definido en <a href="" data-line="49" class="link-to-prism">src/app/application/price-list/price-list.component.ts:49</a></div>
+                        </td>
+                    </tr>
+
+
+        </tbody>
+    </table>
+    <table class="table table-sm table-bordered">
+        <tbody>
+            <tr>
+                <td class="col-md-4">
+                    <a name="RECARGO_POSTNET"></a>
+                    <span class="name">
+                            <span class="modifier">Private</span>
+                            <span class="modifier">Readonly</span>
+                        <span ><b>RECARGO_POSTNET</b></span>
+                        <a href="#RECARGO_POSTNET"><span class="icon ion-ios-link"></span></a>
+                    </span>
+                </td>
+            </tr>
+                <tr>
+                    <td class="col-md-4">
+                        <i>Tipo : </i>        <code><a href="https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/number" target="_blank" >number</a></code>
+
+                    </td>
+                </tr>
+                <tr>
+                    <td class="col-md-4">
+                        <i>Valor por defecto : </i><code>0.10</code>
+                    </td>
+                </tr>
+                    <tr>
+                        <td class="col-md-4">
+                                <div class="io-line">Definido en <a href="" data-line="47" class="link-to-prism">src/app/application/price-list/price-list.component.ts:47</a></div>
+                        </td>
+                    </tr>
+
+
+        </tbody>
+    </table>
+</section>
+
+</div>
+
+
+    <div class="tab-pane fade  tab-source-code" id="source">
+        <pre class="line-numbers compodoc-sourcecode"><code class="language-typescript">import { Component, OnInit } from &#x27;@angular/core&#x27;;
+import { CommonModule } from &#x27;@angular/common&#x27;;
+import { FormsModule } from &#x27;@angular/forms&#x27;;
+
+// NG-ZORRO
+import { NzCardModule } from &#x27;ng-zorro-antd/card&#x27;;
+import { NzTableModule } from &#x27;ng-zorro-antd/table&#x27;;
+import { NzInputModule } from &#x27;ng-zorro-antd/input&#x27;;
+import { NzIconModule } from &#x27;ng-zorro-antd/icon&#x27;;
+import { NzRadioModule } from &#x27;ng-zorro-antd/radio&#x27;;
+import { NzButtonModule } from &#x27;ng-zorro-antd/button&#x27;;
+import { NzEmptyModule } from &#x27;ng-zorro-antd/empty&#x27;;
+import { NzTagModule } from &#x27;ng-zorro-antd/tag&#x27;;
+import { NzImageModule } from &#x27;ng-zorro-antd/image&#x27;;
+import { NzInputNumberModule } from &#x27;ng-zorro-antd/input-number&#x27;;
+import { NzToolTipModule } from &#x27;ng-zorro-antd/tooltip&#x27;;
+import { NzMessageService } from &#x27;ng-zorro-antd/message&#x27;;
+
+import { ProductVariationInterface } from &#x27;@interfaces/product-variation&#x27;;
+import { ProductVariationsService } from &#x27;@services/product-variations.service&#x27;;
+import { CameraComponent } from &#x27;../../shared/components/camera/camera.component&#x27;;
+import { MessageService } from &#x27;@services/message.service&#x27;;
+
+@Component({
+  selector: &#x27;app-price-list&#x27;,
+  imports: [
+    CommonModule,
+    FormsModule,
+    NzCardModule,
+    NzTableModule,
+    NzInputModule,
+    NzIconModule,
+    NzRadioModule,
+    NzButtonModule,
+    NzEmptyModule,
+    NzTagModule,
+    NzImageModule,
+    NzInputNumberModule,
+    NzToolTipModule,
+    CameraComponent
+  ],
+  templateUrl: &#x27;./price-list.component.html&#x27;,
+  styleUrl: &#x27;./price-list.component.scss&#x27;
+})
+export class PriceListComponent implements OnInit {
+  paymentMethod: &#x27;efectivo&#x27; | &#x27;postnet&#x27; &#x3D; &#x27;efectivo&#x27;; // Por defecto: Efectivo
+  private readonly RECARGO_POSTNET &#x3D; 0.10; // 10%
+
+  products: ProductVariationInterface[] &#x3D; [];
+  filteredProducts: ProductVariationInterface[] &#x3D; [];
+  filterText: string &#x3D; &#x27;&#x27;;
+
+  expandedRows: { [key: string]: boolean } &#x3D; {}; // Realiza el seguimiento de qué filas están abiertas
+  activeCameraRowId: string | null &#x3D; null; // Fila que tiene activa la cámara
+
+  formatterDollar &#x3D; (value: number): string &#x3D;&gt; &#x60;$ ${value}&#x60;;
+  parserDollar &#x3D; (value: string): number &#x3D;&gt; Number(value.replace(/\$\s?|(,*)/g, &#x27;&#x27;)) || 0;
+
+  constructor(
+    private _productVariationsService: ProductVariationsService,
+    private message: NzMessageService,
+    private _messageService: MessageService
+  ) { }
+
+  ngOnInit(): void {
+    this._productVariationsService.getProductsVariations(&#x27;28a0036e-2d6b-4e83-805a-1ca214a6b1e1&#x27;, &#x27;&#x27;).subscribe((products: any) &#x3D;&gt; {
+      this.products &#x3D; [...products.data];
+      this.filteredProducts &#x3D; [...products.data];
+    });
+  }
+
+  getFinalPrice(basePrice: number): number {
+    if (this.paymentMethod &#x3D;&#x3D;&#x3D; &#x27;postnet&#x27;) {
+      return basePrice * (1 + this.RECARGO_POSTNET);
+    }
+    return basePrice;
+  }
+
+  toggleExpand(id: string): void {
+    // Si ya está abierto, lo cierra. Si no existe o está cerrado, lo abre.
+    this.expandedRows[id] &#x3D; !this.expandedRows[id];
+    // Al colapsar la fila, también apagamos cualquier cámara activa en ella
+    if (!this.expandedRows[id] &amp;&amp; this.activeCameraRowId &#x3D;&#x3D;&#x3D; id) {
+      this.activeCameraRowId &#x3D; null;
+    }
+  }
+
+  private updateProductVariation(productVariation: any): void {
+    this._productVariationsService.updateProductVariation(productVariation).subscribe(
+      (response: any) &#x3D;&gt; {
+        if (response.success) {
+          this._messageService.success(
+            &quot;Informacion&quot;,
+            &quot;El Producto fue actualizado correctamente.&quot;,
+            () &#x3D;&gt; {
+            }
+          );
+        } else {
+          //this.status &#x3D; &#x27;error&#x27;
+        }
+      },
+      (error: any) &#x3D;&gt; {
+        let errorMessage &#x3D; &lt;any&gt;error;
+        console.log(errorMessage);
+
+        if (errorMessage !&#x3D; null) {
+          //this.status &#x3D; &#x27;error&#x27;
+        }
+      }
+    )
+  }
+
+  saveNewPhoto(product: ProductVariationInterface, base64Image: string): void {
+    // Aquí actualizarías el servidor. Por ahora, parcheamos el objeto en la vista:
+    product.prov_image &#x3D; base64Image;
+    // Tras confirmar la foto editada, cerramos la cámara
+    this.activeCameraRowId &#x3D; null;
+    this.updateProductVariation(product);
+  }
+
+  savePrice(product: ProductVariationInterface): void {
+    this.updateProductVariation(product);
+  }
+
+  private removeAccents(str: string): string {
+    return str.normalize(&quot;NFD&quot;).replace(/[\u0300-\u036f]/g, &quot;&quot;);
+  }
+
+  applyFilter(): void {
+    const rawFilterValue &#x3D; this.filterText.toLowerCase().trim();
+
+    if (!rawFilterValue) {
+      this.filteredProducts &#x3D; [...this.products];
+      return;
+    }
+
+    const normalizedFilterValue &#x3D; this.removeAccents(rawFilterValue);
+
+    this.filteredProducts &#x3D; this.products.filter(product &#x3D;&gt; {
+      const normalizedProductName &#x3D; this.removeAccents(product.prov_name.toLowerCase());
+      return (
+        normalizedProductName.includes(normalizedFilterValue) ||
+        product.pro_uuid.toString().includes(rawFilterValue)
+      );
+    });
+  }
+}
+</code></pre>
+    </div>
+
+    <div class="tab-pane fade " id="templateData">
+        <pre class="line-numbers"><code class="language-html">&lt;div class&#x3D;&quot;price-list-wrapper&quot;&gt;
+    &lt;div class&#x3D;&quot;header-actions&quot;&gt;
+        &lt;h2&gt;&lt;span nz-icon nzType&#x3D;&quot;container&quot; nzTheme&#x3D;&quot;outline&quot;&gt;&lt;/span&gt; Lista de Precios&lt;/h2&gt;
+        &lt;p&gt;Consulta rápidamente los precios actualizados de tus productos y su recargo por método de pago.&lt;/p&gt;
+    &lt;/div&gt;
+
+    &lt;nz-card class&#x3D;&quot;premium-card&quot; [nzBordered]&#x3D;&quot;false&quot;&gt;
+
+        &lt;!-- Controles Superiores --&gt;
+        &lt;div class&#x3D;&quot;toolbar-controls&quot;&gt;
+
+            &lt;div class&#x3D;&quot;search-box&quot;&gt;
+                &lt;nz-input-group [nzPrefix]&#x3D;&quot;prefixIconSearch&quot; nzSize&#x3D;&quot;large&quot;&gt;
+                    &lt;input type&#x3D;&quot;text&quot; nz-input placeholder&#x3D;&quot;Filtrar por nombre o ID de artículo...&quot;
+                        [(ngModel)]&#x3D;&quot;filterText&quot; (ngModelChange)&#x3D;&quot;applyFilter()&quot; /&gt;
+                &lt;/nz-input-group&gt;
+                &lt;ng-template #prefixIconSearch&gt;
+                    &lt;span nz-icon nzType&#x3D;&quot;search&quot;&gt;&lt;/span&gt;
+                &lt;/ng-template&gt;
+            &lt;/div&gt;
+
+            &lt;div class&#x3D;&quot;payment-switch&quot;&gt;
+                &lt;span class&#x3D;&quot;switch-label&quot;&gt;Cobro:&lt;/span&gt;
+                &lt;div class&#x3D;&quot;radio-container-mobile&quot;&gt;
+                    &lt;nz-radio-group [(ngModel)]&#x3D;&quot;paymentMethod&quot; nzButtonStyle&#x3D;&quot;solid&quot; nzSize&#x3D;&quot;large&quot;&gt;
+                        &lt;label nz-radio-button nzValue&#x3D;&quot;efectivo&quot;&gt;
+                            &lt;span nz-icon nzType&#x3D;&quot;dollar&quot; nzTheme&#x3D;&quot;outline&quot;&gt;&lt;/span&gt; Efectivo
+                        &lt;/label&gt;
+                        &lt;label nz-radio-button nzValue&#x3D;&quot;postnet&quot;&gt;
+                            &lt;span nz-icon nzType&#x3D;&quot;credit-card&quot; nzTheme&#x3D;&quot;outline&quot;&gt;&lt;/span&gt; Postnet
+                        &lt;/label&gt;
+                    &lt;/nz-radio-group&gt;
+                &lt;/div&gt;
+            &lt;/div&gt;
+
+        &lt;/div&gt;
+
+        &lt;!-- Tabla de Datos --&gt;
+        &lt;nz-table #priceListTable [nzData]&#x3D;&quot;filteredProducts&quot; [nzFrontPagination]&#x3D;&quot;true&quot; [nzPageSize]&#x3D;&quot;15&quot;
+            [nzShowSizeChanger]&#x3D;&quot;true&quot; [nzPageSizeOptions]&#x3D;&quot;[15, 30, 60, 150]&quot; [nzBordered]&#x3D;&quot;false&quot;
+            class&#x3D;&quot;elegant-table&quot; [nzNoResult]&#x3D;&quot;noResultsTemplate&quot; [nzScroll]&#x3D;&quot;{ x: &#x27;600px&#x27; }&quot;&gt;
+
+            &lt;thead&gt;
+                &lt;tr&gt;
+                    &lt;th nzWidth&#x3D;&quot;50px&quot;&gt;&lt;/th&gt;&lt;!-- Ícono expandir --&gt;
+                    &lt;th nzWidth&#x3D;&quot;150px&quot;&gt;Referencia SKU&lt;/th&gt;
+                    &lt;th nzWidth&#x3D;&quot;400px&quot;&gt;Nombre del Artículo&lt;/th&gt;
+                    &lt;th nzWidth&#x3D;&quot;150px&quot; class&#x3D;&quot;text-right&quot;&gt;Precio Total de Venta&lt;/th&gt;
+                &lt;/tr&gt;
+            &lt;/thead&gt;
+            &lt;tbody&gt;
+                &lt;ng-container *ngFor&#x3D;&quot;let data of priceListTable.data&quot;&gt;
+                    &lt;tr class&#x3D;&quot;expandable-row&quot; (click)&#x3D;&quot;toggleExpand(data.pro_uuid)&quot; style&#x3D;&quot;cursor: pointer;&quot;&gt;
+                        &lt;td [nzExpand]&#x3D;&quot;!!expandedRows[data.pro_uuid]&quot; style&#x3D;&quot;pointer-events: none;&quot;&gt;&lt;/td&gt;
+                        &lt;td&gt;
+                            &lt;nz-tag [nzColor]&#x3D;&quot;&#x27;default&#x27;&quot;&gt;{{ data.prov_code || data.prov_sku || (data.pro_uuid |
+                                slice:0:8) || &#x27;S/N&#x27; }}&lt;/nz-tag&gt;
+                        &lt;/td&gt;
+                        &lt;td class&#x3D;&quot;product-name-col&quot;&gt;{{ data.prov_name }}&lt;/td&gt;
+                        &lt;td class&#x3D;&quot;text-right price-col&quot;&gt;
+                            &lt;span class&#x3D;&quot;price-value&quot; [class.highlighted]&#x3D;&quot;paymentMethod &#x3D;&#x3D;&#x3D; &#x27;postnet&#x27;&quot;&gt;
+                                {{ getFinalPrice(data.prov_suggestedminimumsellingprice) |
+                                currency:&#x27;ARS&#x27;:&#x27;symbol-narrow&#x27;:&#x27;1.0-2&#x27; }}
+                            &lt;/span&gt;
+                        &lt;/td&gt;
+                    &lt;/tr&gt;
+
+                    &lt;tr [nzExpand]&#x3D;&quot;!!expandedRows[data.pro_uuid]&quot;&gt;
+                        &lt;!-- Vista: Modo Cámara Activa (Pantalla Completa) --&gt;
+                        &lt;div *ngIf&#x3D;&quot;activeCameraRowId &#x3D;&#x3D;&#x3D; data.pro_uuid&quot;
+                            style&#x3D;&quot;position: fixed; top: 0; left: 0; width: 100vw; height: 100vh; z-index: 99999; background: black;&quot;&gt;
+                            &lt;app-camera 
+                                [existingImage]&#x3D;&quot;data.prov_image&quot; 
+                                [showScannerFrame]&#x3D;&quot;false&quot; 
+                                [showCaptureHint]&#x3D;&quot;false&quot;
+                                (onPhotoSaved)&#x3D;&quot;saveNewPhoto(data, $event)&quot;
+                                (onClose)&#x3D;&quot;activeCameraRowId &#x3D; null&quot;&gt;
+                            &lt;/app-camera&gt;
+                        &lt;/div&gt;
+
+                        &lt;!-- Vista: Contenido Normal Expansión --&gt;
+                        &lt;div class&#x3D;&quot;product-details-expansion&quot; style&#x3D;&quot;display: flex; gap: 24px; padding: 16px;&quot;&gt;
+                            &lt;img nz-image
+                                [nzSrc]&#x3D;&quot;data.prov_image ? data.prov_image : &#x27;https://placehold.co/150x150/eeeeee/8c8c8c?text&#x3D;Sin+Foto&#x27;&quot;
+                                [nzFallback]&#x3D;&quot;&#x27;https://placehold.co/150x150/eeeeee/8c8c8c?text&#x3D;Sin+Foto&#x27;&quot;
+                                [alt]&#x3D;&quot;data.prov_name&quot;
+                                style&#x3D;&quot;width: 120px; height: 120px; object-fit: cover; border-radius: 8px; border: 1px solid #e8e8e8; cursor: zoom-in;&quot;&gt;
+                            &lt;div class&#x3D;&quot;expansion-info&quot;
+                                style&#x3D;&quot;display: flex; flex-direction: column; justify-content: center; flex: 1;&quot;&gt;
+                                &lt;h4 style&#x3D;&quot;margin: 0 0 8px 0; font-size: 16px;&quot;&gt;{{ data.prov_name }}&lt;/h4&gt;
+                                &lt;p style&#x3D;&quot;color: #595959; margin: 0 0 12px 0;&quot;&gt;{{ data.prov_description || &#x27;Sin
+                                    descripción adicional para este artículo.&#x27; }}&lt;/p&gt;
+
+                                &lt;div style&#x3D;&quot;margin-bottom: 16px; display: flex; align-items: flex-end; gap: 8px;&quot;&gt;
+                                    &lt;div&gt;
+                                        &lt;label
+                                            style&#x3D;&quot;display: block; font-size: 12px; color: #8c8c8c; margin-bottom: 4px;&quot;&gt;Modificar
+                                            Precio Base&lt;/label&gt;
+                                        &lt;nz-input-number [(ngModel)]&#x3D;&quot;data.prov_suggestedminimumsellingprice&quot;
+                                            [nzMin]&#x3D;&quot;0&quot; [nzStep]&#x3D;&quot;100&quot; [nzFormatter]&#x3D;&quot;formatterDollar&quot;
+                                            [nzParser]&#x3D;&quot;parserDollar&quot; nzSize&#x3D;&quot;large&quot; style&#x3D;&quot;width: 150px;&quot;&gt;
+                                        &lt;/nz-input-number&gt;
+                                    &lt;/div&gt;
+                                    &lt;button nz-button nzType&#x3D;&quot;default&quot; nzSize&#x3D;&quot;large&quot; (click)&#x3D;&quot;savePrice(data)&quot;
+                                        nz-tooltip&#x3D;&quot;Guardar en base de datos&quot;&gt;
+                                        &lt;span nz-icon nzType&#x3D;&quot;save&quot; nzTheme&#x3D;&quot;outline&quot;&gt;&lt;/span&gt;
+                                    &lt;/button&gt;
+                                &lt;/div&gt;
+
+                                &lt;div
+                                    style&#x3D;&quot;display: flex; gap: 12px; align-items: center; justify-content: space-between;&quot;&gt;
+                                    &lt;nz-tag nzColor&#x3D;&quot;blue&quot;&gt;Stock Disponible&lt;/nz-tag&gt;
+
+                                    &lt;!-- Botón para Abrir Cámara --&gt;
+                                    &lt;button nz-button nzType&#x3D;&quot;primary&quot; nzShape&#x3D;&quot;round&quot;
+                                        (click)&#x3D;&quot;activeCameraRowId &#x3D; data.pro_uuid&quot;&gt;
+                                        &lt;span nz-icon nzType&#x3D;&quot;camera&quot; nzTheme&#x3D;&quot;outline&quot;&gt;&lt;/span&gt;
+                                        {{ data.prov_image ? &#x27;Cambiar Foto&#x27; : &#x27;Tomar Foto&#x27; }}
+                                    &lt;/button&gt;
+                                &lt;/div&gt;
+                            &lt;/div&gt;
+                        &lt;/div&gt;
+                    &lt;/tr&gt;
+                &lt;/ng-container&gt;
+            &lt;/tbody&gt;
+        &lt;/nz-table&gt;
+
+    &lt;/nz-card&gt;
+&lt;/div&gt;
+
+&lt;!-- Template: Sin Resultados --&gt;
+&lt;ng-template #noResultsTemplate&gt;
+    &lt;div class&#x3D;&quot;empty-state-pad&quot;&gt;
+        &lt;nz-empty nzNotFoundImage&#x3D;&quot;https://gw.alipayobjects.com/zos/antfincdn/ZHrcdLPrvN/empty.svg&quot;
+            nzNotFoundContent&#x3D;&quot;No se encontraron artículos con ese filtro.&quot;&gt;&lt;/nz-empty&gt;
+    &lt;/div&gt;
+&lt;/ng-template&gt;</code></pre>
+    </div>
+
+    <div class="tab-pane fade " id="styleData">
+                <p class="comment">
+                    <code>./price-list.component.scss</code>
+                </p>
+                <pre class="line-numbers"><code class="language-scss">.price-list-wrapper {
+    background-color: #f0f2f5;
+    min-height: calc(100vh - 133px);
+    padding: 32px 40px;
+}
+
+.header-actions {
+    margin-bottom: 24px;
+    max-width: 1400px;
+    margin: 0 auto 24px auto;
+
+    h2 {
+        margin: 0;
+        font-size: 26px;
+        font-weight: 600;
+        color: #1f1f1f;
+        display: flex;
+        align-items: center;
+        gap: 12px;
+    }
+
+    p {
+        margin: 6px 0 0 0;
+        color: #8c8c8c;
+        font-size: 15px;
+    }
+}
+
+.premium-card {
+    border-radius: 12px;
+    box-shadow: 0 4px 16px rgba(0, 0, 0, 0.03);
+    max-width: 1400px;
+    margin: 0 auto;
+
+    ::ng-deep .ant-card-body {
+        padding: 32px;
+    }
+}
+
+/* Controles de barra de herramientas */
+.toolbar-controls {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    margin-bottom: 32px;
+    gap: 24px;
+    flex-wrap: wrap;
+
+    .search-box {
+        flex: 1;
+        min-width: 300px;
+        max-width: 500px;
+    }
+
+    .payment-switch {
+        display: flex;
+        align-items: center;
+        gap: 16px;
+        background: #fafafa;
+        padding: 8px 16px;
+        border-radius: 8px;
+        border: 1px solid #f0f0f0;
+
+        .switch-label {
+            font-weight: 500;
+            color: #595959;
+            font-size: 14px;
+        }
+
+        /* Enfatizar icono dentro del botón */
+        ::ng-deep .ant-radio-button-wrapper {
+            display: inline-flex;
+            align-items: center;
+            gap: 6px;
+            font-weight: 500;
+        }
+    }
+}
+
+/* Estilos de la tabla lista de precios */
+.elegant-table {
+    ::ng-deep .ant-table-thead&gt;tr&gt;th {
+        background: transparent;
+        border-bottom: 2px solid #f0f0f0;
+        color: #8c8c8c;
+        font-weight: 600;
+        font-size: 13px;
+        text-transform: uppercase;
+        padding: 16px 12px;
+    }
+
+    ::ng-deep .ant-table-tbody&gt;tr&gt;td {
+        padding: 16px 12px;
+        border-bottom: 1px solid #f5f5f5;
+        vertical-align: middle;
+        font-size: 15px;
+    }
+
+    ::ng-deep .ant-table-tbody&gt;tr:hover&gt;td {
+        background-color: #fafafa !important;
+    }
+}
+
+.product-name-col {
+    font-weight: 500;
+    color: #262626;
+}
+
+.text-right {
+    text-align: right !important;
+}
+
+.price-col {
+    .price-value {
+        font-size: 18px;
+        font-weight: 700;
+        color: #1f1f1f;
+        background-color: #f6ffed;
+        border: 1px solid #b7eb8f;
+        padding: 4px 12px;
+        border-radius: 6px;
+        display: inline-block;
+        min-width: 130px;
+        transition: all 0.3s ease;
+
+        /* Tema secundario para tarjetas/recargo */
+        &amp;.highlighted {
+            background-color: #e6f7ff;
+            border-color: #91d5ff;
+            color: #096dd9;
+        }
+    }
+}
+
+/* 
+ * Corrección de NG-ZORRO para Scroll Horizontal:
+ * Evita que el contenido expandido se vuelva &#x27;sticky&#x27; y lo fuerza 
+ * a scrollear fluidamente junto con las otras columnas de la tabla.
+ */
+::ng-deep .ant-table-expanded-row-fixed {
+    position: relative !important;
+    width: 100% !important;
+    min-width: max-content !important;
+    padding: 0 !important;
+}
+
+.empty-state-pad {
+    padding: 60px 0;
+}
+
+/* Responsividad Pura */
+@media (max-width: 768px) {
+    .price-list-wrapper {
+        padding: 16px 8px;
+        /* Reducimos paddings globales */
+    }
+
+    .toolbar-controls {
+        flex-direction: column;
+        align-items: stretch;
+
+        .search-box {
+            min-width: unset;
+            width: 100%;
+            max-width: 100%;
+        }
+
+        .payment-switch {
+            flex-direction: column;
+            align-items: flex-start;
+            gap: 12px;
+            padding: 12px 6px;
+
+            .radio-container-mobile {
+                width: 100%;
+            }
+        }
+    }
+
+    ::ng-deep .ant-card-body {
+        padding: 12px !important;
+        /* Tarjeta principal optimizada */
+    }
+
+    ::ng-deep .ant-radio-group {
+        display: flex;
+        flex-wrap: wrap;
+        width: 100%;
+    }
+
+    ::ng-deep .ant-radio-button-wrapper {
+        flex: 1;
+        text-align: center;
+        padding: 0 4px !important;
+        white-space: normal;
+        min-height: 40px;
+        line-height: 1.2;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        font-size: 13px;
+    }
+
+    .price-col .price-value {
+        font-size: 15px;
+        min-width: unset;
+        width: 100%;
+        text-align: center;
+        padding: 4px 6px;
+    }
+}</code></pre>
+    </div>
+
+    <div class="tab-pane fade " id="tree">
+        <div id="tree-container"></div>
+        <div class="tree-legend">
+            <div class="title">
+                <b>Leyenda</b>
+            </div>
+            <div>
+                <div class="color htmlelement"></div><span>Elemento Html</span>
+            </div>
+            <div>
+                <div class="color component"></div><span>Componente</span>
+            </div>
+            <div>
+                <div class="color directive"></div><span>Elemento Html con directiva</span>
+            </div>
+        </div>
+    </div>
+
+    
+</div>
+
+<script src="../js/libs/vis-network.min.js"></script>
+<script src="../js/libs/htmlparser.js"></script>
+<script src="../js/libs/deep-iterator.js"></script>
+<script>
+        var COMPONENT_TEMPLATE = '<div><div class="price-list-wrapper">    <div class="header-actions">        <h2><span nz-icon nzType="container" nzTheme="outline"></span> Lista de Precios</h2>        <p>Consulta rápidamente los precios actualizados de tus productos y su recargo por método de pago.</p>    </div>    <nz-card class="premium-card" [nzBordered]="false">        <!-- Controles Superiores -->        <div class="toolbar-controls">            <div class="search-box">                <nz-input-group [nzPrefix]="prefixIconSearch" nzSize="large">                    <input type="text" nz-input placeholder="Filtrar por nombre o ID de artículo..."                        [(ngModel)]="filterText" (ngModelChange)="applyFilter()" />                </nz-input-group>                <ng-template #prefixIconSearch>                    <span nz-icon nzType="search"></span>                </ng-template>            </div>            <div class="payment-switch">                <span class="switch-label">Cobro:</span>                <div class="radio-container-mobile">                    <nz-radio-group [(ngModel)]="paymentMethod" nzButtonStyle="solid" nzSize="large">                        <label nz-radio-button nzValue="efectivo">                            <span nz-icon nzType="dollar" nzTheme="outline"></span> Efectivo                        </label>                        <label nz-radio-button nzValue="postnet">                            <span nz-icon nzType="credit-card" nzTheme="outline"></span> Postnet                        </label>                    </nz-radio-group>                </div>            </div>        </div>        <!-- Tabla de Datos -->        <nz-table #priceListTable [nzData]="filteredProducts" [nzFrontPagination]="true" [nzPageSize]="15"            [nzShowSizeChanger]="true" [nzPageSizeOptions]="[15, 30, 60, 150]" [nzBordered]="false"            class="elegant-table" [nzNoResult]="noResultsTemplate" [nzScroll]="{ x: \'600px\' }">            <thead>                <tr>                    <th nzWidth="50px"></th><!-- Ícono expandir -->                    <th nzWidth="150px">Referencia SKU</th>                    <th nzWidth="400px">Nombre del Artículo</th>                    <th nzWidth="150px" class="text-right">Precio Total de Venta</th>                </tr>            </thead>            <tbody>                <ng-container *ngFor="let data of priceListTable.data">                    <tr class="expandable-row" (click)="toggleExpand(data.pro_uuid)" style="cursor: pointer;">                        <td [nzExpand]="!!expandedRows[data.pro_uuid]" style="pointer-events: none;"></td>                        <td>                            <nz-tag [nzColor]="\'default\'">{{ data.prov_code || data.prov_sku || (data.pro_uuid |                                slice:0:8) || \'S/N\' }}</nz-tag>                        </td>                        <td class="product-name-col">{{ data.prov_name }}</td>                        <td class="text-right price-col">                            <span class="price-value" [class.highlighted]="paymentMethod === \'postnet\'">                                {{ getFinalPrice(data.prov_suggestedminimumsellingprice) |                                currency:\'ARS\':\'symbol-narrow\':\'1.0-2\' }}                            </span>                        </td>                    </tr>                    <tr [nzExpand]="!!expandedRows[data.pro_uuid]">                        <!-- Vista: Modo Cámara Activa (Pantalla Completa) -->                        <div *ngIf="activeCameraRowId === data.pro_uuid"                            style="position: fixed; top: 0; left: 0; width: 100vw; height: 100vh; z-index: 99999; background: black;">                            <app-camera                                 [existingImage]="data.prov_image"                                 [showScannerFrame]="false"                                 [showCaptureHint]="false"                                (onPhotoSaved)="saveNewPhoto(data, $event)"                                (onClose)="activeCameraRowId = null">                            </app-camera>                        </div>                        <!-- Vista: Contenido Normal Expansión -->                        <div class="product-details-expansion" style="display: flex; gap: 24px; padding: 16px;">                            <img nz-image                                [nzSrc]="data.prov_image ? data.prov_image : \'https://placehold.co/150x150/eeeeee/8c8c8c?text=Sin+Foto\'"                                [nzFallback]="\'https://placehold.co/150x150/eeeeee/8c8c8c?text=Sin+Foto\'"                                [alt]="data.prov_name"                                style="width: 120px; height: 120px; object-fit: cover; border-radius: 8px; border: 1px solid #e8e8e8; cursor: zoom-in;">                            <div class="expansion-info"                                style="display: flex; flex-direction: column; justify-content: center; flex: 1;">                                <h4 style="margin: 0 0 8px 0; font-size: 16px;">{{ data.prov_name }}</h4>                                <p style="color: #595959; margin: 0 0 12px 0;">{{ data.prov_description || \'Sin                                    descripción adicional para este artículo.\' }}</p>                                <div style="margin-bottom: 16px; display: flex; align-items: flex-end; gap: 8px;">                                    <div>                                        <label                                            style="display: block; font-size: 12px; color: #8c8c8c; margin-bottom: 4px;">Modificar                                            Precio Base</label>                                        <nz-input-number [(ngModel)]="data.prov_suggestedminimumsellingprice"                                            [nzMin]="0" [nzStep]="100" [nzFormatter]="formatterDollar"                                            [nzParser]="parserDollar" nzSize="large" style="width: 150px;">                                        </nz-input-number>                                    </div>                                    <button nz-button nzType="default" nzSize="large" (click)="savePrice(data)"                                        nz-tooltip="Guardar en base de datos">                                        <span nz-icon nzType="save" nzTheme="outline"></span>                                    </button>                                </div>                                <div                                    style="display: flex; gap: 12px; align-items: center; justify-content: space-between;">                                    <nz-tag nzColor="blue">Stock Disponible</nz-tag>                                    <!-- Botón para Abrir Cámara -->                                    <button nz-button nzType="primary" nzShape="round"                                        (click)="activeCameraRowId = data.pro_uuid">                                        <span nz-icon nzType="camera" nzTheme="outline"></span>                                        {{ data.prov_image ? \'Cambiar Foto\' : \'Tomar Foto\' }}                                    </button>                                </div>                            </div>                        </div>                    </tr>                </ng-container>            </tbody>        </nz-table>    </nz-card></div><!-- Template: Sin Resultados --><ng-template #noResultsTemplate>    <div class="empty-state-pad">        <nz-empty nzNotFoundImage="https://gw.alipayobjects.com/zos/antfincdn/ZHrcdLPrvN/empty.svg"            nzNotFoundContent="No se encontraron artículos con ese filtro."></nz-empty>    </div></ng-template></div>'
+    var COMPONENTS = [{'name': 'AccountConfirmedComponent', 'selector': 'app-account-confirmed'},{'name': 'AccountCreatedComponent', 'selector': 'app-account-created'},{'name': 'AddressesComponent', 'selector': 'app-addresses'},{'name': 'AnalyticsComponent', 'selector': 'app-analytics'},{'name': 'AppComponent', 'selector': 'app-root'},{'name': 'ApplicationBarComponent', 'selector': 'app-application-bar'},{'name': 'ApplicationLayoutComponent', 'selector': 'app-application-layout'},{'name': 'AuthLayoutComponent', 'selector': 'app-auth-layout'},{'name': 'BarcodeScannerComponent', 'selector': 'app-barcode-scanner'},{'name': 'CameraComponent', 'selector': 'app-camera'},{'name': 'CartComponent', 'selector': 'app-cart'},{'name': 'CatalogComponent', 'selector': 'app-catalog'},{'name': 'CategoriesComponent', 'selector': 'app-categories'},{'name': 'CategoriesListComponent', 'selector': 'app-categories-list'},{'name': 'CheckoutComponent', 'selector': 'app-checkout'},{'name': 'CompanyComponent', 'selector': 'app-company'},{'name': 'CompanySettingsComponent', 'selector': 'app-company-settings'},{'name': 'CouponsComponent', 'selector': 'app-coupons'},{'name': 'CustomersComponent', 'selector': 'app-customers'},{'name': 'DistPriceListComponent', 'selector': 'app-dist-price-list'},{'name': 'FinancesComponent', 'selector': 'app-finances'},{'name': 'ForgotPasswordComponent', 'selector': 'app-forgot-password'},{'name': 'GlobalCategoriesComponent', 'selector': 'app-global-categories'},{'name': 'GlobalCategoryComponent', 'selector': 'app-global-category'},{'name': 'GlobalItemComponent', 'selector': 'app-global-item'},{'name': 'GlobalItemsComponent', 'selector': 'app-global-items'},{'name': 'GlobalMaterialComponent', 'selector': 'app-global-material'},{'name': 'GlobalMaterialsComponent', 'selector': 'app-global-materials'},{'name': 'HomeStoreComponent', 'selector': 'app-home'},{'name': 'InventoryAuditComponent', 'selector': 'app-inventory-audit'},{'name': 'ItemsComponent', 'selector': 'app-items'},{'name': 'LoginComponent', 'selector': 'app-login'},{'name': 'MapPickerComponent', 'selector': 'app-map-picker'},{'name': 'MarketHomeComponent', 'selector': 'app-market-home'},{'name': 'MaterialComponent', 'selector': 'app-material'},{'name': 'MaterialsComponent', 'selector': 'app-materials'},{'name': 'MenuItemComponent', 'selector': 'app-menu-item'},{'name': 'MenuItemsComponent', 'selector': 'app-menu-items'},{'name': 'MpPaymentBrickComponent', 'selector': 'app-mp-payment-brick'},{'name': 'MyCompaniesComponent', 'selector': 'app-my-companies'},{'name': 'MyFavoritesComponent', 'selector': 'app-my-favorites'},{'name': 'MyPurchasesComponent', 'selector': 'app-my-purchases'},{'name': 'NavBarComponent', 'selector': 'app-nav-bar'},{'name': 'OrdersReceivedComponent', 'selector': 'app-orders-received'},{'name': 'PriceListComponent', 'selector': 'app-price-list'},{'name': 'ProductComponent', 'selector': 'app-product'},{'name': 'ProductDetailComponent', 'selector': 'app-product-detail'},{'name': 'ProductsComponent', 'selector': 'app-products'},{'name': 'ProductsVariationsComponent', 'selector': 'app-products-variations'},{'name': 'ProductVariationComponent', 'selector': 'app-product-variation'},{'name': 'PublicLayoutComponent', 'selector': 'app-public-layout'},{'name': 'RegisterComponent', 'selector': 'app-register'},{'name': 'ResetPasswordComponent', 'selector': 'app-reset-password'},{'name': 'SideBarComponent', 'selector': 'app-side-bar'},{'name': 'SsoCallbackComponent', 'selector': 'app-sso-callback'},{'name': 'StoreCatalogComponent', 'selector': 'app-store'},{'name': 'SuperAdminComponent', 'selector': 'app-super-admin'},{'name': 'SupplierComponent', 'selector': 'app-supplier'},{'name': 'SuppliersComponent', 'selector': 'app-suppliers'},{'name': 'UserLayoutComponent', 'selector': 'app-user-layout'},{'name': 'UserRolCompanyComponent', 'selector': 'app-user-rol-company'},{'name': 'WarehousesComponent', 'selector': 'app-warehouses'}];
+    var DIRECTIVES = [{'name': 'ImagePreloadDirective', 'selector': 'img[default]'}];
+    var ACTUAL_COMPONENT = {'name': 'PriceListComponent'};
+</script>
+<script src="../js/tree.js"></script>
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+                   </div><div class="search-results">
+    <div class="has-results">
+        <h1 class="search-results-title"><span class='search-results-count'></span> comparación de resultados "<span class='search-query'></span>"</h1>
+        <ul class="search-results-list"></ul>
+    </div>
+    <div class="no-results">
+        <h1 class="search-results-title">No hay resultados que coincidan "<span class='search-query'></span>"</h1>
+    </div>
+</div>
+</div>
+               <!-- END CONTENT -->
+           </div>
+       </div>
+
+          
+<div class="compodoc-lang-switch">
+  <select id="compodoc-lang-select" aria-label="Seleccionar idioma">
+    <option value="es" selected>🇪🇸 Español</option>
+    <option value="en" >🇺🇸 English</option>
+    <option value="pt" >🇧🇷 Português</option>
+  </select>
+</div>
+
+          <label class="dark-mode-switch">
+               <input type="checkbox">
+               <span class="slider">
+                    <svg class="slider-icon" viewBox="0 0 24 24" fill="none" height="20" stroke="#000" stroke-linecap="round" stroke-linejoin="round" stroke-width="2" width="20" xmlns="http://www.w3.org/2000/svg">
+                    <path d="M21 12.79A9 9 0 1111.21 3 7 7 0 0021 12.79z"></path>
+                    </svg>
+               </span>
+          </label>
+
+       <script>
+            var COMPODOC_CURRENT_PAGE_DEPTH = 1;
+            var COMPODOC_CURRENT_PAGE_CONTEXT = 'component';
+            var COMPODOC_CURRENT_PAGE_URL = 'PriceListComponent.html';
+            var MAX_SEARCH_RESULTS = 15;
+       </script>
+
+       <script>
+               $darkModeToggleSwitchers = document.querySelectorAll('.dark-mode-switch input');
+               var updateDarkModeSwitchOffset = function () {
+                    var content = document.querySelector('.content');
+                    var scrollbarWidth = 0;
+
+                    if (content) {
+                         scrollbarWidth = Math.max(0, content.offsetWidth - content.clientWidth);
+                    }
+
+                    document.documentElement.style.setProperty(
+                         '--content-scrollbar-width',
+                         scrollbarWidth + 'px'
+                    );
+               };
+
+               updateDarkModeSwitchOffset();
+               requestAnimationFrame(updateDarkModeSwitchOffset);
+               window.addEventListener('resize', updateDarkModeSwitchOffset);
+
+               checkToggle(darkModeState);
+               if ($darkModeToggleSwitchers.length > 0) {
+                    for (var i = 0; i < $darkModeToggleSwitchers.length; i++) {
+                         $darkModeToggleSwitchers[i].addEventListener('change', function (event) {
+                              darkModeState = !darkModeState;
+                              toggleDarkMode(darkModeState);
+                         });
+                    }
+               }
+          </script>
+
+       <script src="../js/libs/custom-elements.min.js"></script>
+       <script src="../js/libs/lit-html.js"></script>
+
+       <script src="../js/menu-wc.js" defer></script>
+
+       <script src="../js/libs/bootstrap-native.js"></script>
+
+       <script src="../js/libs/es6-shim.min.js"></script>
+       <script src="../js/libs/EventDispatcher.js"></script>
+       <script src="../js/libs/promise.min.js"></script>
+
+       <script src="../js/compodoc.js"></script>
+
+       <script src="../js/tabs.js"></script>
+       <script src="../js/menu.js"></script>
+       <script src="../js/libs/clipboard.min.js"></script>
+       <script src="../js/libs/prism.js"></script>
+       <script src="../js/sourceCode.js"></script>
+          <script src="../js/search/search.js"></script>
+          <script src="../js/search/lunr.min.js"></script>
+          <script src="../js/search/search-lunr.js"></script>
+          <script src="../js/search/search_index.js"></script>
+       <script src="../js/lazy-load-graphs.js"></script>
+
+
+    
+<script id="compodoc-lang-script">
+(function() {
+  var CURRENT_LANG = "es";
+  var ADDITIONAL_DOCS_MAP = {"es":["01.-introducción-y-arquitectura-general.html","02.-autenticación-y-control-de-accesos.html","03.-catálogo-público-y-exploración-de-tiendas.html","04.-carrito-de-compras-y-checkout-multitienda.html","05.-gestión-de-empresas,-roles-y-configuración.html","06.-inventario,-productos,-variaciones-y-almacenes.html","07.-gestión-de-pedidos,-compras-y-cupones.html","08.-analíticas-de-negocio,-finanzas-y-proveedores.html"],"en":["01.-introduction-and-general-architecture.html","02.-authentication-and-access-control.html","03.-public-catalog-and-store-exploration.html","04.-shopping-cart-and-multi-store-checkout.html","05.-company-management,-roles-and-configuration.html","06.-inventory,-products,-variations-and-warehouses.html","07.-orders-management,-purchases-and-coupons.html","08.-business-analytics,-finances-and-suppliers.html"],"pt":["01.-introdução-e-arquitetura-geral.html","02.-autenticação-e-controle-de-acesso.html","03.-catálogo-público-e-exploração-de-lojas.html","04.-carrinho-de-compras-e-checkout-multiloja.html","05.-gestão-de-empresas,-funções-e-configuração.html","06.-estoque,-produtos,-variações-e-armazéns.html","07.-gestão-de-pedidos,-compras-e-cupons.html","08.-análise-de-negócios,-finanças-e-fornecedores.html"]};
+
+  var select = document.getElementById('compodoc-lang-select');
+  if (!select) return;
+
+  try {
+    localStorage.setItem('compodoc_lang', CURRENT_LANG);
+  } catch (e) {}
+
+  select.addEventListener('change', function(e) {
+    var targetLang = e.target.value;
+    if (targetLang === CURRENT_LANG) return;
+
+    try {
+      localStorage.setItem('compodoc_lang', targetLang);
+    } catch (err) {}
+
+    var href = window.location.href;
+    var pathname = window.location.pathname;
+
+    // Manejo especial para páginas de additional-documentation
+    if (pathname.indexOf('/additional-documentation/') !== -1) {
+      var segments = pathname.split('/');
+      var currentFile = decodeURIComponent(segments[segments.length - 1]);
+      
+      var currentList = ADDITIONAL_DOCS_MAP[CURRENT_LANG] || [];
+      var targetList = ADDITIONAL_DOCS_MAP[targetLang] || [];
+      var foundIndex = -1;
+
+      var prefixMatch = currentFile.match(/^(\d{2}\.-)/);
+      if (prefixMatch) {
+        var prefix = prefixMatch[1];
+        for (var i = 0; i < targetList.length; i++) {
+          if (targetList[i].startsWith(prefix)) {
+            foundIndex = i;
+            break;
+          }
+        }
+      }
+      if (foundIndex === -1) {
+        for (var j = 0; j < currentList.length; j++) {
+          if (currentList[j] === currentFile) {
+            foundIndex = j;
+            break;
+          }
+        }
+      }
+
+      var targetFile = (foundIndex !== -1 && targetList[foundIndex]) 
+        ? targetList[foundIndex] 
+        : (targetList[0] || 'index.html');
+
+      var targetSubpath = '/' + targetLang + '/additional-documentation/' + targetFile;
+      var currentSubpath = '/' + CURRENT_LANG + '/additional-documentation/' + segments[segments.length - 1];
+
+      if (href.indexOf(currentSubpath) !== -1) {
+        window.location.href = href.replace(currentSubpath, targetSubpath);
+        return;
+      }
+    }
+
+    // Páginas estándar
+    var standardReplace = href.replace('/' + CURRENT_LANG + '/', '/' + targetLang + '/');
+    if (standardReplace !== href) {
+      window.location.href = standardReplace;
+    } else {
+      var depth = (typeof COMPODOC_CURRENT_PAGE_DEPTH !== 'undefined') ? COMPODOC_CURRENT_PAGE_DEPTH : 0;
+      var prefixPath = '';
+      for (var k = 0; k <= depth; k++) {
+        prefixPath += '../';
+      }
+      window.location.href = prefixPath + targetLang + '/index.html';
+    }
+  });
+})();
+</script>
+
+</body>
+</html>

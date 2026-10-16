@@ -1,0 +1,2065 @@
+<!doctype html>
+<html class="no-js" lang="">
+    <head>
+        <meta charset="utf-8">
+        <meta http-equiv="x-ua-compatible" content="ie=edge">
+        <title>ATSMarket Web App</title>
+        <meta name="description" content="">
+        <meta name="viewport" content="width=device-width, initial-scale=1">
+
+        <link rel="icon" type="image/x-icon" href="../images/favicon.ico">
+	   <link rel="stylesheet" href="../styles/style.css">
+        <link rel="stylesheet" href="../styles/dark.css">
+    
+<style id="compodoc-lang-styles">
+  .compodoc-lang-switch {
+    position: fixed;
+    top: 15px;
+    right: calc(90px + var(--content-scrollbar-width, 0px));
+    z-index: 1050;
+    display: inline-block;
+  }
+  @media (max-width: 767px) {
+    .compodoc-lang-switch {
+      top: 8px;
+      right: 60px;
+    }
+  }
+  #compodoc-lang-select {
+    height: 34px;
+    padding: 0 12px;
+    border-radius: 17px;
+    border: 1px solid #d9d9d9;
+    background-color: #ffffff;
+    color: #1f1f1f;
+    font-size: 13px;
+    font-family: inherit;
+    font-weight: 500;
+    cursor: pointer;
+    outline: none;
+    box-shadow: 0 2px 6px rgba(0, 0, 0, 0.08);
+    transition: all 0.3s cubic-bezier(0.645, 0.045, 0.355, 1);
+    -webkit-appearance: none;
+    -moz-appearance: none;
+    appearance: none;
+    padding-right: 26px;
+    background-image: url("data:image/svg+xml;charset=UTF-8,%3csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 24 24' fill='none' stroke='%23666' stroke-width='2' stroke-linecap='round' stroke-linejoin='round'%3e%3cpolyline points='6 9 12 15 18 9'%3e%3c/polyline%3e%3c/svg%3e");
+    background-repeat: no-repeat;
+    background-position: right 8px center;
+    background-size: 14px;
+  }
+  #compodoc-lang-select:hover, #compodoc-lang-select:focus {
+    border-color: #5cc0ae;
+    box-shadow: 0 2px 8px rgba(92, 192, 174, 0.25);
+  }
+  body.dark .compodoc-lang-switch #compodoc-lang-select {
+    background-color: #2c3e50;
+    color: #ecf0f1;
+    border: 1px solid #4a627a;
+    box-shadow: 0 2px 6px rgba(0, 0, 0, 0.35);
+    background-image: url("data:image/svg+xml;charset=UTF-8,%3csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 24 24' fill='none' stroke='%23ecf0f1' stroke-width='2' stroke-linecap='round' stroke-linejoin='round'%3e%3cpolyline points='6 9 12 15 18 9'%3e%3c/polyline%3e%3c/svg%3e");
+  }
+  body.dark .compodoc-lang-switch #compodoc-lang-select option {
+    background-color: #2c3e50;
+    color: #ecf0f1;
+  }
+</style>
+
+</head>
+    <body>
+          <script>
+               // Blocking script to avoid flickering dark mode
+               // Dark mode toggle button
+               var useDark = window.matchMedia('(prefers-color-scheme: dark)');
+               var darkModeState = useDark.matches;
+               var $darkModeToggleSwitchers = document.querySelectorAll('.dark-mode-switch input');
+               var $darkModeToggles = document.querySelectorAll('.dark-mode-switch');
+               var darkModeStateLocal = localStorage.getItem('compodoc_darkmode-state');
+
+               function checkToggle(check) {
+                    for (var i = 0; i < $darkModeToggleSwitchers.length; i++) {
+                         $darkModeToggleSwitchers[i].checked = check;
+                    }
+               }
+
+               function toggleDarkMode(state) {
+                    if (window.localStorage) {
+                         localStorage.setItem('compodoc_darkmode-state', state);
+                    }
+
+                    checkToggle(state);
+
+                    const hasClass = document.body.classList.contains('dark');
+
+                    if (state) {
+                         for (var i = 0; i < $darkModeToggles.length; i++) {
+                              $darkModeToggles[i].classList.add('dark');
+                         }
+                         if (!hasClass) {
+                              document.body.classList.add('dark');
+                         }
+                    } else {
+                         for (var i = 0; i < $darkModeToggles.length; i++) {
+                              $darkModeToggles[i].classList.remove('dark');
+                         }
+                         if (hasClass) {
+                              document.body.classList.remove('dark');
+                         }
+                    }
+               }
+
+               useDark.addEventListener('change', function (evt) {
+                    toggleDarkMode(evt.matches);
+               });
+               if (darkModeStateLocal) {
+                    darkModeState = darkModeStateLocal === 'true';
+               }
+               toggleDarkMode(darkModeState);
+          </script>
+          <script>
+              // --- Iframe navigation tracking for Template Playground ---
+              function sendCurrentUrlToParent() {
+                  if (window.parent && window.parent !== window) {
+                      window.parent.postMessage({
+                          type: 'compodoc-iframe-navigate',
+                          url: window.location.pathname + window.location.hash
+                      }, '*');
+                  }
+              }
+              window.addEventListener('hashchange', sendCurrentUrlToParent, false);
+              window.addEventListener('popstate', sendCurrentUrlToParent, false);
+              window.addEventListener('DOMContentLoaded', sendCurrentUrlToParent, false);
+          </script>
+
+        <div class="navbar navbar-default navbar-fixed-top d-md-none p-0">
+               <div class="d-flex">
+                    <a href="../" class="navbar-brand">ATSMarket Web App</a>
+                    <button type="button" class="btn btn-default btn-menu ion-ios-menu" id="btn-menu"></button>
+               </div>
+        </div>
+
+        <div class="xs-menu menu" id="mobile-menu">
+                <div id="book-search-input" role="search">
+    <input type="text" placeholder="Escribe para buscar">
+    <button type="button"
+        class="search-input-clear"
+        aria-label="Clear search"
+        data-search-input-clear>&times;</button>
+</div>
+            <compodoc-menu></compodoc-menu>
+        </div>
+
+        <div class="container-fluid main">
+           <div class="row main">
+               <div class="d-none d-md-block menu">
+                   <compodoc-menu mode="normal"></compodoc-menu>
+               </div>
+               <!-- START CONTENT -->
+               <div class="content component">
+                   <div class="content-data">
+
+
+
+
+
+
+
+
+<ol class="breadcrumb">
+  <li class="breadcrumb-item">Componentes</li>
+  <li class="breadcrumb-item"
+  >
+  CouponsComponent</li>
+</ol>
+
+<div class="io-file io-file-path" data-compodoc="entity-file-path">
+    <span class="icon ion-ios-document" aria-hidden="true"></span>
+    <code>src/app/application/coupons/coupons.component.ts</code>
+</div>
+
+<ul class="nav nav-tabs" role="tablist">
+        <li class="nav-item">
+            <a href="#info" class="nav-link active"
+                role="tab" id="info-tab" data-bs-toggle="tab" data-link="info">Info</a>
+        </li>
+        <li class="nav-item">
+            <a href="#api" class="nav-link"
+                role="tab" id="api-tab" data-bs-toggle="tab" data-link="api">API</a>
+        </li>
+        <li class="nav-item">
+            <a href="#source" class="nav-link"
+                role="tab" id="source-tab" data-bs-toggle="tab" data-link="source">Source</a>
+        </li>
+        <li class="nav-item">
+            <a href="#templateData" class="nav-link"
+                role="tab" id="templateData-tab" data-bs-toggle="tab" data-link="template">Template</a>
+        </li>
+        <li class="nav-item">
+            <a href="#styleData" class="nav-link"
+                role="tab" id="styleData-tab" data-bs-toggle="tab" data-link="style">Styles</a>
+        </li>
+        <li class="nav-item">
+            <a href="#tree" class="nav-link"
+                role="tab" id="tree-tab" data-bs-toggle="tab" data-link="dom-tree">DOM Tree</a>
+        </li>
+</ul>
+
+<div class="tab-content">
+    <div class="tab-pane fade active in" id="info">
+
+
+    <p class="comment">
+        <h3>Implementa</h3>
+    </p>
+    <p class="comment">
+                    <code><a href="https://angular.dev/api/core/OnInit" target="_blank" >OnInit</a></code>
+    </p>
+
+
+<section data-compodoc="block-metadata">
+    <h3>Meta datos</h3>
+    <table class="table table-sm table-hover metadata">
+        <tbody>
+
+
+
+
+
+
+
+
+
+
+
+
+            <tr>
+                <td class="col-md-3">selector</td>
+                <td class="col-md-9"><code>app-coupons</code></td>
+            </tr>
+
+            <tr>
+                <td class="col-md-3">standalone</td>
+                <td class="col-md-9"><code>true</code></td>
+            </tr>
+
+            <tr>
+                <td class="col-md-3">imports</td>
+                <td class="col-md-9">
+                        <div>        <code><a href="https://angular.dev/api/common/CommonModule" target="_blank" >CommonModule</a></code>
+</div>
+                        <div>        <code><a href="https://angular.dev/api/forms/FormsModule" target="_blank" >FormsModule</a></code>
+</div>
+                        <div>        <code><a href="https://angular.dev/api/forms/ReactiveFormsModule" target="_blank" >ReactiveFormsModule</a></code>
+</div>
+                        <div>        <code><a href="https://angular.dev/api/router/RouterModule" target="_blank" >RouterModule</a></code>
+</div>
+                        <div>    <code>NzTableModule</code>
+</div>
+                        <div>    <code>NzCardModule</code>
+</div>
+                        <div>    <code>NzButtonModule</code>
+</div>
+                        <div>    <code>NzIconModule</code>
+</div>
+                        <div>    <code>NzDrawerModule</code>
+</div>
+                        <div>    <code>NzDividerModule</code>
+</div>
+                        <div>    <code>NzDescriptionsModule</code>
+</div>
+                        <div>    <code>NzTagModule</code>
+</div>
+                        <div>    <code>NzInputModule</code>
+</div>
+                        <div>    <code>NzFormModule</code>
+</div>
+                        <div>    <code>NzSpinModule</code>
+</div>
+                        <div>    <code>NzSelectModule</code>
+</div>
+                        <div>    <code>NzDatePickerModule</code>
+</div>
+                        <div>    <code>NzSwitchModule</code>
+</div>
+                        <div>    <code>NzInputNumberModule</code>
+</div>
+                </td>
+            </tr>
+
+            <tr>
+                <td class="col-md-3">styleUrls</td>
+                <td class="col-md-9"><code>./coupons.component.scss</code></td>
+            </tr>
+
+
+
+
+            <tr>
+                <td class="col-md-3">templateUrl</td>
+                <td class="col-md-9"><code>./coupons.component.html</code></td>
+            </tr>
+
+
+
+            <tr>
+                <td class="col-md-3">styleUrl</td>
+                <td class="col-md-9"><code>./coupons.component.scss</code></td>
+            </tr>
+
+
+
+
+
+        </tbody>
+    </table>
+</section>
+
+        <section data-compodoc="block-relationships">
+            <h3>Relationships</h3>
+
+            <div class="row pt-3">
+                <div class="col-sm-6">
+                    <h4>Used by</h4>
+                        <p class="comment"><i>No hay resultados que coincidan.</i></p>
+                </div>
+
+                <div class="col-sm-6">
+                    <h4>Depends on</h4>
+                        <ul class="list-unstyled relationships-list">
+                                <li>
+                                            <code><a href="https://angular.dev/api/common/CommonModule" target="_blank" >CommonModule</a></code>
+                                </li>
+                                <li>
+                                            <code><a href="https://angular.dev/api/forms/FormsModule" target="_blank" >FormsModule</a></code>
+                                </li>
+                                <li>
+                                            <code><a href="https://angular.dev/api/forms/ReactiveFormsModule" target="_blank" >ReactiveFormsModule</a></code>
+                                </li>
+                                <li>
+                                            <code><a href="https://angular.dev/api/router/RouterModule" target="_blank" >RouterModule</a></code>
+                                </li>
+                                <li>
+                                        <code>NzTableModule</code>
+                                </li>
+                                <li>
+                                        <code>NzCardModule</code>
+                                </li>
+                                <li>
+                                        <code>NzButtonModule</code>
+                                </li>
+                                <li>
+                                        <code>NzIconModule</code>
+                                </li>
+                                <li>
+                                        <code>NzDrawerModule</code>
+                                </li>
+                                <li>
+                                        <code>NzDividerModule</code>
+                                </li>
+                                <li>
+                                        <code>NzDescriptionsModule</code>
+                                </li>
+                                <li>
+                                        <code>NzTagModule</code>
+                                </li>
+                                <li>
+                                        <code>NzInputModule</code>
+                                </li>
+                                <li>
+                                        <code>NzFormModule</code>
+                                </li>
+                                <li>
+                                        <code>NzSpinModule</code>
+                                </li>
+                                <li>
+                                        <code>NzSelectModule</code>
+                                </li>
+                                <li>
+                                        <code>NzDatePickerModule</code>
+                                </li>
+                                <li>
+                                        <code>NzSwitchModule</code>
+                                </li>
+                                <li>
+                                        <code>NzInputNumberModule</code>
+                                </li>
+                                <li>
+                                            <code><a href="https://angular.dev/api/core/OnInit" target="_blank" >OnInit</a></code>
+                                </li>
+                        </ul>
+                </div>
+            </div>
+        </section>
+</div>
+
+    <div class="tab-pane fade " id="api">    <section data-compodoc="block-index">
+    <h3 id="index">Índice</h3>
+        <table class="table table-sm table-bordered index-table">
+            <tbody>
+                <tr>
+                    <td class="col-md-3">
+                        <h6><b>Propiedades</b></h6>
+                    </td>
+                    <td class="col-md-9">
+                        <ul class="index-list">
+                            <li>
+                                <span class="reference-badge reference-badge--property" aria-hidden="true">P</span>
+                                    <span class="modifier">Public</span>
+                                <a href="#cmp_uuid" >cmp_uuid</a>
+                            </li>
+                            <li>
+                                <span class="reference-badge reference-badge--property" aria-hidden="true">P</span>
+                                    <span class="modifier">Public</span>
+                                <a href="#couponForm" >couponForm</a>
+                            </li>
+                            <li>
+                                <span class="reference-badge reference-badge--property" aria-hidden="true">P</span>
+                                    <span class="modifier">Public</span>
+                                <a href="#filteredCoupons$" >filteredCoupons$</a>
+                            </li>
+                            <li>
+                                <span class="reference-badge reference-badge--property" aria-hidden="true">P</span>
+                                    <span class="modifier">Public</span>
+                                <a href="#isDrawerVisible" >isDrawerVisible</a>
+                            </li>
+                            <li>
+                                <span class="reference-badge reference-badge--property" aria-hidden="true">P</span>
+                                    <span class="modifier">Public</span>
+                                <a href="#isEditing" >isEditing</a>
+                            </li>
+                            <li>
+                                <span class="reference-badge reference-badge--property" aria-hidden="true">P</span>
+                                    <span class="modifier">Public</span>
+                                <a href="#isLoading" >isLoading</a>
+                            </li>
+                            <li>
+                                <span class="reference-badge reference-badge--property" aria-hidden="true">P</span>
+                                    <span class="modifier">Private</span>
+                                <a href="#refreshData$" >refreshData$</a>
+                            </li>
+                            <li>
+                                <span class="reference-badge reference-badge--property" aria-hidden="true">P</span>
+                                    <span class="modifier">Private</span>
+                                <a href="#searchTerm$" >searchTerm$</a>
+                            </li>
+                            <li>
+                                <span class="reference-badge reference-badge--property" aria-hidden="true">P</span>
+                                    <span class="modifier">Public</span>
+                                <a href="#selectedCoupon" >selectedCoupon</a>
+                            </li>
+                        </ul>
+                    </td>
+                </tr>
+            </tbody>
+        </table>
+
+        <table class="table table-sm table-bordered index-table">
+            <tbody>
+                <tr>
+                    <td class="col-md-3">
+                        <h6><b>Métodos</b></h6>
+                    </td>
+                    <td class="col-md-9">
+                        <ul class="index-list">
+                            <li>
+                                <span class="reference-badge reference-badge--method" aria-hidden="true">M</span>
+                                    <span class="modifier">Public</span>
+                                <a href="#closeDrawer" >closeDrawer</a>
+                            </li>
+                            <li>
+                                <span class="reference-badge reference-badge--method" aria-hidden="true">M</span>
+                                    <span class="modifier">Public</span>
+                                <a href="#enableEditing" >enableEditing</a>
+                            </li>
+                            <li>
+                                <span class="reference-badge reference-badge--method" aria-hidden="true">M</span>
+                                <a href="#ngOnInit" >ngOnInit</a>
+                            </li>
+                            <li>
+                                <span class="reference-badge reference-badge--method" aria-hidden="true">M</span>
+                                    <span class="modifier">Public</span>
+                                <a href="#onDeleteCoupon" >onDeleteCoupon</a>
+                            </li>
+                            <li>
+                                <span class="reference-badge reference-badge--method" aria-hidden="true">M</span>
+                                    <span class="modifier">Public</span>
+                                <a href="#onSave" >onSave</a>
+                            </li>
+                            <li>
+                                <span class="reference-badge reference-badge--method" aria-hidden="true">M</span>
+                                    <span class="modifier">Public</span>
+                                <a href="#onSearch" >onSearch</a>
+                            </li>
+                            <li>
+                                <span class="reference-badge reference-badge--method" aria-hidden="true">M</span>
+                                    <span class="modifier">Public</span>
+                                <a href="#openCouponDetail" >openCouponDetail</a>
+                            </li>
+                            <li>
+                                <span class="reference-badge reference-badge--method" aria-hidden="true">M</span>
+                                    <span class="modifier">Public</span>
+                                <a href="#openCreateDrawer" >openCreateDrawer</a>
+                            </li>
+                        </ul>
+                    </td>
+                </tr>
+            </tbody>
+        </table>
+
+
+
+
+
+</section>
+
+    <section data-compodoc="block-constructor">
+    <h3 id="constructor">Constructor</h3>
+        <table class="table table-sm table-bordered">
+            <tbody>
+                <tr>
+                    <td class="col-md-4">
+<code>constructor(fb: <a href="https://angular.dev/api/forms/FormBuilder" target="_blank">FormBuilder</a>, _sessionService: <a href="../injectables/SessionService.html" target="_self">SessionService</a>, _couponsService: <a href="../injectables/CouponsService.html" target="_self">CouponsService</a>, _messageService: <a href="../injectables/MessageService.html" target="_self">MessageService</a>)</code>
+                    </td>
+                </tr>
+                        <tr>
+                            <td class="col-md-4">
+                                <div class="io-line">Definido en <a href="" data-line="69" class="link-to-prism">src/app/application/coupons/coupons.component.ts:69</a></div>
+                            </td>
+                        </tr>
+
+                <tr>
+                    <td class="col-md-4">
+                            <div>
+                                    <b>Parámetros :</b>
+                                    <table class="params">
+                                        <thead>
+                                            <tr>
+                                                <td>Nombre</td>
+                                                    <td>Tipo</td>
+                                                <td>Opcional</td>
+                                            </tr>
+                                        </thead>
+                                        <tbody>
+                                                <tr>
+                                                        <td>fb</td>
+                                                  
+                                                        <td>
+                                                                        <code><a href="https://angular.dev/api/forms/FormBuilder" target="_blank" >FormBuilder</a></code>
+                                                        </td>
+                                                  
+                                                    <td>
+                                                            No
+                                                    </td>
+                                                    
+                                                </tr>
+                                                <tr>
+                                                        <td>_sessionService</td>
+                                                  
+                                                        <td>
+                                                                        <code><a href="../injectables/SessionService.html" target="_self" >SessionService</a></code>
+                                                        </td>
+                                                  
+                                                    <td>
+                                                            No
+                                                    </td>
+                                                    
+                                                </tr>
+                                                <tr>
+                                                        <td>_couponsService</td>
+                                                  
+                                                        <td>
+                                                                        <code><a href="../injectables/CouponsService.html" target="_self" >CouponsService</a></code>
+                                                        </td>
+                                                  
+                                                    <td>
+                                                            No
+                                                    </td>
+                                                    
+                                                </tr>
+                                                <tr>
+                                                        <td>_messageService</td>
+                                                  
+                                                        <td>
+                                                                        <code><a href="../injectables/MessageService.html" target="_self" >MessageService</a></code>
+                                                        </td>
+                                                  
+                                                    <td>
+                                                            No
+                                                    </td>
+                                                    
+                                                </tr>
+                                        </tbody>
+                                    </table>
+                            </div>
+                    </td>
+                </tr>
+            </tbody>
+        </table>
+</section>
+
+
+
+
+
+    <section data-compodoc="block-methods">
+    
+    <h3 id="methods">
+        Métodos
+    </h3>
+    <table class="table table-sm table-bordered">
+        <tbody>
+            <tr>
+                <td class="col-md-4">
+                    <a name="closeDrawer"></a>
+                    <span class="name">
+                            <span class="modifier">Public</span>
+                        <span ><b>closeDrawer</b></span>
+                        <a href="#closeDrawer"><span class="icon ion-ios-link"></span></a>
+                    </span>
+                </td>
+            </tr>
+            <tr>
+                <td class="col-md-4">
+                        <span class="modifier-icon icon ion-ios-reset"></span>
+                    <code>closeDrawer()</code>
+                </td>
+            </tr>
+
+
+                    <tr>
+                        <td class="col-md-4">
+                            <div class="io-line">Definido en <a href="" data-line="158"
+                                    class="link-to-prism">src/app/application/coupons/coupons.component.ts:158</a></div>
+                        </td>
+                    </tr>
+
+
+            <tr>
+                <td class="col-md-4">
+
+                        <div class="io-description">
+                            <b>Devuelve : </b>        <code><a href="https://www.typescriptlang.org/docs/handbook/basic-types.html" target="_blank" >void</a></code>
+
+                        </div>
+                </td>
+            </tr>
+        </tbody>
+    </table>
+    <table class="table table-sm table-bordered">
+        <tbody>
+            <tr>
+                <td class="col-md-4">
+                    <a name="enableEditing"></a>
+                    <span class="name">
+                            <span class="modifier">Public</span>
+                        <span ><b>enableEditing</b></span>
+                        <a href="#enableEditing"><span class="icon ion-ios-link"></span></a>
+                    </span>
+                </td>
+            </tr>
+            <tr>
+                <td class="col-md-4">
+                        <span class="modifier-icon icon ion-ios-reset"></span>
+                    <code>enableEditing()</code>
+                </td>
+            </tr>
+
+
+                    <tr>
+                        <td class="col-md-4">
+                            <div class="io-line">Definido en <a href="" data-line="154"
+                                    class="link-to-prism">src/app/application/coupons/coupons.component.ts:154</a></div>
+                        </td>
+                    </tr>
+
+
+            <tr>
+                <td class="col-md-4">
+
+                        <div class="io-description">
+                            <b>Devuelve : </b>        <code><a href="https://www.typescriptlang.org/docs/handbook/basic-types.html" target="_blank" >void</a></code>
+
+                        </div>
+                </td>
+            </tr>
+        </tbody>
+    </table>
+    <table class="table table-sm table-bordered">
+        <tbody>
+            <tr>
+                <td class="col-md-4">
+                    <a name="ngOnInit"></a>
+                    <span class="name">
+                        <span ><b>ngOnInit</b></span>
+                        <a href="#ngOnInit"><span class="icon ion-ios-link"></span></a>
+                    </span>
+                </td>
+            </tr>
+            <tr>
+                <td class="col-md-4">
+<code>ngOnInit()</code>
+                </td>
+            </tr>
+
+
+                    <tr>
+                        <td class="col-md-4">
+                            <div class="io-line">Definido en <a href="" data-line="78"
+                                    class="link-to-prism">src/app/application/coupons/coupons.component.ts:78</a></div>
+                        </td>
+                    </tr>
+
+
+            <tr>
+                <td class="col-md-4">
+
+                        <div class="io-description">
+                            <b>Devuelve : </b>        <code><a href="https://www.typescriptlang.org/docs/handbook/basic-types.html" target="_blank" >void</a></code>
+
+                        </div>
+                </td>
+            </tr>
+        </tbody>
+    </table>
+    <table class="table table-sm table-bordered">
+        <tbody>
+            <tr>
+                <td class="col-md-4">
+                    <a name="onDeleteCoupon"></a>
+                    <span class="name">
+                            <span class="modifier">Public</span>
+                        <span ><b>onDeleteCoupon</b></span>
+                        <a href="#onDeleteCoupon"><span class="icon ion-ios-link"></span></a>
+                    </span>
+                </td>
+            </tr>
+            <tr>
+                <td class="col-md-4">
+                        <span class="modifier-icon icon ion-ios-reset"></span>
+                    <code>onDeleteCoupon(coupon: <a href="https://www.typescriptlang.org/docs/handbook/basic-types.html" target="_blank">any</a>)</code>
+                </td>
+            </tr>
+
+
+                    <tr>
+                        <td class="col-md-4">
+                            <div class="io-line">Definido en <a href="" data-line="215"
+                                    class="link-to-prism">src/app/application/coupons/coupons.component.ts:215</a></div>
+                        </td>
+                    </tr>
+
+
+            <tr>
+                <td class="col-md-4">
+
+                            <div class="io-description">
+                                <b>Parámetros :</b>
+                                
+                                <table class="params">
+                                    <thead>
+                                        <tr>
+                                            <td>Nombre</td>
+                                                <td>Tipo</td>
+                                            <td>Opcional</td>
+                                        </tr>
+                                    </thead>
+                                    <tbody>
+                                        <tr>
+                                                <td>coupon</td>
+                                            <td>
+                                                            <code><a href="https://www.typescriptlang.org/docs/handbook/basic-types.html" target="_blank" >any</a></code>
+                                            </td>
+
+                                            <td>
+                                                    No
+                                            </td>
+
+
+                                        </tr>
+                                    </tbody>
+                                </table>
+                            </div>
+                        <div class="io-description">
+                            <b>Devuelve : </b>        <code><a href="https://www.typescriptlang.org/docs/handbook/basic-types.html" target="_blank" >void</a></code>
+
+                        </div>
+                            <div class="io-description">
+                                
+                            </div>
+                </td>
+            </tr>
+        </tbody>
+    </table>
+    <table class="table table-sm table-bordered">
+        <tbody>
+            <tr>
+                <td class="col-md-4">
+                    <a name="onSave"></a>
+                    <span class="name">
+                            <span class="modifier">Public</span>
+                        <span ><b>onSave</b></span>
+                        <a href="#onSave"><span class="icon ion-ios-link"></span></a>
+                    </span>
+                </td>
+            </tr>
+            <tr>
+                <td class="col-md-4">
+                        <span class="modifier-icon icon ion-ios-reset"></span>
+                    <code>onSave()</code>
+                </td>
+            </tr>
+
+
+                    <tr>
+                        <td class="col-md-4">
+                            <div class="io-line">Definido en <a href="" data-line="166"
+                                    class="link-to-prism">src/app/application/coupons/coupons.component.ts:166</a></div>
+                        </td>
+                    </tr>
+
+
+            <tr>
+                <td class="col-md-4">
+
+                        <div class="io-description">
+                            <b>Devuelve : </b>        <code><a href="https://www.typescriptlang.org/docs/handbook/basic-types.html" target="_blank" >void</a></code>
+
+                        </div>
+                </td>
+            </tr>
+        </tbody>
+    </table>
+    <table class="table table-sm table-bordered">
+        <tbody>
+            <tr>
+                <td class="col-md-4">
+                    <a name="onSearch"></a>
+                    <span class="name">
+                            <span class="modifier">Public</span>
+                        <span ><b>onSearch</b></span>
+                        <a href="#onSearch"><span class="icon ion-ios-link"></span></a>
+                    </span>
+                </td>
+            </tr>
+            <tr>
+                <td class="col-md-4">
+                        <span class="modifier-icon icon ion-ios-reset"></span>
+                    <code>onSearch(term: <a href="https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/string" target="_blank">string</a>)</code>
+                </td>
+            </tr>
+
+
+                    <tr>
+                        <td class="col-md-4">
+                            <div class="io-line">Definido en <a href="" data-line="115"
+                                    class="link-to-prism">src/app/application/coupons/coupons.component.ts:115</a></div>
+                        </td>
+                    </tr>
+
+
+            <tr>
+                <td class="col-md-4">
+
+                            <div class="io-description">
+                                <b>Parámetros :</b>
+                                
+                                <table class="params">
+                                    <thead>
+                                        <tr>
+                                            <td>Nombre</td>
+                                                <td>Tipo</td>
+                                            <td>Opcional</td>
+                                        </tr>
+                                    </thead>
+                                    <tbody>
+                                        <tr>
+                                                <td>term</td>
+                                            <td>
+                                                            <code><a href="https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/string" target="_blank" >string</a></code>
+                                            </td>
+
+                                            <td>
+                                                    No
+                                            </td>
+
+
+                                        </tr>
+                                    </tbody>
+                                </table>
+                            </div>
+                        <div class="io-description">
+                            <b>Devuelve : </b>        <code><a href="https://www.typescriptlang.org/docs/handbook/basic-types.html" target="_blank" >void</a></code>
+
+                        </div>
+                            <div class="io-description">
+                                
+                            </div>
+                </td>
+            </tr>
+        </tbody>
+    </table>
+    <table class="table table-sm table-bordered">
+        <tbody>
+            <tr>
+                <td class="col-md-4">
+                    <a name="openCouponDetail"></a>
+                    <span class="name">
+                            <span class="modifier">Public</span>
+                        <span ><b>openCouponDetail</b></span>
+                        <a href="#openCouponDetail"><span class="icon ion-ios-link"></span></a>
+                    </span>
+                </td>
+            </tr>
+            <tr>
+                <td class="col-md-4">
+                        <span class="modifier-icon icon ion-ios-reset"></span>
+                    <code>openCouponDetail(coupon: <a href="https://www.typescriptlang.org/docs/handbook/basic-types.html" target="_blank">any</a>)</code>
+                </td>
+            </tr>
+
+
+                    <tr>
+                        <td class="col-md-4">
+                            <div class="io-line">Definido en <a href="" data-line="143"
+                                    class="link-to-prism">src/app/application/coupons/coupons.component.ts:143</a></div>
+                        </td>
+                    </tr>
+
+
+            <tr>
+                <td class="col-md-4">
+
+                            <div class="io-description">
+                                <b>Parámetros :</b>
+                                
+                                <table class="params">
+                                    <thead>
+                                        <tr>
+                                            <td>Nombre</td>
+                                                <td>Tipo</td>
+                                            <td>Opcional</td>
+                                        </tr>
+                                    </thead>
+                                    <tbody>
+                                        <tr>
+                                                <td>coupon</td>
+                                            <td>
+                                                            <code><a href="https://www.typescriptlang.org/docs/handbook/basic-types.html" target="_blank" >any</a></code>
+                                            </td>
+
+                                            <td>
+                                                    No
+                                            </td>
+
+
+                                        </tr>
+                                    </tbody>
+                                </table>
+                            </div>
+                        <div class="io-description">
+                            <b>Devuelve : </b>        <code><a href="https://www.typescriptlang.org/docs/handbook/basic-types.html" target="_blank" >void</a></code>
+
+                        </div>
+                            <div class="io-description">
+                                
+                            </div>
+                </td>
+            </tr>
+        </tbody>
+    </table>
+    <table class="table table-sm table-bordered">
+        <tbody>
+            <tr>
+                <td class="col-md-4">
+                    <a name="openCreateDrawer"></a>
+                    <span class="name">
+                            <span class="modifier">Public</span>
+                        <span ><b>openCreateDrawer</b></span>
+                        <a href="#openCreateDrawer"><span class="icon ion-ios-link"></span></a>
+                    </span>
+                </td>
+            </tr>
+            <tr>
+                <td class="col-md-4">
+                        <span class="modifier-icon icon ion-ios-reset"></span>
+                    <code>openCreateDrawer()</code>
+                </td>
+            </tr>
+
+
+                    <tr>
+                        <td class="col-md-4">
+                            <div class="io-line">Definido en <a href="" data-line="119"
+                                    class="link-to-prism">src/app/application/coupons/coupons.component.ts:119</a></div>
+                        </td>
+                    </tr>
+
+
+            <tr>
+                <td class="col-md-4">
+
+                        <div class="io-description">
+                            <b>Devuelve : </b>        <code><a href="https://www.typescriptlang.org/docs/handbook/basic-types.html" target="_blank" >void</a></code>
+
+                        </div>
+                </td>
+            </tr>
+        </tbody>
+    </table>
+</section>
+
+    <section data-compodoc="block-properties">
+    
+    <h3 id="inputs">
+        Propiedades
+    </h3>
+    <table class="table table-sm table-bordered">
+        <tbody>
+            <tr>
+                <td class="col-md-4">
+                    <a name="cmp_uuid"></a>
+                    <span class="name">
+                            <span class="modifier">Public</span>
+                        <span ><b>cmp_uuid</b></span>
+                        <a href="#cmp_uuid"><span class="icon ion-ios-link"></span></a>
+                    </span>
+                </td>
+            </tr>
+                <tr>
+                    <td class="col-md-4">
+                        <i>Tipo : </i>        <code><a href="https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/string" target="_blank" >string</a></code>
+
+                    </td>
+                </tr>
+                    <tr>
+                        <td class="col-md-4">
+                                <div class="io-line">Definido en <a href="" data-line="57" class="link-to-prism">src/app/application/coupons/coupons.component.ts:57</a></div>
+                        </td>
+                    </tr>
+
+
+        </tbody>
+    </table>
+    <table class="table table-sm table-bordered">
+        <tbody>
+            <tr>
+                <td class="col-md-4">
+                    <a name="couponForm"></a>
+                    <span class="name">
+                            <span class="modifier">Public</span>
+                        <span ><b>couponForm</b></span>
+                        <a href="#couponForm"><span class="icon ion-ios-link"></span></a>
+                    </span>
+                </td>
+            </tr>
+                <tr>
+                    <td class="col-md-4">
+                        <i>Tipo : </i>        <code><a href="https://angular.dev/api/forms/FormGroup" target="_blank" >FormGroup</a></code>
+
+                    </td>
+                </tr>
+                    <tr>
+                        <td class="col-md-4">
+                                <div class="io-line">Definido en <a href="" data-line="58" class="link-to-prism">src/app/application/coupons/coupons.component.ts:58</a></div>
+                        </td>
+                    </tr>
+
+
+        </tbody>
+    </table>
+    <table class="table table-sm table-bordered">
+        <tbody>
+            <tr>
+                <td class="col-md-4">
+                    <a name="filteredCoupons$"></a>
+                    <span class="name">
+                            <span class="modifier">Public</span>
+                        <span ><b>filteredCoupons$</b></span>
+                        <a href="#filteredCoupons$"><span class="icon ion-ios-link"></span></a>
+                    </span>
+                </td>
+            </tr>
+                <tr>
+                    <td class="col-md-4">
+                        <i>Tipo : </i>    <code>Observable&lt;any[]&gt;</code>
+
+                    </td>
+                </tr>
+                    <tr>
+                        <td class="col-md-4">
+                                <div class="io-line">Definido en <a href="" data-line="63" class="link-to-prism">src/app/application/coupons/coupons.component.ts:63</a></div>
+                        </td>
+                    </tr>
+
+
+        </tbody>
+    </table>
+    <table class="table table-sm table-bordered">
+        <tbody>
+            <tr>
+                <td class="col-md-4">
+                    <a name="isDrawerVisible"></a>
+                    <span class="name">
+                            <span class="modifier">Public</span>
+                        <span ><b>isDrawerVisible</b></span>
+                        <a href="#isDrawerVisible"><span class="icon ion-ios-link"></span></a>
+                    </span>
+                </td>
+            </tr>
+                <tr>
+                    <td class="col-md-4">
+                        <i>Tipo : </i>    <code>unknown</code>
+
+                    </td>
+                </tr>
+                <tr>
+                    <td class="col-md-4">
+                        <i>Valor por defecto : </i><code>false</code>
+                    </td>
+                </tr>
+                    <tr>
+                        <td class="col-md-4">
+                                <div class="io-line">Definido en <a href="" data-line="67" class="link-to-prism">src/app/application/coupons/coupons.component.ts:67</a></div>
+                        </td>
+                    </tr>
+
+
+        </tbody>
+    </table>
+    <table class="table table-sm table-bordered">
+        <tbody>
+            <tr>
+                <td class="col-md-4">
+                    <a name="isEditing"></a>
+                    <span class="name">
+                            <span class="modifier">Public</span>
+                        <span ><b>isEditing</b></span>
+                        <a href="#isEditing"><span class="icon ion-ios-link"></span></a>
+                    </span>
+                </td>
+            </tr>
+                <tr>
+                    <td class="col-md-4">
+                        <i>Tipo : </i>    <code>unknown</code>
+
+                    </td>
+                </tr>
+                <tr>
+                    <td class="col-md-4">
+                        <i>Valor por defecto : </i><code>false</code>
+                    </td>
+                </tr>
+                    <tr>
+                        <td class="col-md-4">
+                                <div class="io-line">Definido en <a href="" data-line="68" class="link-to-prism">src/app/application/coupons/coupons.component.ts:68</a></div>
+                        </td>
+                    </tr>
+
+
+        </tbody>
+    </table>
+    <table class="table table-sm table-bordered">
+        <tbody>
+            <tr>
+                <td class="col-md-4">
+                    <a name="isLoading"></a>
+                    <span class="name">
+                            <span class="modifier">Public</span>
+                        <span ><b>isLoading</b></span>
+                        <a href="#isLoading"><span class="icon ion-ios-link"></span></a>
+                    </span>
+                </td>
+            </tr>
+                <tr>
+                    <td class="col-md-4">
+                        <i>Tipo : </i>    <code>unknown</code>
+
+                    </td>
+                </tr>
+                <tr>
+                    <td class="col-md-4">
+                        <i>Valor por defecto : </i><code>false</code>
+                    </td>
+                </tr>
+                    <tr>
+                        <td class="col-md-4">
+                                <div class="io-line">Definido en <a href="" data-line="69" class="link-to-prism">src/app/application/coupons/coupons.component.ts:69</a></div>
+                        </td>
+                    </tr>
+
+
+        </tbody>
+    </table>
+    <table class="table table-sm table-bordered">
+        <tbody>
+            <tr>
+                <td class="col-md-4">
+                    <a name="refreshData$"></a>
+                    <span class="name">
+                            <span class="modifier">Private</span>
+                        <span ><b>refreshData$</b></span>
+                        <a href="#refreshData$"><span class="icon ion-ios-link"></span></a>
+                    </span>
+                </td>
+            </tr>
+                <tr>
+                    <td class="col-md-4">
+                        <i>Tipo : </i>    <code>unknown</code>
+
+                    </td>
+                </tr>
+                <tr>
+                    <td class="col-md-4">
+                        <i>Valor por defecto : </i><code>new BehaviorSubject&lt;void&gt;(undefined)</code>
+                    </td>
+                </tr>
+                    <tr>
+                        <td class="col-md-4">
+                                <div class="io-line">Definido en <a href="" data-line="62" class="link-to-prism">src/app/application/coupons/coupons.component.ts:62</a></div>
+                        </td>
+                    </tr>
+
+
+        </tbody>
+    </table>
+    <table class="table table-sm table-bordered">
+        <tbody>
+            <tr>
+                <td class="col-md-4">
+                    <a name="searchTerm$"></a>
+                    <span class="name">
+                            <span class="modifier">Private</span>
+                        <span ><b>searchTerm$</b></span>
+                        <a href="#searchTerm$"><span class="icon ion-ios-link"></span></a>
+                    </span>
+                </td>
+            </tr>
+                <tr>
+                    <td class="col-md-4">
+                        <i>Tipo : </i>    <code>unknown</code>
+
+                    </td>
+                </tr>
+                <tr>
+                    <td class="col-md-4">
+                        <i>Valor por defecto : </i><code>new BehaviorSubject&lt;string&gt;(&#x27;&#x27;)</code>
+                    </td>
+                </tr>
+                    <tr>
+                        <td class="col-md-4">
+                                <div class="io-line">Definido en <a href="" data-line="61" class="link-to-prism">src/app/application/coupons/coupons.component.ts:61</a></div>
+                        </td>
+                    </tr>
+
+
+        </tbody>
+    </table>
+    <table class="table table-sm table-bordered">
+        <tbody>
+            <tr>
+                <td class="col-md-4">
+                    <a name="selectedCoupon"></a>
+                    <span class="name">
+                            <span class="modifier">Public</span>
+                        <span ><b>selectedCoupon</b></span>
+                        <a href="#selectedCoupon"><span class="icon ion-ios-link"></span></a>
+                    </span>
+                </td>
+            </tr>
+                <tr>
+                    <td class="col-md-4">
+                        <i>Tipo : </i>        <code><a href="https://www.typescriptlang.org/docs/handbook/basic-types.html" target="_blank" >any</a></code>
+
+                    </td>
+                </tr>
+                <tr>
+                    <td class="col-md-4">
+                        <i>Valor por defecto : </i><code>null</code>
+                    </td>
+                </tr>
+                    <tr>
+                        <td class="col-md-4">
+                                <div class="io-line">Definido en <a href="" data-line="66" class="link-to-prism">src/app/application/coupons/coupons.component.ts:66</a></div>
+                        </td>
+                    </tr>
+
+
+        </tbody>
+    </table>
+</section>
+
+</div>
+
+
+    <div class="tab-pane fade  tab-source-code" id="source">
+        <pre class="line-numbers compodoc-sourcecode"><code class="language-typescript">import { Component, OnInit } from &#x27;@angular/core&#x27;;
+import { CommonModule } from &#x27;@angular/common&#x27;;
+import { FormsModule, ReactiveFormsModule, FormBuilder, FormGroup, Validators } from &#x27;@angular/forms&#x27;;
+import { RouterModule } from &#x27;@angular/router&#x27;;
+import { Observable, map, combineLatest, BehaviorSubject, switchMap } from &#x27;rxjs&#x27;;
+
+// NG-ZORRO
+import { NzTableModule } from &#x27;ng-zorro-antd/table&#x27;;
+import { NzCardModule } from &#x27;ng-zorro-antd/card&#x27;;
+import { NzButtonModule } from &#x27;ng-zorro-antd/button&#x27;;
+import { NzIconModule } from &#x27;ng-zorro-antd/icon&#x27;;
+import { NzDrawerModule } from &#x27;ng-zorro-antd/drawer&#x27;;
+import { NzDividerModule } from &#x27;ng-zorro-antd/divider&#x27;;
+import { NzDescriptionsModule } from &#x27;ng-zorro-antd/descriptions&#x27;;
+import { NzTagModule } from &#x27;ng-zorro-antd/tag&#x27;;
+import { NzInputModule } from &#x27;ng-zorro-antd/input&#x27;;
+import { NzFormModule } from &#x27;ng-zorro-antd/form&#x27;;
+import { NzSpinModule } from &#x27;ng-zorro-antd/spin&#x27;;
+import { NzSelectModule } from &#x27;ng-zorro-antd/select&#x27;;
+import { NzDatePickerModule } from &#x27;ng-zorro-antd/date-picker&#x27;;
+import { NzSwitchModule } from &#x27;ng-zorro-antd/switch&#x27;;
+import { NzInputNumberModule } from &#x27;ng-zorro-antd/input-number&#x27;;
+
+import { SessionService } from &#x27;@services/session.service&#x27;;
+import { CouponsService } from &#x27;@services/coupons.service&#x27;;
+import { MessageService } from &#x27;@services/message.service&#x27;;
+
+@Component({
+  selector: &#x27;app-coupons&#x27;,
+  standalone: true,
+  imports: [
+    CommonModule,
+    FormsModule,
+    ReactiveFormsModule,
+    RouterModule,
+    NzTableModule,
+    NzCardModule,
+    NzButtonModule,
+    NzIconModule,
+    NzDrawerModule,
+    NzDividerModule,
+    NzDescriptionsModule,
+    NzTagModule,
+    NzInputModule,
+    NzFormModule,
+    NzSpinModule,
+    NzSelectModule,
+    NzDatePickerModule,
+    NzSwitchModule,
+    NzInputNumberModule
+  ],
+  templateUrl: &#x27;./coupons.component.html&#x27;,
+  styleUrl: &#x27;./coupons.component.scss&#x27;
+})
+export class CouponsComponent implements OnInit {
+
+  public cmp_uuid!: string;
+  public couponForm!: FormGroup;
+  
+  // Reactive streams
+  private searchTerm$ &#x3D; new BehaviorSubject&lt;string&gt;(&#x27;&#x27;);
+  private refreshData$ &#x3D; new BehaviorSubject&lt;void&gt;(undefined);
+  public filteredCoupons$!: Observable&lt;any[]&gt;;
+
+  // Drawer Control
+  public selectedCoupon: any &#x3D; null;
+  public isDrawerVisible &#x3D; false;
+  public isEditing &#x3D; false;
+  public isLoading &#x3D; false;
+
+  constructor(
+    private fb: FormBuilder,
+    private _sessionService: SessionService,
+    private _couponsService: CouponsService,
+    private _messageService: MessageService
+  ) { }
+
+  ngOnInit(): void {
+    this.cmp_uuid &#x3D; this._sessionService.getCompany().cmp_uuid;
+
+    // Form Initialization
+    this.couponForm &#x3D; this.fb.group({
+      cmp_uuid: [this.cmp_uuid],
+      cou_uuid: [&#x27;&#x27;],
+      cou_code: [&#x27;&#x27;, [Validators.required, Validators.pattern(&#x27;^[a-zA-Z0-9_-]+$&#x27;)]],
+      cou_type: [&#x27;PERCENTAGE&#x27;, [Validators.required]],
+      cou_value: [null, [Validators.required, Validators.min(0.01)]],
+      cou_minpurchase: [0, [Validators.required, Validators.min(0)]],
+      cou_maxdiscount: [0, [Validators.min(0)]],
+      cou_startdate: [null, [Validators.required]],
+      cou_enddate: [null, [Validators.required]],
+      cou_limit: [100, [Validators.required, Validators.min(1)]],
+      cou_active: [true]
+    });
+
+    // Reactive table search and list reload
+    this.filteredCoupons$ &#x3D; combineLatest([
+      this.refreshData$.pipe(
+        switchMap(() &#x3D;&gt; this._couponsService.getCoupons(this.cmp_uuid))
+      ),
+      this.searchTerm$.asObservable()
+    ]).pipe(
+      map(([results, term]) &#x3D;&gt; {
+        const coupons &#x3D; results.data || [];
+        if (!term.trim()) return coupons;
+        
+        const lowTerm &#x3D; term.toLowerCase();
+        return coupons.filter((cou: any) &#x3D;&gt; 
+          cou.cou_code.toLowerCase().includes(lowTerm)
+        );
+      })
+    );
+  }
+
+  public onSearch(term: string): void {
+    this.searchTerm$.next(term);
+  }
+
+  public openCreateDrawer(): void {
+    this.selectedCoupon &#x3D; null;
+    this.isEditing &#x3D; true;
+    
+    const startDate &#x3D; new Date();
+    const endDate &#x3D; new Date();
+    endDate.setDate(startDate.getDate() + 30); // 30 días de vigencia por defecto
+    
+    this.couponForm.reset({
+      cmp_uuid: this.cmp_uuid,
+      cou_uuid: &#x27;&#x27;,
+      cou_code: &#x27;&#x27;,
+      cou_type: &#x27;PERCENTAGE&#x27;,
+      cou_value: null,
+      cou_minpurchase: 0,
+      cou_maxdiscount: 0,
+      cou_startdate: startDate,
+      cou_enddate: endDate,
+      cou_limit: 100,
+      cou_active: true
+    });
+    this.isDrawerVisible &#x3D; true;
+  }
+
+  public openCouponDetail(coupon: any): void {
+    this.selectedCoupon &#x3D; coupon;
+    this.isEditing &#x3D; false;
+    this.couponForm.patchValue({
+      ...coupon,
+      cou_startdate: new Date(coupon.cou_startdate),
+      cou_enddate: new Date(coupon.cou_enddate)
+    });
+    this.isDrawerVisible &#x3D; true;
+  }
+
+  public enableEditing(): void {
+    this.isEditing &#x3D; true;
+  }
+
+  public closeDrawer(): void {
+    this.isDrawerVisible &#x3D; false;
+    setTimeout(() &#x3D;&gt; {
+      this.selectedCoupon &#x3D; null;
+      this.isEditing &#x3D; false;
+    }, 300);
+  }
+
+  public onSave(): void {
+    if (this.couponForm.valid) {
+      const data &#x3D; this.couponForm.value;
+      const cou_uuid &#x3D; data.cou_uuid;
+
+      // Validar coherencia de fechas
+      const start &#x3D; new Date(data.cou_startdate).getTime();
+      const end &#x3D; new Date(data.cou_enddate).getTime();
+      if (start &gt; end) {
+        this._messageService.error(&#x27;Error de Fechas&#x27;, &#x27;La fecha de inicio no puede ser posterior a la fecha de vencimiento.&#x27;);
+        return;
+      }
+
+      this.isLoading &#x3D; true;
+
+      // Asegurarse de que el código esté en mayúsculas
+      data.cou_code &#x3D; data.cou_code.toUpperCase().trim();
+
+      const request$ &#x3D; cou_uuid
+        ? this._couponsService.updateCoupon(data)
+        : this._couponsService.saveCoupon(data);
+
+      request$.subscribe({
+        next: () &#x3D;&gt; {
+          const successMsg &#x3D; cou_uuid
+            ? &#x27;El cupón ha sido actualizado correctamente.&#x27;
+            : &#x27;El cupón ha sido creado exitosamente.&#x27;;
+
+          this._messageService.success(&#x27;¡Éxito!&#x27;, successMsg);
+          this.isLoading &#x3D; false;
+          this.closeDrawer();
+          this.refreshData$.next(); // Reload table
+        },
+        error: (err) &#x3D;&gt; {
+          console.error(err);
+          this._messageService.error(&#x27;Error&#x27;, err.error?.error || &#x27;Hubo un problema al guardar el cupón.&#x27;);
+          this.isLoading &#x3D; false;
+        }
+      });
+    } else {
+      Object.values(this.couponForm.controls).forEach(control &#x3D;&gt; {
+        if (control.invalid) {
+          control.markAsDirty();
+          control.updateValueAndValidity({ onlySelf: true });
+        }
+      });
+    }
+  }
+
+  public onDeleteCoupon(coupon: any): void {
+    this._messageService.confirm(
+      &#x27;¿Estás seguro?&#x27;,
+      &#x60;Esta acción eliminará permanentemente el cupón: ${coupon.cou_code}&#x60;,
+      () &#x3D;&gt; {
+        this.isLoading &#x3D; true;
+        this._couponsService.deleteCoupon(this.cmp_uuid, coupon.cou_uuid).subscribe({
+          next: () &#x3D;&gt; {
+            this._messageService.success(&#x27;¡Eliminado!&#x27;, &#x27;El cupón ha sido eliminado correctamente.&#x27;);
+            this.isLoading &#x3D; false;
+            this.closeDrawer();
+            this.refreshData$.next(); // Reload table
+          },
+          error: (err) &#x3D;&gt; {
+            console.error(err);
+            this._messageService.error(&#x27;Error&#x27;, err.error?.error || &#x27;No se pudo eliminar el cupón.&#x27;);
+            this.isLoading &#x3D; false;
+          }
+        });
+      }
+    );
+  }
+}
+</code></pre>
+    </div>
+
+    <div class="tab-pane fade " id="templateData">
+        <pre class="line-numbers"><code class="language-html">&lt;div class&#x3D;&quot;coupons-dashboard-wrapper&quot;&gt;
+  &lt;div class&#x3D;&quot;dashboard-header&quot;&gt;
+    &lt;div class&#x3D;&quot;header-titles&quot;&gt;
+      &lt;h1 class&#x3D;&quot;page-title&quot;&gt;Cupones de Descuento&lt;/h1&gt;
+      &lt;p class&#x3D;&quot;page-subtitle&quot;&gt;Administrá los códigos de descuento, límites de uso y fechas de validez para tu tienda.&lt;/p&gt;
+    &lt;/div&gt;
+
+    &lt;div class&#x3D;&quot;header-actions&quot;&gt;
+      &lt;nz-input-group [nzPrefix]&#x3D;&quot;prefixIconSearch&quot; nzSize&#x3D;&quot;large&quot; style&#x3D;&quot;width: 300px; margin-right: 16px;&quot;&gt;
+        &lt;input type&#x3D;&quot;text&quot; nz-input placeholder&#x3D;&quot;Filtrar por código (Ej: PROMO15)...&quot; 
+          (input)&#x3D;&quot;onSearch(txtSearch.value)&quot; #txtSearch /&gt;
+      &lt;/nz-input-group&gt;
+
+      &lt;button nz-button nzType&#x3D;&quot;primary&quot; nzSize&#x3D;&quot;large&quot; (click)&#x3D;&quot;openCreateDrawer()&quot; style&#x3D;&quot;border-radius: 6px; font-weight: 550; display: flex; align-items: center; gap: 8px;&quot;&gt;
+        &lt;span nz-icon nzType&#x3D;&quot;plus&quot;&gt;&lt;/span&gt; Crear Cupón
+      &lt;/button&gt;
+
+      &lt;ng-template #prefixIconSearch&gt;
+        &lt;span nz-icon nzType&#x3D;&quot;search&quot;&gt;&lt;/span&gt;
+      &lt;/ng-template&gt;
+    &lt;/div&gt;
+  &lt;/div&gt;
+
+  &lt;!-- MAIN COUPONS CARD AND TABLE --&gt;
+  &lt;nz-card class&#x3D;&quot;premium-card&quot; [nzBordered]&#x3D;&quot;false&quot;&gt;
+    &lt;nz-table 
+      #basicTable 
+      [nzData]&#x3D;&quot;(filteredCoupons$ | async) || []&quot; 
+      [nzLoading]&#x3D;&quot;isLoading&quot; 
+      nzSize&#x3D;&quot;middle&quot; 
+      [nzPageSize]&#x3D;&quot;20&quot;
+      [nzScroll]&#x3D;&quot;{ y: &#x27;calc(100vh - 310px)&#x27; }&quot;&gt;
+      &lt;thead&gt;
+        &lt;tr&gt;
+          &lt;th nzWidth&#x3D;&quot;20%&quot;&gt;Código&lt;/th&gt;
+          &lt;th nzWidth&#x3D;&quot;15%&quot;&gt;Tipo&lt;/th&gt;
+          &lt;th nzWidth&#x3D;&quot;15%&quot;&gt;Valor Descuento&lt;/th&gt;
+          &lt;th nzWidth&#x3D;&quot;15%&quot;&gt;Compra Mínima&lt;/th&gt;
+          &lt;th nzWidth&#x3D;&quot;15%&quot;&gt;Vigencia&lt;/th&gt;
+          &lt;th nzWidth&#x3D;&quot;10%&quot; style&#x3D;&quot;text-align: center;&quot;&gt;Usos (Cant. / Límite)&lt;/th&gt;
+          &lt;th nzWidth&#x3D;&quot;10%&quot; style&#x3D;&quot;text-align: center;&quot;&gt;Estado&lt;/th&gt;
+        &lt;/tr&gt;
+      &lt;/thead&gt;
+      &lt;tbody&gt;
+        &lt;tr *ngFor&#x3D;&quot;let data of basicTable.data&quot; class&#x3D;&quot;clickable-row&quot; (click)&#x3D;&quot;openCouponDetail(data)&quot;&gt;
+          &lt;td&gt;
+            &lt;strong style&#x3D;&quot;color: #1890ff; font-family: monospace; font-size: 14px;&quot;&gt;{{ data.cou_code }}&lt;/strong&gt;
+          &lt;/td&gt;
+          &lt;td&gt;
+            &lt;nz-tag [nzColor]&#x3D;&quot;data.cou_type &#x3D;&#x3D;&#x3D; &#x27;PERCENTAGE&#x27; ? &#x27;cyan&#x27; : &#x27;blue&#x27;&quot;&gt;
+              {{ data.cou_type &#x3D;&#x3D;&#x3D; &#x27;PERCENTAGE&#x27; ? &#x27;Porcentual (%)&#x27; : &#x27;Monto Fijo ($)&#x27; }}
+            &lt;/nz-tag&gt;
+          &lt;/td&gt;
+          &lt;td&gt;
+            &lt;strong style&#x3D;&quot;font-size: 14px;&quot;&gt;
+              {{ data.cou_type &#x3D;&#x3D;&#x3D; &#x27;PERCENTAGE&#x27; ? (data.cou_value + &#x27;%&#x27;) : (&#x27;$&#x27; + (data.cou_value | number:&#x27;1.2-2&#x27;)) }}
+            &lt;/strong&gt;
+          &lt;/td&gt;
+          &lt;td&gt;${{ data.cou_minpurchase | number:&#x27;1.2-2&#x27; }}&lt;/td&gt;
+          &lt;td style&#x3D;&quot;font-size: 12px; color: #595959;&quot;&gt;
+            {{ data.cou_startdate | date:&#x27;dd/MM/yyyy&#x27; }} al {{ data.cou_enddate | date:&#x27;dd/MM/yyyy&#x27; }}
+          &lt;/td&gt;
+          &lt;td style&#x3D;&quot;text-align: center;&quot;&gt;
+            &lt;span style&#x3D;&quot;font-weight: 600;&quot;&gt;{{ data.cou_usedcount || 0 }}&lt;/span&gt; / 
+            &lt;span style&#x3D;&quot;color: #8c8c8c;&quot;&gt;{{ data.cou_limit &gt;&#x3D; 99999 ? &#x27;∞&#x27; : data.cou_limit }}&lt;/span&gt;
+          &lt;/td&gt;
+          &lt;td style&#x3D;&quot;text-align: center;&quot;&gt;
+            &lt;nz-tag [nzColor]&#x3D;&quot;data.cou_active ? &#x27;green&#x27; : &#x27;red&#x27;&quot;&gt;
+              {{ data.cou_active ? &#x27;Activo&#x27; : &#x27;Inactivo&#x27; }}
+            &lt;/nz-tag&gt;
+          &lt;/td&gt;
+        &lt;/tr&gt;
+      &lt;/tbody&gt;
+    &lt;/nz-table&gt;
+  &lt;/nz-card&gt;
+&lt;/div&gt;
+
+&lt;!-- Drawer para Detalle y Formulario --&gt;
+&lt;nz-drawer
+  [nzVisible]&#x3D;&quot;isDrawerVisible&quot;
+  nzPlacement&#x3D;&quot;right&quot;
+  [nzTitle]&#x3D;&quot;isEditing ? (selectedCoupon ? &#x27;Editar Cupón&#x27; : &#x27;Nuevo Cupón&#x27;) : &#x27;Ficha de Cupón&#x27;&quot;
+  [nzWidth]&#x3D;&quot;480&quot;
+  (nzOnClose)&#x3D;&quot;closeDrawer()&quot;
+&gt;
+  &lt;ng-container *nzDrawerContent&gt;
+    &lt;!-- MODO VISTA --&gt;
+    &lt;div *ngIf&#x3D;&quot;!isEditing &amp;&amp; selectedCoupon&quot;&gt;
+      &lt;nz-descriptions nzTitle&#x3D;&quot;Datos Generales&quot; [nzColumn]&#x3D;&quot;1&quot; nzBordered&gt;
+        &lt;nz-descriptions-item nzTitle&#x3D;&quot;Código del Cupón&quot;&gt;
+          &lt;strong style&#x3D;&quot;font-family: monospace; font-size: 16px; color: #1890ff;&quot;&gt;{{ selectedCoupon.cou_code }}&lt;/strong&gt;
+        &lt;/nz-descriptions-item&gt;
+        &lt;nz-descriptions-item nzTitle&#x3D;&quot;Tipo de Descuento&quot;&gt;
+          &lt;nz-tag [nzColor]&#x3D;&quot;selectedCoupon.cou_type &#x3D;&#x3D;&#x3D; &#x27;PERCENTAGE&#x27; ? &#x27;cyan&#x27; : &#x27;blue&#x27;&quot;&gt;
+            {{ selectedCoupon.cou_type &#x3D;&#x3D;&#x3D; &#x27;PERCENTAGE&#x27; ? &#x27;Porcentual&#x27; : &#x27;Fijo&#x27; }}
+          &lt;/nz-tag&gt;
+        &lt;/nz-descriptions-item&gt;
+        &lt;nz-descriptions-item nzTitle&#x3D;&quot;Valor del Descuento&quot;&gt;
+          &lt;strong&gt;{{ selectedCoupon.cou_type &#x3D;&#x3D;&#x3D; &#x27;PERCENTAGE&#x27; ? (selectedCoupon.cou_value + &#x27;%&#x27;) : (&#x27;$&#x27; + (selectedCoupon.cou_value | number:&#x27;1.2-2&#x27;)) }}&lt;/strong&gt;
+        &lt;/nz-descriptions-item&gt;
+        &lt;nz-descriptions-item nzTitle&#x3D;&quot;Compra Mínima Requerida&quot;&gt;
+          ${{ selectedCoupon.cou_minpurchase | number:&#x27;1.2-2&#x27; }}
+        &lt;/nz-descriptions-item&gt;
+        &lt;nz-descriptions-item nzTitle&#x3D;&quot;Descuento Máximo Tope&quot; *ngIf&#x3D;&quot;selectedCoupon.cou_type &#x3D;&#x3D;&#x3D; &#x27;PERCENTAGE&#x27;&quot;&gt;
+          {{ selectedCoupon.cou_maxdiscount &gt; 0 ? (&#x27;$&#x27; + (selectedCoupon.cou_maxdiscount | number:&#x27;1.2-2&#x27;)) : &#x27;Sin Tope&#x27; }}
+        &lt;/nz-descriptions-item&gt;
+        &lt;nz-descriptions-item nzTitle&#x3D;&quot;Límite Total de Usos&quot;&gt;
+          {{ selectedCoupon.cou_limit &gt;&#x3D; 99999 ? &#x27;Ilimitados&#x27; : selectedCoupon.cou_limit }} usos
+        &lt;/nz-descriptions-item&gt;
+        &lt;nz-descriptions-item nzTitle&#x3D;&quot;Usos Registrados&quot;&gt;
+          {{ selectedCoupon.cou_usedcount || 0 }} usos realizados
+        &lt;/nz-descriptions-item&gt;
+        &lt;nz-descriptions-item nzTitle&#x3D;&quot;Fecha de Inicio&quot;&gt;
+          {{ selectedCoupon.cou_startdate | date:&#x27;dd/MM/yyyy&#x27; }}
+        &lt;/nz-descriptions-item&gt;
+        &lt;nz-descriptions-item nzTitle&#x3D;&quot;Fecha de Vencimiento&quot;&gt;
+          {{ selectedCoupon.cou_enddate | date:&#x27;dd/MM/yyyy&#x27; }}
+        &lt;/nz-descriptions-item&gt;
+        &lt;nz-descriptions-item nzTitle&#x3D;&quot;Estado del Cupón&quot;&gt;
+          &lt;nz-tag [nzColor]&#x3D;&quot;selectedCoupon.cou_active ? &#x27;green&#x27; : &#x27;red&#x27;&quot;&gt;
+            {{ selectedCoupon.cou_active ? &#x27;Habilitado&#x27; : &#x27;Deshabilitado&#x27; }}
+          &lt;/nz-tag&gt;
+        &lt;/nz-descriptions-item&gt;
+      &lt;/nz-descriptions&gt;
+
+      &lt;nz-divider&gt;&lt;/nz-divider&gt;
+
+      &lt;div style&#x3D;&quot;display: flex; gap: 12px; justify-content: flex-end;&quot;&gt;
+        &lt;button nz-button nzType&#x3D;&quot;dashed&quot; nzDanger (click)&#x3D;&quot;onDeleteCoupon(selectedCoupon)&quot; [nzLoading]&#x3D;&quot;isLoading&quot; style&#x3D;&quot;border-radius: 6px; font-weight: 550;&quot;&gt;
+          &lt;span nz-icon nzType&#x3D;&quot;delete&quot;&gt;&lt;/span&gt; Eliminar
+        &lt;/button&gt;
+        &lt;button nz-button nzType&#x3D;&quot;primary&quot; (click)&#x3D;&quot;enableEditing()&quot; style&#x3D;&quot;border-radius: 6px; font-weight: 550;&quot;&gt;
+          &lt;span nz-icon nzType&#x3D;&quot;edit&quot;&gt;&lt;/span&gt; Editar Datos
+        &lt;/button&gt;
+      &lt;/div&gt;
+    &lt;/div&gt;
+
+    &lt;!-- MODO EDICIÓN / ALTA --&gt;
+    &lt;form [formGroup]&#x3D;&quot;couponForm&quot; *ngIf&#x3D;&quot;isEditing&quot; (ngSubmit)&#x3D;&quot;onSave()&quot; nz-form nzLayout&#x3D;&quot;vertical&quot;&gt;
+      &lt;nz-form-item&gt;
+        &lt;nz-form-label nzRequired&gt;Código del Cupón&lt;/nz-form-label&gt;
+        &lt;nz-form-control nzErrorTip&#x3D;&quot;Código obligatorio (letras y números únicamente)&quot;&gt;
+          &lt;input nz-input formControlName&#x3D;&quot;cou_code&quot; placeholder&#x3D;&quot;Ej: DESCUENTO15&quot; style&#x3D;&quot;text-transform: uppercase; font-family: monospace; font-weight: 600;&quot; /&gt;
+        &lt;/nz-form-control&gt;
+      &lt;/nz-form-item&gt;
+
+      &lt;div style&#x3D;&quot;display: flex; gap: 16px;&quot;&gt;
+        &lt;nz-form-item style&#x3D;&quot;flex: 1;&quot;&gt;
+          &lt;nz-form-label nzRequired&gt;Tipo Descuento&lt;/nz-form-label&gt;
+          &lt;nz-form-control&gt;
+            &lt;nz-select formControlName&#x3D;&quot;cou_type&quot;&gt;
+              &lt;nz-option nzValue&#x3D;&quot;PERCENTAGE&quot; nzLabel&#x3D;&quot;Porcentaje (%)&quot;&gt;&lt;/nz-option&gt;
+              &lt;nz-option nzValue&#x3D;&quot;FIXED&quot; nzLabel&#x3D;&quot;Monto Fijo ($)&quot;&gt;&lt;/nz-option&gt;
+            &lt;/nz-select&gt;
+          &lt;/nz-form-control&gt;
+        &lt;/nz-form-item&gt;
+
+        &lt;nz-form-item style&#x3D;&quot;flex: 1;&quot;&gt;
+          &lt;nz-form-label nzRequired&gt;Valor&lt;/nz-form-label&gt;
+          &lt;nz-form-control nzErrorTip&#x3D;&quot;Requerido (mayor a 0)&quot;&gt;
+            &lt;nz-input-number formControlName&#x3D;&quot;cou_value&quot; [nzMin]&#x3D;&quot;0.01&quot; style&#x3D;&quot;width: 100%; border-radius: 6px;&quot;&gt;&lt;/nz-input-number&gt;
+          &lt;/nz-form-control&gt;
+        &lt;/nz-form-item&gt;
+      &lt;/div&gt;
+
+      &lt;div style&#x3D;&quot;display: flex; gap: 16px;&quot;&gt;
+        &lt;nz-form-item style&#x3D;&quot;flex: 1;&quot;&gt;
+          &lt;nz-form-label nzRequired&gt;Compra Mínima ($)&lt;/nz-form-label&gt;
+          &lt;nz-form-control nzErrorTip&#x3D;&quot;Mínimo 0&quot;&gt;
+            &lt;nz-input-number formControlName&#x3D;&quot;cou_minpurchase&quot; [nzMin]&#x3D;&quot;0&quot; style&#x3D;&quot;width: 100%; border-radius: 6px;&quot;&gt;&lt;/nz-input-number&gt;
+          &lt;/nz-form-control&gt;
+        &lt;/nz-form-item&gt;
+
+        &lt;nz-form-item style&#x3D;&quot;flex: 1;&quot; *ngIf&#x3D;&quot;couponForm.get(&#x27;cou_type&#x27;)?.value &#x3D;&#x3D;&#x3D; &#x27;PERCENTAGE&#x27;&quot;&gt;
+          &lt;nz-form-label&gt;Monto Máx Descuento ($)&lt;/nz-form-label&gt;
+          &lt;nz-form-control nzErrorTip&#x3D;&quot;Mínimo 0&quot;&gt;
+            &lt;nz-input-number formControlName&#x3D;&quot;cou_maxdiscount&quot; [nzMin]&#x3D;&quot;0&quot; placeholder&#x3D;&quot;Sin límite&quot; style&#x3D;&quot;width: 100%; border-radius: 6px;&quot;&gt;&lt;/nz-input-number&gt;
+          &lt;/nz-form-control&gt;
+        &lt;/nz-form-item&gt;
+      &lt;/div&gt;
+
+      &lt;div style&#x3D;&quot;display: flex; gap: 16px;&quot;&gt;
+        &lt;nz-form-item style&#x3D;&quot;flex: 1;&quot;&gt;
+          &lt;nz-form-label nzRequired&gt;Fecha Inicio&lt;/nz-form-label&gt;
+          &lt;nz-form-control nzErrorTip&#x3D;&quot;Fecha requerida&quot;&gt;
+            &lt;nz-date-picker formControlName&#x3D;&quot;cou_startdate&quot; nzFormat&#x3D;&quot;dd/MM/yyyy&quot; style&#x3D;&quot;width: 100%; border-radius: 6px;&quot;&gt;&lt;/nz-date-picker&gt;
+          &lt;/nz-form-control&gt;
+        &lt;/nz-form-item&gt;
+
+        &lt;nz-form-item style&#x3D;&quot;flex: 1;&quot;&gt;
+          &lt;nz-form-label nzRequired&gt;Fecha Vencimiento&lt;/nz-form-label&gt;
+          &lt;nz-form-control nzErrorTip&#x3D;&quot;Fecha requerida&quot;&gt;
+            &lt;nz-date-picker formControlName&#x3D;&quot;cou_enddate&quot; nzFormat&#x3D;&quot;dd/MM/yyyy&quot; style&#x3D;&quot;width: 100%; border-radius: 6px;&quot;&gt;&lt;/nz-date-picker&gt;
+          &lt;/nz-form-control&gt;
+        &lt;/nz-form-item&gt;
+      &lt;/div&gt;
+
+      &lt;div style&#x3D;&quot;display: flex; gap: 16px; align-items: center; margin-top: 8px;&quot;&gt;
+        &lt;nz-form-item style&#x3D;&quot;flex: 1; margin: 0;&quot;&gt;
+          &lt;nz-form-label nzRequired&gt;Límite Usos Totales&lt;/nz-form-label&gt;
+          &lt;nz-form-control nzErrorTip&#x3D;&quot;Mínimo 1 uso&quot;&gt;
+            &lt;nz-input-number formControlName&#x3D;&quot;cou_limit&quot; [nzMin]&#x3D;&quot;1&quot; style&#x3D;&quot;width: 100%; border-radius: 6px;&quot;&gt;&lt;/nz-input-number&gt;
+          &lt;/nz-form-control&gt;
+        &lt;/nz-form-item&gt;
+
+        &lt;nz-form-item style&#x3D;&quot;flex: 1; display: flex; flex-direction: column; align-items: flex-start; justify-content: center; margin: 0;&quot;&gt;
+          &lt;nz-form-label style&#x3D;&quot;margin-bottom: 8px;&quot;&gt;Estado Cupón&lt;/nz-form-label&gt;
+          &lt;nz-form-control&gt;
+            &lt;nz-switch formControlName&#x3D;&quot;cou_active&quot; nzCheckedChildren&#x3D;&quot;Activo&quot; nzUnCheckedChildren&#x3D;&quot;Inactivo&quot;&gt;&lt;/nz-switch&gt;
+          &lt;/nz-form-control&gt;
+        &lt;/nz-form-item&gt;
+      &lt;/div&gt;
+
+      &lt;nz-divider&gt;&lt;/nz-divider&gt;
+
+      &lt;div style&#x3D;&quot;display: flex; gap: 12px; justify-content: flex-end;&quot;&gt;
+        &lt;button nz-button type&#x3D;&quot;button&quot; (click)&#x3D;&quot;closeDrawer()&quot; style&#x3D;&quot;border-radius: 6px; font-weight: 550;&quot;&gt;
+          Cancelar
+        &lt;/button&gt;
+        &lt;button nz-button nzType&#x3D;&quot;primary&quot; type&#x3D;&quot;submit&quot; [nzLoading]&#x3D;&quot;isLoading&quot; style&#x3D;&quot;border-radius: 6px; font-weight: 550;&quot;&gt;
+          Guardar Cupón
+        &lt;/button&gt;
+      &lt;/div&gt;
+    &lt;/form&gt;
+  &lt;/ng-container&gt;
+&lt;/nz-drawer&gt;
+</code></pre>
+    </div>
+
+    <div class="tab-pane fade " id="styleData">
+                <p class="comment">
+                    <code>./coupons.component.scss</code>
+                </p>
+                <pre class="line-numbers"><code class="language-scss">.coupons-dashboard-wrapper {
+    padding: 24px;
+    background-color: #f7f9fc;
+    height: calc(100vh - 64px); 
+    display: flex;
+    flex-direction: column;
+    overflow: hidden;
+}
+
+.dashboard-header {
+    flex-shrink: 0;
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    margin-bottom: 24px;
+    gap: 16px;
+
+    .page-title {
+        font-size: 28px;
+        font-weight: 600;
+        color: #1f1f1f;
+        margin-bottom: 4px;
+    }
+
+    .page-subtitle {
+        color: #8c8c8c;
+        font-size: 15px;
+        margin: 0;
+    }
+}
+
+.header-actions {
+    display: flex;
+    align-items: center;
+}
+
+.premium-card {
+    border-radius: 12px;
+    box-shadow: 0 4px 24px rgba(0, 0, 0, 0.04);
+    flex: 1;
+    display: flex;
+    flex-direction: column;
+    overflow: hidden;
+
+    ::ng-deep .ant-card-body {
+        flex: 1;
+        display: flex;
+        flex-direction: column;
+        padding: 0;
+        overflow: hidden;
+    }
+}
+
+::ng-deep .ant-table-wrapper, 
+::ng-deep .ant-spin-nested-loading, 
+::ng-deep .ant-spin-container, 
+::ng-deep .ant-table {
+    height: 100%;
+}
+
+.clickable-row {
+    cursor: pointer;
+    transition: background-color 0.2s;
+
+    &amp;:hover {
+        background-color: #fafafa;
+    }
+}
+</code></pre>
+    </div>
+
+    <div class="tab-pane fade " id="tree">
+        <div id="tree-container"></div>
+        <div class="tree-legend">
+            <div class="title">
+                <b>Leyenda</b>
+            </div>
+            <div>
+                <div class="color htmlelement"></div><span>Elemento Html</span>
+            </div>
+            <div>
+                <div class="color component"></div><span>Componente</span>
+            </div>
+            <div>
+                <div class="color directive"></div><span>Elemento Html con directiva</span>
+            </div>
+        </div>
+    </div>
+
+    
+</div>
+
+<script src="../js/libs/vis-network.min.js"></script>
+<script src="../js/libs/htmlparser.js"></script>
+<script src="../js/libs/deep-iterator.js"></script>
+<script>
+        var COMPONENT_TEMPLATE = '<div><div class="coupons-dashboard-wrapper">  <div class="dashboard-header">    <div class="header-titles">      <h1 class="page-title">Cupones de Descuento</h1>      <p class="page-subtitle">Administrá los códigos de descuento, límites de uso y fechas de validez para tu tienda.</p>    </div>    <div class="header-actions">      <nz-input-group [nzPrefix]="prefixIconSearch" nzSize="large" style="width: 300px; margin-right: 16px;">        <input type="text" nz-input placeholder="Filtrar por código (Ej: PROMO15)..."           (input)="onSearch(txtSearch.value)" #txtSearch />      </nz-input-group>      <button nz-button nzType="primary" nzSize="large" (click)="openCreateDrawer()" style="border-radius: 6px; font-weight: 550; display: flex; align-items: center; gap: 8px;">        <span nz-icon nzType="plus"></span> Crear Cupón      </button>      <ng-template #prefixIconSearch>        <span nz-icon nzType="search"></span>      </ng-template>    </div>  </div>  <!-- MAIN COUPONS CARD AND TABLE -->  <nz-card class="premium-card" [nzBordered]="false">    <nz-table       #basicTable       [nzData]="(filteredCoupons$ | async) || []"       [nzLoading]="isLoading"       nzSize="middle"       [nzPageSize]="20"      [nzScroll]="{ y: \'calc(100vh - 310px)\' }">      <thead>        <tr>          <th nzWidth="20%">Código</th>          <th nzWidth="15%">Tipo</th>          <th nzWidth="15%">Valor Descuento</th>          <th nzWidth="15%">Compra Mínima</th>          <th nzWidth="15%">Vigencia</th>          <th nzWidth="10%" style="text-align: center;">Usos (Cant. / Límite)</th>          <th nzWidth="10%" style="text-align: center;">Estado</th>        </tr>      </thead>      <tbody>        <tr *ngFor="let data of basicTable.data" class="clickable-row" (click)="openCouponDetail(data)">          <td>            <strong style="color: #1890ff; font-family: monospace; font-size: 14px;">{{ data.cou_code }}</strong>          </td>          <td>            <nz-tag [nzColor]="data.cou_type === \'PERCENTAGE\' ? \'cyan\' : \'blue\'">              {{ data.cou_type === \'PERCENTAGE\' ? \'Porcentual (%)\' : \'Monto Fijo ($)\' }}            </nz-tag>          </td>          <td>            <strong style="font-size: 14px;">              {{ data.cou_type === \'PERCENTAGE\' ? (data.cou_value + \'%\') : (\'$\' + (data.cou_value | number:\'1.2-2\')) }}            </strong>          </td>          <td>${{ data.cou_minpurchase | number:\'1.2-2\' }}</td>          <td style="font-size: 12px; color: #595959;">            {{ data.cou_startdate | date:\'dd/MM/yyyy\' }} al {{ data.cou_enddate | date:\'dd/MM/yyyy\' }}          </td>          <td style="text-align: center;">            <span style="font-weight: 600;">{{ data.cou_usedcount || 0 }}</span> /             <span style="color: #8c8c8c;">{{ data.cou_limit >= 99999 ? \'∞\' : data.cou_limit }}</span>          </td>          <td style="text-align: center;">            <nz-tag [nzColor]="data.cou_active ? \'green\' : \'red\'">              {{ data.cou_active ? \'Activo\' : \'Inactivo\' }}            </nz-tag>          </td>        </tr>      </tbody>    </nz-table>  </nz-card></div><!-- Drawer para Detalle y Formulario --><nz-drawer  [nzVisible]="isDrawerVisible"  nzPlacement="right"  [nzTitle]="isEditing ? (selectedCoupon ? \'Editar Cupón\' : \'Nuevo Cupón\') : \'Ficha de Cupón\'"  [nzWidth]="480"  (nzOnClose)="closeDrawer()">  <ng-container *nzDrawerContent>    <!-- MODO VISTA -->    <div *ngIf="!isEditing && selectedCoupon">      <nz-descriptions nzTitle="Datos Generales" [nzColumn]="1" nzBordered>        <nz-descriptions-item nzTitle="Código del Cupón">          <strong style="font-family: monospace; font-size: 16px; color: #1890ff;">{{ selectedCoupon.cou_code }}</strong>        </nz-descriptions-item>        <nz-descriptions-item nzTitle="Tipo de Descuento">          <nz-tag [nzColor]="selectedCoupon.cou_type === \'PERCENTAGE\' ? \'cyan\' : \'blue\'">            {{ selectedCoupon.cou_type === \'PERCENTAGE\' ? \'Porcentual\' : \'Fijo\' }}          </nz-tag>        </nz-descriptions-item>        <nz-descriptions-item nzTitle="Valor del Descuento">          <strong>{{ selectedCoupon.cou_type === \'PERCENTAGE\' ? (selectedCoupon.cou_value + \'%\') : (\'$\' + (selectedCoupon.cou_value | number:\'1.2-2\')) }}</strong>        </nz-descriptions-item>        <nz-descriptions-item nzTitle="Compra Mínima Requerida">          ${{ selectedCoupon.cou_minpurchase | number:\'1.2-2\' }}        </nz-descriptions-item>        <nz-descriptions-item nzTitle="Descuento Máximo Tope" *ngIf="selectedCoupon.cou_type === \'PERCENTAGE\'">          {{ selectedCoupon.cou_maxdiscount > 0 ? (\'$\' + (selectedCoupon.cou_maxdiscount | number:\'1.2-2\')) : \'Sin Tope\' }}        </nz-descriptions-item>        <nz-descriptions-item nzTitle="Límite Total de Usos">          {{ selectedCoupon.cou_limit >= 99999 ? \'Ilimitados\' : selectedCoupon.cou_limit }} usos        </nz-descriptions-item>        <nz-descriptions-item nzTitle="Usos Registrados">          {{ selectedCoupon.cou_usedcount || 0 }} usos realizados        </nz-descriptions-item>        <nz-descriptions-item nzTitle="Fecha de Inicio">          {{ selectedCoupon.cou_startdate | date:\'dd/MM/yyyy\' }}        </nz-descriptions-item>        <nz-descriptions-item nzTitle="Fecha de Vencimiento">          {{ selectedCoupon.cou_enddate | date:\'dd/MM/yyyy\' }}        </nz-descriptions-item>        <nz-descriptions-item nzTitle="Estado del Cupón">          <nz-tag [nzColor]="selectedCoupon.cou_active ? \'green\' : \'red\'">            {{ selectedCoupon.cou_active ? \'Habilitado\' : \'Deshabilitado\' }}          </nz-tag>        </nz-descriptions-item>      </nz-descriptions>      <nz-divider></nz-divider>      <div style="display: flex; gap: 12px; justify-content: flex-end;">        <button nz-button nzType="dashed" nzDanger (click)="onDeleteCoupon(selectedCoupon)" [nzLoading]="isLoading" style="border-radius: 6px; font-weight: 550;">          <span nz-icon nzType="delete"></span> Eliminar        </button>        <button nz-button nzType="primary" (click)="enableEditing()" style="border-radius: 6px; font-weight: 550;">          <span nz-icon nzType="edit"></span> Editar Datos        </button>      </div>    </div>    <!-- MODO EDICIÓN / ALTA -->    <form [formGroup]="couponForm" *ngIf="isEditing" (ngSubmit)="onSave()" nz-form nzLayout="vertical">      <nz-form-item>        <nz-form-label nzRequired>Código del Cupón</nz-form-label>        <nz-form-control nzErrorTip="Código obligatorio (letras y números únicamente)">          <input nz-input formControlName="cou_code" placeholder="Ej: DESCUENTO15" style="text-transform: uppercase; font-family: monospace; font-weight: 600;" />        </nz-form-control>      </nz-form-item>      <div style="display: flex; gap: 16px;">        <nz-form-item style="flex: 1;">          <nz-form-label nzRequired>Tipo Descuento</nz-form-label>          <nz-form-control>            <nz-select formControlName="cou_type">              <nz-option nzValue="PERCENTAGE" nzLabel="Porcentaje (%)"></nz-option>              <nz-option nzValue="FIXED" nzLabel="Monto Fijo ($)"></nz-option>            </nz-select>          </nz-form-control>        </nz-form-item>        <nz-form-item style="flex: 1;">          <nz-form-label nzRequired>Valor</nz-form-label>          <nz-form-control nzErrorTip="Requerido (mayor a 0)">            <nz-input-number formControlName="cou_value" [nzMin]="0.01" style="width: 100%; border-radius: 6px;"></nz-input-number>          </nz-form-control>        </nz-form-item>      </div>      <div style="display: flex; gap: 16px;">        <nz-form-item style="flex: 1;">          <nz-form-label nzRequired>Compra Mínima ($)</nz-form-label>          <nz-form-control nzErrorTip="Mínimo 0">            <nz-input-number formControlName="cou_minpurchase" [nzMin]="0" style="width: 100%; border-radius: 6px;"></nz-input-number>          </nz-form-control>        </nz-form-item>        <nz-form-item style="flex: 1;" *ngIf="couponForm.get(\'cou_type\')?.value === \'PERCENTAGE\'">          <nz-form-label>Monto Máx Descuento ($)</nz-form-label>          <nz-form-control nzErrorTip="Mínimo 0">            <nz-input-number formControlName="cou_maxdiscount" [nzMin]="0" placeholder="Sin límite" style="width: 100%; border-radius: 6px;"></nz-input-number>          </nz-form-control>        </nz-form-item>      </div>      <div style="display: flex; gap: 16px;">        <nz-form-item style="flex: 1;">          <nz-form-label nzRequired>Fecha Inicio</nz-form-label>          <nz-form-control nzErrorTip="Fecha requerida">            <nz-date-picker formControlName="cou_startdate" nzFormat="dd/MM/yyyy" style="width: 100%; border-radius: 6px;"></nz-date-picker>          </nz-form-control>        </nz-form-item>        <nz-form-item style="flex: 1;">          <nz-form-label nzRequired>Fecha Vencimiento</nz-form-label>          <nz-form-control nzErrorTip="Fecha requerida">            <nz-date-picker formControlName="cou_enddate" nzFormat="dd/MM/yyyy" style="width: 100%; border-radius: 6px;"></nz-date-picker>          </nz-form-control>        </nz-form-item>      </div>      <div style="display: flex; gap: 16px; align-items: center; margin-top: 8px;">        <nz-form-item style="flex: 1; margin: 0;">          <nz-form-label nzRequired>Límite Usos Totales</nz-form-label>          <nz-form-control nzErrorTip="Mínimo 1 uso">            <nz-input-number formControlName="cou_limit" [nzMin]="1" style="width: 100%; border-radius: 6px;"></nz-input-number>          </nz-form-control>        </nz-form-item>        <nz-form-item style="flex: 1; display: flex; flex-direction: column; align-items: flex-start; justify-content: center; margin: 0;">          <nz-form-label style="margin-bottom: 8px;">Estado Cupón</nz-form-label>          <nz-form-control>            <nz-switch formControlName="cou_active" nzCheckedChildren="Activo" nzUnCheckedChildren="Inactivo"></nz-switch>          </nz-form-control>        </nz-form-item>      </div>      <nz-divider></nz-divider>      <div style="display: flex; gap: 12px; justify-content: flex-end;">        <button nz-button type="button" (click)="closeDrawer()" style="border-radius: 6px; font-weight: 550;">          Cancelar        </button>        <button nz-button nzType="primary" type="submit" [nzLoading]="isLoading" style="border-radius: 6px; font-weight: 550;">          Guardar Cupón        </button>      </div>    </form>  </ng-container></nz-drawer></div>'
+    var COMPONENTS = [{'name': 'AccountConfirmedComponent', 'selector': 'app-account-confirmed'},{'name': 'AccountCreatedComponent', 'selector': 'app-account-created'},{'name': 'AddressesComponent', 'selector': 'app-addresses'},{'name': 'AnalyticsComponent', 'selector': 'app-analytics'},{'name': 'AppComponent', 'selector': 'app-root'},{'name': 'ApplicationBarComponent', 'selector': 'app-application-bar'},{'name': 'ApplicationLayoutComponent', 'selector': 'app-application-layout'},{'name': 'AuthLayoutComponent', 'selector': 'app-auth-layout'},{'name': 'BarcodeScannerComponent', 'selector': 'app-barcode-scanner'},{'name': 'CameraComponent', 'selector': 'app-camera'},{'name': 'CartComponent', 'selector': 'app-cart'},{'name': 'CatalogComponent', 'selector': 'app-catalog'},{'name': 'CategoriesComponent', 'selector': 'app-categories'},{'name': 'CategoriesListComponent', 'selector': 'app-categories-list'},{'name': 'CheckoutComponent', 'selector': 'app-checkout'},{'name': 'CompanyComponent', 'selector': 'app-company'},{'name': 'CompanySettingsComponent', 'selector': 'app-company-settings'},{'name': 'CouponsComponent', 'selector': 'app-coupons'},{'name': 'CustomersComponent', 'selector': 'app-customers'},{'name': 'DistPriceListComponent', 'selector': 'app-dist-price-list'},{'name': 'FinancesComponent', 'selector': 'app-finances'},{'name': 'ForgotPasswordComponent', 'selector': 'app-forgot-password'},{'name': 'GlobalCategoriesComponent', 'selector': 'app-global-categories'},{'name': 'GlobalCategoryComponent', 'selector': 'app-global-category'},{'name': 'GlobalItemComponent', 'selector': 'app-global-item'},{'name': 'GlobalItemsComponent', 'selector': 'app-global-items'},{'name': 'GlobalMaterialComponent', 'selector': 'app-global-material'},{'name': 'GlobalMaterialsComponent', 'selector': 'app-global-materials'},{'name': 'HomeStoreComponent', 'selector': 'app-home'},{'name': 'InventoryAuditComponent', 'selector': 'app-inventory-audit'},{'name': 'ItemsComponent', 'selector': 'app-items'},{'name': 'LoginComponent', 'selector': 'app-login'},{'name': 'MapPickerComponent', 'selector': 'app-map-picker'},{'name': 'MarketHomeComponent', 'selector': 'app-market-home'},{'name': 'MaterialComponent', 'selector': 'app-material'},{'name': 'MaterialsComponent', 'selector': 'app-materials'},{'name': 'MenuItemComponent', 'selector': 'app-menu-item'},{'name': 'MenuItemsComponent', 'selector': 'app-menu-items'},{'name': 'MpPaymentBrickComponent', 'selector': 'app-mp-payment-brick'},{'name': 'MyCompaniesComponent', 'selector': 'app-my-companies'},{'name': 'MyFavoritesComponent', 'selector': 'app-my-favorites'},{'name': 'MyPurchasesComponent', 'selector': 'app-my-purchases'},{'name': 'NavBarComponent', 'selector': 'app-nav-bar'},{'name': 'OrdersReceivedComponent', 'selector': 'app-orders-received'},{'name': 'PriceListComponent', 'selector': 'app-price-list'},{'name': 'ProductComponent', 'selector': 'app-product'},{'name': 'ProductDetailComponent', 'selector': 'app-product-detail'},{'name': 'ProductsComponent', 'selector': 'app-products'},{'name': 'ProductsVariationsComponent', 'selector': 'app-products-variations'},{'name': 'ProductVariationComponent', 'selector': 'app-product-variation'},{'name': 'PublicLayoutComponent', 'selector': 'app-public-layout'},{'name': 'RegisterComponent', 'selector': 'app-register'},{'name': 'ResetPasswordComponent', 'selector': 'app-reset-password'},{'name': 'SideBarComponent', 'selector': 'app-side-bar'},{'name': 'SsoCallbackComponent', 'selector': 'app-sso-callback'},{'name': 'StoreCatalogComponent', 'selector': 'app-store'},{'name': 'SuperAdminComponent', 'selector': 'app-super-admin'},{'name': 'SupplierComponent', 'selector': 'app-supplier'},{'name': 'SuppliersComponent', 'selector': 'app-suppliers'},{'name': 'UserLayoutComponent', 'selector': 'app-user-layout'},{'name': 'UserRolCompanyComponent', 'selector': 'app-user-rol-company'},{'name': 'WarehousesComponent', 'selector': 'app-warehouses'}];
+    var DIRECTIVES = [{'name': 'ImagePreloadDirective', 'selector': 'img[default]'}];
+    var ACTUAL_COMPONENT = {'name': 'CouponsComponent'};
+</script>
+<script src="../js/tree.js"></script>
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+                   </div><div class="search-results">
+    <div class="has-results">
+        <h1 class="search-results-title"><span class='search-results-count'></span> comparación de resultados "<span class='search-query'></span>"</h1>
+        <ul class="search-results-list"></ul>
+    </div>
+    <div class="no-results">
+        <h1 class="search-results-title">No hay resultados que coincidan "<span class='search-query'></span>"</h1>
+    </div>
+</div>
+</div>
+               <!-- END CONTENT -->
+           </div>
+       </div>
+
+          
+<div class="compodoc-lang-switch">
+  <select id="compodoc-lang-select" aria-label="Seleccionar idioma">
+    <option value="es" selected>🇪🇸 Español</option>
+    <option value="en" >🇺🇸 English</option>
+    <option value="pt" >🇧🇷 Português</option>
+  </select>
+</div>
+
+          <label class="dark-mode-switch">
+               <input type="checkbox">
+               <span class="slider">
+                    <svg class="slider-icon" viewBox="0 0 24 24" fill="none" height="20" stroke="#000" stroke-linecap="round" stroke-linejoin="round" stroke-width="2" width="20" xmlns="http://www.w3.org/2000/svg">
+                    <path d="M21 12.79A9 9 0 1111.21 3 7 7 0 0021 12.79z"></path>
+                    </svg>
+               </span>
+          </label>
+
+       <script>
+            var COMPODOC_CURRENT_PAGE_DEPTH = 1;
+            var COMPODOC_CURRENT_PAGE_CONTEXT = 'component';
+            var COMPODOC_CURRENT_PAGE_URL = 'CouponsComponent.html';
+            var MAX_SEARCH_RESULTS = 15;
+       </script>
+
+       <script>
+               $darkModeToggleSwitchers = document.querySelectorAll('.dark-mode-switch input');
+               var updateDarkModeSwitchOffset = function () {
+                    var content = document.querySelector('.content');
+                    var scrollbarWidth = 0;
+
+                    if (content) {
+                         scrollbarWidth = Math.max(0, content.offsetWidth - content.clientWidth);
+                    }
+
+                    document.documentElement.style.setProperty(
+                         '--content-scrollbar-width',
+                         scrollbarWidth + 'px'
+                    );
+               };
+
+               updateDarkModeSwitchOffset();
+               requestAnimationFrame(updateDarkModeSwitchOffset);
+               window.addEventListener('resize', updateDarkModeSwitchOffset);
+
+               checkToggle(darkModeState);
+               if ($darkModeToggleSwitchers.length > 0) {
+                    for (var i = 0; i < $darkModeToggleSwitchers.length; i++) {
+                         $darkModeToggleSwitchers[i].addEventListener('change', function (event) {
+                              darkModeState = !darkModeState;
+                              toggleDarkMode(darkModeState);
+                         });
+                    }
+               }
+          </script>
+
+       <script src="../js/libs/custom-elements.min.js"></script>
+       <script src="../js/libs/lit-html.js"></script>
+
+       <script src="../js/menu-wc.js" defer></script>
+
+       <script src="../js/libs/bootstrap-native.js"></script>
+
+       <script src="../js/libs/es6-shim.min.js"></script>
+       <script src="../js/libs/EventDispatcher.js"></script>
+       <script src="../js/libs/promise.min.js"></script>
+
+       <script src="../js/compodoc.js"></script>
+
+       <script src="../js/tabs.js"></script>
+       <script src="../js/menu.js"></script>
+       <script src="../js/libs/clipboard.min.js"></script>
+       <script src="../js/libs/prism.js"></script>
+       <script src="../js/sourceCode.js"></script>
+          <script src="../js/search/search.js"></script>
+          <script src="../js/search/lunr.min.js"></script>
+          <script src="../js/search/search-lunr.js"></script>
+          <script src="../js/search/search_index.js"></script>
+       <script src="../js/lazy-load-graphs.js"></script>
+
+
+    
+<script id="compodoc-lang-script">
+(function() {
+  var CURRENT_LANG = "es";
+  var ADDITIONAL_DOCS_MAP = {"es":["01.-introducción-y-arquitectura-general.html","02.-autenticación-y-control-de-accesos.html","03.-catálogo-público-y-exploración-de-tiendas.html","04.-carrito-de-compras-y-checkout-multitienda.html","05.-gestión-de-empresas,-roles-y-configuración.html","06.-inventario,-productos,-variaciones-y-almacenes.html","07.-gestión-de-pedidos,-compras-y-cupones.html","08.-analíticas-de-negocio,-finanzas-y-proveedores.html"],"en":["01.-introduction-and-general-architecture.html","02.-authentication-and-access-control.html","03.-public-catalog-and-store-exploration.html","04.-shopping-cart-and-multi-store-checkout.html","05.-company-management,-roles-and-configuration.html","06.-inventory,-products,-variations-and-warehouses.html","07.-orders-management,-purchases-and-coupons.html","08.-business-analytics,-finances-and-suppliers.html"],"pt":["01.-introdução-e-arquitetura-geral.html","02.-autenticação-e-controle-de-acesso.html","03.-catálogo-público-e-exploração-de-lojas.html","04.-carrinho-de-compras-e-checkout-multiloja.html","05.-gestão-de-empresas,-funções-e-configuração.html","06.-estoque,-produtos,-variações-e-armazéns.html","07.-gestão-de-pedidos,-compras-e-cupons.html","08.-análise-de-negócios,-finanças-e-fornecedores.html"]};
+
+  var select = document.getElementById('compodoc-lang-select');
+  if (!select) return;
+
+  try {
+    localStorage.setItem('compodoc_lang', CURRENT_LANG);
+  } catch (e) {}
+
+  select.addEventListener('change', function(e) {
+    var targetLang = e.target.value;
+    if (targetLang === CURRENT_LANG) return;
+
+    try {
+      localStorage.setItem('compodoc_lang', targetLang);
+    } catch (err) {}
+
+    var href = window.location.href;
+    var pathname = window.location.pathname;
+
+    // Manejo especial para páginas de additional-documentation
+    if (pathname.indexOf('/additional-documentation/') !== -1) {
+      var segments = pathname.split('/');
+      var currentFile = decodeURIComponent(segments[segments.length - 1]);
+      
+      var currentList = ADDITIONAL_DOCS_MAP[CURRENT_LANG] || [];
+      var targetList = ADDITIONAL_DOCS_MAP[targetLang] || [];
+      var foundIndex = -1;
+
+      var prefixMatch = currentFile.match(/^(\d{2}\.-)/);
+      if (prefixMatch) {
+        var prefix = prefixMatch[1];
+        for (var i = 0; i < targetList.length; i++) {
+          if (targetList[i].startsWith(prefix)) {
+            foundIndex = i;
+            break;
+          }
+        }
+      }
+      if (foundIndex === -1) {
+        for (var j = 0; j < currentList.length; j++) {
+          if (currentList[j] === currentFile) {
+            foundIndex = j;
+            break;
+          }
+        }
+      }
+
+      var targetFile = (foundIndex !== -1 && targetList[foundIndex]) 
+        ? targetList[foundIndex] 
+        : (targetList[0] || 'index.html');
+
+      var targetSubpath = '/' + targetLang + '/additional-documentation/' + targetFile;
+      var currentSubpath = '/' + CURRENT_LANG + '/additional-documentation/' + segments[segments.length - 1];
+
+      if (href.indexOf(currentSubpath) !== -1) {
+        window.location.href = href.replace(currentSubpath, targetSubpath);
+        return;
+      }
+    }
+
+    // Páginas estándar
+    var standardReplace = href.replace('/' + CURRENT_LANG + '/', '/' + targetLang + '/');
+    if (standardReplace !== href) {
+      window.location.href = standardReplace;
+    } else {
+      var depth = (typeof COMPODOC_CURRENT_PAGE_DEPTH !== 'undefined') ? COMPODOC_CURRENT_PAGE_DEPTH : 0;
+      var prefixPath = '';
+      for (var k = 0; k <= depth; k++) {
+        prefixPath += '../';
+      }
+      window.location.href = prefixPath + targetLang + '/index.html';
+    }
+  });
+})();
+</script>
+
+</body>
+</html>

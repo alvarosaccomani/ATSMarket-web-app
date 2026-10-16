@@ -1,0 +1,851 @@
+<!doctype html>
+<html class="no-js" lang="">
+    <head>
+        <meta charset="utf-8">
+        <meta http-equiv="x-ua-compatible" content="ie=edge">
+        <title>ATSMarket Web App</title>
+        <meta name="description" content="">
+        <meta name="viewport" content="width=device-width, initial-scale=1">
+
+        <link rel="icon" type="image/x-icon" href="../images/favicon.ico">
+	   <link rel="stylesheet" href="../styles/style.css">
+        <link rel="stylesheet" href="../styles/dark.css">
+    
+<style id="compodoc-lang-styles">
+  .compodoc-lang-switch {
+    position: fixed;
+    top: 15px;
+    right: calc(90px + var(--content-scrollbar-width, 0px));
+    z-index: 1050;
+    display: inline-block;
+  }
+  @media (max-width: 767px) {
+    .compodoc-lang-switch {
+      top: 8px;
+      right: 60px;
+    }
+  }
+  #compodoc-lang-select {
+    height: 34px;
+    padding: 0 12px;
+    border-radius: 17px;
+    border: 1px solid #d9d9d9;
+    background-color: #ffffff;
+    color: #1f1f1f;
+    font-size: 13px;
+    font-family: inherit;
+    font-weight: 500;
+    cursor: pointer;
+    outline: none;
+    box-shadow: 0 2px 6px rgba(0, 0, 0, 0.08);
+    transition: all 0.3s cubic-bezier(0.645, 0.045, 0.355, 1);
+    -webkit-appearance: none;
+    -moz-appearance: none;
+    appearance: none;
+    padding-right: 26px;
+    background-image: url("data:image/svg+xml;charset=UTF-8,%3csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 24 24' fill='none' stroke='%23666' stroke-width='2' stroke-linecap='round' stroke-linejoin='round'%3e%3cpolyline points='6 9 12 15 18 9'%3e%3c/polyline%3e%3c/svg%3e");
+    background-repeat: no-repeat;
+    background-position: right 8px center;
+    background-size: 14px;
+  }
+  #compodoc-lang-select:hover, #compodoc-lang-select:focus {
+    border-color: #5cc0ae;
+    box-shadow: 0 2px 8px rgba(92, 192, 174, 0.25);
+  }
+  body.dark .compodoc-lang-switch #compodoc-lang-select {
+    background-color: #2c3e50;
+    color: #ecf0f1;
+    border: 1px solid #4a627a;
+    box-shadow: 0 2px 6px rgba(0, 0, 0, 0.35);
+    background-image: url("data:image/svg+xml;charset=UTF-8,%3csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 24 24' fill='none' stroke='%23ecf0f1' stroke-width='2' stroke-linecap='round' stroke-linejoin='round'%3e%3cpolyline points='6 9 12 15 18 9'%3e%3c/polyline%3e%3c/svg%3e");
+  }
+  body.dark .compodoc-lang-switch #compodoc-lang-select option {
+    background-color: #2c3e50;
+    color: #ecf0f1;
+  }
+</style>
+
+</head>
+    <body>
+          <script>
+               // Blocking script to avoid flickering dark mode
+               // Dark mode toggle button
+               var useDark = window.matchMedia('(prefers-color-scheme: dark)');
+               var darkModeState = useDark.matches;
+               var $darkModeToggleSwitchers = document.querySelectorAll('.dark-mode-switch input');
+               var $darkModeToggles = document.querySelectorAll('.dark-mode-switch');
+               var darkModeStateLocal = localStorage.getItem('compodoc_darkmode-state');
+
+               function checkToggle(check) {
+                    for (var i = 0; i < $darkModeToggleSwitchers.length; i++) {
+                         $darkModeToggleSwitchers[i].checked = check;
+                    }
+               }
+
+               function toggleDarkMode(state) {
+                    if (window.localStorage) {
+                         localStorage.setItem('compodoc_darkmode-state', state);
+                    }
+
+                    checkToggle(state);
+
+                    const hasClass = document.body.classList.contains('dark');
+
+                    if (state) {
+                         for (var i = 0; i < $darkModeToggles.length; i++) {
+                              $darkModeToggles[i].classList.add('dark');
+                         }
+                         if (!hasClass) {
+                              document.body.classList.add('dark');
+                         }
+                    } else {
+                         for (var i = 0; i < $darkModeToggles.length; i++) {
+                              $darkModeToggles[i].classList.remove('dark');
+                         }
+                         if (hasClass) {
+                              document.body.classList.remove('dark');
+                         }
+                    }
+               }
+
+               useDark.addEventListener('change', function (evt) {
+                    toggleDarkMode(evt.matches);
+               });
+               if (darkModeStateLocal) {
+                    darkModeState = darkModeStateLocal === 'true';
+               }
+               toggleDarkMode(darkModeState);
+          </script>
+          <script>
+              // --- Iframe navigation tracking for Template Playground ---
+              function sendCurrentUrlToParent() {
+                  if (window.parent && window.parent !== window) {
+                      window.parent.postMessage({
+                          type: 'compodoc-iframe-navigate',
+                          url: window.location.pathname + window.location.hash
+                      }, '*');
+                  }
+              }
+              window.addEventListener('hashchange', sendCurrentUrlToParent, false);
+              window.addEventListener('popstate', sendCurrentUrlToParent, false);
+              window.addEventListener('DOMContentLoaded', sendCurrentUrlToParent, false);
+          </script>
+
+        <div class="navbar navbar-default navbar-fixed-top d-md-none p-0">
+               <div class="d-flex">
+                    <a href="../" class="navbar-brand">ATSMarket Web App</a>
+                    <button type="button" class="btn btn-default btn-menu ion-ios-menu" id="btn-menu"></button>
+               </div>
+        </div>
+
+        <div class="xs-menu menu" id="mobile-menu">
+                <div id="book-search-input" role="search">
+    <input type="text" placeholder="Type to search">
+    <button type="button"
+        class="search-input-clear"
+        aria-label="Clear search"
+        data-search-input-clear>&times;</button>
+</div>
+            <compodoc-menu></compodoc-menu>
+        </div>
+
+        <div class="container-fluid main">
+           <div class="row main">
+               <div class="d-none d-md-block menu">
+                   <compodoc-menu mode="normal"></compodoc-menu>
+               </div>
+               <!-- START CONTENT -->
+               <div class="content interface">
+                   <div class="content-data">
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+<ol class="breadcrumb">
+  <li class="breadcrumb-item">Interfaces</li>
+  <li class="breadcrumb-item"
+  >
+  CustomerOrder</li>
+</ol>
+
+<div class="io-file io-file-path" data-compodoc="entity-file-path">
+    <span class="icon ion-ios-document" aria-hidden="true"></span>
+    <code>src/app/application/customers/customers.component.ts</code>
+</div>
+
+<ul class="nav nav-tabs" role="tablist">
+        <li class="nav-item">
+            <a href="#info" 
+                class="nav-link"
+                class="nav-link active"
+                role="tab" id="info-tab" data-bs-toggle="tab" data-link="info">Info</a>
+        </li>
+        <li class="nav-item">
+            <a href="#api" 
+                class="nav-link"
+                
+                role="tab" id="api-tab" data-bs-toggle="tab" data-link="api">API</a>
+        </li>
+        <li class="nav-item">
+            <a href="#source" 
+                class="nav-link"
+                
+                role="tab" id="source-tab" data-bs-toggle="tab" data-link="source">Source</a>
+        </li>
+</ul>
+
+<div class="tab-content">
+    <div class="tab-pane fade active in" id="info">
+
+
+
+            </div>
+
+    <div class="tab-pane fade " id="api"><section data-compodoc="block-index">
+    <h3 id="index">Index</h3>
+    <table class="table table-sm table-bordered index-table">
+        <tbody>
+            <tr>
+                <td class="col-md-3">
+                    <h6><b>Properties</b></h6>
+                </td>
+                <td class="col-md-9">
+                    <ul class="index-list">
+                        <li>
+                                <a href="#date" class="reference-link ">
+                                    <span class="reference-badge reference-badge--property" aria-hidden="true">P</span><span class="reference-link-label">date</span>
+                                </a>
+                        </li>
+                        <li>
+                                <a href="#order_number" class="reference-link ">
+                                    <span class="reference-badge reference-badge--property" aria-hidden="true">P</span><span class="reference-link-label">order_number</span>
+                                </a>
+                        </li>
+                        <li>
+                                <a href="#status" class="reference-link ">
+                                    <span class="reference-badge reference-badge--property" aria-hidden="true">P</span><span class="reference-link-label">status</span>
+                                </a>
+                        </li>
+                        <li>
+                                <a href="#total" class="reference-link ">
+                                    <span class="reference-badge reference-badge--property" aria-hidden="true">P</span><span class="reference-link-label">total</span>
+                                </a>
+                        </li>
+                    </ul>
+                </td>
+            </tr>
+        </tbody>
+    </table>
+</section>
+
+
+
+    <section data-compodoc="block-properties">
+        <h3 id="inputs">Properties</h3>
+            <table class="table table-sm table-bordered">
+                <tbody>
+                        <tr>
+                            <td class="col-md-4">
+                                <a name="date"></a>
+                                <span class="name "><b>date</b>
+                                    <a href="#date">
+                                        <span class="icon ion-ios-link"></span>
+                                    </a>
+                                </span>
+                            </td>
+                        </tr>
+                        <tr>
+                            <td class="col-md-4">
+                                <code>date:         <code><a href="https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Date" target="_blank" >Date</a></code>
+</code>
+                            </td>
+                        </tr>
+
+
+                            <tr>
+                                <td class="col-md-4">
+                                    <i>Type : </i>        <code><a href="https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Date" target="_blank" >Date</a></code>
+
+                                </td>
+                            </tr>
+
+
+
+
+
+                            <tr>
+                                <td class="col-md-4">
+                                    <div class="io-line">Defined in <a href="" data-line="28" class="link-to-prism">src/app/application/customers/customers.component.ts:28</a></div>
+                                </td>
+                            </tr>
+
+                </tbody>
+            </table>
+            <table class="table table-sm table-bordered">
+                <tbody>
+                        <tr>
+                            <td class="col-md-4">
+                                <a name="order_number"></a>
+                                <span class="name "><b>order_number</b>
+                                    <a href="#order_number">
+                                        <span class="icon ion-ios-link"></span>
+                                    </a>
+                                </span>
+                            </td>
+                        </tr>
+                        <tr>
+                            <td class="col-md-4">
+                                <code>order_number:         <code><a href="https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/string" target="_blank" >string</a></code>
+</code>
+                            </td>
+                        </tr>
+
+
+                            <tr>
+                                <td class="col-md-4">
+                                    <i>Type : </i>        <code><a href="https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/string" target="_blank" >string</a></code>
+
+                                </td>
+                            </tr>
+
+
+
+
+
+                            <tr>
+                                <td class="col-md-4">
+                                    <div class="io-line">Defined in <a href="" data-line="27" class="link-to-prism">src/app/application/customers/customers.component.ts:27</a></div>
+                                </td>
+                            </tr>
+
+                </tbody>
+            </table>
+            <table class="table table-sm table-bordered">
+                <tbody>
+                        <tr>
+                            <td class="col-md-4">
+                                <a name="status"></a>
+                                <span class="name "><b>status</b>
+                                    <a href="#status">
+                                        <span class="icon ion-ios-link"></span>
+                                    </a>
+                                </span>
+                            </td>
+                        </tr>
+                        <tr>
+                            <td class="col-md-4">
+                                <code>status:         <code><a href="https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/string" target="_blank" >string</a></code>
+</code>
+                            </td>
+                        </tr>
+
+
+                            <tr>
+                                <td class="col-md-4">
+                                    <i>Type : </i>        <code><a href="https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/string" target="_blank" >string</a></code>
+
+                                </td>
+                            </tr>
+
+
+
+
+
+                            <tr>
+                                <td class="col-md-4">
+                                    <div class="io-line">Defined in <a href="" data-line="30" class="link-to-prism">src/app/application/customers/customers.component.ts:30</a></div>
+                                </td>
+                            </tr>
+
+                </tbody>
+            </table>
+            <table class="table table-sm table-bordered">
+                <tbody>
+                        <tr>
+                            <td class="col-md-4">
+                                <a name="total"></a>
+                                <span class="name "><b>total</b>
+                                    <a href="#total">
+                                        <span class="icon ion-ios-link"></span>
+                                    </a>
+                                </span>
+                            </td>
+                        </tr>
+                        <tr>
+                            <td class="col-md-4">
+                                <code>total:         <code><a href="https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/number" target="_blank" >number</a></code>
+</code>
+                            </td>
+                        </tr>
+
+
+                            <tr>
+                                <td class="col-md-4">
+                                    <i>Type : </i>        <code><a href="https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/number" target="_blank" >number</a></code>
+
+                                </td>
+                            </tr>
+
+
+
+
+
+                            <tr>
+                                <td class="col-md-4">
+                                    <div class="io-line">Defined in <a href="" data-line="29" class="link-to-prism">src/app/application/customers/customers.component.ts:29</a></div>
+                                </td>
+                            </tr>
+
+                </tbody>
+            </table>
+    </section>
+</div>
+
+
+    <div class="tab-pane fade  tab-source-code" id="source">
+        <pre class="line-numbers compodoc-sourcecode"><code class="language-typescript">import { Component, OnInit } from &#x27;@angular/core&#x27;;
+import { CommonModule } from &#x27;@angular/common&#x27;;
+import { FormsModule } from &#x27;@angular/forms&#x27;;
+import { forkJoin } from &#x27;rxjs&#x27;;
+
+import { NzTableModule } from &#x27;ng-zorro-antd/table&#x27;;
+import { NzCardModule } from &#x27;ng-zorro-antd/card&#x27;;
+import { NzButtonModule } from &#x27;ng-zorro-antd/button&#x27;;
+import { NzIconModule } from &#x27;ng-zorro-antd/icon&#x27;;
+import { NzDrawerModule } from &#x27;ng-zorro-antd/drawer&#x27;;
+import { NzDividerModule } from &#x27;ng-zorro-antd/divider&#x27;;
+import { NzDescriptionsModule } from &#x27;ng-zorro-antd/descriptions&#x27;;
+import { NzTagModule } from &#x27;ng-zorro-antd/tag&#x27;;
+import { NzInputModule } from &#x27;ng-zorro-antd/input&#x27;;
+import { NzAvatarModule } from &#x27;ng-zorro-antd/avatar&#x27;;
+import { NzEmptyModule } from &#x27;ng-zorro-antd/empty&#x27;;
+import { NzSpinModule } from &#x27;ng-zorro-antd/spin&#x27;;
+
+import { CustomersService } from &#x27;../../core/services/customers.service&#x27;;
+import { OrdersService } from &#x27;../../core/services/orders.service&#x27;;
+import { SessionService } from &#x27;../../core/services/session.service&#x27;;
+import { CustomerInterface } from &#x27;../../core/interfaces/customer/customer.interface&#x27;;
+import { OrderInterface } from &#x27;../../core/interfaces/order/order.interface&#x27;;
+
+// Modelo de datos del cliente enriquecido para la vista
+export interface CustomerOrder {
+  order_number: string;
+  date: Date;
+  total: number;
+  status: string;
+}
+
+export interface CustomerViewModel {
+  cus_uuid: string;
+  cus_name: string;
+  cus_email: string;
+  cus_phone: string;
+  cus_document: string; // DNI o CUIT deducido
+  cus_type: &#x27;B2B&#x27; | &#x27;B2C&#x27;;
+  total_orders: number;
+  total_spent: number;
+  last_order_date: Date | null;
+  order_history: CustomerOrder[];
+}
+
+@Component({
+  selector: &#x27;app-customers&#x27;,
+  standalone: true,
+  imports: [
+    CommonModule,
+    FormsModule,
+    NzTableModule,
+    NzCardModule,
+    NzButtonModule,
+    NzIconModule,
+    NzDrawerModule,
+    NzDividerModule,
+    NzDescriptionsModule,
+    NzTagModule,
+    NzInputModule,
+    NzAvatarModule,
+    NzEmptyModule,
+    NzSpinModule
+  ],
+  templateUrl: &#x27;./customers.component.html&#x27;,
+  styleUrl: &#x27;./customers.component.scss&#x27;
+})
+export class CustomersComponent implements OnInit {
+
+  public allCustomers: CustomerViewModel[] &#x3D; [];
+  public filteredCustomers: CustomerViewModel[] &#x3D; [];
+  public searchTerm: string &#x3D; &#x27;&#x27;;
+  public isLoading: boolean &#x3D; true;
+  public companyName: string &#x3D; &#x27;&#x27;;
+
+  // Drawer Control
+  public selectedCustomer: CustomerViewModel | null &#x3D; null;
+  public isDrawerVisible &#x3D; false;
+
+  constructor(
+    private _customersService: CustomersService,
+    private _ordersService: OrdersService,
+    private _sessionService: SessionService
+  ) { }
+
+  ngOnInit(): void {
+    const company &#x3D; this._sessionService.getCompany();
+    if (company &amp;&amp; company.cmp_uuid) {
+      this.companyName &#x3D; company.cmp_name || &#x27;Mi Tienda&#x27;;
+      this.loadRealData(company.cmp_uuid);
+    } else {
+      this.isLoading &#x3D; false;
+    }
+  }
+
+  // --- LOGICA DE DATOS DESDE API ---
+
+  private loadRealData(companyUuid: string): void {
+    this.isLoading &#x3D; true;
+    forkJoin({
+      customersRes: this._customersService.getCustomers(),
+      ordersRes: this._ordersService.getOrders(companyUuid)
+    }).subscribe({
+      next: (results) &#x3D;&gt; {
+        const customersList &#x3D; results.customersRes?.data || [];
+        const ordersList &#x3D; results.ordersRes?.data || [];
+
+        this.processCustomersAndOrders(customersList, ordersList);
+        this.applyFilters();
+        this.isLoading &#x3D; false;
+      },
+      error: (err) &#x3D;&gt; {
+        console.error(&#x27;Error al recuperar datos para el directorio de clientes:&#x27;, err);
+        this.isLoading &#x3D; false;
+      }
+    });
+  }
+
+  private processCustomersAndOrders(customers: CustomerInterface[], orders: OrderInterface[]): void {
+    const companyOrders &#x3D; orders || [];
+    
+    // Agrupar órdenes por cliente
+    const ordersByCustomer: { [cus_uuid: string]: OrderInterface[] } &#x3D; {};
+    companyOrders.forEach(order &#x3D;&gt; {
+      if (order.cus_uuid) {
+        if (!ordersByCustomer[order.cus_uuid]) {
+          ordersByCustomer[order.cus_uuid] &#x3D; [];
+        }
+        ordersByCustomer[order.cus_uuid].push(order);
+      }
+    });
+
+    this.allCustomers &#x3D; customers.map(c &#x3D;&gt; {
+      const clientOrders &#x3D; ordersByCustomer[c.cus_uuid] || [];
+      
+      // Calcular métricas reales de compras en este comercio
+      const totalSpent &#x3D; clientOrders.reduce((acc, o) &#x3D;&gt; acc + (o.ord_total || 0), 0);
+      const totalOrders &#x3D; clientOrders.length;
+      
+      // Obtener fecha del último pedido
+      let lastOrderDate: Date | null &#x3D; null;
+      if (clientOrders.length &gt; 0) {
+        const sortedOrders &#x3D; [...clientOrders].sort((a, b) &#x3D;&gt; {
+          const dateA &#x3D; a.ord_createdat ? new Date(a.ord_createdat).getTime() : 0;
+          const dateB &#x3D; b.ord_createdat ? new Date(b.ord_createdat).getTime() : 0;
+          return dateB - dateA;
+        });
+        lastOrderDate &#x3D; sortedOrders[0].ord_createdat ? new Date(sortedOrders[0].ord_createdat) : null;
+      }
+
+      // Mapear historial detallado
+      const orderHistory: CustomerOrder[] &#x3D; clientOrders.map(o &#x3D;&gt; ({
+        order_number: &#x60;#PED-${o.ord_ordernumber}&#x60;,
+        date: o.ord_createdat ? new Date(o.ord_createdat) : new Date(),
+        total: o.ord_total || 0,
+        status: o.ords_uuid
+      })).sort((a, b) &#x3D;&gt; b.date.getTime() - a.date.getTime());
+
+      // Segmentación dinámica: Mayorista (B2B) si tiene 5+ compras o gastó $100k+, sino Minorista (B2C)
+      const type &#x3D; (totalOrders &gt;&#x3D; 5 || totalSpent &gt;&#x3D; 100000) ? &#x27;B2B&#x27; : &#x27;B2C&#x27;;
+
+      // Deducción del número de identificación para mantener la consistencia estética
+      const numSeed &#x3D; c.cus_phone ? c.cus_phone.replace(/\D/g, &#x27;&#x27;) : c.cus_uuid.replace(/\D/g, &#x27;&#x27;);
+      const mockDocNum &#x3D; numSeed.substring(0, 8).padEnd(8, &#x27;4&#x27;);
+      const document &#x3D; type &#x3D;&#x3D;&#x3D; &#x27;B2B&#x27; ? &#x60;30-${mockDocNum}-8&#x60; : &#x60;20-${mockDocNum}-4&#x60;;
+
+      return {
+        cus_uuid: c.cus_uuid,
+        cus_name: c.cus_fullname || &#x27;Cliente Registrado&#x27;,
+        cus_email: c.cus_email || &#x27;Sin Email&#x27;,
+        cus_phone: c.cus_phone || &#x27;Sin Teléfono&#x27;,
+        cus_document: document,
+        cus_type: type,
+        total_orders: totalOrders,
+        total_spent: totalSpent,
+        last_order_date: lastOrderDate,
+        order_history: orderHistory
+      };
+    });
+
+    // Ordenar los clientes por volumen de gasto (LTV) descendente
+    this.allCustomers.sort((a, b) &#x3D;&gt; b.total_spent - a.total_spent);
+  }
+
+  // --- FILTROS Y BUSQUEDA ---
+
+  public applyFilters(): void {
+    if (!this.searchTerm.trim()) {
+      this.filteredCustomers &#x3D; [...this.allCustomers];
+      return;
+    }
+
+    const term &#x3D; this.searchTerm.toLowerCase();
+    this.filteredCustomers &#x3D; this.allCustomers.filter(c &#x3D;&gt;
+      c.cus_name.toLowerCase().includes(term) ||
+      c.cus_email.toLowerCase().includes(term) ||
+      c.cus_phone.includes(term)
+    );
+  }
+
+  // --- DRAWER (PERFIL CLIENTE) ---
+
+  public openCustomerProfile(customer: CustomerViewModel): void {
+    this.selectedCustomer &#x3D; customer;
+    this.isDrawerVisible &#x3D; true;
+  }
+
+  public closeDrawer(): void {
+    this.isDrawerVisible &#x3D; false;
+    setTimeout(() &#x3D;&gt; this.selectedCustomer &#x3D; null, 300);
+  }
+
+  // --- OBTENER ETIQUETAS VISUALES ---
+
+  public getStatusColor(status: string): string {
+    switch (status) {
+      case &#x27;PENDING&#x27;: return &#x27;gold&#x27;;
+      case &#x27;PROCESSING&#x27;: return &#x27;blue&#x27;;
+      case &#x27;SHIPPED&#x27;: return &#x27;orange&#x27;; // Cambiado a orange para consistencia con Vista de Reparto (En camino)
+      case &#x27;DELIVERED&#x27;: return &#x27;green&#x27;; // Cambiado a green para consistencia con Vista de Reparto (Entregado)
+      case &#x27;CANCELLED&#x27;: return &#x27;red&#x27;;
+      default: return &#x27;default&#x27;;
+    }
+  }
+
+  public getStatusLabel(status: string): string {
+    switch (status) {
+      case &#x27;PENDING&#x27;: return &#x27;Pendiente&#x27;;
+      case &#x27;PROCESSING&#x27;: return &#x27;Preparando&#x27;;
+      case &#x27;SHIPPED&#x27;: return &#x27;En Camino&#x27;;
+      case &#x27;DELIVERED&#x27;: return &#x27;Entregado&#x27;;
+      case &#x27;CANCELLED&#x27;: return &#x27;Cancelado&#x27;;
+      default: return &#x27;Desconocido&#x27;;
+    }
+  }
+
+  public getSegmentColor(type: string): string {
+    return type &#x3D;&#x3D;&#x3D; &#x27;B2B&#x27; ? &#x27;purple&#x27; : &#x27;geekblue&#x27;;
+  }
+
+  public getSegmentLabel(type: string): string {
+    return type &#x3D;&#x3D;&#x3D; &#x27;B2B&#x27; ? &#x27;Mayorista&#x27; : &#x27;Minorista&#x27;;
+  }
+}
+</code></pre>
+    </div>
+</div>
+
+
+
+
+
+
+
+
+                   </div><div class="search-results">
+    <div class="has-results">
+        <h1 class="search-results-title"><span class='search-results-count'></span> results matching "<span class='search-query'></span>"</h1>
+        <ul class="search-results-list"></ul>
+    </div>
+    <div class="no-results">
+        <h1 class="search-results-title">No results matching "<span class='search-query'></span>"</h1>
+    </div>
+</div>
+</div>
+               <!-- END CONTENT -->
+           </div>
+       </div>
+
+          
+<div class="compodoc-lang-switch">
+  <select id="compodoc-lang-select" aria-label="Seleccionar idioma">
+    <option value="es" >🇪🇸 Español</option>
+    <option value="en" selected>🇺🇸 English</option>
+    <option value="pt" >🇧🇷 Português</option>
+  </select>
+</div>
+
+          <label class="dark-mode-switch">
+               <input type="checkbox">
+               <span class="slider">
+                    <svg class="slider-icon" viewBox="0 0 24 24" fill="none" height="20" stroke="#000" stroke-linecap="round" stroke-linejoin="round" stroke-width="2" width="20" xmlns="http://www.w3.org/2000/svg">
+                    <path d="M21 12.79A9 9 0 1111.21 3 7 7 0 0021 12.79z"></path>
+                    </svg>
+               </span>
+          </label>
+
+       <script>
+            var COMPODOC_CURRENT_PAGE_DEPTH = 1;
+            var COMPODOC_CURRENT_PAGE_CONTEXT = 'interface';
+            var COMPODOC_CURRENT_PAGE_URL = 'CustomerOrder.html';
+            var MAX_SEARCH_RESULTS = 15;
+       </script>
+
+       <script>
+               $darkModeToggleSwitchers = document.querySelectorAll('.dark-mode-switch input');
+               var updateDarkModeSwitchOffset = function () {
+                    var content = document.querySelector('.content');
+                    var scrollbarWidth = 0;
+
+                    if (content) {
+                         scrollbarWidth = Math.max(0, content.offsetWidth - content.clientWidth);
+                    }
+
+                    document.documentElement.style.setProperty(
+                         '--content-scrollbar-width',
+                         scrollbarWidth + 'px'
+                    );
+               };
+
+               updateDarkModeSwitchOffset();
+               requestAnimationFrame(updateDarkModeSwitchOffset);
+               window.addEventListener('resize', updateDarkModeSwitchOffset);
+
+               checkToggle(darkModeState);
+               if ($darkModeToggleSwitchers.length > 0) {
+                    for (var i = 0; i < $darkModeToggleSwitchers.length; i++) {
+                         $darkModeToggleSwitchers[i].addEventListener('change', function (event) {
+                              darkModeState = !darkModeState;
+                              toggleDarkMode(darkModeState);
+                         });
+                    }
+               }
+          </script>
+
+       <script src="../js/libs/custom-elements.min.js"></script>
+       <script src="../js/libs/lit-html.js"></script>
+
+       <script src="../js/menu-wc.js" defer></script>
+
+       <script src="../js/libs/bootstrap-native.js"></script>
+
+       <script src="../js/libs/es6-shim.min.js"></script>
+       <script src="../js/libs/EventDispatcher.js"></script>
+       <script src="../js/libs/promise.min.js"></script>
+
+       <script src="../js/compodoc.js"></script>
+
+       <script src="../js/tabs.js"></script>
+       <script src="../js/menu.js"></script>
+       <script src="../js/libs/clipboard.min.js"></script>
+       <script src="../js/libs/prism.js"></script>
+       <script src="../js/sourceCode.js"></script>
+          <script src="../js/search/search.js"></script>
+          <script src="../js/search/lunr.min.js"></script>
+          <script src="../js/search/search-lunr.js"></script>
+          <script src="../js/search/search_index.js"></script>
+       <script src="../js/lazy-load-graphs.js"></script>
+
+
+    
+<script id="compodoc-lang-script">
+(function() {
+  var CURRENT_LANG = "en";
+  var ADDITIONAL_DOCS_MAP = {"es":["01.-introducción-y-arquitectura-general.html","02.-autenticación-y-control-de-accesos.html","03.-catálogo-público-y-exploración-de-tiendas.html","04.-carrito-de-compras-y-checkout-multitienda.html","05.-gestión-de-empresas,-roles-y-configuración.html","06.-inventario,-productos,-variaciones-y-almacenes.html","07.-gestión-de-pedidos,-compras-y-cupones.html","08.-analíticas-de-negocio,-finanzas-y-proveedores.html"],"en":["01.-introduction-and-general-architecture.html","02.-authentication-and-access-control.html","03.-public-catalog-and-store-exploration.html","04.-shopping-cart-and-multi-store-checkout.html","05.-company-management,-roles-and-configuration.html","06.-inventory,-products,-variations-and-warehouses.html","07.-orders-management,-purchases-and-coupons.html","08.-business-analytics,-finances-and-suppliers.html"],"pt":["01.-introdução-e-arquitetura-geral.html","02.-autenticação-e-controle-de-acesso.html","03.-catálogo-público-e-exploração-de-lojas.html","04.-carrinho-de-compras-e-checkout-multiloja.html","05.-gestão-de-empresas,-funções-e-configuração.html","06.-estoque,-produtos,-variações-e-armazéns.html","07.-gestão-de-pedidos,-compras-e-cupons.html","08.-análise-de-negócios,-finanças-e-fornecedores.html"]};
+
+  var select = document.getElementById('compodoc-lang-select');
+  if (!select) return;
+
+  try {
+    localStorage.setItem('compodoc_lang', CURRENT_LANG);
+  } catch (e) {}
+
+  select.addEventListener('change', function(e) {
+    var targetLang = e.target.value;
+    if (targetLang === CURRENT_LANG) return;
+
+    try {
+      localStorage.setItem('compodoc_lang', targetLang);
+    } catch (err) {}
+
+    var href = window.location.href;
+    var pathname = window.location.pathname;
+
+    // Manejo especial para páginas de additional-documentation
+    if (pathname.indexOf('/additional-documentation/') !== -1) {
+      var segments = pathname.split('/');
+      var currentFile = decodeURIComponent(segments[segments.length - 1]);
+      
+      var currentList = ADDITIONAL_DOCS_MAP[CURRENT_LANG] || [];
+      var targetList = ADDITIONAL_DOCS_MAP[targetLang] || [];
+      var foundIndex = -1;
+
+      var prefixMatch = currentFile.match(/^(\d{2}\.-)/);
+      if (prefixMatch) {
+        var prefix = prefixMatch[1];
+        for (var i = 0; i < targetList.length; i++) {
+          if (targetList[i].startsWith(prefix)) {
+            foundIndex = i;
+            break;
+          }
+        }
+      }
+      if (foundIndex === -1) {
+        for (var j = 0; j < currentList.length; j++) {
+          if (currentList[j] === currentFile) {
+            foundIndex = j;
+            break;
+          }
+        }
+      }
+
+      var targetFile = (foundIndex !== -1 && targetList[foundIndex]) 
+        ? targetList[foundIndex] 
+        : (targetList[0] || 'index.html');
+
+      var targetSubpath = '/' + targetLang + '/additional-documentation/' + targetFile;
+      var currentSubpath = '/' + CURRENT_LANG + '/additional-documentation/' + segments[segments.length - 1];
+
+      if (href.indexOf(currentSubpath) !== -1) {
+        window.location.href = href.replace(currentSubpath, targetSubpath);
+        return;
+      }
+    }
+
+    // Páginas estándar
+    var standardReplace = href.replace('/' + CURRENT_LANG + '/', '/' + targetLang + '/');
+    if (standardReplace !== href) {
+      window.location.href = standardReplace;
+    } else {
+      var depth = (typeof COMPODOC_CURRENT_PAGE_DEPTH !== 'undefined') ? COMPODOC_CURRENT_PAGE_DEPTH : 0;
+      var prefixPath = '';
+      for (var k = 0; k <= depth; k++) {
+        prefixPath += '../';
+      }
+      window.location.href = prefixPath + targetLang + '/index.html';
+    }
+  });
+})();
+</script>
+
+</body>
+</html>

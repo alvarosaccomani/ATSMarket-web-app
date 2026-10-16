@@ -7,8 +7,13 @@ import { SessionService } from '@services/session.service';
 import { NzMessageService } from 'ng-zorro-antd/message';
 
 /**
- * Interceptor funcional que captura errores HTTP globales (401 y 403)
- * para limpiar la sesión expirada, notificar al usuario y redirigirlo a login.
+ * @description Interceptor funcional que captura anomalías y códigos de error HTTP a nivel global en la aplicación.
+ * Ante respuestas de tipo 401 (Unauthorized) o 403 (Forbidden), purga la sesión caduca mediante SessionService.logout(),
+ * emite una advertencia de notificación contextual al usuario y lo redirige a /auth/login preservando la ruta previa.
+ *
+ * @param req Petición HTTP saliente interceptada (HttpRequest<unknown>).
+ * @param next Siguiente manejador en la cadena de interceptores (HttpHandlerFn).
+ * @returns {Observable<HttpEvent<unknown>>} Flujo observable de la respuesta HTTP o propagación de error capturado.
  */
 export const errorInterceptor: HttpInterceptorFn = (req, next) => {
   const sessionService = inject(SessionService);

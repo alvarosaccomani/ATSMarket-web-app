@@ -32,6 +32,9 @@ import { AnalyticsService } from '@services/analytics.service';
 
 import * as echarts from 'echarts';
 
+/**
+ * @description Estructura que describe las métricas acumuladas de un producto líder en ventas.
+ */
 export interface TopProduct {
   name: string;
   sku: string;
@@ -41,12 +44,20 @@ export interface TopProduct {
   trend?: 'up' | 'down';
 }
 
+/**
+ * @description Indicador de rendimiento porcentual y colorimetría de una categoría comercial.
+ */
 export interface CategoryPerformance {
   category: string;
   percentage: number;
   color: string;
 }
 
+/**
+ * @description Tablero de analíticas e inteligencia de negocios basado en Apache ECharts.
+ * Procesa en tiempo real KPIs de facturación bruta, ticket promedio, curvas de demanda temporal,
+ * concentración de ingresos por método de cobro y rankings de productos de alta rotación.
+ */
 @Component({
   selector: 'app-analytics',
   standalone: true,

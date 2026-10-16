@@ -15,6 +15,11 @@ import { CommonModule } from '@angular/common';
 import { MercadopagoService } from '../../../core/services/mercadopago.service';
 import { NzSpinModule } from 'ng-zorro-antd/spin';
 
+/**
+ * @description Componente integrador del SDK oficial de Mercado Pago (Payment Brick).
+ * Renderiza de manera embebida y segura el formulario de captura y procesamiento de pagos con tarjetas
+ * de crédito, débito y saldo de cuenta, gestionando la tokenización y los eventos de submit/error.
+ */
 @Component({
   selector: 'app-mp-payment-brick',
   standalone: true,
@@ -27,13 +32,34 @@ import { NzSpinModule } from 'ng-zorro-antd/spin';
 })
 export class MpPaymentBrickComponent implements AfterViewInit, OnDestroy {
 
+  /**
+   * @description Clave pública de Mercado Pago perteneciente al comercio vendedor.
+   */
   @Input() publicKey: string = '';
+  /**
+   * @description Importe monetario total a cobrar en la transacción.
+   */
   @Input() amount: number = 0;
+  /**
+   * @description Correo electrónico del pagador para prellenar y vincular el comprobante.
+   */
   @Input() payerEmail: string = '';
+  /**
+   * @description Identificador de preferencia generado en el backend (opcional).
+   */
   @Input() preferenceId?: string;
 
+  /**
+   * @description Evento emitido al completar el cliente el pago con el payload del brick.
+   */
   @Output() paymentSubmit = new EventEmitter<any>();
+  /**
+   * @description Evento emitido ante fallos de validación o rechazo del brick.
+   */
   @Output() paymentError = new EventEmitter<any>();
+  /**
+   * @description Evento emitido cuando el formulario del brick ha culminado su renderizado.
+   */
   @Output() paymentReady = new EventEmitter<void>();
 
   @ViewChild('brickContainer', { static: false }) brickContainer!: ElementRef<HTMLDivElement>;

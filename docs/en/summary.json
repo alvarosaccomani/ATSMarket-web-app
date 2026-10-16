@@ -1,0 +1,34 @@
+[
+    {
+        "title": "01. Introduction and General Architecture",
+        "file": "01-introduction.md"
+    },
+    {
+        "title": "02. Authentication and Access Control",
+        "file": "02-authentication.md"
+    },
+    {
+        "title": "03. Public Catalog and Store Exploration",
+        "file": "03-catalog-and-store.md"
+    },
+    {
+        "title": "04. Shopping Cart and Multi-store Checkout",
+        "file": "04-cart-and-checkout.md"
+    },
+    {
+        "title": "05. Company Management, Roles and Configuration",
+        "file": "05-company-and-admin.md"
+    },
+    {
+        "title": "06. Inventory, Products, Variations and Warehouses",
+        "file": "06-inventory-products-and-warehouses.md"
+    },
+    {
+        "title": "07. Orders Management, Purchases and Coupons",
+        "file": "07-orders-purchases-coupons.md"
+    },
+    {
+        "title": "08. Business Analytics, Finances and Suppliers",
+        "file": "08-analytics-finances-suppliers.md"
+    }
+]

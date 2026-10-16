@@ -3,8 +3,14 @@ import { CanActivateFn, Router } from '@angular/router';
 import { SessionService } from '@services/session.service';
 
 /**
- * Guardia funcional que asegura que el comerciante esté autenticado y tenga un contexto
- * de empresa seleccionado activo antes de interactuar con paneles operativos.
+ * @description Guardia funcional que asegura que el comerciante esté autenticado y cuente
+ * con un contexto de empresa/sucursal seleccionado y activo antes de acceder a paneles operativos de backoffice.
+ * Si no está autenticado, redirige al login con returnUrl; si está autenticado pero no seleccionó empresa,
+ * redirige automáticamente a la selección de empresas (/application/my-companies).
+ *
+ * @param route Instantánea de la ruta activa (ActivatedRouteSnapshot).
+ * @param state Estado actual del router (RouterStateSnapshot).
+ * @returns {boolean} Retorna true si cumple ambas validaciones de seguridad; false en caso de redirección forzada.
  */
 export const merchantGuard: CanActivateFn = (route, state) => {
 const sessionService = inject(SessionService);

@@ -22,16 +22,21 @@ import { OrdersService } from '../../core/services/orders.service';
 import { SessionService } from '../../core/services/session.service';
 import { OrderInterface } from '../../core/interfaces/order/order.interface';
 
-// Tipado mock para Retiros
+/**
+ * @description Evento representativo de una solicitud de extracción o transferencia bancaria de fondos generados.
+ */
 export interface PayoutEvent {
   pay_uuid: string;
   pay_date: Date;
   pay_amount: number;
-  pay_destination: string; // Ej: CBU terminado en 4321 / CVU MercadoPago
+  pay_destination: string;
   pay_status: 'COMPLETED' | 'PENDING' | 'REJECTED';
   pay_receipt_url?: string;
 }
 
+/**
+ * @description Modelo de vista para la rendición y liquidación diaria de dinero en efectivo recaudado por cadetes.
+ */
 export interface RiderSettlementViewModel {
   rider_name: string;
   order_count: number;
@@ -39,6 +44,11 @@ export interface RiderSettlementViewModel {
   orders: OrderInterface[];
 }
 
+/**
+ * @description Panel de control financiero corporativo para administradores de empresa.
+ * Centraliza el seguimiento de ingresos brutos, conciliación de pagos digitales de Mercado Pago vs efectivo,
+ * solicitudes de retiro a cuentas bancarias externas y control de arqueo de caja de repartidores.
+ */
 @Component({
   selector: 'app-finances',
   standalone: true,

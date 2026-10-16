@@ -1,0 +1,1540 @@
+<!doctype html>
+<html class="no-js" lang="">
+    <head>
+        <meta charset="utf-8">
+        <meta http-equiv="x-ua-compatible" content="ie=edge">
+        <title>ATSMarket Web App</title>
+        <meta name="description" content="">
+        <meta name="viewport" content="width=device-width, initial-scale=1">
+
+        <link rel="icon" type="image/x-icon" href="../images/favicon.ico">
+	   <link rel="stylesheet" href="../styles/style.css">
+        <link rel="stylesheet" href="../styles/dark.css">
+    
+<style id="compodoc-lang-styles">
+  .compodoc-lang-switch {
+    position: fixed;
+    top: 15px;
+    right: calc(90px + var(--content-scrollbar-width, 0px));
+    z-index: 1050;
+    display: inline-block;
+  }
+  @media (max-width: 767px) {
+    .compodoc-lang-switch {
+      top: 8px;
+      right: 60px;
+    }
+  }
+  #compodoc-lang-select {
+    height: 34px;
+    padding: 0 12px;
+    border-radius: 17px;
+    border: 1px solid #d9d9d9;
+    background-color: #ffffff;
+    color: #1f1f1f;
+    font-size: 13px;
+    font-family: inherit;
+    font-weight: 500;
+    cursor: pointer;
+    outline: none;
+    box-shadow: 0 2px 6px rgba(0, 0, 0, 0.08);
+    transition: all 0.3s cubic-bezier(0.645, 0.045, 0.355, 1);
+    -webkit-appearance: none;
+    -moz-appearance: none;
+    appearance: none;
+    padding-right: 26px;
+    background-image: url("data:image/svg+xml;charset=UTF-8,%3csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 24 24' fill='none' stroke='%23666' stroke-width='2' stroke-linecap='round' stroke-linejoin='round'%3e%3cpolyline points='6 9 12 15 18 9'%3e%3c/polyline%3e%3c/svg%3e");
+    background-repeat: no-repeat;
+    background-position: right 8px center;
+    background-size: 14px;
+  }
+  #compodoc-lang-select:hover, #compodoc-lang-select:focus {
+    border-color: #5cc0ae;
+    box-shadow: 0 2px 8px rgba(92, 192, 174, 0.25);
+  }
+  body.dark .compodoc-lang-switch #compodoc-lang-select {
+    background-color: #2c3e50;
+    color: #ecf0f1;
+    border: 1px solid #4a627a;
+    box-shadow: 0 2px 6px rgba(0, 0, 0, 0.35);
+    background-image: url("data:image/svg+xml;charset=UTF-8,%3csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 24 24' fill='none' stroke='%23ecf0f1' stroke-width='2' stroke-linecap='round' stroke-linejoin='round'%3e%3cpolyline points='6 9 12 15 18 9'%3e%3c/polyline%3e%3c/svg%3e");
+  }
+  body.dark .compodoc-lang-switch #compodoc-lang-select option {
+    background-color: #2c3e50;
+    color: #ecf0f1;
+  }
+</style>
+
+</head>
+    <body>
+          <script>
+               // Blocking script to avoid flickering dark mode
+               // Dark mode toggle button
+               var useDark = window.matchMedia('(prefers-color-scheme: dark)');
+               var darkModeState = useDark.matches;
+               var $darkModeToggleSwitchers = document.querySelectorAll('.dark-mode-switch input');
+               var $darkModeToggles = document.querySelectorAll('.dark-mode-switch');
+               var darkModeStateLocal = localStorage.getItem('compodoc_darkmode-state');
+
+               function checkToggle(check) {
+                    for (var i = 0; i < $darkModeToggleSwitchers.length; i++) {
+                         $darkModeToggleSwitchers[i].checked = check;
+                    }
+               }
+
+               function toggleDarkMode(state) {
+                    if (window.localStorage) {
+                         localStorage.setItem('compodoc_darkmode-state', state);
+                    }
+
+                    checkToggle(state);
+
+                    const hasClass = document.body.classList.contains('dark');
+
+                    if (state) {
+                         for (var i = 0; i < $darkModeToggles.length; i++) {
+                              $darkModeToggles[i].classList.add('dark');
+                         }
+                         if (!hasClass) {
+                              document.body.classList.add('dark');
+                         }
+                    } else {
+                         for (var i = 0; i < $darkModeToggles.length; i++) {
+                              $darkModeToggles[i].classList.remove('dark');
+                         }
+                         if (hasClass) {
+                              document.body.classList.remove('dark');
+                         }
+                    }
+               }
+
+               useDark.addEventListener('change', function (evt) {
+                    toggleDarkMode(evt.matches);
+               });
+               if (darkModeStateLocal) {
+                    darkModeState = darkModeStateLocal === 'true';
+               }
+               toggleDarkMode(darkModeState);
+          </script>
+          <script>
+              // --- Iframe navigation tracking for Template Playground ---
+              function sendCurrentUrlToParent() {
+                  if (window.parent && window.parent !== window) {
+                      window.parent.postMessage({
+                          type: 'compodoc-iframe-navigate',
+                          url: window.location.pathname + window.location.hash
+                      }, '*');
+                  }
+              }
+              window.addEventListener('hashchange', sendCurrentUrlToParent, false);
+              window.addEventListener('popstate', sendCurrentUrlToParent, false);
+              window.addEventListener('DOMContentLoaded', sendCurrentUrlToParent, false);
+          </script>
+
+        <div class="navbar navbar-default navbar-fixed-top d-md-none p-0">
+               <div class="d-flex">
+                    <a href="../" class="navbar-brand">ATSMarket Web App</a>
+                    <button type="button" class="btn btn-default btn-menu ion-ios-menu" id="btn-menu"></button>
+               </div>
+        </div>
+
+        <div class="xs-menu menu" id="mobile-menu">
+                <div id="book-search-input" role="search">
+    <input type="text" placeholder="Escribe para buscar">
+    <button type="button"
+        class="search-input-clear"
+        aria-label="Clear search"
+        data-search-input-clear>&times;</button>
+</div>
+            <compodoc-menu></compodoc-menu>
+        </div>
+
+        <div class="container-fluid main">
+           <div class="row main">
+               <div class="d-none d-md-block menu">
+                   <compodoc-menu mode="normal"></compodoc-menu>
+               </div>
+               <!-- START CONTENT -->
+               <div class="content injectable">
+                   <div class="content-data">
+
+
+
+
+
+
+
+
+
+
+
+
+<ol class="breadcrumb">
+  <li class="breadcrumb-item">Inyectables</li>
+  <li class="breadcrumb-item" >CartService</li>
+</ol>
+
+<div class="io-file io-file-path" data-compodoc="entity-file-path">
+    <span class="icon ion-ios-document" aria-hidden="true"></span>
+    <code>src/app/core/services/cart.service.ts</code>
+</div>
+
+<ul class="nav nav-tabs" role="tablist">
+        <li class="nav-item">
+            <a href="#info" 
+                class="nav-link"
+                class="nav-link active"
+                role="tab" id="info-tab" data-bs-toggle="tab" data-link="info">Info</a>
+        </li>
+        <li class="nav-item">
+            <a href="#api" 
+                class="nav-link"
+                
+                role="tab" id="api-tab" data-bs-toggle="tab" data-link="api">API</a>
+        </li>
+        <li class="nav-item">
+            <a href="#source" 
+                class="nav-link"
+                
+                role="tab" id="source-tab" data-bs-toggle="tab" data-link="source">Source</a>
+        </li>
+</ul>
+
+<div class="tab-content">
+    <div class="tab-pane fade active in" id="info">
+
+            <p class="comment">
+                <h3>Descripción</h3>
+            </p>
+            <p class="comment">
+                <p>Servicio reactivo para la gestión integral del carrito de compras del usuario.
+Controla la persistencia en LocalStorage, la sincronización entre componentes mediante Observables,
+las reglas de compatibilidad multitienda (ALLOW_MULTI_STORE_CART) y el límite de unidades permitidas.</p>
+
+            </p>
+
+
+        <section data-compodoc="block-metadata">
+            <h3>Meta datos</h3>
+            <table class="table table-sm table-hover metadata">
+                <tbody>
+                    <tr>
+                        <td class="col-md-3">providedIn</td>
+                        <td class="col-md-9"><code>root</code></td>
+                    </tr>
+                </tbody>
+            </table>
+        </section>
+
+
+            </div>
+
+    <div class="tab-pane fade " id="api">
+            <section data-compodoc="block-index">
+    <h3 id="index">Índice</h3>
+        <table class="table table-sm table-bordered index-table">
+            <tbody>
+                <tr>
+                    <td class="col-md-3">
+                        <h6><b>Propiedades</b></h6>
+                    </td>
+                    <td class="col-md-9">
+                        <ul class="index-list">
+                            <li>
+                                <span class="reference-badge reference-badge--property" aria-hidden="true">P</span>
+                                    <span class="modifier">Public</span>
+                                <a href="#cartItems$" >cartItems$</a>
+                            </li>
+                            <li>
+                                <span class="reference-badge reference-badge--property" aria-hidden="true">P</span>
+                                    <span class="modifier">Private</span>
+                                <a href="#cartItemsSubject" >cartItemsSubject</a>
+                            </li>
+                            <li>
+                                <span class="reference-badge reference-badge--property" aria-hidden="true">P</span>
+                                    <span class="modifier">Private</span>
+                                    <span class="modifier">Readonly</span>
+                                <a href="#STORAGE_KEY" >STORAGE_KEY</a>
+                            </li>
+                        </ul>
+                    </td>
+                </tr>
+            </tbody>
+        </table>
+
+        <table class="table table-sm table-bordered index-table">
+            <tbody>
+                <tr>
+                    <td class="col-md-3">
+                        <h6><b>Métodos</b></h6>
+                    </td>
+                    <td class="col-md-9">
+                        <ul class="index-list">
+                            <li>
+                                <span class="reference-badge reference-badge--method" aria-hidden="true">M</span>
+                                    <span class="modifier">Public</span>
+                                <a href="#addToCart" >addToCart</a>
+                            </li>
+                            <li>
+                                <span class="reference-badge reference-badge--method" aria-hidden="true">M</span>
+                                    <span class="modifier">Private</span>
+                                <a href="#calculateSubtotal" >calculateSubtotal</a>
+                            </li>
+                            <li>
+                                <span class="reference-badge reference-badge--method" aria-hidden="true">M</span>
+                                    <span class="modifier">Public</span>
+                                <a href="#clearCart" >clearCart</a>
+                            </li>
+                            <li>
+                                <span class="reference-badge reference-badge--method" aria-hidden="true">M</span>
+                                    <span class="modifier">Public</span>
+                                <a href="#getTotalPrice" >getTotalPrice</a>
+                            </li>
+                            <li>
+                                <span class="reference-badge reference-badge--method" aria-hidden="true">M</span>
+                                    <span class="modifier">Private</span>
+                                <a href="#proceedAddToCart" >proceedAddToCart</a>
+                            </li>
+                            <li>
+                                <span class="reference-badge reference-badge--method" aria-hidden="true">M</span>
+                                    <span class="modifier">Public</span>
+                                <a href="#removeFromCart" >removeFromCart</a>
+                            </li>
+                            <li>
+                                <span class="reference-badge reference-badge--method" aria-hidden="true">M</span>
+                                    <span class="modifier">Private</span>
+                                <a href="#syncToLocalStorage" >syncToLocalStorage</a>
+                            </li>
+                            <li>
+                                <span class="reference-badge reference-badge--method" aria-hidden="true">M</span>
+                                    <span class="modifier">Public</span>
+                                <a href="#updateQuantity" >updateQuantity</a>
+                            </li>
+                        </ul>
+                    </td>
+                </tr>
+            </tbody>
+        </table>
+
+
+
+
+
+</section>
+
+            <section data-compodoc="block-constructor">
+    <h3 id="constructor">Constructor</h3>
+        <table class="table table-sm table-bordered">
+            <tbody>
+                <tr>
+                    <td class="col-md-4">
+<code>constructor(platformId: <a href="https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Object" target="_blank">Object</a>, _storeContext: <a href="../injectables/StoreContextService.html" target="_self">StoreContextService</a>, message: <a href="../injectables/MessageService.html" target="_self">NzMessageService</a>, _settingsService: <a href="../injectables/CompaniesSettingsService.html" target="_self">CompaniesSettingsService</a>)</code>
+                    </td>
+                </tr>
+                        <tr>
+                            <td class="col-md-4">
+                                <div class="io-line">Definido en <a href="" data-line="31" class="link-to-prism">src/app/core/services/cart.service.ts:31</a></div>
+                            </td>
+                        </tr>
+
+                <tr>
+                    <td class="col-md-4">
+                            <div>
+                                    <b>Parámetros :</b>
+                                    <table class="params">
+                                        <thead>
+                                            <tr>
+                                                <td>Nombre</td>
+                                                    <td>Tipo</td>
+                                                <td>Opcional</td>
+                                            </tr>
+                                        </thead>
+                                        <tbody>
+                                                <tr>
+                                                        <td>platformId</td>
+                                                  
+                                                        <td>
+                                                                        <code><a href="https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Object" target="_blank" >Object</a></code>
+                                                        </td>
+                                                  
+                                                    <td>
+                                                            No
+                                                    </td>
+                                                    
+                                                </tr>
+                                                <tr>
+                                                        <td>_storeContext</td>
+                                                  
+                                                        <td>
+                                                                        <code><a href="../injectables/StoreContextService.html" target="_self" >StoreContextService</a></code>
+                                                        </td>
+                                                  
+                                                    <td>
+                                                            No
+                                                    </td>
+                                                    
+                                                </tr>
+                                                <tr>
+                                                        <td>message</td>
+                                                  
+                                                        <td>
+                                                                        <code><a href="../injectables/MessageService.html" target="_self" >NzMessageService</a></code>
+                                                        </td>
+                                                  
+                                                    <td>
+                                                            No
+                                                    </td>
+                                                    
+                                                </tr>
+                                                <tr>
+                                                        <td>_settingsService</td>
+                                                  
+                                                        <td>
+                                                                        <code><a href="../injectables/CompaniesSettingsService.html" target="_self" >CompaniesSettingsService</a></code>
+                                                        </td>
+                                                  
+                                                    <td>
+                                                            No
+                                                    </td>
+                                                    
+                                                </tr>
+                                        </tbody>
+                                    </table>
+                            </div>
+                    </td>
+                </tr>
+            </tbody>
+        </table>
+</section>
+
+            <section data-compodoc="block-methods">
+    
+    <h3 id="methods">
+        Métodos
+    </h3>
+    <table class="table table-sm table-bordered">
+        <tbody>
+            <tr>
+                <td class="col-md-4">
+                    <a name="addToCart"></a>
+                    <span class="name">
+                            <span class="modifier">Public</span>
+                        <span ><b>addToCart</b></span>
+                        <a href="#addToCart"><span class="icon ion-ios-link"></span></a>
+                    </span>
+                </td>
+            </tr>
+            <tr>
+                <td class="col-md-4">
+                        <span class="modifier-icon icon ion-ios-reset"></span>
+                    <code>addToCart(product: <a href="../interfaces/ProductVariationInterface.html" target="_self">ProductVariationInterface</a>, quantity: <a href="https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/number" target="_blank">number</a>)</code>
+                </td>
+            </tr>
+
+
+                    <tr>
+                        <td class="col-md-4">
+                            <div class="io-line">Definido en <a href="" data-line="85"
+                                    class="link-to-prism">src/app/core/services/cart.service.ts:85</a></div>
+                        </td>
+                    </tr>
+
+
+            <tr>
+                <td class="col-md-4">
+                        <div class="io-description"><p>Incorpora una variación de producto al carrito respetando topes máximos y políticas multitienda.</p>
+</div>
+
+                            <div class="io-description">
+                                <b>Parámetros :</b>
+                                
+                                <table class="params">
+                                    <thead>
+                                        <tr>
+                                            <td>Nombre</td>
+                                                <td>Tipo</td>
+                                            <td>Opcional</td>
+                                                <td>Valor por defecto</td>
+                                                <td>Descripción</td>
+                                        </tr>
+                                    </thead>
+                                    <tbody>
+                                        <tr>
+                                                <td>product</td>
+                                            <td>
+                                                            <code><a href="../interfaces/ProductVariationInterface.html" target="_self" >ProductVariationInterface</a></code>
+                                            </td>
+
+                                            <td>
+                                                    No
+                                            </td>
+
+                                            <td>
+                                            </td>
+
+                                            <td>
+                                                    <p>Variación de producto a añadir.</p>
+
+                                            </td>
+                                        </tr>
+                                        <tr>
+                                                <td>quantity</td>
+                                            <td>
+                                                            <code><a href="https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/number" target="_blank" >number</a></code>
+                                            </td>
+
+                                            <td>
+                                                    No
+                                            </td>
+
+                                            <td>
+                                                    <code>1</code>
+                                            </td>
+
+                                            <td>
+                                                    <p>Cantidad solicitada (por defecto 1).</p>
+
+                                            </td>
+                                        </tr>
+                                    </tbody>
+                                </table>
+                            </div>
+                        <div class="io-description">
+                            <b>Devuelve : </b>        <code><a href="https://www.typescriptlang.org/docs/handbook/basic-types.html" target="_blank" >void</a></code>
+
+                        </div>
+                            <div class="io-description">
+                                
+                            </div>
+                </td>
+            </tr>
+        </tbody>
+    </table>
+    <table class="table table-sm table-bordered">
+        <tbody>
+            <tr>
+                <td class="col-md-4">
+                    <a name="calculateSubtotal"></a>
+                    <span class="name">
+                            <span class="modifier">Private</span>
+                        <span ><b>calculateSubtotal</b></span>
+                        <a href="#calculateSubtotal"><span class="icon ion-ios-link"></span></a>
+                    </span>
+                </td>
+            </tr>
+            <tr>
+                <td class="col-md-4">
+                        <span class="modifier-icon icon ion-ios-reset"></span>
+                    <code>calculateSubtotal(item: <a href="../interfaces/CartItemInterface.html" target="_self">CartItemInterface</a>)</code>
+                </td>
+            </tr>
+
+
+                    <tr>
+                        <td class="col-md-4">
+                            <div class="io-line">Definido en <a href="" data-line="67"
+                                    class="link-to-prism">src/app/core/services/cart.service.ts:67</a></div>
+                        </td>
+                    </tr>
+
+
+            <tr>
+                <td class="col-md-4">
+                        <div class="io-description"><p>Calcula el subtotal monetario de un ítem multiplicando su precio unitario por la cantidad.</p>
+</div>
+
+                            <div class="io-description">
+                                <b>Parámetros :</b>
+                                
+                                <table class="params">
+                                    <thead>
+                                        <tr>
+                                            <td>Nombre</td>
+                                                <td>Tipo</td>
+                                            <td>Opcional</td>
+                                                <td>Descripción</td>
+                                        </tr>
+                                    </thead>
+                                    <tbody>
+                                        <tr>
+                                                <td>item</td>
+                                            <td>
+                                                            <code><a href="../interfaces/CartItemInterface.html" target="_self" >CartItemInterface</a></code>
+                                            </td>
+
+                                            <td>
+                                                    No
+                                            </td>
+
+
+                                            <td>
+                                                    <p>Ítem del carrito evaluado.</p>
+
+                                            </td>
+                                        </tr>
+                                    </tbody>
+                                </table>
+                            </div>
+                        <div class="io-description">
+                            <b>Devuelve : </b>        <code><a href="https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/number" target="_blank" >number</a></code>
+
+                        </div>
+                            <div class="io-description">
+                                <p>Subtotal calculado.</p>
+
+                            </div>
+                </td>
+            </tr>
+        </tbody>
+    </table>
+    <table class="table table-sm table-bordered">
+        <tbody>
+            <tr>
+                <td class="col-md-4">
+                    <a name="clearCart"></a>
+                    <span class="name">
+                            <span class="modifier">Public</span>
+                        <span ><b>clearCart</b></span>
+                        <a href="#clearCart"><span class="icon ion-ios-link"></span></a>
+                    </span>
+                </td>
+            </tr>
+            <tr>
+                <td class="col-md-4">
+                        <span class="modifier-icon icon ion-ios-reset"></span>
+                    <code>clearCart()</code>
+                </td>
+            </tr>
+
+
+                    <tr>
+                        <td class="col-md-4">
+                            <div class="io-line">Definido en <a href="" data-line="208"
+                                    class="link-to-prism">src/app/core/services/cart.service.ts:208</a></div>
+                        </td>
+                    </tr>
+
+
+            <tr>
+                <td class="col-md-4">
+                        <div class="io-description"><p>Vacía por completo el contenido del carrito y purga la clave en LocalStorage.</p>
+</div>
+
+                        <div class="io-description">
+                            <b>Devuelve : </b>        <code><a href="https://www.typescriptlang.org/docs/handbook/basic-types.html" target="_blank" >void</a></code>
+
+                        </div>
+                            <div class="io-description">
+                                
+                            </div>
+                </td>
+            </tr>
+        </tbody>
+    </table>
+    <table class="table table-sm table-bordered">
+        <tbody>
+            <tr>
+                <td class="col-md-4">
+                    <a name="getTotalPrice"></a>
+                    <span class="name">
+                            <span class="modifier">Public</span>
+                        <span ><b>getTotalPrice</b></span>
+                        <a href="#getTotalPrice"><span class="icon ion-ios-link"></span></a>
+                    </span>
+                </td>
+            </tr>
+            <tr>
+                <td class="col-md-4">
+                        <span class="modifier-icon icon ion-ios-reset"></span>
+                    <code>getTotalPrice()</code>
+                </td>
+            </tr>
+
+
+                    <tr>
+                        <td class="col-md-4">
+                            <div class="io-line">Definido en <a href="" data-line="75"
+                                    class="link-to-prism">src/app/core/services/cart.service.ts:75</a></div>
+                        </td>
+                    </tr>
+
+
+            <tr>
+                <td class="col-md-4">
+                        <div class="io-description"><p>Calcula el importe total consolidado de todos los artículos presentes en el carrito.</p>
+</div>
+
+                        <div class="io-description">
+                            <b>Devuelve : </b>        <code><a href="https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/number" target="_blank" >number</a></code>
+
+                        </div>
+                            <div class="io-description">
+                                <p>Sumatoria monetaria de subtotales.</p>
+
+                            </div>
+                </td>
+            </tr>
+        </tbody>
+    </table>
+    <table class="table table-sm table-bordered">
+        <tbody>
+            <tr>
+                <td class="col-md-4">
+                    <a name="proceedAddToCart"></a>
+                    <span class="name">
+                            <span class="modifier">Private</span>
+                        <span ><b>proceedAddToCart</b></span>
+                        <a href="#proceedAddToCart"><span class="icon ion-ios-link"></span></a>
+                    </span>
+                </td>
+            </tr>
+            <tr>
+                <td class="col-md-4">
+                        <span class="modifier-icon icon ion-ios-reset"></span>
+                    <code>proceedAddToCart(product: <a href="../interfaces/ProductVariationInterface.html" target="_self">ProductVariationInterface</a>, quantity: <a href="https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/number" target="_blank">number</a>)</code>
+                </td>
+            </tr>
+
+
+                    <tr>
+                        <td class="col-md-4">
+                            <div class="io-line">Definido en <a href="" data-line="154"
+                                    class="link-to-prism">src/app/core/services/cart.service.ts:154</a></div>
+                        </td>
+                    </tr>
+
+
+            <tr>
+                <td class="col-md-4">
+
+                            <div class="io-description">
+                                <b>Parámetros :</b>
+                                
+                                <table class="params">
+                                    <thead>
+                                        <tr>
+                                            <td>Nombre</td>
+                                                <td>Tipo</td>
+                                            <td>Opcional</td>
+                                        </tr>
+                                    </thead>
+                                    <tbody>
+                                        <tr>
+                                                <td>product</td>
+                                            <td>
+                                                            <code><a href="../interfaces/ProductVariationInterface.html" target="_self" >ProductVariationInterface</a></code>
+                                            </td>
+
+                                            <td>
+                                                    No
+                                            </td>
+
+
+                                        </tr>
+                                        <tr>
+                                                <td>quantity</td>
+                                            <td>
+                                                            <code><a href="https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/number" target="_blank" >number</a></code>
+                                            </td>
+
+                                            <td>
+                                                    No
+                                            </td>
+
+
+                                        </tr>
+                                    </tbody>
+                                </table>
+                            </div>
+                        <div class="io-description">
+                            <b>Devuelve : </b>        <code><a href="https://www.typescriptlang.org/docs/handbook/basic-types.html" target="_blank" >void</a></code>
+
+                        </div>
+                            <div class="io-description">
+                                
+                            </div>
+                </td>
+            </tr>
+        </tbody>
+    </table>
+    <table class="table table-sm table-bordered">
+        <tbody>
+            <tr>
+                <td class="col-md-4">
+                    <a name="removeFromCart"></a>
+                    <span class="name">
+                            <span class="modifier">Public</span>
+                        <span ><b>removeFromCart</b></span>
+                        <a href="#removeFromCart"><span class="icon ion-ios-link"></span></a>
+                    </span>
+                </td>
+            </tr>
+            <tr>
+                <td class="col-md-4">
+                        <span class="modifier-icon icon ion-ios-reset"></span>
+                    <code>removeFromCart(productId: <a href="https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/string" target="_blank">string</a>)</code>
+                </td>
+            </tr>
+
+
+                    <tr>
+                        <td class="col-md-4">
+                            <div class="io-line">Definido en <a href="" data-line="198"
+                                    class="link-to-prism">src/app/core/services/cart.service.ts:198</a></div>
+                        </td>
+                    </tr>
+
+
+            <tr>
+                <td class="col-md-4">
+                        <div class="io-description"><p>Remueve un producto del carrito y actualiza la persistencia local.</p>
+</div>
+
+                            <div class="io-description">
+                                <b>Parámetros :</b>
+                                
+                                <table class="params">
+                                    <thead>
+                                        <tr>
+                                            <td>Nombre</td>
+                                                <td>Tipo</td>
+                                            <td>Opcional</td>
+                                                <td>Descripción</td>
+                                        </tr>
+                                    </thead>
+                                    <tbody>
+                                        <tr>
+                                                <td>productId</td>
+                                            <td>
+                                                            <code><a href="https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/string" target="_blank" >string</a></code>
+                                            </td>
+
+                                            <td>
+                                                    No
+                                            </td>
+
+
+                                            <td>
+                                                    <p>Identificador único (prov_uuid) de la variación a remover.</p>
+
+                                            </td>
+                                        </tr>
+                                    </tbody>
+                                </table>
+                            </div>
+                        <div class="io-description">
+                            <b>Devuelve : </b>        <code><a href="https://www.typescriptlang.org/docs/handbook/basic-types.html" target="_blank" >void</a></code>
+
+                        </div>
+                            <div class="io-description">
+                                
+                            </div>
+                </td>
+            </tr>
+        </tbody>
+    </table>
+    <table class="table table-sm table-bordered">
+        <tbody>
+            <tr>
+                <td class="col-md-4">
+                    <a name="syncToLocalStorage"></a>
+                    <span class="name">
+                            <span class="modifier">Private</span>
+                        <span ><b>syncToLocalStorage</b></span>
+                        <a href="#syncToLocalStorage"><span class="icon ion-ios-link"></span></a>
+                    </span>
+                </td>
+            </tr>
+            <tr>
+                <td class="col-md-4">
+                        <span class="modifier-icon icon ion-ios-reset"></span>
+                    <code>syncToLocalStorage(items: CartItemInterface[])</code>
+                </td>
+            </tr>
+
+
+                    <tr>
+                        <td class="col-md-4">
+                            <div class="io-line">Definido en <a href="" data-line="56"
+                                    class="link-to-prism">src/app/core/services/cart.service.ts:56</a></div>
+                        </td>
+                    </tr>
+
+
+            <tr>
+                <td class="col-md-4">
+                        <div class="io-description"><p>Sincroniza la lista de artículos en el almacenamiento local del navegador.</p>
+</div>
+
+                            <div class="io-description">
+                                <b>Parámetros :</b>
+                                
+                                <table class="params">
+                                    <thead>
+                                        <tr>
+                                            <td>Nombre</td>
+                                                <td>Tipo</td>
+                                            <td>Opcional</td>
+                                                <td>Descripción</td>
+                                        </tr>
+                                    </thead>
+                                    <tbody>
+                                        <tr>
+                                                <td>items</td>
+                                            <td>
+                                                        <code>CartItemInterface[]</code>
+                                            </td>
+
+                                            <td>
+                                                    No
+                                            </td>
+
+
+                                            <td>
+                                                    <p>Colección de ítems a almacenar.</p>
+
+                                            </td>
+                                        </tr>
+                                    </tbody>
+                                </table>
+                            </div>
+                        <div class="io-description">
+                            <b>Devuelve : </b>        <code><a href="https://www.typescriptlang.org/docs/handbook/basic-types.html" target="_blank" >void</a></code>
+
+                        </div>
+                            <div class="io-description">
+                                
+                            </div>
+                </td>
+            </tr>
+        </tbody>
+    </table>
+    <table class="table table-sm table-bordered">
+        <tbody>
+            <tr>
+                <td class="col-md-4">
+                    <a name="updateQuantity"></a>
+                    <span class="name">
+                            <span class="modifier">Public</span>
+                        <span ><b>updateQuantity</b></span>
+                        <a href="#updateQuantity"><span class="icon ion-ios-link"></span></a>
+                    </span>
+                </td>
+            </tr>
+            <tr>
+                <td class="col-md-4">
+                        <span class="modifier-icon icon ion-ios-reset"></span>
+                    <code>updateQuantity(productId: <a href="https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/string" target="_blank">string</a>, quantity: <a href="https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/number" target="_blank">number</a>)</code>
+                </td>
+            </tr>
+
+
+                    <tr>
+                        <td class="col-md-4">
+                            <div class="io-line">Definido en <a href="" data-line="181"
+                                    class="link-to-prism">src/app/core/services/cart.service.ts:181</a></div>
+                        </td>
+                    </tr>
+
+
+            <tr>
+                <td class="col-md-4">
+                        <div class="io-description"><p>Actualiza la cantidad demandada de un artículo específico en el carrito.</p>
+</div>
+
+                            <div class="io-description">
+                                <b>Parámetros :</b>
+                                
+                                <table class="params">
+                                    <thead>
+                                        <tr>
+                                            <td>Nombre</td>
+                                                <td>Tipo</td>
+                                            <td>Opcional</td>
+                                                <td>Descripción</td>
+                                        </tr>
+                                    </thead>
+                                    <tbody>
+                                        <tr>
+                                                <td>productId</td>
+                                            <td>
+                                                            <code><a href="https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/string" target="_blank" >string</a></code>
+                                            </td>
+
+                                            <td>
+                                                    No
+                                            </td>
+
+
+                                            <td>
+                                                    <p>Identificador único (prov_uuid) de la variación de producto.</p>
+
+                                            </td>
+                                        </tr>
+                                        <tr>
+                                                <td>quantity</td>
+                                            <td>
+                                                            <code><a href="https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/number" target="_blank" >number</a></code>
+                                            </td>
+
+                                            <td>
+                                                    No
+                                            </td>
+
+
+                                            <td>
+                                                    <p>Nueva cantidad requerida (fuerza mínimo de 1 unidad).</p>
+
+                                            </td>
+                                        </tr>
+                                    </tbody>
+                                </table>
+                            </div>
+                        <div class="io-description">
+                            <b>Devuelve : </b>        <code><a href="https://www.typescriptlang.org/docs/handbook/basic-types.html" target="_blank" >void</a></code>
+
+                        </div>
+                            <div class="io-description">
+                                
+                            </div>
+                </td>
+            </tr>
+        </tbody>
+    </table>
+</section>
+
+            <section data-compodoc="block-properties">
+    
+    <h3 id="inputs">
+        Propiedades
+    </h3>
+    <table class="table table-sm table-bordered">
+        <tbody>
+            <tr>
+                <td class="col-md-4">
+                    <a name="cartItems$"></a>
+                    <span class="name">
+                            <span class="modifier">Public</span>
+                        <span ><b>cartItems$</b></span>
+                        <a href="#cartItems$"><span class="icon ion-ios-link"></span></a>
+                    </span>
+                </td>
+            </tr>
+                <tr>
+                    <td class="col-md-4">
+                        <i>Tipo : </i>    <code>Observable&lt;CartItemInterface[]&gt;</code>
+
+                    </td>
+                </tr>
+                <tr>
+                    <td class="col-md-4">
+                        <i>Valor por defecto : </i><code>this.cartItemsSubject.asObservable()</code>
+                    </td>
+                </tr>
+                    <tr>
+                        <td class="col-md-4">
+                                <div class="io-line">Definido en <a href="" data-line="27" class="link-to-prism">src/app/core/services/cart.service.ts:27</a></div>
+                        </td>
+                    </tr>
+
+            <tr>
+                <td class="col-md-4">
+                    <div class="io-description"><p>Observable público para la suscripción a los cambios de estado del carrito.</p>
+</div>
+                </td>
+            </tr>
+
+        </tbody>
+    </table>
+    <table class="table table-sm table-bordered">
+        <tbody>
+            <tr>
+                <td class="col-md-4">
+                    <a name="cartItemsSubject"></a>
+                    <span class="name">
+                            <span class="modifier">Private</span>
+                        <span ><b>cartItemsSubject</b></span>
+                        <a href="#cartItemsSubject"><span class="icon ion-ios-link"></span></a>
+                    </span>
+                </td>
+            </tr>
+                <tr>
+                    <td class="col-md-4">
+                        <i>Tipo : </i>    <code>BehaviorSubject&lt;CartItemInterface[]&gt;</code>
+
+                    </td>
+                </tr>
+                <tr>
+                    <td class="col-md-4">
+                        <i>Valor por defecto : </i><code>new BehaviorSubject&lt;CartItemInterface[]&gt;([])</code>
+                    </td>
+                </tr>
+                    <tr>
+                        <td class="col-md-4">
+                                <div class="io-line">Definido en <a href="" data-line="23" class="link-to-prism">src/app/core/services/cart.service.ts:23</a></div>
+                        </td>
+                    </tr>
+
+            <tr>
+                <td class="col-md-4">
+                    <div class="io-description"><p>Sujeto reactivo que almacena la colección actual de ítems en el carrito.</p>
+</div>
+                </td>
+            </tr>
+
+        </tbody>
+    </table>
+    <table class="table table-sm table-bordered">
+        <tbody>
+            <tr>
+                <td class="col-md-4">
+                    <a name="STORAGE_KEY"></a>
+                    <span class="name">
+                            <span class="modifier">Private</span>
+                            <span class="modifier">Readonly</span>
+                        <span ><b>STORAGE_KEY</b></span>
+                        <a href="#STORAGE_KEY"><span class="icon ion-ios-link"></span></a>
+                    </span>
+                </td>
+            </tr>
+                <tr>
+                    <td class="col-md-4">
+                        <i>Tipo : </i>        <code><a href="https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/string" target="_blank" >string</a></code>
+
+                    </td>
+                </tr>
+                <tr>
+                    <td class="col-md-4">
+                        <i>Valor por defecto : </i><code>&#x27;ats_market_cart&#x27;</code>
+                    </td>
+                </tr>
+                    <tr>
+                        <td class="col-md-4">
+                                <div class="io-line">Definido en <a href="" data-line="31" class="link-to-prism">src/app/core/services/cart.service.ts:31</a></div>
+                        </td>
+                    </tr>
+
+            <tr>
+                <td class="col-md-4">
+                    <div class="io-description"><p>Clave identificadora en localStorage para la persistencia del carrito.</p>
+</div>
+                </td>
+            </tr>
+
+        </tbody>
+    </table>
+</section>
+
+    </div>
+
+
+    <div class="tab-pane fade  tab-source-code" id="source">
+        <pre class="line-numbers compodoc-sourcecode"><code class="language-typescript">import { Injectable, PLATFORM_ID, Inject } from &#x27;@angular/core&#x27;;
+import { isPlatformBrowser } from &#x27;@angular/common&#x27;;
+import { BehaviorSubject, Observable, forkJoin, of } from &#x27;rxjs&#x27;;
+import { map, catchError } from &#x27;rxjs/operators&#x27;;
+import { CartItemInterface } from &#x27;@interfaces/cart-item.interface&#x27;;
+import { ProductVariationInterface } from &#x27;@interfaces/product-variation&#x27;;
+import { StoreContextService } from &#x27;./store-context.service&#x27;;
+import { CompaniesSettingsService } from &#x27;./companies-settings.service&#x27;;
+import { NzMessageService } from &#x27;ng-zorro-antd/message&#x27;;
+
+/**
+ * @description Servicio reactivo para la gestión integral del carrito de compras del usuario.
+ * Controla la persistencia en LocalStorage, la sincronización entre componentes mediante Observables,
+ * las reglas de compatibilidad multitienda (ALLOW_MULTI_STORE_CART) y el límite de unidades permitidas.
+ */
+@Injectable({
+  providedIn: &#x27;root&#x27;
+})
+export class CartService {
+  /**
+   * @description Sujeto reactivo que almacena la colección actual de ítems en el carrito.
+   */
+  private cartItemsSubject: BehaviorSubject&lt;CartItemInterface[]&gt; &#x3D; new BehaviorSubject&lt;CartItemInterface[]&gt;([]);
+  /**
+   * @description Observable público para la suscripción a los cambios de estado del carrito.
+   */
+  public cartItems$: Observable&lt;CartItemInterface[]&gt; &#x3D; this.cartItemsSubject.asObservable();
+  /**
+   * @description Clave identificadora en localStorage para la persistencia del carrito.
+   */
+  private readonly STORAGE_KEY &#x3D; &#x27;ats_market_cart&#x27;;
+
+  constructor(
+    @Inject(PLATFORM_ID) private platformId: Object,
+    private _storeContext: StoreContextService,
+    private message: NzMessageService,
+    private _settingsService: CompaniesSettingsService
+  ) {
+    if (isPlatformBrowser(this.platformId)) {
+      const savedCart &#x3D; localStorage.getItem(this.STORAGE_KEY);
+      if (savedCart) {
+        try {
+          const parsed &#x3D; JSON.parse(savedCart);
+          this.cartItemsSubject.next(parsed);
+        } catch (e) {
+          console.error(&#x27;Error cargando el carrito desde LocalStorage&#x27;, e);
+        }
+      }
+    }
+  }
+
+  /**
+   * @description Sincroniza la lista de artículos en el almacenamiento local del navegador.
+   * @param items Colección de ítems a almacenar.
+   */
+  private syncToLocalStorage(items: CartItemInterface[]): void {
+    if (isPlatformBrowser(this.platformId)) {
+      localStorage.setItem(this.STORAGE_KEY, JSON.stringify(items));
+    }
+  }
+
+  /**
+   * @description Calcula el subtotal monetario de un ítem multiplicando su precio unitario por la cantidad.
+   * @param item Ítem del carrito evaluado.
+   * @returns {number} Subtotal calculado.
+   */
+  private calculateSubtotal(item: CartItemInterface): number {
+    return item.prov_suggestedminimumsellingprice * item.quantity;
+  }
+
+  /**
+   * @description Calcula el importe total consolidado de todos los artículos presentes en el carrito.
+   * @returns {number} Sumatoria monetaria de subtotales.
+   */
+  public getTotalPrice(): number {
+    return this.cartItemsSubject.value.reduce((total, item) &#x3D;&gt; total + item.subtotal, 0);
+  }
+
+  /**
+   * @description Incorpora una variación de producto al carrito respetando topes máximos y políticas multitienda.
+   * @param product Variación de producto a añadir.
+   * @param quantity Cantidad solicitada (por defecto 1).
+   * @returns {void}
+   */
+  public addToCart(product: ProductVariationInterface, quantity: number &#x3D; 1): void {
+    const currentItems &#x3D; this.cartItemsSubject.value;
+    const totalQuantity &#x3D; currentItems.reduce((sum, item) &#x3D;&gt; sum + item.quantity, 0);
+    const maxItems &#x3D; Number(this._storeContext.getSetting(&#x27;MAX_CART_ITEMS&#x27;, 100));
+
+    if (totalQuantity + quantity &gt; maxItems) {
+      this.message.warning(&#x60;No puedes agregar más artículos. El límite es de ${maxItems} unidades.&#x60;);
+      return;
+    }
+
+    // 1. Verificar si hay productos de otras tiendas en el carrito
+    const differentStoreItems &#x3D; currentItems.filter(item &#x3D;&gt; item.cmp_uuid !&#x3D;&#x3D; product.cmp_uuid);
+    if (differentStoreItems.length &gt; 0) {
+      // Hay productos de otras tiendas. Necesitamos validar si se permite la combinación.
+      this._settingsService.getCompaniesSettings(product.cmp_uuid).subscribe({
+        next: (res) &#x3D;&gt; {
+          let incomingAllowsMulti &#x3D; true;
+          if (res &amp;&amp; res.data) {
+            const setting &#x3D; res.data.find((s: any) &#x3D;&gt; s.cmps_key &#x3D;&#x3D;&#x3D; &#x27;ALLOW_MULTI_STORE_CART&#x27;);
+            if (setting) {
+              incomingAllowsMulti &#x3D; setting.cmps_value !&#x3D;&#x3D; &#x27;false&#x27;;
+            }
+          }
+
+          if (!incomingAllowsMulti) {
+            this.message.warning(&#x60;Esta tienda no permite combinar sus productos con los de otras tiendas.&#x60;);
+            return;
+          }
+
+          // Consultar las configuraciones de las tiendas de los productos ya presentes en el carrito
+          const existingCmpUuids &#x3D; [...new Set(differentStoreItems.map(item &#x3D;&gt; item.cmp_uuid))];
+          const checks &#x3D; existingCmpUuids.map(uuid &#x3D;&gt; 
+            this._settingsService.getCompaniesSettings(uuid).pipe(
+              map(settingsRes &#x3D;&gt; {
+                const setting &#x3D; settingsRes?.data?.find((s: any) &#x3D;&gt; s.cmps_key &#x3D;&#x3D;&#x3D; &#x27;ALLOW_MULTI_STORE_CART&#x27;);
+                return {
+                  uuid,
+                  allows: setting ? setting.cmps_value !&#x3D;&#x3D; &#x27;false&#x27; : true
+                };
+              }),
+              catchError(() &#x3D;&gt; of({ uuid, allows: true }))
+            )
+          );
+
+          forkJoin(checks).subscribe({
+            next: (results) &#x3D;&gt; {
+              const blockedStore &#x3D; results.find(r &#x3D;&gt; !r.allows);
+              if (blockedStore) {
+                this.message.warning(&#x60;El carrito contiene productos de una tienda que no permite compras multi-tienda.&#x60;);
+                return;
+              }
+
+              this.proceedAddToCart(product, quantity);
+            },
+            error: () &#x3D;&gt; {
+              this.proceedAddToCart(product, quantity);
+            }
+          });
+        },
+        error: () &#x3D;&gt; {
+          this.proceedAddToCart(product, quantity);
+        }
+      });
+    } else {
+      // El carrito está vacío o contiene solo productos de la misma tienda.
+      this.proceedAddToCart(product, quantity);
+    }
+  }
+
+  private proceedAddToCart(product: ProductVariationInterface, quantity: number): void {
+    const currentItems &#x3D; this.cartItemsSubject.value;
+    const existingItem &#x3D; currentItems.find(item &#x3D;&gt; item.prov_uuid &#x3D;&#x3D;&#x3D; product.prov_uuid);
+
+    if (existingItem) {
+      existingItem.quantity +&#x3D; quantity;
+      existingItem.subtotal &#x3D; this.calculateSubtotal(existingItem);
+    } else {
+      const newItem: CartItemInterface &#x3D; {
+        ...product,
+        quantity: quantity,
+        subtotal: this.calculateSubtotal({ ...product, quantity } as CartItemInterface)
+      };
+      currentItems.push(newItem);
+    }
+
+    this.cartItemsSubject.next([...currentItems]);
+    this.syncToLocalStorage(currentItems);
+    this.message.success(&#x60;${product.prov_name} agregado al carrito.&#x60;);
+  }
+
+  /**
+   * @description Actualiza la cantidad demandada de un artículo específico en el carrito.
+   * @param productId Identificador único (prov_uuid) de la variación de producto.
+   * @param quantity Nueva cantidad requerida (fuerza mínimo de 1 unidad).
+   * @returns {void}
+   */
+  public updateQuantity(productId: string, quantity: number): void {
+    const currentItems &#x3D; this.cartItemsSubject.value;
+    const itemToUpdate &#x3D; currentItems.find(item &#x3D;&gt; item.prov_uuid &#x3D;&#x3D;&#x3D; productId);
+
+    if (itemToUpdate) {
+      itemToUpdate.quantity &#x3D; quantity &lt; 1 ? 1 : quantity;
+      itemToUpdate.subtotal &#x3D; this.calculateSubtotal(itemToUpdate);
+      this.cartItemsSubject.next([...currentItems]);
+      this.syncToLocalStorage(currentItems);
+    }
+  }
+
+  /**
+   * @description Remueve un producto del carrito y actualiza la persistencia local.
+   * @param productId Identificador único (prov_uuid) de la variación a remover.
+   * @returns {void}
+   */
+  public removeFromCart(productId: string): void {
+    const filteredItems &#x3D; this.cartItemsSubject.value.filter(item &#x3D;&gt; item.prov_uuid !&#x3D;&#x3D; productId);
+    this.cartItemsSubject.next(filteredItems);
+    this.syncToLocalStorage(filteredItems);
+  }
+
+  /**
+   * @description Vacía por completo el contenido del carrito y purga la clave en LocalStorage.
+   * @returns {void}
+   */
+  public clearCart(): void {
+    this.cartItemsSubject.next([]);
+    if (isPlatformBrowser(this.platformId)) {
+      localStorage.removeItem(this.STORAGE_KEY);
+    }
+  }
+}
+</code></pre>
+    </div>
+
+</div>
+
+
+
+
+
+
+
+
+
+
+
+
+
+                   </div><div class="search-results">
+    <div class="has-results">
+        <h1 class="search-results-title"><span class='search-results-count'></span> comparación de resultados "<span class='search-query'></span>"</h1>
+        <ul class="search-results-list"></ul>
+    </div>
+    <div class="no-results">
+        <h1 class="search-results-title">No hay resultados que coincidan "<span class='search-query'></span>"</h1>
+    </div>
+</div>
+</div>
+               <!-- END CONTENT -->
+           </div>
+       </div>
+
+          
+<div class="compodoc-lang-switch">
+  <select id="compodoc-lang-select" aria-label="Seleccionar idioma">
+    <option value="es" selected>🇪🇸 Español</option>
+    <option value="en" >🇺🇸 English</option>
+    <option value="pt" >🇧🇷 Português</option>
+  </select>
+</div>
+
+          <label class="dark-mode-switch">
+               <input type="checkbox">
+               <span class="slider">
+                    <svg class="slider-icon" viewBox="0 0 24 24" fill="none" height="20" stroke="#000" stroke-linecap="round" stroke-linejoin="round" stroke-width="2" width="20" xmlns="http://www.w3.org/2000/svg">
+                    <path d="M21 12.79A9 9 0 1111.21 3 7 7 0 0021 12.79z"></path>
+                    </svg>
+               </span>
+          </label>
+
+       <script>
+            var COMPODOC_CURRENT_PAGE_DEPTH = 1;
+            var COMPODOC_CURRENT_PAGE_CONTEXT = 'injectable';
+            var COMPODOC_CURRENT_PAGE_URL = 'CartService.html';
+            var MAX_SEARCH_RESULTS = 15;
+       </script>
+
+       <script>
+               $darkModeToggleSwitchers = document.querySelectorAll('.dark-mode-switch input');
+               var updateDarkModeSwitchOffset = function () {
+                    var content = document.querySelector('.content');
+                    var scrollbarWidth = 0;
+
+                    if (content) {
+                         scrollbarWidth = Math.max(0, content.offsetWidth - content.clientWidth);
+                    }
+
+                    document.documentElement.style.setProperty(
+                         '--content-scrollbar-width',
+                         scrollbarWidth + 'px'
+                    );
+               };
+
+               updateDarkModeSwitchOffset();
+               requestAnimationFrame(updateDarkModeSwitchOffset);
+               window.addEventListener('resize', updateDarkModeSwitchOffset);
+
+               checkToggle(darkModeState);
+               if ($darkModeToggleSwitchers.length > 0) {
+                    for (var i = 0; i < $darkModeToggleSwitchers.length; i++) {
+                         $darkModeToggleSwitchers[i].addEventListener('change', function (event) {
+                              darkModeState = !darkModeState;
+                              toggleDarkMode(darkModeState);
+                         });
+                    }
+               }
+          </script>
+
+       <script src="../js/libs/custom-elements.min.js"></script>
+       <script src="../js/libs/lit-html.js"></script>
+
+       <script src="../js/menu-wc.js" defer></script>
+
+       <script src="../js/libs/bootstrap-native.js"></script>
+
+       <script src="../js/libs/es6-shim.min.js"></script>
+       <script src="../js/libs/EventDispatcher.js"></script>
+       <script src="../js/libs/promise.min.js"></script>
+
+       <script src="../js/compodoc.js"></script>
+
+       <script src="../js/tabs.js"></script>
+       <script src="../js/menu.js"></script>
+       <script src="../js/libs/clipboard.min.js"></script>
+       <script src="../js/libs/prism.js"></script>
+       <script src="../js/sourceCode.js"></script>
+          <script src="../js/search/search.js"></script>
+          <script src="../js/search/lunr.min.js"></script>
+          <script src="../js/search/search-lunr.js"></script>
+          <script src="../js/search/search_index.js"></script>
+       <script src="../js/lazy-load-graphs.js"></script>
+
+
+    
+<script id="compodoc-lang-script">
+(function() {
+  var CURRENT_LANG = "es";
+  var ADDITIONAL_DOCS_MAP = {"es":["01.-introducción-y-arquitectura-general.html","02.-autenticación-y-control-de-accesos.html","03.-catálogo-público-y-exploración-de-tiendas.html","04.-carrito-de-compras-y-checkout-multitienda.html","05.-gestión-de-empresas,-roles-y-configuración.html","06.-inventario,-productos,-variaciones-y-almacenes.html","07.-gestión-de-pedidos,-compras-y-cupones.html","08.-analíticas-de-negocio,-finanzas-y-proveedores.html"],"en":["01.-introduction-and-general-architecture.html","02.-authentication-and-access-control.html","03.-public-catalog-and-store-exploration.html","04.-shopping-cart-and-multi-store-checkout.html","05.-company-management,-roles-and-configuration.html","06.-inventory,-products,-variations-and-warehouses.html","07.-orders-management,-purchases-and-coupons.html","08.-business-analytics,-finances-and-suppliers.html"],"pt":["01.-introdução-e-arquitetura-geral.html","02.-autenticação-e-controle-de-acesso.html","03.-catálogo-público-e-exploração-de-lojas.html","04.-carrinho-de-compras-e-checkout-multiloja.html","05.-gestão-de-empresas,-funções-e-configuração.html","06.-estoque,-produtos,-variações-e-armazéns.html","07.-gestão-de-pedidos,-compras-e-cupons.html","08.-análise-de-negócios,-finanças-e-fornecedores.html"]};
+
+  var select = document.getElementById('compodoc-lang-select');
+  if (!select) return;
+
+  try {
+    localStorage.setItem('compodoc_lang', CURRENT_LANG);
+  } catch (e) {}
+
+  select.addEventListener('change', function(e) {
+    var targetLang = e.target.value;
+    if (targetLang === CURRENT_LANG) return;
+
+    try {
+      localStorage.setItem('compodoc_lang', targetLang);
+    } catch (err) {}
+
+    var href = window.location.href;
+    var pathname = window.location.pathname;
+
+    // Manejo especial para páginas de additional-documentation
+    if (pathname.indexOf('/additional-documentation/') !== -1) {
+      var segments = pathname.split('/');
+      var currentFile = decodeURIComponent(segments[segments.length - 1]);
+      
+      var currentList = ADDITIONAL_DOCS_MAP[CURRENT_LANG] || [];
+      var targetList = ADDITIONAL_DOCS_MAP[targetLang] || [];
+      var foundIndex = -1;
+
+      var prefixMatch = currentFile.match(/^(\d{2}\.-)/);
+      if (prefixMatch) {
+        var prefix = prefixMatch[1];
+        for (var i = 0; i < targetList.length; i++) {
+          if (targetList[i].startsWith(prefix)) {
+            foundIndex = i;
+            break;
+          }
+        }
+      }
+      if (foundIndex === -1) {
+        for (var j = 0; j < currentList.length; j++) {
+          if (currentList[j] === currentFile) {
+            foundIndex = j;
+            break;
+          }
+        }
+      }
+
+      var targetFile = (foundIndex !== -1 && targetList[foundIndex]) 
+        ? targetList[foundIndex] 
+        : (targetList[0] || 'index.html');
+
+      var targetSubpath = '/' + targetLang + '/additional-documentation/' + targetFile;
+      var currentSubpath = '/' + CURRENT_LANG + '/additional-documentation/' + segments[segments.length - 1];
+
+      if (href.indexOf(currentSubpath) !== -1) {
+        window.location.href = href.replace(currentSubpath, targetSubpath);
+        return;
+      }
+    }
+
+    // Páginas estándar
+    var standardReplace = href.replace('/' + CURRENT_LANG + '/', '/' + targetLang + '/');
+    if (standardReplace !== href) {
+      window.location.href = standardReplace;
+    } else {
+      var depth = (typeof COMPODOC_CURRENT_PAGE_DEPTH !== 'undefined') ? COMPODOC_CURRENT_PAGE_DEPTH : 0;
+      var prefixPath = '';
+      for (var k = 0; k <= depth; k++) {
+        prefixPath += '../';
+      }
+      window.location.href = prefixPath + targetLang + '/index.html';
+    }
+  });
+})();
+</script>
+
+</body>
+</html>

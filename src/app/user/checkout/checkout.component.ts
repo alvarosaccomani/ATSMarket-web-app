@@ -24,7 +24,13 @@ import { MercadopagoService } from '../../core/services/mercadopago.service';
 import { CompanyInterface } from '../../core/interfaces/company/company.interface';
 import { CartItemInterface } from '../../core/interfaces/cart-item.interface';
 
+/**
+ * @description Estructura que agrupa los productos del carrito por comercio vendedor para su procesamiento logístico independiente.
+ */
 export interface StoreOrderGroup {
+  /**
+   * @description Identificador único del comercio emisor.
+   */
   cmp_uuid: string;
   company?: CompanyInterface;
   settings?: { [key: string]: any };
@@ -61,6 +67,11 @@ import { NzModalModule } from 'ng-zorro-antd/modal';
 
 import { MpPaymentBrickComponent } from '../../shared/components/mp-payment-brick/mp-payment-brick.component';
 
+/**
+ * @description Asistente transaccional de checkout por etapas (nz-steps).
+ * Gestiona la selección y alta de domicilios con mapa geolocalizado, cotización individual
+ * de métodos de envío por tienda, canje de cupones de descuento y pago seguro vía Mercado Pago Brick.
+ */
 @Component({
   selector: 'app-checkout',
   standalone: true,

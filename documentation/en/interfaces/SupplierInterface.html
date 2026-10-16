@@ -1,0 +1,837 @@
+<!doctype html>
+<html class="no-js" lang="">
+    <head>
+        <meta charset="utf-8">
+        <meta http-equiv="x-ua-compatible" content="ie=edge">
+        <title>ATSMarket Web App</title>
+        <meta name="description" content="">
+        <meta name="viewport" content="width=device-width, initial-scale=1">
+
+        <link rel="icon" type="image/x-icon" href="../images/favicon.ico">
+	   <link rel="stylesheet" href="../styles/style.css">
+        <link rel="stylesheet" href="../styles/dark.css">
+    
+<style id="compodoc-lang-styles">
+  .compodoc-lang-switch {
+    position: fixed;
+    top: 15px;
+    right: calc(90px + var(--content-scrollbar-width, 0px));
+    z-index: 1050;
+    display: inline-block;
+  }
+  @media (max-width: 767px) {
+    .compodoc-lang-switch {
+      top: 8px;
+      right: 60px;
+    }
+  }
+  #compodoc-lang-select {
+    height: 34px;
+    padding: 0 12px;
+    border-radius: 17px;
+    border: 1px solid #d9d9d9;
+    background-color: #ffffff;
+    color: #1f1f1f;
+    font-size: 13px;
+    font-family: inherit;
+    font-weight: 500;
+    cursor: pointer;
+    outline: none;
+    box-shadow: 0 2px 6px rgba(0, 0, 0, 0.08);
+    transition: all 0.3s cubic-bezier(0.645, 0.045, 0.355, 1);
+    -webkit-appearance: none;
+    -moz-appearance: none;
+    appearance: none;
+    padding-right: 26px;
+    background-image: url("data:image/svg+xml;charset=UTF-8,%3csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 24 24' fill='none' stroke='%23666' stroke-width='2' stroke-linecap='round' stroke-linejoin='round'%3e%3cpolyline points='6 9 12 15 18 9'%3e%3c/polyline%3e%3c/svg%3e");
+    background-repeat: no-repeat;
+    background-position: right 8px center;
+    background-size: 14px;
+  }
+  #compodoc-lang-select:hover, #compodoc-lang-select:focus {
+    border-color: #5cc0ae;
+    box-shadow: 0 2px 8px rgba(92, 192, 174, 0.25);
+  }
+  body.dark .compodoc-lang-switch #compodoc-lang-select {
+    background-color: #2c3e50;
+    color: #ecf0f1;
+    border: 1px solid #4a627a;
+    box-shadow: 0 2px 6px rgba(0, 0, 0, 0.35);
+    background-image: url("data:image/svg+xml;charset=UTF-8,%3csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 24 24' fill='none' stroke='%23ecf0f1' stroke-width='2' stroke-linecap='round' stroke-linejoin='round'%3e%3cpolyline points='6 9 12 15 18 9'%3e%3c/polyline%3e%3c/svg%3e");
+  }
+  body.dark .compodoc-lang-switch #compodoc-lang-select option {
+    background-color: #2c3e50;
+    color: #ecf0f1;
+  }
+</style>
+
+</head>
+    <body>
+          <script>
+               // Blocking script to avoid flickering dark mode
+               // Dark mode toggle button
+               var useDark = window.matchMedia('(prefers-color-scheme: dark)');
+               var darkModeState = useDark.matches;
+               var $darkModeToggleSwitchers = document.querySelectorAll('.dark-mode-switch input');
+               var $darkModeToggles = document.querySelectorAll('.dark-mode-switch');
+               var darkModeStateLocal = localStorage.getItem('compodoc_darkmode-state');
+
+               function checkToggle(check) {
+                    for (var i = 0; i < $darkModeToggleSwitchers.length; i++) {
+                         $darkModeToggleSwitchers[i].checked = check;
+                    }
+               }
+
+               function toggleDarkMode(state) {
+                    if (window.localStorage) {
+                         localStorage.setItem('compodoc_darkmode-state', state);
+                    }
+
+                    checkToggle(state);
+
+                    const hasClass = document.body.classList.contains('dark');
+
+                    if (state) {
+                         for (var i = 0; i < $darkModeToggles.length; i++) {
+                              $darkModeToggles[i].classList.add('dark');
+                         }
+                         if (!hasClass) {
+                              document.body.classList.add('dark');
+                         }
+                    } else {
+                         for (var i = 0; i < $darkModeToggles.length; i++) {
+                              $darkModeToggles[i].classList.remove('dark');
+                         }
+                         if (hasClass) {
+                              document.body.classList.remove('dark');
+                         }
+                    }
+               }
+
+               useDark.addEventListener('change', function (evt) {
+                    toggleDarkMode(evt.matches);
+               });
+               if (darkModeStateLocal) {
+                    darkModeState = darkModeStateLocal === 'true';
+               }
+               toggleDarkMode(darkModeState);
+          </script>
+          <script>
+              // --- Iframe navigation tracking for Template Playground ---
+              function sendCurrentUrlToParent() {
+                  if (window.parent && window.parent !== window) {
+                      window.parent.postMessage({
+                          type: 'compodoc-iframe-navigate',
+                          url: window.location.pathname + window.location.hash
+                      }, '*');
+                  }
+              }
+              window.addEventListener('hashchange', sendCurrentUrlToParent, false);
+              window.addEventListener('popstate', sendCurrentUrlToParent, false);
+              window.addEventListener('DOMContentLoaded', sendCurrentUrlToParent, false);
+          </script>
+
+        <div class="navbar navbar-default navbar-fixed-top d-md-none p-0">
+               <div class="d-flex">
+                    <a href="../" class="navbar-brand">ATSMarket Web App</a>
+                    <button type="button" class="btn btn-default btn-menu ion-ios-menu" id="btn-menu"></button>
+               </div>
+        </div>
+
+        <div class="xs-menu menu" id="mobile-menu">
+                <div id="book-search-input" role="search">
+    <input type="text" placeholder="Type to search">
+    <button type="button"
+        class="search-input-clear"
+        aria-label="Clear search"
+        data-search-input-clear>&times;</button>
+</div>
+            <compodoc-menu></compodoc-menu>
+        </div>
+
+        <div class="container-fluid main">
+           <div class="row main">
+               <div class="d-none d-md-block menu">
+                   <compodoc-menu mode="normal"></compodoc-menu>
+               </div>
+               <!-- START CONTENT -->
+               <div class="content interface">
+                   <div class="content-data">
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+<ol class="breadcrumb">
+  <li class="breadcrumb-item">Interfaces</li>
+  <li class="breadcrumb-item"
+  >
+  SupplierInterface</li>
+</ol>
+
+<div class="io-file io-file-path" data-compodoc="entity-file-path">
+    <span class="icon ion-ios-document" aria-hidden="true"></span>
+    <code>src/app/core/interfaces/supplier/supplier.interface.ts</code>
+</div>
+
+<ul class="nav nav-tabs" role="tablist">
+        <li class="nav-item">
+            <a href="#info" 
+                class="nav-link"
+                class="nav-link active"
+                role="tab" id="info-tab" data-bs-toggle="tab" data-link="info">Info</a>
+        </li>
+        <li class="nav-item">
+            <a href="#api" 
+                class="nav-link"
+                
+                role="tab" id="api-tab" data-bs-toggle="tab" data-link="api">API</a>
+        </li>
+        <li class="nav-item">
+            <a href="#source" 
+                class="nav-link"
+                
+                role="tab" id="source-tab" data-bs-toggle="tab" data-link="source">Source</a>
+        </li>
+</ul>
+
+<div class="tab-content">
+    <div class="tab-pane fade active in" id="info">
+
+
+
+            </div>
+
+    <div class="tab-pane fade " id="api"><section data-compodoc="block-index">
+    <h3 id="index">Index</h3>
+    <table class="table table-sm table-bordered index-table">
+        <tbody>
+            <tr>
+                <td class="col-md-3">
+                    <h6><b>Properties</b></h6>
+                </td>
+                <td class="col-md-9">
+                    <ul class="index-list">
+                        <li>
+                                <a href="#cmp_uuid" class="reference-link ">
+                                    <span class="reference-badge reference-badge--property" aria-hidden="true">P</span><span class="reference-link-label">cmp_uuid</span>
+                                </a>
+                        </li>
+                        <li>
+                                <a href="#pmt_uuid" class="reference-link ">
+                                    <span class="reference-badge reference-badge--property" aria-hidden="true">P</span><span class="reference-link-label">pmt_uuid</span>
+                                </a>
+                        </li>
+                        <li>
+                                <a href="#sup_createdat" class="reference-link ">
+                                    <span class="reference-badge reference-badge--property" aria-hidden="true">P</span><span class="reference-link-label">sup_createdat</span>
+                                </a>
+                        </li>
+                        <li>
+                                <a href="#sup_email" class="reference-link ">
+                                    <span class="reference-badge reference-badge--property" aria-hidden="true">P</span><span class="reference-link-label">sup_email</span>
+                                </a>
+                        </li>
+                        <li>
+                                <a href="#sup_fullname" class="reference-link ">
+                                    <span class="reference-badge reference-badge--property" aria-hidden="true">P</span><span class="reference-link-label">sup_fullname</span>
+                                </a>
+                        </li>
+                        <li>
+                                <a href="#sup_phone" class="reference-link ">
+                                    <span class="reference-badge reference-badge--property" aria-hidden="true">P</span><span class="reference-link-label">sup_phone</span>
+                                </a>
+                        </li>
+                        <li>
+                                <a href="#sup_updatedat" class="reference-link ">
+                                    <span class="reference-badge reference-badge--property" aria-hidden="true">P</span><span class="reference-link-label">sup_updatedat</span>
+                                </a>
+                        </li>
+                        <li>
+                                <a href="#sup_uuid" class="reference-link ">
+                                    <span class="reference-badge reference-badge--property" aria-hidden="true">P</span><span class="reference-link-label">sup_uuid</span>
+                                </a>
+                        </li>
+                        <li>
+                                <a href="#usr_uuid" class="reference-link ">
+                                    <span class="reference-badge reference-badge--property" aria-hidden="true">P</span><span class="reference-link-label">usr_uuid</span>
+                                </a>
+                        </li>
+                    </ul>
+                </td>
+            </tr>
+        </tbody>
+    </table>
+</section>
+
+
+
+    <section data-compodoc="block-properties">
+        <h3 id="inputs">Properties</h3>
+            <table class="table table-sm table-bordered">
+                <tbody>
+                        <tr>
+                            <td class="col-md-4">
+                                <a name="cmp_uuid"></a>
+                                <span class="name "><b>cmp_uuid</b>
+                                    <a href="#cmp_uuid">
+                                        <span class="icon ion-ios-link"></span>
+                                    </a>
+                                </span>
+                            </td>
+                        </tr>
+                        <tr>
+                            <td class="col-md-4">
+                                <code>cmp_uuid:     <code>string | null</code>
+</code>
+                            </td>
+                        </tr>
+
+
+                            <tr>
+                                <td class="col-md-4">
+                                    <i>Type : </i>    <code>string | null</code>
+
+                                </td>
+                            </tr>
+
+
+
+
+
+                            <tr>
+                                <td class="col-md-4">
+                                    <div class="io-line">Defined in <a href="" data-line="2" class="link-to-prism">src/app/core/interfaces/supplier/supplier.interface.ts:2</a></div>
+                                </td>
+                            </tr>
+
+                </tbody>
+            </table>
+            <table class="table table-sm table-bordered">
+                <tbody>
+                        <tr>
+                            <td class="col-md-4">
+                                <a name="pmt_uuid"></a>
+                                <span class="name "><b>pmt_uuid</b>
+                                    <a href="#pmt_uuid">
+                                        <span class="icon ion-ios-link"></span>
+                                    </a>
+                                </span>
+                            </td>
+                        </tr>
+                        <tr>
+                            <td class="col-md-4">
+                                <code>pmt_uuid:     <code>string | null</code>
+</code>
+                            </td>
+                        </tr>
+
+
+                            <tr>
+                                <td class="col-md-4">
+                                    <i>Type : </i>    <code>string | null</code>
+
+                                </td>
+                            </tr>
+
+
+
+
+
+                            <tr>
+                                <td class="col-md-4">
+                                    <div class="io-line">Defined in <a href="" data-line="7" class="link-to-prism">src/app/core/interfaces/supplier/supplier.interface.ts:7</a></div>
+                                </td>
+                            </tr>
+
+                </tbody>
+            </table>
+            <table class="table table-sm table-bordered">
+                <tbody>
+                        <tr>
+                            <td class="col-md-4">
+                                <a name="sup_createdat"></a>
+                                <span class="name "><b>sup_createdat</b>
+                                    <a href="#sup_createdat">
+                                        <span class="icon ion-ios-link"></span>
+                                    </a>
+                                </span>
+                            </td>
+                        </tr>
+                        <tr>
+                            <td class="col-md-4">
+                                <code>sup_createdat:     <code>Date | null</code>
+</code>
+                            </td>
+                        </tr>
+
+
+                            <tr>
+                                <td class="col-md-4">
+                                    <i>Type : </i>    <code>Date | null</code>
+
+                                </td>
+                            </tr>
+
+
+
+
+
+                            <tr>
+                                <td class="col-md-4">
+                                    <div class="io-line">Defined in <a href="" data-line="9" class="link-to-prism">src/app/core/interfaces/supplier/supplier.interface.ts:9</a></div>
+                                </td>
+                            </tr>
+
+                </tbody>
+            </table>
+            <table class="table table-sm table-bordered">
+                <tbody>
+                        <tr>
+                            <td class="col-md-4">
+                                <a name="sup_email"></a>
+                                <span class="name "><b>sup_email</b>
+                                    <a href="#sup_email">
+                                        <span class="icon ion-ios-link"></span>
+                                    </a>
+                                </span>
+                            </td>
+                        </tr>
+                        <tr>
+                            <td class="col-md-4">
+                                <code>sup_email:     <code>string | null</code>
+</code>
+                            </td>
+                        </tr>
+
+
+                            <tr>
+                                <td class="col-md-4">
+                                    <i>Type : </i>    <code>string | null</code>
+
+                                </td>
+                            </tr>
+
+
+
+
+
+                            <tr>
+                                <td class="col-md-4">
+                                    <div class="io-line">Defined in <a href="" data-line="5" class="link-to-prism">src/app/core/interfaces/supplier/supplier.interface.ts:5</a></div>
+                                </td>
+                            </tr>
+
+                </tbody>
+            </table>
+            <table class="table table-sm table-bordered">
+                <tbody>
+                        <tr>
+                            <td class="col-md-4">
+                                <a name="sup_fullname"></a>
+                                <span class="name "><b>sup_fullname</b>
+                                    <a href="#sup_fullname">
+                                        <span class="icon ion-ios-link"></span>
+                                    </a>
+                                </span>
+                            </td>
+                        </tr>
+                        <tr>
+                            <td class="col-md-4">
+                                <code>sup_fullname:     <code>string | null</code>
+</code>
+                            </td>
+                        </tr>
+
+
+                            <tr>
+                                <td class="col-md-4">
+                                    <i>Type : </i>    <code>string | null</code>
+
+                                </td>
+                            </tr>
+
+
+
+
+
+                            <tr>
+                                <td class="col-md-4">
+                                    <div class="io-line">Defined in <a href="" data-line="4" class="link-to-prism">src/app/core/interfaces/supplier/supplier.interface.ts:4</a></div>
+                                </td>
+                            </tr>
+
+                </tbody>
+            </table>
+            <table class="table table-sm table-bordered">
+                <tbody>
+                        <tr>
+                            <td class="col-md-4">
+                                <a name="sup_phone"></a>
+                                <span class="name "><b>sup_phone</b>
+                                    <a href="#sup_phone">
+                                        <span class="icon ion-ios-link"></span>
+                                    </a>
+                                </span>
+                            </td>
+                        </tr>
+                        <tr>
+                            <td class="col-md-4">
+                                <code>sup_phone:     <code>string | null</code>
+</code>
+                            </td>
+                        </tr>
+
+
+                            <tr>
+                                <td class="col-md-4">
+                                    <i>Type : </i>    <code>string | null</code>
+
+                                </td>
+                            </tr>
+
+
+
+
+
+                            <tr>
+                                <td class="col-md-4">
+                                    <div class="io-line">Defined in <a href="" data-line="6" class="link-to-prism">src/app/core/interfaces/supplier/supplier.interface.ts:6</a></div>
+                                </td>
+                            </tr>
+
+                </tbody>
+            </table>
+            <table class="table table-sm table-bordered">
+                <tbody>
+                        <tr>
+                            <td class="col-md-4">
+                                <a name="sup_updatedat"></a>
+                                <span class="name "><b>sup_updatedat</b>
+                                    <a href="#sup_updatedat">
+                                        <span class="icon ion-ios-link"></span>
+                                    </a>
+                                </span>
+                            </td>
+                        </tr>
+                        <tr>
+                            <td class="col-md-4">
+                                <code>sup_updatedat:     <code>Date | null</code>
+</code>
+                            </td>
+                        </tr>
+
+
+                            <tr>
+                                <td class="col-md-4">
+                                    <i>Type : </i>    <code>Date | null</code>
+
+                                </td>
+                            </tr>
+
+
+
+
+
+                            <tr>
+                                <td class="col-md-4">
+                                    <div class="io-line">Defined in <a href="" data-line="10" class="link-to-prism">src/app/core/interfaces/supplier/supplier.interface.ts:10</a></div>
+                                </td>
+                            </tr>
+
+                </tbody>
+            </table>
+            <table class="table table-sm table-bordered">
+                <tbody>
+                        <tr>
+                            <td class="col-md-4">
+                                <a name="sup_uuid"></a>
+                                <span class="name "><b>sup_uuid</b>
+                                    <a href="#sup_uuid">
+                                        <span class="icon ion-ios-link"></span>
+                                    </a>
+                                </span>
+                            </td>
+                        </tr>
+                        <tr>
+                            <td class="col-md-4">
+                                <code>sup_uuid:     <code>string | null</code>
+</code>
+                            </td>
+                        </tr>
+
+
+                            <tr>
+                                <td class="col-md-4">
+                                    <i>Type : </i>    <code>string | null</code>
+
+                                </td>
+                            </tr>
+
+
+
+
+
+                            <tr>
+                                <td class="col-md-4">
+                                    <div class="io-line">Defined in <a href="" data-line="3" class="link-to-prism">src/app/core/interfaces/supplier/supplier.interface.ts:3</a></div>
+                                </td>
+                            </tr>
+
+                </tbody>
+            </table>
+            <table class="table table-sm table-bordered">
+                <tbody>
+                        <tr>
+                            <td class="col-md-4">
+                                <a name="usr_uuid"></a>
+                                <span class="name "><b>usr_uuid</b>
+                                    <a href="#usr_uuid">
+                                        <span class="icon ion-ios-link"></span>
+                                    </a>
+                                </span>
+                            </td>
+                        </tr>
+                        <tr>
+                            <td class="col-md-4">
+                                <code>usr_uuid:     <code>string | null</code>
+</code>
+                            </td>
+                        </tr>
+
+
+                            <tr>
+                                <td class="col-md-4">
+                                    <i>Type : </i>    <code>string | null</code>
+
+                                </td>
+                            </tr>
+
+
+
+
+
+                            <tr>
+                                <td class="col-md-4">
+                                    <div class="io-line">Defined in <a href="" data-line="8" class="link-to-prism">src/app/core/interfaces/supplier/supplier.interface.ts:8</a></div>
+                                </td>
+                            </tr>
+
+                </tbody>
+            </table>
+    </section>
+</div>
+
+
+    <div class="tab-pane fade  tab-source-code" id="source">
+        <pre class="line-numbers compodoc-sourcecode"><code class="language-typescript">export interface SupplierInterface {
+    cmp_uuid: string | null,
+    sup_uuid: string | null,
+    sup_fullname: string | null,
+    sup_email: string | null,
+    sup_phone: string | null,
+    pmt_uuid: string | null,
+    usr_uuid: string | null,
+    sup_createdat: Date | null,
+    sup_updatedat: Date | null
+}</code></pre>
+    </div>
+</div>
+
+
+
+
+
+
+
+
+                   </div><div class="search-results">
+    <div class="has-results">
+        <h1 class="search-results-title"><span class='search-results-count'></span> results matching "<span class='search-query'></span>"</h1>
+        <ul class="search-results-list"></ul>
+    </div>
+    <div class="no-results">
+        <h1 class="search-results-title">No results matching "<span class='search-query'></span>"</h1>
+    </div>
+</div>
+</div>
+               <!-- END CONTENT -->
+           </div>
+       </div>
+
+          
+<div class="compodoc-lang-switch">
+  <select id="compodoc-lang-select" aria-label="Seleccionar idioma">
+    <option value="es" >🇪🇸 Español</option>
+    <option value="en" selected>🇺🇸 English</option>
+    <option value="pt" >🇧🇷 Português</option>
+  </select>
+</div>
+
+          <label class="dark-mode-switch">
+               <input type="checkbox">
+               <span class="slider">
+                    <svg class="slider-icon" viewBox="0 0 24 24" fill="none" height="20" stroke="#000" stroke-linecap="round" stroke-linejoin="round" stroke-width="2" width="20" xmlns="http://www.w3.org/2000/svg">
+                    <path d="M21 12.79A9 9 0 1111.21 3 7 7 0 0021 12.79z"></path>
+                    </svg>
+               </span>
+          </label>
+
+       <script>
+            var COMPODOC_CURRENT_PAGE_DEPTH = 1;
+            var COMPODOC_CURRENT_PAGE_CONTEXT = 'interface';
+            var COMPODOC_CURRENT_PAGE_URL = 'SupplierInterface.html';
+            var MAX_SEARCH_RESULTS = 15;
+       </script>
+
+       <script>
+               $darkModeToggleSwitchers = document.querySelectorAll('.dark-mode-switch input');
+               var updateDarkModeSwitchOffset = function () {
+                    var content = document.querySelector('.content');
+                    var scrollbarWidth = 0;
+
+                    if (content) {
+                         scrollbarWidth = Math.max(0, content.offsetWidth - content.clientWidth);
+                    }
+
+                    document.documentElement.style.setProperty(
+                         '--content-scrollbar-width',
+                         scrollbarWidth + 'px'
+                    );
+               };
+
+               updateDarkModeSwitchOffset();
+               requestAnimationFrame(updateDarkModeSwitchOffset);
+               window.addEventListener('resize', updateDarkModeSwitchOffset);
+
+               checkToggle(darkModeState);
+               if ($darkModeToggleSwitchers.length > 0) {
+                    for (var i = 0; i < $darkModeToggleSwitchers.length; i++) {
+                         $darkModeToggleSwitchers[i].addEventListener('change', function (event) {
+                              darkModeState = !darkModeState;
+                              toggleDarkMode(darkModeState);
+                         });
+                    }
+               }
+          </script>
+
+       <script src="../js/libs/custom-elements.min.js"></script>
+       <script src="../js/libs/lit-html.js"></script>
+
+       <script src="../js/menu-wc.js" defer></script>
+
+       <script src="../js/libs/bootstrap-native.js"></script>
+
+       <script src="../js/libs/es6-shim.min.js"></script>
+       <script src="../js/libs/EventDispatcher.js"></script>
+       <script src="../js/libs/promise.min.js"></script>
+
+       <script src="../js/compodoc.js"></script>
+
+       <script src="../js/tabs.js"></script>
+       <script src="../js/menu.js"></script>
+       <script src="../js/libs/clipboard.min.js"></script>
+       <script src="../js/libs/prism.js"></script>
+       <script src="../js/sourceCode.js"></script>
+          <script src="../js/search/search.js"></script>
+          <script src="../js/search/lunr.min.js"></script>
+          <script src="../js/search/search-lunr.js"></script>
+          <script src="../js/search/search_index.js"></script>
+       <script src="../js/lazy-load-graphs.js"></script>
+
+
+    
+<script id="compodoc-lang-script">
+(function() {
+  var CURRENT_LANG = "en";
+  var ADDITIONAL_DOCS_MAP = {"es":["01.-introducción-y-arquitectura-general.html","02.-autenticación-y-control-de-accesos.html","03.-catálogo-público-y-exploración-de-tiendas.html","04.-carrito-de-compras-y-checkout-multitienda.html","05.-gestión-de-empresas,-roles-y-configuración.html","06.-inventario,-productos,-variaciones-y-almacenes.html","07.-gestión-de-pedidos,-compras-y-cupones.html","08.-analíticas-de-negocio,-finanzas-y-proveedores.html"],"en":["01.-introduction-and-general-architecture.html","02.-authentication-and-access-control.html","03.-public-catalog-and-store-exploration.html","04.-shopping-cart-and-multi-store-checkout.html","05.-company-management,-roles-and-configuration.html","06.-inventory,-products,-variations-and-warehouses.html","07.-orders-management,-purchases-and-coupons.html","08.-business-analytics,-finances-and-suppliers.html"],"pt":["01.-introdução-e-arquitetura-geral.html","02.-autenticação-e-controle-de-acesso.html","03.-catálogo-público-e-exploração-de-lojas.html","04.-carrinho-de-compras-e-checkout-multiloja.html","05.-gestão-de-empresas,-funções-e-configuração.html","06.-estoque,-produtos,-variações-e-armazéns.html","07.-gestão-de-pedidos,-compras-e-cupons.html","08.-análise-de-negócios,-finanças-e-fornecedores.html"]};
+
+  var select = document.getElementById('compodoc-lang-select');
+  if (!select) return;
+
+  try {
+    localStorage.setItem('compodoc_lang', CURRENT_LANG);
+  } catch (e) {}
+
+  select.addEventListener('change', function(e) {
+    var targetLang = e.target.value;
+    if (targetLang === CURRENT_LANG) return;
+
+    try {
+      localStorage.setItem('compodoc_lang', targetLang);
+    } catch (err) {}
+
+    var href = window.location.href;
+    var pathname = window.location.pathname;
+
+    // Manejo especial para páginas de additional-documentation
+    if (pathname.indexOf('/additional-documentation/') !== -1) {
+      var segments = pathname.split('/');
+      var currentFile = decodeURIComponent(segments[segments.length - 1]);
+      
+      var currentList = ADDITIONAL_DOCS_MAP[CURRENT_LANG] || [];
+      var targetList = ADDITIONAL_DOCS_MAP[targetLang] || [];
+      var foundIndex = -1;
+
+      var prefixMatch = currentFile.match(/^(\d{2}\.-)/);
+      if (prefixMatch) {
+        var prefix = prefixMatch[1];
+        for (var i = 0; i < targetList.length; i++) {
+          if (targetList[i].startsWith(prefix)) {
+            foundIndex = i;
+            break;
+          }
+        }
+      }
+      if (foundIndex === -1) {
+        for (var j = 0; j < currentList.length; j++) {
+          if (currentList[j] === currentFile) {
+            foundIndex = j;
+            break;
+          }
+        }
+      }
+
+      var targetFile = (foundIndex !== -1 && targetList[foundIndex]) 
+        ? targetList[foundIndex] 
+        : (targetList[0] || 'index.html');
+
+      var targetSubpath = '/' + targetLang + '/additional-documentation/' + targetFile;
+      var currentSubpath = '/' + CURRENT_LANG + '/additional-documentation/' + segments[segments.length - 1];
+
+      if (href.indexOf(currentSubpath) !== -1) {
+        window.location.href = href.replace(currentSubpath, targetSubpath);
+        return;
+      }
+    }
+
+    // Páginas estándar
+    var standardReplace = href.replace('/' + CURRENT_LANG + '/', '/' + targetLang + '/');
+    if (standardReplace !== href) {
+      window.location.href = standardReplace;
+    } else {
+      var depth = (typeof COMPODOC_CURRENT_PAGE_DEPTH !== 'undefined') ? COMPODOC_CURRENT_PAGE_DEPTH : 0;
+      var prefixPath = '';
+      for (var k = 0; k <= depth; k++) {
+        prefixPath += '../';
+      }
+      window.location.href = prefixPath + targetLang + '/index.html';
+    }
+  });
+})();
+</script>
+
+</body>
+</html>

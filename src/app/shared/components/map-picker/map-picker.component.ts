@@ -6,15 +6,41 @@ import { NzMessageService } from 'ng-zorro-antd/message';
 import maplibregl, { Map, Marker } from 'maplibre-gl';
 import { GeocoderService } from '../../../core/services/geocoder.service'; // tu servicio
 
+/**
+ * @description Estructura de datos resultante tras la selección o geocodificación de un punto en el mapa.
+ */
 export interface SelectedLocation {
+  /**
+   * @description Dirección normalizada en texto (calle y numeración).
+   */
   address: string;
+  /**
+   * @description Localidad o municipio detectado.
+   */
   ciudad: string | null | undefined;
+  /**
+   * @description Código postal de la zona geográfica.
+   */
   codigoPostal: string | null | undefined;
+  /**
+   * @description Coordenada geográfica de latitud decimal.
+   */
   lat: number;
+  /**
+   * @description Coordenada geográfica de longitud decimal.
+   */
   lng: number;
+  /**
+   * @description Provincia, estado o región administrativa.
+   */
   provincia: string | null | undefined;
 }
 
+/**
+ * @description Componente selector de mapas interactivo basado en MapLibre GL.
+ * Permite buscar domicilios con autocompletado inverso, arrastrar un marcador para afinar
+ * la posición y emitir las coordenadas y datos normalizados para domicilios de entrega o sucursales.
+ */
 @Component({
   selector: 'app-map-picker',
   imports: [
@@ -27,10 +53,25 @@ export interface SelectedLocation {
 })
 export class MapPickerComponent {
 
-  @Input() showSearch = true;      // Muestra/oculta la barra de búsqueda
-  @Input() showJsonOutput = true;  // Muestra/oculta el JSON
+  /**
+   * @description Muestra u oculta la caja de búsqueda superior de geocodificación directa.
+   */
+  @Input() showSearch = true;
+  /**
+   * @description Determina si se despliega el bloque de depuración con la salida JSON.
+   */
+  @Input() showJsonOutput = true;
+  /**
+   * @description Latitud inicial de centrado del mapa.
+   */
   @Input() initialLat: number | null = null;
+  /**
+   * @description Longitud inicial de centrado del mapa.
+   */
   @Input() initialLng: number | null = null;
+  /**
+   * @description Objeto con datos de dirección preexistentes para inicializar el marcador.
+   */
   @Input() initialAddressData: {
     address?: string | null;
     ciudad?: string | null;
@@ -38,6 +79,9 @@ export class MapPickerComponent {
     codigoPostal?: string | null;
   } | null = null;
 
+  /**
+   * @description Evento emitido cada vez que el usuario fija una nueva posición en el mapa.
+   */
   @Output() locationSelected = new EventEmitter<SelectedLocation>();
 
   @ViewChild('map', { static: true }) mapContainer!: ElementRef;

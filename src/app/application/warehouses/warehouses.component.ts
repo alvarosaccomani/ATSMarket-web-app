@@ -26,6 +26,11 @@ import { MessageService } from '@services/message.service';
 import { WarehouseInterface } from '@interfaces/warehouse';
 import { WarehouseLocationInterface } from '@interfaces/warehouse-location';
 
+/**
+ * @description Componente de gestión física y estructural de depósitos, almacenes y ubicaciones logísticas.
+ * Permite modelar la topología del almacén (Pasillos, Racks, Estantes, Bins), asociar identificadores
+ * de códigos de barras mediante BarcodeScannerComponent y supervisar el balance de inventario por sector.
+ */
 @Component({
   selector: 'app-warehouses',
   standalone: true,
