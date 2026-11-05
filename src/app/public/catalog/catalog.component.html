@@ -100,7 +100,7 @@
                     <ng-template #coverTemplate>
                         <div class="card-image-wrapper" (click)="openProductDetail(producto)" style="cursor: pointer;">
                             <img [alt]="producto.prov_name"
-                                [src]="producto.prov_image ? producto.prov_image : 'https://placehold.co/400x400/eeeeee/8c8c8c?text=Sin+Foto'"
+                                [src]="(producto.prov_image | r2Url) || 'https://placehold.co/400x400/eeeeee/8c8c8c?text=Sin+Foto'" crossorigin="anonymous"
                                 class="product-card-image" />
                         </div>
                     </ng-template>

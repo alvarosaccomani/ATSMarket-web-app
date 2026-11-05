@@ -1,4 +1,5 @@
 import { Component, OnInit } from '@angular/core';
+import { R2UrlPipe } from '../../shared/pipes/r2-url.pipe';
 import { CommonModule } from '@angular/common';
 import { FormsModule } from '@angular/forms';
 import { Router, ActivatedRoute } from '@angular/router';
@@ -32,6 +33,7 @@ import { GlobalMaterialsService } from '@services/global-materials.service';
 @Component({
   selector: 'app-catalog',
   imports: [
+    R2UrlPipe,
     CommonModule,
     FormsModule,
     NzLayoutModule,
