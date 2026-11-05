@@ -20,6 +20,8 @@ import { ProductVariationInterface } from '@interfaces/product-variation';
 import { ProductVariationsService } from '@services/product-variations.service';
 import { CameraComponent } from '../../shared/components/camera/camera.component';
 import { MessageService } from '@services/message.service';
+import { StorageService } from '@services/storage.service';
+import { SessionService } from '@services/session.service';
 
 @Component({
   selector: 'app-price-list',
@@ -59,7 +61,9 @@ export class PriceListComponent implements OnInit {
   constructor(
     private _productVariationsService: ProductVariationsService,
     private message: NzMessageService,
-    private _messageService: MessageService
+    private _messageService: MessageService,
+    private _storageService: StorageService,
+    private _sessionService: SessionService
   ) { }
 
   ngOnInit(): void {
@@ -110,12 +114,35 @@ export class PriceListComponent implements OnInit {
     )
   }
 
-  saveNewPhoto(product: ProductVariationInterface, base64Image: string): void {
-    // Aquí actualizarías el servidor. Por ahora, parcheamos el objeto en la vista:
-    product.prov_image = base64Image;
-    // Tras confirmar la foto editada, cerramos la cámara
+  saveNewPhoto(product: ProductVariationInterface, capturedDataUrl: string): void {
     this.activeCameraRowId = null;
-    this.updateProductVariation(product);
+    const usr_uuid = this._sessionService.getIdentity()?.usr_uuid || 'admin';
+    const filename = `camera_${product.prov_uuid || Date.now()}.webp`;
+
+    this._messageService.info('Subiendo imagen', 'Procesando y guardando captura en Cloudflare R2...');
+
+    this._storageService.compressToWebpBlob(capturedDataUrl, { maxWidth: 1000, maxHeight: 1000, quality: 0.85 })
+      .then(({ blob }) => {
+        this._storageService.uploadFile(blob, filename, usr_uuid, {
+          bucketType: 'public',
+          folder: 'products/variations',
+          contentType: 'image/webp'
+        }).subscribe({
+          next: (uploadData) => {
+            product.prov_image = uploadData.key;
+            this.updateProductVariation(product);
+            this._messageService.success('Foto guardada', 'La imagen fue almacenada en Cloudflare R2 exitosamente.');
+          },
+          error: (err) => {
+            console.error('Error al subir captura de cámara a R2:', err);
+            this._messageService.error('Error', 'No se pudo subir la foto tomada a Cloudflare R2.');
+          }
+        });
+      })
+      .catch((err) => {
+        console.error('Error al procesar foto a WebP:', err);
+        this._messageService.error('Error', 'No se pudo procesar la foto.');
+      });
   }
 
   savePrice(product: ProductVariationInterface): void {
