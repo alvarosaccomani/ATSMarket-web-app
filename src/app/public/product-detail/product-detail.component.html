@@ -31,7 +31,7 @@
                     <div class="detail-image-card" [class.is-flipped]="isFlipped">
                         <!-- CARA DELANTERA: Imagen del producto -->
                         <div class="card-face card-front">
-                            <img [src]="producto.prov_image ? producto.prov_image : 'https://placehold.co/400x400/eeeeee/8c8c8c?text=Sin+Foto'" 
+                            <img [src]="(producto.prov_image | r2Url) || 'https://placehold.co/400x400/eeeeee/8c8c8c?text=Sin+Foto'" crossorigin="anonymous" 
                                 [alt]="producto.prov_name" class="detail-main-img" />
                         </div>
                         <!-- CARA TRASERA: Código QR -->

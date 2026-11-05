@@ -1,4 +1,5 @@
 import { Component, OnInit } from '@angular/core';
+import { R2UrlPipe } from '../../shared/pipes/r2-url.pipe';
 import { CommonModule } from '@angular/common';
 import { FormsModule, ReactiveFormsModule } from '@angular/forms';
 import { ActivatedRoute, Router, RouterModule } from '@angular/router';
@@ -41,6 +42,7 @@ import { FavoritesService } from '@services/favorites.service';
   standalone: true,
   imports: [
     CommonModule,
+    R2UrlPipe,
     FormsModule,
     ReactiveFormsModule,
     RouterModule,
