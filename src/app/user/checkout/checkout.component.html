@@ -113,7 +113,7 @@
                     <!-- Desglose por tienda (Split de Pedidos) -->
                     <div *ngFor="let g of storesInOrder; let last = last" class="store-checkout-group" [style.borderBottom]="last ? 'none' : '2px dashed #f0f0f0'" style="margin-top: 24px; padding-top: 24px; padding-bottom: 24px;">
                         <div class="store-group-header" style="display: flex; align-items: center; gap: 12px; margin-bottom: 16px;">
-                            <img [src]="getStoreSetting(g, 'STORE_LOGO_URL') || 'assets/images/default-store.png'" alt="Logo tienda" style="width: 40px; height: 40px; border-radius: 8px; object-fit: cover; border: 1px solid #e8e8e8;" />
+                            <img [src]="(getStoreSetting(g, 'STORE_LOGO_URL') | r2Url) || 'assets/images/default-store.png'" crossorigin="anonymous" alt="Logo tienda" style="width: 40px; height: 40px; border-radius: 8px; object-fit: cover; border: 1px solid #e8e8e8;" />
                             <div>
                                 <h3 style="margin: 0; font-weight: 700; font-size: 16px; color: #262626;">🏢 {{ g.company?.cmp_name || 'Tienda ATSMarket' }}</h3>
                                 <p style="margin: 0; font-size: 12px; color: #8c8c8c;">{{ g.items.length }} producto(s) en este pedido</p>
@@ -124,7 +124,7 @@
                         <div class="store-group-items" style="background: #fafafa; border-radius: 8px; padding: 12px; margin-bottom: 16px;">
                             <div *ngFor="let item of g.items" style="display: flex; align-items: center; justify-content: space-between; padding: 8px 0; border-bottom: 1px solid #f0f0f0;">
                                 <div style="display: flex; align-items: center; gap: 8px; flex: 1;">
-                                    <img [src]="item.prov_image || 'assets/images/default-product.png'" style="width: 32px; height: 32px; border-radius: 4px; object-fit: cover;" />
+                                    <img [src]="(item.prov_image | r2Url) || 'assets/images/default-product.png'" crossorigin="anonymous" style="width: 32px; height: 32px; border-radius: 4px; object-fit: cover;" />
                                     <div>
                                         <span style="font-weight: 500; font-size: 13px; color: #262626;">{{ item.prov_name }}</span>
                                         <span *ngIf="item.prov_size || item.prov_color" style="display: block; font-size: 11px; color: #8c8c8c;">
@@ -635,7 +635,7 @@
             <div style="max-width: 500px; margin: 0 auto 32px auto; background: #fafafa; border: 1px solid #e8e8e8; border-radius: 12px; padding: 20px; text-align: left;">
                 <div *ngFor="let g of storesInOrder" style="display: flex; align-items: center; justify-content: space-between; padding: 12px 0; border-bottom: 1px solid #f0f0f0;">
                     <div style="display: flex; align-items: center; gap: 10px;">
-                        <img [src]="getStoreSetting(g, 'STORE_LOGO_URL') || 'assets/images/default-store.png'" style="width: 32px; height: 32px; border-radius: 6px; object-fit: cover;" />
+                        <img [src]="(getStoreSetting(g, 'STORE_LOGO_URL') | r2Url) || 'assets/images/default-store.png'" crossorigin="anonymous" style="width: 32px; height: 32px; border-radius: 6px; object-fit: cover;" />
                         <div>
                             <span style="font-weight: 600; font-size: 14px; color: #262626; display: block;">{{ g.company?.cmp_name || 'Tienda' }}</span>
                             <span style="font-size: 11px; color: #8c8c8c;">{{ g.items.length }} producto(s)</span>

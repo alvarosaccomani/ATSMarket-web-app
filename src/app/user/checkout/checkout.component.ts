@@ -1,3 +1,4 @@
+import { R2UrlPipe } from '../../shared/pipes/r2-url.pipe';
 import { Component, OnInit, OnDestroy } from '@angular/core';
 import { FormBuilder, FormGroup, Validators, ReactiveFormsModule, FormsModule } from '@angular/forms';
 import { RouterLink, Router } from '@angular/router';
@@ -77,6 +78,7 @@ import { MpPaymentBrickComponent } from '../../shared/components/mp-payment-bric
   standalone: true,
   imports: [
     CommonModule,
+    R2UrlPipe,
     ReactiveFormsModule,
     FormsModule,
     RouterLink,
