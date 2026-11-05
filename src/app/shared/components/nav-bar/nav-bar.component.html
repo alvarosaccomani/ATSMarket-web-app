@@ -3,7 +3,7 @@
     <div class="header-main-row">
         <div class="logo">
             <a [routerLink]="activeStore ? '/public/home-store/' + activeStore.cmp_slug : '/public/market-home'">
-                <img *ngIf="storeLogoUrl" [src]="storeLogoUrl" [alt]="storeName" class="logo-image" />
+                <img *ngIf="storeLogoUrl" [src]="storeLogoUrl | r2Url" crossorigin="anonymous" [alt]="storeName" class="logo-image" />
                 <span *ngIf="!storeLogoUrl" nz-icon nzType="shop" nzTheme="outline"></span>
                 <span class="site-title">{{ storeName }}</span>
             </a>

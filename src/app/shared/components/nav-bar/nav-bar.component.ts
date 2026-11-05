@@ -1,3 +1,4 @@
+import { R2UrlPipe } from '../../pipes/r2-url.pipe';
 import { Component, OnInit } from '@angular/core';
 import { CommonModule, AsyncPipe } from '@angular/common';
 import { RouterLink, Router, NavigationEnd } from '@angular/router';
@@ -32,6 +33,7 @@ import { CompanyInterface } from '@interfaces/company';
   selector: 'app-nav-bar',
   imports: [
     CommonModule,
+    R2UrlPipe,
     AsyncPipe,
     RouterLink,
     FormsModule,
