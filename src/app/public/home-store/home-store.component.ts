@@ -1,3 +1,4 @@
+import { R2UrlPipe } from '../../shared/pipes/r2-url.pipe';
 import { Component } from '@angular/core';
 import { Title, Meta } from '@angular/platform-browser';
 import { CommonModule } from '@angular/common';
@@ -30,6 +31,7 @@ import { CompanyInterface } from '@interfaces/company';
   standalone: true,
   imports: [
     CommonModule,
+    R2UrlPipe,
     RouterLink,
     NzGridModule,
     NzCardModule,

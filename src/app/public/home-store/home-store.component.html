@@ -1,11 +1,11 @@
 <nz-spin [nzSpinning]="isSettingsLoading">
     <!-- Hero Banner Premium de la Tienda -->
     <div *ngIf="store" class="store-hero-banner"
-        [ngStyle]="{'background-image': store.cmp_banner ? 'url(' + store.cmp_banner + ')' : 'none'}">
+        [ngStyle]="{'background-image': store.cmp_banner ? 'url(' + (store.cmp_banner | r2Url) + ')' : 'none'}">
         <div class="store-hero-overlay" *ngIf="store.cmp_banner"></div>
         <div class="store-hero-content">
             <div class="brand-card">
-                <img [src]="store.cmp_logo ? store.cmp_logo : 'https://placehold.co/150x150/eeeeee/8c8c8c?text=Logo'"
+                <img [src]="(store.cmp_logo | r2Url) || 'https://placehold.co/150x150/eeeeee/8c8c8c?text=Logo'" crossorigin="anonymous"
                     [alt]="store.cmp_name" class="store-logo">
                 <div class="store-info">
                     <h1 class="store-name">{{ store.cmp_name }}</h1>
@@ -79,7 +79,7 @@
                         <ng-template #coverProdTemplate>
                             <div class="card-image-wrapper" (click)="openProductDetail(prod)" style="cursor: pointer;">
                                 <img [alt]="prod.prov_name" 
-                                    [src]="prod.prov_image ? prod.prov_image : 'https://placehold.co/400x400/eeeeee/8c8c8c?text=Sin+Foto'" 
+                                    [src]="(prod.prov_image | r2Url) || 'https://placehold.co/400x400/eeeeee/8c8c8c?text=Sin+Foto'" crossorigin="anonymous" 
                                     class="product-card-image" />
                             </div>
                         </ng-template>
