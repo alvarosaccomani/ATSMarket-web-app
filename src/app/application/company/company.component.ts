@@ -19,6 +19,7 @@ import { MessageService } from '@services/message.service';
 import { CompaniesService } from '@services/companies.service';
 import { SessionService } from '@services/session.service';
 import { UserRolesCompanyService } from '@services/user-roles-company.service';
+import { StorageService } from '@services/storage.service';
 import { MapPickerComponent, SelectedLocation } from '../../shared/components/map-picker/map-picker.component';
 
 @Component({
@@ -58,7 +59,8 @@ export class CompanyComponent implements OnInit {
     private _messageService: MessageService,
     private _companiesService: CompaniesService,
     private _sessionService: SessionService,
-    private _userRolesCompanyService: UserRolesCompanyService
+    private _userRolesCompanyService: UserRolesCompanyService,
+    private _storageService: StorageService
   ) { }
 
   ngOnInit(): void {
@@ -101,49 +103,6 @@ export class CompanyComponent implements OnInit {
     });
   }
 
-  private compressAndResizeImage(file: File): Promise<string> {
-    return new Promise((resolve, reject) => {
-      const reader = new FileReader();
-      reader.onload = (event: any) => {
-        const img = new Image();
-        img.onload = () => {
-          const canvas = document.createElement('canvas');
-          const MAX_WIDTH = 800;
-          const MAX_HEIGHT = 800;
-          let width = img.width;
-          let height = img.height;
-
-          if (width > height) {
-            if (width > MAX_WIDTH) {
-              height *= MAX_WIDTH / width;
-              width = MAX_WIDTH;
-            }
-          } else {
-            if (height > MAX_HEIGHT) {
-              width *= MAX_HEIGHT / height;
-              height = MAX_HEIGHT;
-            }
-          }
-
-          canvas.width = width;
-          canvas.height = height;
-
-          const ctx = canvas.getContext('2d');
-          if (ctx) {
-            ctx.drawImage(img, 0, 0, width, height);
-            resolve(canvas.toDataURL('image/webp', 0.80));
-          } else {
-            reject('No se pudo obtener contexto 2D del canvas');
-          }
-        };
-        img.onerror = err => reject(err);
-        img.src = event.target.result;
-      };
-      reader.onerror = err => reject(err);
-      reader.readAsDataURL(file);
-    });
-  }
-
   private getCompanyById(cmp_uuid: string): void {
     this.isLoading = true;
     this._companiesService.getCompanyById(cmp_uuid).subscribe({
@@ -180,21 +139,58 @@ export class CompanyComponent implements OnInit {
   }
 
   public beforeUploadLogo = (file: NzUploadFile): boolean => {
-    const rawFile = file.originFileObj || (file as any);
-    if (rawFile) {
-      this.compressAndResizeImage(rawFile).then(base64 => {
-        this.companyForm.patchValue({ cmp_logo: base64 });
-        this.logoFileList = [{
-          uid: file.uid,
-          name: file.name,
-          status: 'done',
-          url: base64
-        }];
-      }).catch(err => {
-        console.error('Error al procesar el logo:', err);
-        this._messageService.error('Error', 'No se pudo procesar la imagen del logo.');
+    const rawFile: File = (file.originFileObj as File) || (file as any);
+    if (!rawFile) return false;
+
+    const usr_uuid = this._sessionService.getIdentity()?.usr_uuid || 'admin';
+
+    // 1. Mostrar estado de carga en la lista de nz-upload
+    this.logoFileList = [{
+      uid: file.uid,
+      name: file.name,
+      status: 'uploading',
+      percent: 0
+    }];
+
+    // 2. Comprimir a WebP al 85% en el cliente y subir directo a Cloudflare R2
+    this._storageService.compressToWebpBlob(rawFile, { maxWidth: 800, maxHeight: 800, quality: 0.85 })
+      .then(({ blob }) => {
+        const previewUrl = URL.createObjectURL(blob);
+        const filename = `${file.name.replace(/\.[^/.]+$/, '')}.webp`;
+
+        this._storageService.uploadFile(blob, filename, usr_uuid, {
+          bucketType: 'public',
+          folder: 'companies/logos',
+          contentType: 'image/webp'
+        }).subscribe({
+          next: (uploadData) => {
+            // Guardamos la key limpia en el formulario
+            this.companyForm.patchValue({ cmp_logo: uploadData.key });
+            this.logoFileList = [{
+              uid: file.uid,
+              name: filename,
+              status: 'done',
+              url: previewUrl
+            }];
+            this._messageService.success('Logo subido', 'La imagen fue procesada y almacenada correctamente.');
+          },
+          error: (err) => {
+            console.error('Error al subir el logo a R2:', err);
+            this.logoFileList = [{
+              uid: file.uid,
+              name: file.name,
+              status: 'error'
+            }];
+            this._messageService.error('Error', 'No se pudo subir el logo a Cloudflare R2.');
+          }
+        });
+      })
+      .catch((err) => {
+        console.error('Error al comprimir el logo a WebP:', err);
+        this.logoFileList = [];
+        this._messageService.error('Error', 'No se pudo procesar y convertir el logo a WebP.');
       });
-    }
+
     return false;
   };
 
@@ -205,21 +201,55 @@ export class CompanyComponent implements OnInit {
   };
 
   public beforeUploadBanner = (file: NzUploadFile): boolean => {
-    const rawFile = file.originFileObj || (file as any);
-    if (rawFile) {
-      this.compressAndResizeImage(rawFile).then(base64 => {
-        this.companyForm.patchValue({ cmp_banner: base64 });
-        this.bannerFileList = [{
-          uid: file.uid,
-          name: file.name,
-          status: 'done',
-          url: base64
-        }];
-      }).catch(err => {
-        console.error('Error al procesar el banner:', err);
-        this._messageService.error('Error', 'No se pudo procesar la imagen del banner.');
+    const rawFile: File = (file.originFileObj as File) || (file as any);
+    if (!rawFile) return false;
+
+    const usr_uuid = this._sessionService.getIdentity()?.usr_uuid || 'admin';
+
+    this.bannerFileList = [{
+      uid: file.uid,
+      name: file.name,
+      status: 'uploading',
+      percent: 0
+    }];
+
+    this._storageService.compressToWebpBlob(rawFile, { maxWidth: 1600, maxHeight: 800, quality: 0.85 })
+      .then(({ blob }) => {
+        const previewUrl = URL.createObjectURL(blob);
+        const filename = `${file.name.replace(/\.[^/.]+$/, '')}.webp`;
+
+        this._storageService.uploadFile(blob, filename, usr_uuid, {
+          bucketType: 'public',
+          folder: 'companies/banners',
+          contentType: 'image/webp'
+        }).subscribe({
+          next: (uploadData) => {
+            this.companyForm.patchValue({ cmp_banner: uploadData.key });
+            this.bannerFileList = [{
+              uid: file.uid,
+              name: filename,
+              status: 'done',
+              url: previewUrl
+            }];
+            this._messageService.success('Banner subido', 'La imagen fue procesada y almacenada correctamente.');
+          },
+          error: (err) => {
+            console.error('Error al subir el banner a R2:', err);
+            this.bannerFileList = [{
+              uid: file.uid,
+              name: file.name,
+              status: 'error'
+            }];
+            this._messageService.error('Error', 'No se pudo subir el banner a Cloudflare R2.');
+          }
+        });
+      })
+      .catch((err) => {
+        console.error('Error al comprimir el banner a WebP:', err);
+        this.bannerFileList = [];
+        this._messageService.error('Error', 'No se pudo procesar y convertir el banner a WebP.');
       });
-    }
+
     return false;
   };
 
@@ -246,10 +276,9 @@ export class CompanyComponent implements OnInit {
             // Si es nueva, asignar rol al usuario actual
             const identity = this._sessionService.getIdentity();
             const roles = this._sessionService.getCompany()?.roles;
-            const adminRol = roles.find((r: any) => 
+            const adminRol = roles?.find((r: any) => 
               r.rol_name.toLowerCase() === 'admin' || 
-              r.rol_name.toLowerCase() === 'administrador' || 
-              r.rol_name.toLowerCase() === 'owner'
+              r.rol_name.toLowerCase() === 'administrador'
             );
 
             if (identity && adminRol && res.data) {
