@@ -1,3 +1,4 @@
+import { R2UrlPipe } from '../../shared/pipes/r2-url.pipe';
 import { Component, OnInit, ElementRef, ViewChild } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { FormsModule } from '@angular/forms';
@@ -31,6 +32,7 @@ import { GlobalCategoryInterface } from '@interfaces/global-category';
   selector: 'app-market-home',
   imports: [
     CommonModule,
+    R2UrlPipe,
     FormsModule,
     RouterLink,
     NzGridModule,
