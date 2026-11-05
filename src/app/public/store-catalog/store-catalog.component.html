@@ -2,10 +2,10 @@
 
     <!-- Hero Banner Premium de la Tienda -->
     <div class="store-hero-banner"
-        [ngStyle]="{'background-image': store.cmp_banner ? 'url(' + store.cmp_banner + ')' : 'none'}">
+        [ngStyle]="{'background-image': store.cmp_banner ? 'url(' + (store.cmp_banner | r2Url) + ')' : 'none'}">
         <div class="store-hero-overlay" *ngIf="store.cmp_banner"></div>
         <div class="store-hero-content">
-            <img [src]="store.cmp_logo ? store.cmp_logo : 'https://placehold.co/150x150/eeeeee/8c8c8c?text=Logo'"
+            <img [src]="(store.cmp_logo | r2Url) || 'https://placehold.co/150x150/eeeeee/8c8c8c?text=Logo'" crossorigin="anonymous"
                 [alt]="store.cmp_name" class="store-logo">
             <div class="store-info">
                 <h1 class="store-name">{{ store.cmp_name }}</h1>
@@ -105,7 +105,7 @@
                         <ng-template #coverTemplate>
                             <div class="card-image-wrapper" (click)="openProductDetail(producto)" style="cursor: pointer; position: relative;">
                                 <img [alt]="producto.prov_name"
-                                    [src]="producto.prov_image ? producto.prov_image : 'https://placehold.co/400x400/eeeeee/8c8c8c?text=Sin+Foto'"
+                                    [src]="(producto.prov_image | r2Url) || 'https://placehold.co/400x400/eeeeee/8c8c8c?text=Sin+Foto'" crossorigin="anonymous"
                                     class="product-card-image" />
                                 <button nz-button nzType="text" nzShape="circle" 
                                     (click)="toggleFavorite($event, producto)"

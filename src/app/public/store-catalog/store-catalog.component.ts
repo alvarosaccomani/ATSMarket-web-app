@@ -1,4 +1,5 @@
 import { Component, OnInit } from '@angular/core';
+import { R2UrlPipe } from '../../shared/pipes/r2-url.pipe';
 import { CommonModule } from '@angular/common';
 import { FormsModule } from '@angular/forms';
 import { ActivatedRoute, Router, RouterLink } from '@angular/router';
@@ -40,6 +41,7 @@ import { SessionService } from '@services/session.service';
   selector: 'app-store',
   imports: [
     CommonModule,
+    R2UrlPipe,
     FormsModule,
     RouterLink,
     NzLayoutModule,
