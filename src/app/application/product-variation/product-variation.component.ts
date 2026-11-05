@@ -29,6 +29,7 @@ import { CurrenciesService } from '@services/currencies.service';
 import { WarehousesService } from '@services/warehouses.service';
 import { WarehousesLocationsService } from '@services/warehouses-locations.service';
 import { InventoryStocksService } from '@services/inventory-stocks.service';
+import { StorageService } from '@services/storage.service';
 import { forkJoin } from 'rxjs';
 
 @Component({
@@ -87,7 +88,8 @@ export class ProductVariationComponent implements OnInit {
     private _messageService: MessageService,
     private _warehousesService: WarehousesService,
     private _warehousesLocationsService: WarehousesLocationsService,
-    private _inventoryStocksService: InventoryStocksService
+    private _inventoryStocksService: InventoryStocksService,
+    private _storageService: StorageService
   ) { }
 
   ngOnInit(): void {
@@ -406,66 +408,57 @@ export class ProductVariationComponent implements OnInit {
     }
   }
 
-  private compressAndResizeImage(file: File): Promise<string> {
-    return new Promise((resolve, reject) => {
-      const reader = new FileReader();
-      reader.onload = (event: any) => {
-        const img = new Image();
-        img.onload = () => {
-          const canvas = document.createElement('canvas');
-          const MAX_WIDTH = 800;
-          const MAX_HEIGHT = 800;
-          let width = img.width;
-          let height = img.height;
-
-          if (width > height) {
-            if (width > MAX_WIDTH) {
-              height *= MAX_WIDTH / width;
-              width = MAX_WIDTH;
-            }
-          } else {
-            if (height > MAX_HEIGHT) {
-              width *= MAX_HEIGHT / height;
-              height = MAX_HEIGHT;
-            }
-          }
-
-          canvas.width = width;
-          canvas.height = height;
-
-          const ctx = canvas.getContext('2d');
-          if (ctx) {
-            ctx.drawImage(img, 0, 0, width, height);
-            resolve(canvas.toDataURL('image/webp', 0.80));
-          } else {
-            reject('No se pudo obtener contexto 2D del canvas');
-          }
-        };
-        img.onerror = err => reject(err);
-        img.src = event.target.result;
-      };
-      reader.onerror = err => reject(err);
-      reader.readAsDataURL(file);
-    });
-  }
-
-  // Upload Logic
+    // Upload Logic directo a Cloudflare R2
   public beforeUpload = (file: NzUploadFile): boolean => {
-    const rawFile = file.originFileObj || (file as any);
-    if (rawFile) {
-      this.compressAndResizeImage(rawFile).then(base64 => {
-        this.productVariationForm.patchValue({ prov_image: base64 });
-        this.fileList = [{
-          uid: file.uid,
-          name: file.name,
-          status: 'done',
-          url: base64
-        }];
-      }).catch(err => {
-        console.error('Error al procesar la imagen de la variante:', err);
-        this._messageService.error('Error', 'No se pudo procesar la imagen de la variante.');
+    const rawFile: File = (file.originFileObj as File) || (file as any);
+    if (!rawFile) return false;
+
+    const usr_uuid = this._sessionService.getIdentity()?.usr_uuid || 'admin';
+
+    this.fileList = [{
+      uid: file.uid,
+      name: file.name,
+      status: 'uploading',
+      percent: 0
+    }];
+
+    this._storageService.compressToWebpBlob(rawFile, { maxWidth: 1000, maxHeight: 1000, quality: 0.85 })
+      .then(({ blob }) => {
+        const previewUrl = URL.createObjectURL(blob);
+        const filename = `${file.name.replace(/\.[^/.]+$/, '')}.webp`;
+
+        this._storageService.uploadFile(blob, filename, usr_uuid, {
+          bucketType: 'public',
+          folder: 'products/variations',
+          contentType: 'image/webp'
+        }).subscribe({
+          next: (uploadData) => {
+            this.productVariationForm.patchValue({ prov_image: uploadData.key });
+            this.fileList = [{
+              uid: file.uid,
+              name: filename,
+              status: 'done',
+              url: previewUrl
+            }];
+            this._messageService.success('Imagen subida', 'La imagen de la variante se guardó en Cloudflare R2.');
+          },
+          error: (err) => {
+            console.error('Error al subir imagen a R2:', err);
+            this.fileList = [{
+              uid: file.uid,
+              name: file.name,
+              status: 'error'
+            }];
+            this._messageService.error('Error', 'No se pudo subir la imagen a Cloudflare R2.');
+          }
+        });
+      })
+      .catch((err) => {
+        console.error('Error al comprimir la imagen de la variante:', err);
+        this.fileList = [];
+        this._messageService.error('Error', 'No se pudo procesar la imagen de la variante a WebP.');
       });
-    }
+
     return false;
   };
 
