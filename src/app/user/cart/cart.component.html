@@ -15,7 +15,7 @@
                     <nz-card class="premium-card" nzTitle="Productos Seleccionados" [nzBordered]="false">
                         <div class="cart-item-row" *ngFor="let item of items">
                             <div class="item-image">
-                                <img [src]="item.prov_image ? item.prov_image : 'https://placehold.co/80x80/eeeeee/8c8c8c?text=Sin+Foto'"
+                                <img [src]="(item.prov_image | r2Url) || 'https://placehold.co/80x80/eeeeee/8c8c8c?text=Sin+Foto'" crossorigin="anonymous"
                                     [alt]="item.prov_name">
                             </div>
                             <div class="item-details">

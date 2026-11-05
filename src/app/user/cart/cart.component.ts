@@ -1,4 +1,5 @@
 import { Component, OnInit } from '@angular/core';
+import { R2UrlPipe } from '../../shared/pipes/r2-url.pipe';
 import { CommonModule } from '@angular/common';
 import { FormsModule } from '@angular/forms';
 import { RouterLink } from '@angular/router';
@@ -22,6 +23,7 @@ import { CartItemInterface } from '@interfaces/cart-item.interface';
   standalone: true,
   imports: [
     CommonModule,
+    R2UrlPipe,
     FormsModule,
     RouterLink,
     NzGridModule,
